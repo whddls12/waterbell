@@ -51,6 +51,12 @@
     - [관리](#관리)
     - [로그인 \& 회원가입](#로그인--회원가입)
     - [알림함](#알림함-1)
+- [**2023-07-24**](#2023-07-24)
+  - [스크럼회의(2023/07/24)](#스크럼회의(20230724))
+  - [Vue 컴포넌트 구조 설계](#Vue-컴포넌트-구조-설계)
+  - [프론트 기능분업](#프론트-기능분업)
+  - [JIRA 스프린트 작성](JIRA-스프린트-작성)
+  - [API 명세서 작성](API-명세서-작성)
 
 <br>
 
@@ -748,3 +754,350 @@ tts / 알림내역(수신,발신) / 제어 / 알림메시지 커스텀 테이블
 ### 알림함
 
 ![알림함](/img/최종%20목업/[아파트%20관리인]%20알림함.png)
+
+# **2023-07-24**
+
+## 스크럼회의(2023/07/24)
+
+### 오늘의 할 일
+
+**오전**
+- 목업 마무리
+- ERD 수정
+- JIRA 스프린트
+- 마일스톤
+
+**오후**
+- API 명세
+
+<br>
+
+### IoT 관련
+
+- 구매한 센서 모두 배송 완료
+
+- 배송이 급하다고 생각해서 추가적인 상의 없이 구매해서 죄송함다.. 조만간 정산 및 영수증 첨부해서 알리도록 하겠슴다..
+
+- DB 수정 제안
+    1. Client (라즈베리 파이) 저장 테이블
+    - Springboot와 라즈베리 파이 사이의 통신은 Springboot에서 라즈베리파이의 ip를 지정하고 보내는 방식임.
+    - 따라서 지하 차도/지하 주차장 각각이 하나의 라즈베리 파이가 되고, 각 ip를 지정하는 테이블을 만드는 것이 어떤가 싶음.
+    - 하나의 wifi에서 다수의 라즈베리파이는 확인한 상태
+    - 다수의 wifi에서 다수의 라즈베리 파이는 포트포워딩으로 가능할 것으로 보임(확인 필요)
+    
+    ```java
+    // 라즈베리 파이의 주소
+    private String broker = "tcp://192.168.25.61:1883";
+    private String clientId = "test";
+    
+        public MqttPublisher() {
+            try {
+                // 클라이언트 생성
+                client = new MqttClient(broker, clientId);
+                // 브로커 접속
+                client.connect();
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+    ```
+    
+    2. 시설 - 알림설정 테이블 병합 결정
+
+<br>
+
+# Vue 컴포넌트 구조 설계
+
+```jsx
+/src
+	// 공통
+	- common/
+		- components/
+			- TheHeader // 헤더(로고, 메뉴선택, 지역선택)
+			- TheFooter // 하단 
+		- views/
+			- startPageView // 초기화면
+
+	// 지하차도
+	- underroad/ 
+		- components/
+			- dashboard/             // 대시보드
+				- roadDashRealTimeVideo    // 실시간 영상
+				- roadDashRainFallAmount   // 강수량 그래프
+				- roadDashWaterLevelHeight // 수위센서 높이
+				- roadDashReportList       // 신고접수 내역
+				- roadDashNearUnderroad    // 주변 지하차도
+				- roadDashWarningMessage   // 경고메시지
+			- report/                // 신고접수
+				- roadReportList           // 신고접수 목록
+				- roadReportListItem       // 신고접수 상세
+				- roadCreateReport         // 신고접수 작성
+			- control/               // 제어
+				- roadRealTimeVideo        // 실시간 영상
+				- roadLedBoardControl      // LED 전광판 제어
+				- roadWarningLightControl  // 경고등 제어
+			- systemLog/             // 시스템 로그
+				- roadSensorMeasureLog     // 센서 측정로그
+				- roadDeviceStatusLog      // 기기 상태로그
+				- roadDeviceControlLog     // 기기 제어로그
+			- manage/                // 관리
+				- roadMessageAndValueCustom // 메시지,기준치 설정
+		- views/
+				- roadDashboardView    // 대시보드
+				- roadReportView       // 신고접수
+				- roadControlView      // 제어
+				- roadSystemLogView    // 시스템 로그
+				- roadManageView       // 관리
+				- roadMypageView       // 마이페이지
+				- roadAlarmView        // 알림함
+				- roadLoginView        // 로그인
+				- roadSignupView       // 회원가입
+				
+
+	//지하주차장
+	- undergroundParkingLot/ 
+		- components/
+			- dashboard/             // 대시보드
+				- parkDashRealTimeVideo    // 실시간 영상
+				- parkDashRainFallAmount   // 강수량 그래프
+				- parkDashWaterLevelHeight // 수위센서 높이
+				- parkDashReportList       // 신고접수 내역
+				- parkDashTempAndHumid     // 온습도
+				- parkDashDust             // 미세먼지
+				- parkDashWarningMessage   // 경고메시지
+			- report/                // 신고접수
+				- parkReportList           // 신고접수 목록
+				- parkReportListItem       // 신고접수 상세
+				- parkCreateReport         // 신고접수 작성
+			- control/               // 제어
+				- parkRealTimeVideo        // 실시간 영상
+				- parkWaterPlateControl    // 차수판 제어
+				- parkSirenControl         // 사이렌 제어
+			- systemLog/             // 시스템 로그
+				- parkSensorMeasureLog     // 센서 측정로그
+				- parkDeviceStatusLog      // 기기 상태로그
+				- parkDeviceControlLog     // 기기 제어로그
+			- manage/                // 관리
+				- parkMessageAndValueCustom // 메시지,기준치 설정
+				- parkResidentList          // 입주민 조회
+
+		- views/
+				- parkDashboardView    // 대시보드
+				- parkReportView       // 신고접수
+				- parkControlView      // 제어
+				- parkSystemLogView    // 시스템 로그
+				- parkManageView       // 관리
+				- parkMypageView       // 마이페이지
+				- parkAlarmView        // 알림함
+				- parkLoginView        // 로그인
+				- parkSignupView       // 회원가입
+```
+
+- 지하차도와 지하주차장을 큰 디렉토리로 나누는게 좋은가
+    - 공통되는 부분이 너무 많아서 나누지 말자?
+    - 각 컴포넌트에서 v-if 쓰는 편이 더 간단할지
+    
+    ⇒ 대시보드는 꼭 나눌 필요가 있다고 생각합니다. (대시보드 각 컴포넌트별로 크기가 달라질 수 있기 때문(특히 지도) ) 
+    
+    ⇒ 최대한 덜 헷갈릴 수 있도록 코드는 서로 비슷하게 하더라도 따로 파일을 만드는게 좋지 않을까 싶습니다(의견의견)
+    
+
+⇒ **지하차도 / 지하주차장 분리**
+
+## views/ 목록
+
+- 초기화면 ( 서비스 선택하는 )
+    - startPageView
+- 대시보드
+    - dashboardView
+- 신고접수
+    - reportView
+- 제어
+    - controlView
+- 시스템 로그
+    - systemLogView
+- 관리
+    - manageView
+- 마이페이지
+    - myPageView
+- 알림함
+    - alarmView
+- 로그인
+    - loginView
+    
+    ⇒ 모달은 어떤가요? ! (그냥 의견입니당!!!! 아니면 이건 일단 구현하다가 결정해도 괜찮을 것 같아요 ) 근데 모달로 하면 모든 페이지마다 모달 코드를 넣어야해서 그냥 화면 하나 만드는게 더 편할 것 같기도 하네요 ,,,,
+    
+- 회원가입
+    - signUpView
+    
+    ⇒ 모달은 어떤가요? ! (그냥 의견!!!! 아니면 이건 일단 구현하다가 결정해도 괜찮을 것 같아요 )
+    
+
+⇒ **구현해보고 모달로 할지 말지 정하기**
+
+## components/ 목록
+
+### common/ (공통)
+
+- 로고
+    - TheLogo
+- 상단 헤더
+    - TheHeader
+- 메뉴 선택
+    - TheMenuSelect
+- 지역 선택
+    - TheRegionSelect
+    
+    ⇒  노란색으로 칠한 얘네는 하나의 헤더로 묶어버려도 괜찮지 않을까 싶습니다 !! 
+    
+
+⇒ **TheHeader 로 통합**
+
+- 하단
+    - TheFooter
+
+### dashboard/ (대시보드)
+
+- 실시간영상
+    - realTimeVideo
+- 강수량 그래프
+    - rainFallAmount
+- 수위센서 높이
+    - waterLevelHeight
+- 신고접수 내역
+    - reportList
+- 실시간 상황메시지 (차수판 동작 또는 호의경보, 호의주의보 등의 메시지가 들어갈 칸)
+    - warningMessage
+- 대시보드임을 표기하기위해 맨앞에 dash 를 붙이는건 어떨까요 ? 다른건 다 괜찮은데 실시간 영상과 reportList가 다른 화면의 컴포넌트와 겹쳐서 + 헷갈릴 수 있을 것 같습니다!
+
+### report/ (신고접수)
+
+- 신고접수 글 리스트
+    - reportList
+- 신고접수 글 하나
+    - reportListItem
+- 신고접수 글 작성
+    - createReport
+
+### control/ (제어)
+
+- 실시간 영상
+    - realTimeVideo (공통으로 빼도 되나?)
+    - 대시보드와 제어에서 보이는 스타일이(가로 세로, 배경 등) 달라서 따로 구성하는 게 좋을 것 같습니다.
+- 전광판 제어
+    - ledBoardControl
+- 경고등 제어
+    - warningLightControl
+- 차수판 제어
+    - waterPlateControl
+- 사이렌 제어
+    - sirenControl
+- 입주민 알림 전송
+    - sendAlarm
+
+### systemLog/ (시스템 로그)
+
+- 센서 측정 로그
+    - sensorMeasureLog
+- 기기 상태 로그
+    - deviceStatusLog
+- 기기 제어 로그
+    - deviceControlLog
+
+### manage/ (관리)
+
+- 메시지/기준치 설정
+    - messageAndValueCustom
+- 입주민 조회
+    - residentList
+
+<br>
+
+## 프론트 기능분업
+
+- 진입화면 - 황종인 (2)
+- 헤더
+    - 버튼 구성 및 각 URL로 연결 - 황윤영(3)
+- 전체
+    - 지하차도 위치 들고다니는 것. 이동 버튼을 눌렀을 때 아래 하단 새로고침 등등으로 해당 지하차도 정보로 바뀌기! - 황종인(3)
+- 대시보드
+    - CCTV - 황윤영(4)
+    - 지도  - 황윤영 ( 지자체버전, 비회원버전) (4)
+    - 강수량 그래프  - 황종인 (4)
+    - 수위센서 높이 그래프 - 황종인 (4)
+    - 신고접수 내역 - 황윤영(2)
+    - 미세먼지 조회 - 황종인 (2)
+    - 기온 조회 - 황종인(2)
+    - 습도 조회- 황종인(2)
+    - 날씨 조회 - 황윤영 (2)
+    - 차수판 동작 및 기상특보 알림 메시지 - 황윤영(2)
+    
+- MEMBER
+    - 로그인 - 황윤영 (- 로그인 후 아파트 인증코드 꼭 확인하고 없으면 마이페이지로 보낼 것.) (4)
+    - 회원가입 - 황윤영 - (4)
+    - 로그아웃 - 황윤영 - (1)
+    - 아이디 찾기 - 황종인(2)
+    - 비밀번호 찾기 - 황종인(2)
+    - 마이페이지 조회 - 황종인(3)
+    - 마이페이지 수정 - 황종인(4)
+        - 비밀번호 변경
+        - 그냥 수정
+        - 휴대폰 인증
+    - 회원탈퇴 - 황종인(1)
+- 신고접수
+    - 목록 조회 - 황윤영 (2)
+    - 상세 조회 - 황종인(1)
+    - 글쓰기 + 등록 - 황종인(2)
+    - 글 수정 - 황종인(2)
+    - 글 삭제 - 황종인(1)
+- 제어
+    - CCTV 조회 -황윤영(4)
+    - 차수판 제어 - 황윤영(1)
+    - 사이렌 제어- 황윤영(1)
+    - 전광판 제어 - 황윤영(1)
+    - 경고등 제어 - 황윤영(1)
+- 시스템로그
+    - 센서 측정 로그 조회 - 황윤영(4)
+        - 날짜필터
+        - 센서 종류 필터
+    - 기기 상태 로그 조회 - 황윤영 (4)
+        - 날짜 필터
+    - 기기 제어 로그 조회 - 황윤영(4)
+        - 날짜 필터
+    - 알림 로그 조회
+        - SMS/웹 - 황종인 (4)
+            - 날짜필터
+            - 신고접수 / 차수판 동작관련 필터
+        - 시스템 경고 - 황종인(4)
+            - 날짜 필터
+            - 1차 / 2차 필터
+- 알림함 - 황종인(4)
+    - 수신 웹 알림내역 조회 -
+        - 읽음 안읽음 구분 (안읽음은 상단 정렬 및 굵게 표시)
+            - 시스템 알림
+            - 신고접수 알림
+- 관리
+    - 메시지/기준치 설정 - 황윤영(2)
+    - 입주민 조회 - 황윤영(3)
+        - 검색기능(호수/이름)
+    - 입주민 삭제 버튼 클릭 시 권한 삭제 - 황윤영(1)
+
+<br>
+
+## JIRA 스프린트 작성
+
+![백로그1](/uploads/ec0678a4c6821e22f2518006dab727d8/백로그1.PNG)
+
+![백로그2](/uploads/d42b803cf3a3cdb6c5da329af6b6e6e5/백로그2.PNG)
+
+![백로그3](/uploads/1496d7bcda89bb5132a6fd7bff068537/백로그3.PNG)
+
+![백로그4](/uploads/28edc7efa4e8da8e2f75f0ee4b936f70/백로그4.PNG)
+
+![스프린트](/uploads/2c87cdc810de16adf7a5237541200693/스프린트.PNG)
+
+## API 명세서 작성
+
+![API명세서1](/uploads/df7cb766d46b6007d4764656a1fd1da3/API명세서1.PNG)
+
+![API명세서2](/uploads/fb8ad7a74fa2774969f23aad913b2707/API명세서2.PNG)
