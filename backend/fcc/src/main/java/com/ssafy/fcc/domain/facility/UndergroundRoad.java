@@ -3,13 +3,12 @@ package com.ssafy.fcc.domain.facility;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 @Getter @Setter
-public class UndergroundRoad extends Facility {
+public class UndergroundRoad extends Facility{
 
     private String undergroundRoadName;
 
@@ -18,6 +17,5 @@ public class UndergroundRoad extends Facility {
 
     @Column(columnDefinition = "decimal(18,10)")
     private BigDecimal longitude;
-
 
 }

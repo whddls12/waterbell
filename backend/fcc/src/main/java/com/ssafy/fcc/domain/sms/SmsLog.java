@@ -1,5 +1,6 @@
-package com.ssafy.fcc.domain;
+package com.ssafy.fcc.domain.sms;
 
+import com.ssafy.fcc.domain.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,8 +13,8 @@ import java.util.List;
 @Getter @Setter
 public class SmsLog {
 
-    @Id @GeneratedValue
-    @Column(name = "sms_log_id")
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "sms_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,5 +27,5 @@ public class SmsLog {
     private String content;
 
     @OneToMany(mappedBy = "smslog")
-    private List<ReceiveMember> receiveMember = new ArrayList<>();
+    private List<ReceiveSmsMember> receiveMember = new ArrayList<>();
 }

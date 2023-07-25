@@ -1,5 +1,7 @@
-package com.ssafy.fcc.domain;
+package com.ssafy.fcc.domain.alarm;
 
+import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,13 +10,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "DTYPE")
 @Getter @Setter
 public class Alarm {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "alarm_id")
     private Long id;
 
