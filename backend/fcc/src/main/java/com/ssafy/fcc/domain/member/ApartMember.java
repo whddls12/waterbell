@@ -9,7 +9,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class ApartMember extends Member {
+public class ApartMember extends Member{
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")

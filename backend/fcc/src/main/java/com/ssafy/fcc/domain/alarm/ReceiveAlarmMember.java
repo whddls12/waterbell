@@ -26,5 +26,5 @@ public class ReceiveAlarmMember {
 
     private boolean isRead;
 
-    private LocalDateTime datetime;
+    private LocalDateTime readDate;
 }
