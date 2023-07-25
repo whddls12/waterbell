@@ -1,5 +1,7 @@
-package com.ssafy.fcc.domain;
+package com.ssafy.fcc.domain.alarm;
 
+import com.ssafy.fcc.domain.alarm.Alarm;
+import com.ssafy.fcc.domain.member.ApartMember;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter @Setter
 public class ReceiveAlarmMember {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "recive_alarm_id")
     private Long id;
 
@@ -20,7 +22,7 @@ public class ReceiveAlarmMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member member;
+    private ApartMember apartMember;
 
     private boolean isRead;
 
