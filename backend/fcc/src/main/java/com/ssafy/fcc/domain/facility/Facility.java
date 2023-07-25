@@ -20,7 +20,6 @@ public class Facility {
     @JoinColumn(name = "gugun_id")
     private Gugun gugun;
 
-    @Column(columnDefinition = "TINYINT(1)")
     private boolean isApart;
 
     private String firstFloodMessage;

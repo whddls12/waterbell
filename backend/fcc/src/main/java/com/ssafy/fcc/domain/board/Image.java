@@ -1,6 +1,5 @@
 package com.ssafy.fcc.domain.board;
 
-import com.ssafy.fcc.domain.facility.UndergroundRoad;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +20,8 @@ public class Image {
     private ApartBoard apartBoard;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "underground_road_id", nullable = true)
-    private UndergroundRoad undergroundRoad;
+    @JoinColumn(name = "underground_road_board_id", nullable = true)
+    private UndergroundRoadBoard undergroundRoadBoard;
 
     private String imageName;
 

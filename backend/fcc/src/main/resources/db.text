@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS waterbell;
+CREATE DATABASE waterbell;
 use waterbell;
 
 DROP TABLE IF EXISTS `facility`;
@@ -16,6 +18,7 @@ CREATE TABLE `facility` (
 
 
 DROP TABLE IF EXISTS `apart`;
+
 
 CREATE TABLE `apart` (
 	`facility_id`	int	NOT NULL,
@@ -59,7 +62,7 @@ CREATE TABLE `underground_road_board` (
 	`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
 	`create_date`	datetime	NOT NULL,
 	`view_count`	int	NOT NULL,
-	`board_password`	tinyint	NOT NULL	COMMENT '4자리 숫자'
+	`board_password` int	NOT NULL	COMMENT '4자리 숫자'
 );
 
 
@@ -126,7 +129,59 @@ CREATE TABLE `apart_board` (
 	`view_count`	int	NOT NULL
 );
 
+DROP TABLE IF EXISTS `sms_log`;
 
+CREATE TABLE `sms_log` (
+	`sms_id`	bigint	NOT NULL,
+	`member_id`	int	NOT NULL	COMMENT '보낸사람',
+	`send_date`	timestamp	NOT NULL,
+	`content`	VARCHAR(100)	NOT NULL
+);
+
+DROP TABLE IF EXISTS `receive_sms_member`;
+
+CREATE TABLE `receive_sms_member` (
+	`recive_sms_id`	bigint	NOT NULL,
+	`member_id`	int	NOT NULL,
+	`sms_id`	bigint	NOT NULL
+);
+
+DROP TABLE IF EXISTS `receive_alarm_member`;
+
+CREATE TABLE `receive_alarm_member` (
+	`recive_alarm_id`	bigint	NOT NULL,
+	`alarm_id`	bigint NOT NULL,
+	`member_id`	int	NOT NULL,
+	`is_read`	boolean	NOT NULL,
+	`read_date`	datetime	NULL
+);
+
+DROP TABLE IF EXISTS `alarm`;
+
+CREATE TABLE `alarm` (
+	`alarm_id`	bigint NOT NULL,
+	`member_id`	int	NOT NULL,
+	`facility_id`	int	NOT NULL,
+	`reg_date`	timestamp	NULL,
+	`content`	varchar(50)	NULL,
+	`is_apart`	boolean	NOT NULL,
+	`is_flood`	boolean	NOT NULL	COMMENT '침수 : true, 신고접수 : false'
+);
+
+DROP TABLE IF EXISTS `flood_alarm_log`;
+
+CREATE TABLE `flood_alarm_log` (
+	`alarm_id`	bigint	NOT NULL,
+	`step`	int	NOT NULL	COMMENT '침수관련 알림일 경우 침수 단계 입력1 : 1단계2 : 2단계, 차수판 올림 내림'
+);
+
+DROP TABLE IF EXISTS `board_alarm_log`;
+
+CREATE TABLE `board_alarm_log` (
+	`alarm_id`	bigint	NOT NULL,
+	`apart_board_id`	int	NULL,
+	`underground_board_id`	int	NULL
+);
 
 ALTER TABLE `underground_road_board` ADD CONSTRAINT `PK_UNDERGROUND_ROAD_BOARD` PRIMARY KEY (
 	`board_id`
@@ -191,6 +246,33 @@ ALTER TABLE `apart_board` ADD CONSTRAINT `PK_APART_BOARD` PRIMARY KEY (
 );
 ALTER TABLE `apart_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
 
+ALTER TABLE `sms_log` ADD CONSTRAINT `PK_SMS_LOG` PRIMARY KEY (
+	`sms_id`
+);
+ALTER TABLE `sms_log` MODIFY COLUMN `sms_id` bigint  AUTO_INCREMENT;
+
+ALTER TABLE `receive_sms_member` ADD CONSTRAINT `PK_RECEIVE_SMS_MEMBER` PRIMARY KEY (
+	`recive_sms_id`
+);
+ALTER TABLE `receive_sms_member` MODIFY COLUMN `recive_sms_id` bigint AUTO_INCREMENT;
+
+ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `PK_RECEIVE_ALARM_MEMBER` PRIMARY KEY (
+	`recive_alarm_id`
+);
+ALTER TABLE `receive_alarm_member` MODIFY COLUMN `recive_alarm_id` bigint AUTO_INCREMENT;
+
+ALTER TABLE `alarm` ADD CONSTRAINT `PK_ALARM` PRIMARY KEY (
+	`alarm_id`
+);
+ALTER TABLE `alarm` MODIFY COLUMN `alarm_id` bigint AUTO_INCREMENT;
+
+ALTER TABLE `flood_alarm_log` ADD CONSTRAINT `PK_FLOOD_ALARM_LOG` PRIMARY KEY (
+	`alarm_id`
+);
+
+ALTER TABLE `board_alarm_log` ADD CONSTRAINT `PK_BOARD_ALARM_LOG` PRIMARY KEY (
+	`alarm_id`
+);
 
 ALTER TABLE `image` ADD CONSTRAINT `FK_underground_road_board_TO_image` FOREIGN KEY (
 	`underground_road_board_id`
@@ -199,6 +281,22 @@ REFERENCES `underground_road_board` (
 	`board_id`
 );
 
+
+
+
+ALTER TABLE `apart_board` ADD CONSTRAINT `FK_apart_TO_apart_board_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `apart` (
+	`facility_id`
+);
+
+ALTER TABLE `apart_board` ADD CONSTRAINT `FK_apart_member_TO_apart_board_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `apart_member` (
+	`member_id`
+);
 
 ALTER TABLE `image` ADD CONSTRAINT `FK_apart_board_TO_image_1` FOREIGN KEY (
 	`apart_board_id`
@@ -263,6 +361,8 @@ REFERENCES `facility` (
 	`facility_id`
 );
 
+###################################################
+
 ALTER TABLE `underground_road` ADD CONSTRAINT `FK_facility_TO_underground_road_1` FOREIGN KEY (
 	`facility_id`
 )
@@ -278,3 +378,75 @@ REFERENCES `gugun` (
 );
 
 
+ALTER TABLE `underground_road_board` ADD CONSTRAINT `FK_underground_road_TO_underground_road_board_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `underground_road` (
+	`facility_id`
+);
+
+
+
+###########################################################################
+ALTER TABLE `flood_alarm_log` ADD CONSTRAINT `FK_alarm_TO_flood_alarm_log_1` FOREIGN KEY (
+	`alarm_id`
+)
+REFERENCES `alarm` (
+	`alarm_id`
+);
+
+ALTER TABLE `sms_log` ADD CONSTRAINT `FK_member_TO_sms_log_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `member` (
+	`member_id`
+);
+
+ALTER TABLE `board_alarm_log` ADD CONSTRAINT `FK_alarm_TO_board_alarm_log_1` FOREIGN KEY (
+	`alarm_id`
+)
+REFERENCES `alarm` (
+	`alarm_id`
+);
+
+ALTER TABLE `receive_sms_member` ADD CONSTRAINT `FK_member_TO_receive_sms_member_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `member` (
+	`member_id`
+);
+
+ALTER TABLE `receive_sms_member` ADD CONSTRAINT `FK_sms_log_TO_receive_sms_member_1` FOREIGN KEY (
+	`sms_id`
+)
+REFERENCES `sms_log` (
+	`sms_id`
+);
+
+ALTER TABLE `alarm` ADD CONSTRAINT `FK_member_TO_alarm_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `member` (
+	`member_id`
+);
+
+ALTER TABLE `alarm` ADD CONSTRAINT `FK_facility_TO_alarm_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `facility` (
+	`facility_id`
+);
+
+ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_alarm_TO_receive_alarm_member_1` FOREIGN KEY (
+	`alarm_id`
+)
+REFERENCES `alarm` (
+	`alarm_id`
+);
+
+ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_apart_member_TO_receive_alarm_member_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `apart_member` (
+	`member_id`
+);
