@@ -1,0 +1,280 @@
+use waterbell;
+
+DROP TABLE IF EXISTS `facility`;
+
+CREATE TABLE `facility` (
+	`facility_id`	int	NOT NULL,
+	`gugun_id`	int	NOT NULL,
+	`is_apart`	boolean	NOT NULL,
+	`first_flood_message`	varchar(50)	NOT NULL	COMMENT '1차 침수 알림/LED 메시지',
+	`second_flood_message`	varchar(50)	NOT NULL	COMMENT '2차 침수 알림/LED 메시지',
+	`first_alarm_value`	int	NOT NULL	COMMENT '1차 수위 기준치',
+	`second_alarm_value`	int	NOT NULL	COMMENT '2차 수위 기준치',
+	`hub_ip`	varchar(30)	NOT NULL	COMMENT '연결된 허브 주소',
+	`status`	varchar(10)	NOT NULL	COMMENT '정상(Default)/1차/ 2차,/작동 상태'
+);
+
+
+DROP TABLE IF EXISTS `apart`;
+
+CREATE TABLE `apart` (
+	`facility_id`	int	NOT NULL,
+	`apart_name`	varchar(20)	NOT NULL,
+	`apart_code`	varchar(10)	NOT NULL
+);
+
+
+DROP TABLE IF EXISTS `underground_road`;
+
+CREATE TABLE `underground_road` (
+	`facility_id`	int	NOT NULL,
+	`underground_road_name`	varchar(20)	NOT NULL,
+	`latitude`	decimal(18,10)	NOT NULL,
+	`longitude`	decimal(18,10)	NOT NULL
+);
+
+DROP TABLE IF EXISTS `member`;
+
+CREATE TABLE `member` (
+	`member_id`	int	NOT NULL ,
+	`login_id`	VARCHAR(15)	NOT NULL,
+	`password`	VARCHAR(64)	NOT NULL,
+	`refresh_token`	VARCHAR(255)	NULL,
+	`created_at`	DATETIME	NOT NULL,
+	`state`	BOOLEAN	NOT NULL	COMMENT '활성 : true,  비활성: false',
+	`role`	VARCHAR(15)	NOT NULL	COMMENT 'apart_member / apart_manager/ public_manager / system',
+	`expired_at`	DATETIME	NULL,
+	`phone`	VARCHAR(11)	NOT NULL
+);
+
+DROP TABLE IF EXISTS `underground_road_board`;
+
+CREATE TABLE `underground_road_board` (
+	`board_id`	int	NOT NULL ,
+	`facility_id`	int	NOT NULL,
+	`title`	varchar(50)	NOT NULL,
+	`content`	text	NOT NULL,
+	`name`	varchar(15)	NOT NULL,
+	`phone`	varchar(15)	NOT NULL,
+	`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
+	`create_date`	datetime	NOT NULL,
+	`view_count`	int	NOT NULL,
+	`board_password`	tinyint	NOT NULL	COMMENT '4자리 숫자'
+);
+
+
+DROP TABLE IF EXISTS `apart_member`;
+
+CREATE TABLE `apart_member` (
+	`member_id`	int	NOT NULL,
+	`facility_id`	int	NOT NULL,
+	`is_system`	boolean	NOT NULL	COMMENT 'SYSTEM -true/ SOCIAL-false',
+	`platform_type`	VARCHAR(6)	NULL	COMMENT 'KAKAO, NABER, GOOGLE',
+	`name`	VARCHAR(10)	NOT NULL,
+	`address_number`	int	NULL
+);
+DROP TABLE IF EXISTS `image`;
+
+CREATE TABLE `image` (
+	`image_id`	int	NOT NULL,
+	`apart_board_id`	int	NULL,
+	`underground_road_board_id`	int	NULL,
+	`image_name`	varchar(50)	NOT NULL,
+	`image_path`	varchar(225)	NOT NULL
+);
+
+DROP TABLE IF EXISTS `public_manager`;
+
+CREATE TABLE `public_manager` (
+	`member_id`	int	NOT NULL,
+	`sido_id`	int	NOT NULL
+);
+
+DROP TABLE IF EXISTS `apart_manager`;
+
+CREATE TABLE `apart_manager` (
+	`member_id`	int	NOT NULL,
+	`facility_id`	int	NOT NULL
+);
+
+
+DROP TABLE IF EXISTS `sido`;
+
+CREATE TABLE `sido` (
+	`sido_id`	int	NOT NULL,
+	`sido_name`	varchar(10)	NOT NULL
+);
+
+DROP TABLE IF EXISTS `gugun`;
+
+CREATE TABLE `gugun` (
+	`gugun_id`	int	NOT NULL ,
+	`sido_id`	int	NOT NULL,
+	`gugun_name`	varchar(10)	NOT NULL
+);
+
+DROP TABLE IF EXISTS `apart_board`;
+
+CREATE TABLE `apart_board` (
+	`board_id`	int	NOT NULL ,
+	`facility_id`	int	NOT NULL,
+	`member_id`	int	NOT NULL,
+	`title`	varchar(50)	NOT NULL,
+	`content`	text	NOT NULL,
+	`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
+	`create_date`	datetime	NOT NULL,
+	`view_count`	int	NOT NULL
+);
+
+
+
+ALTER TABLE `underground_road_board` ADD CONSTRAINT `PK_UNDERGROUND_ROAD_BOARD` PRIMARY KEY (
+	`board_id`
+);
+
+ALTER TABLE `underground_road_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
+
+
+ALTER TABLE `image` ADD CONSTRAINT `PK_IMAGE` PRIMARY KEY (
+	`image_id`
+);
+
+ALTER TABLE `image` MODIFY COLUMN `image_id` INT AUTO_INCREMENT;
+
+
+ALTER TABLE `member` ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (
+	`member_id`
+);
+ALTER TABLE `member` MODIFY COLUMN `member_id` INT AUTO_INCREMENT;
+
+ALTER TABLE `apart_member` ADD CONSTRAINT `PK_APART_MEMBER` PRIMARY KEY (
+	`member_id`
+);
+
+ALTER TABLE `public_manager` ADD CONSTRAINT `PK_PUBLIC_MANAGER` PRIMARY KEY (
+	`member_id`
+);
+
+ALTER TABLE `apart_manager` ADD CONSTRAINT `PK_APART_MANAGER` PRIMARY KEY (
+	`member_id`
+);
+
+ALTER TABLE `sido` ADD CONSTRAINT `PK_SIDO` PRIMARY KEY (
+	`sido_id`
+);
+
+ALTER TABLE `sido` MODIFY COLUMN `sido_id` INT AUTO_INCREMENT;
+
+
+ALTER TABLE `gugun` ADD CONSTRAINT `PK_GUGUN` PRIMARY KEY (
+	`gugun_id`
+);
+ALTER TABLE `gugun` MODIFY COLUMN `gugun_id` INT AUTO_INCREMENT;
+
+
+ALTER TABLE `apart` ADD CONSTRAINT `PK_APART` PRIMARY KEY (
+	`facility_id`
+);
+
+ALTER TABLE `underground_road` ADD CONSTRAINT `PK_UNDERGROUND_ROAD` PRIMARY KEY (
+	`facility_id`
+);
+
+ALTER TABLE `facility` ADD CONSTRAINT `PK_FACILITY` PRIMARY KEY (
+	`facility_id`
+);
+ALTER TABLE `facility` MODIFY COLUMN `facility_id` INT AUTO_INCREMENT;
+
+
+ALTER TABLE `apart_board` ADD CONSTRAINT `PK_APART_BOARD` PRIMARY KEY (
+	`board_id`
+);
+ALTER TABLE `apart_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
+
+
+ALTER TABLE `image` ADD CONSTRAINT `FK_underground_road_board_TO_image` FOREIGN KEY (
+	`underground_road_board_id`
+)
+REFERENCES `underground_road_board` (
+	`board_id`
+);
+
+
+ALTER TABLE `image` ADD CONSTRAINT `FK_apart_board_TO_image_1` FOREIGN KEY (
+	`apart_board_id`
+)
+REFERENCES `apart_board` (
+	`board_id`
+);
+
+ALTER TABLE `apart_member` ADD CONSTRAINT `FK_member_TO_apart_member_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `member` (
+	`member_id`
+);
+
+ALTER TABLE `apart_member` ADD CONSTRAINT `FK_apart_TO_apart_member_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `apart` (
+	`facility_id`
+);
+
+ALTER TABLE `public_manager` ADD CONSTRAINT `FK_member_TO_public_manager_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `member` (
+	`member_id`
+);
+
+ALTER TABLE `public_manager` ADD CONSTRAINT `FK_sido_TO_public_manager_1` FOREIGN KEY (
+	`sido_id`
+)
+REFERENCES `sido` (
+	`sido_id`
+);
+
+ALTER TABLE `apart_manager` ADD CONSTRAINT `FK_member_TO_apart_manager_1` FOREIGN KEY (
+	`member_id`
+)
+REFERENCES `member` (
+	`member_id`
+);
+
+ALTER TABLE `apart_manager` ADD CONSTRAINT `FK_apart_TO_apart_manager_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `apart` (
+	`facility_id`
+);
+
+ALTER TABLE `gugun` ADD CONSTRAINT `FK_sido_TO_gugun_1` FOREIGN KEY (
+	`sido_id`
+)
+REFERENCES `sido` (
+	`sido_id`
+);
+
+ALTER TABLE `apart` ADD CONSTRAINT `FK_facility_TO_apart_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `facility` (
+	`facility_id`
+);
+
+ALTER TABLE `underground_road` ADD CONSTRAINT `FK_facility_TO_underground_road_1` FOREIGN KEY (
+	`facility_id`
+)
+REFERENCES `facility` (
+	`facility_id`
+);
+
+ALTER TABLE `facility` ADD CONSTRAINT `FK_gugun_TO_facility_1` FOREIGN KEY (
+	`gugun_id`
+)
+REFERENCES `gugun` (
+	`gugun_id`
+);
+
+
