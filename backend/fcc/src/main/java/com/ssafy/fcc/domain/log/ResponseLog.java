@@ -14,7 +14,7 @@ public class ResponseLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private BigInteger responseLogId;
+    private Long responseLogId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")

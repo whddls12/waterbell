@@ -16,7 +16,7 @@ public class ControlLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "control_id")
-    private BigInteger controlId;
+    private Long controlId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")
