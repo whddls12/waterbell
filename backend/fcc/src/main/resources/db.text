@@ -2,6 +2,38 @@ DROP DATABASE IF EXISTS waterbell;
 CREATE DATABASE waterbell;
 use waterbell;
 
+
+DROP TABLE IF EXISTS `sensor_log`;
+CREATE TABLE `sensor_log` (
+	`sensor_log_id`	bigint	NOT NULL,
+	`facility_id`	int	NOT NULL,
+	`category`	varchar(5)	NOT NULL	COMMENT '수위센서/온도/습도/미세먼지',
+	`sensor_time`	datetime	NOT NULL	COMMENT '센서의 데이터를 응답 받은 시간',
+	`sensor_data`	int	NOT NULL	COMMENT '응답 받은 데이터'
+);
+
+DROP TABLE IF EXISTS `control_log`;
+CREATE TABLE `control_log` (
+	`control_id`	bigint	NOT NULL,
+	`facility_id`	int	NOT NULL,
+	`category`	varchar(5)	NOT NULL	COMMENT '차수판 / 전광판',
+	`control_time`	datetime	NOT NULL	COMMENT '관리자가 차수판/차량통제 제어를 명령한 시간',
+	`water_height`	int	NOT NULL	COMMENT '차수판/차량통제 제어 당시 측정된 수위',
+	`command`	varchar(5)	NOT NULL	COMMENT '명령한 작동/ 해제 여부'
+);
+
+
+DROP TABLE IF EXISTS `response_log`;
+CREATE TABLE `response_log` (
+	`response_log_id`	bigint	NOT NULL,
+	`facility_id`	int	NOT NULL,
+	`category`	varchar(5)	NOT NULL	COMMENT '차수판 / 전광판',
+	`response_time`	datetime	NOT NULL	COMMENT '동작 상태 응답 시간',
+	`status`	boolean	NOT NULL	COMMENT '현재 기기의 상태 (T:동작 F:해제)'
+);
+
+
+
 DROP TABLE IF EXISTS `facility`;
 
 CREATE TABLE `facility` (
@@ -182,6 +214,7 @@ CREATE TABLE `board_alarm_log` (
 	`apart_board_id`	int	NULL,
 	`underground_board_id`	int	NULL
 );
+
 
 ALTER TABLE `underground_road_board` ADD CONSTRAINT `PK_UNDERGROUND_ROAD_BOARD` PRIMARY KEY (
 	`board_id`
@@ -450,3 +483,42 @@ ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_apart_member_TO_receive_al
 REFERENCES `apart_member` (
 	`member_id`
 );
+
+ALTER TABLE `sensor_log` ADD CONSTRAINT `PK_SENSOR_LOG` PRIMARY KEY (
+	`sensor_log_id`
+);
+
+ALTER TABLE `response_log` ADD CONSTRAINT `PK_RESPONSE_LOG` PRIMARY KEY (
+	`response_log_id`
+);
+
+ALTER TABLE `control_log` ADD CONSTRAINT `PK_CONTROL_LOG` PRIMARY KEY (
+	`control_id`
+);
+ALTER TABLE `sensor_log` ADD CONSTRAINT `FK_facility_TO_sensor_log_1` FOREIGN KEY (
+    `facility_id`
+)
+REFERENCES `facility` (
+    `facility_id`
+);
+
+
+ALTER TABLE `response_log` ADD CONSTRAINT `FK_facility_TO_response_log_1` FOREIGN KEY (
+    `facility_id`
+)
+REFERENCES `facility` (
+    `facility_id`
+);
+
+
+
+ALTER TABLE `control_log` ADD CONSTRAINT `FK_facility_TO_control_log_1` FOREIGN KEY (
+    `facility_id`
+)
+REFERENCES `facility` (
+    `facility_id`
+);
+
+ALTER TABLE `sensor_log` MODIFY COLUMN `sensor_log_id` bigint AUTO_INCREMENT;
+ALTER TABLE `control_log` MODIFY COLUMN `control_id` bigint AUTO_INCREMENT;
+ALTER TABLE `response_log` MODIFY COLUMN `response_log_id` bigint AUTO_INCREMENT;
