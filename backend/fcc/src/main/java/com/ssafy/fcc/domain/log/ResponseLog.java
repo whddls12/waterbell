@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-public class responseLog {
+public class ResponseLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
