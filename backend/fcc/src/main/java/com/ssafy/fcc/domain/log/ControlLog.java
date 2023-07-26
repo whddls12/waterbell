@@ -5,27 +5,31 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-public class sensorLog {
+public class ControlLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "sensor_log_id")
-    private Integer id;
+    @Column(name = "control_id")
+    private BigInteger id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")
     private Facility facility;
 
+    @Enumerated(EnumType.STRING)
     private String category;
 
-    @Column(name = "sensor_time")
-    private LocalDateTime sensorTime;
+    @Column(name = "control_id")
+    private LocalDateTime controlTime;
 
-    @Column(name = "sensor_data")
-    private Integer sensorData;
+    @Column(name = "water_height")
+    private Integer waterHeight;
+
+    private String command;
 }
