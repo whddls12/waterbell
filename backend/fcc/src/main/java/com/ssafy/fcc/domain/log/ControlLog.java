@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class ControlLog {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "control_id")
