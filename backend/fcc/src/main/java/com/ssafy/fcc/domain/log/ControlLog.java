@@ -24,7 +24,7 @@ public class ControlLog {
 
 
     @Enumerated(EnumType.STRING)
-    private Control category;
+    private ControlType category;
 
     @Column(name = "control_time")
     private LocalDateTime controlTime;

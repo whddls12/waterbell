@@ -1,5 +1,5 @@
 package com.ssafy.fcc.domain.log;
 
-public enum Control {
+public enum ControlType {
     WATERPLATE, BILLBOARD
 }
