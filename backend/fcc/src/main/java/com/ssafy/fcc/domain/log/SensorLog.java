@@ -1,37 +1,31 @@
 package com.ssafy.fcc.domain.log;
 
-
 import com.ssafy.fcc.domain.facility.Facility;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
-public class ControlLog {
+public class SensorLog {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "control_id")
-    private BigInteger controlId;
+    @Column(name = "sensor_log_id")
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")
     private Facility facility;
 
+    private String category;
 
-    @Enumerated(EnumType.STRING)
-    private Control category;
+    @Column(name = "sensor_time")
+    private LocalDateTime sensorTime;
 
-    @Column(name = "control_time")
-    private LocalDateTime controlTime;
-
-    @Column(name = "water_height")
-    private Integer waterHeight;
-
-    private String command;
-
+    @Column(name = "sensor_data")
+    private Integer sensorData;
 }
