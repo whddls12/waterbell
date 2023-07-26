@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/backend.iml" filepath="$PROJECT_DIR$/.idea/backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fcc.iml" filepath="$PROJECT_DIR$/.idea/modules/fcc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fcc.main.iml" filepath="$PROJECT_DIR$/.idea/modules/fcc.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/fcc.test.iml" filepath="$PROJECT_DIR$/.idea/modules/fcc.test.iml" />
     </modules>
   </component>
 </project>

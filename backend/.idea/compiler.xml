@@ -11,5 +11,10 @@
         <module name="fcc.main" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="fcc" target="11" />
+      <module name="fcc.main" target="11" />
+      <module name="fcc.test" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>
