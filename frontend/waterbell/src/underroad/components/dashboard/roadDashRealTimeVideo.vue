@@ -1,13 +1,17 @@
 <template lang="">
     <div>
-        
+
     </div>
 </template>
 <script>
-export default {
-    
-}
+import { defineComponent } from "vue";
+
+
+
+export default defineComponent({
+    name: 'roadDashCctvVue'
+})
 </script>
 <style lang="">
-    
+
 </style>
