@@ -2,6 +2,7 @@ DROP DATABASE IF EXISTS waterbell;
 CREATE DATABASE waterbell;
 use waterbell;
 
+
 DROP TABLE IF EXISTS `facility`;
 
 CREATE TABLE `facility` (
