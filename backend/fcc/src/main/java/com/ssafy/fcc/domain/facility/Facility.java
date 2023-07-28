@@ -35,5 +35,4 @@ public class Facility {
     @Enumerated(EnumType.STRING)
     private WaterStatus status;
 
-
 }
