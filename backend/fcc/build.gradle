@@ -46,6 +46,12 @@ dependencies {
 
 	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.8.0")
 
+	//mqtt
+	implementation 'org.springframework.boot:spring-boot-starter-integration'
+	implementation 'org.springframework.integration:spring-integration-mqtt'
+	implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
+
+
 }
 
 tasks.named('test') {
