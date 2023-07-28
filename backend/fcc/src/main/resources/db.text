@@ -218,6 +218,7 @@ ALTER TABLE `sido` ADD CONSTRAINT `PK_SIDO` PRIMARY KEY (
 	`sido_id`
 );
 
+ALTER TABLE `sido` MODIFY COLUMN `sido_id` INT AUTO_INCREMENT;
 
 
 ALTER TABLE `gugun` ADD CONSTRAINT `PK_GUGUN` PRIMARY KEY (
@@ -449,6 +450,45 @@ ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_apart_member_TO_receive_al
 REFERENCES `apart_member` (
 	`member_id`
 );
+
+ALTER TABLE `sensor_log` ADD CONSTRAINT `PK_SENSOR_LOG` PRIMARY KEY (
+	`sensor_log_id`
+);
+
+ALTER TABLE `response_log` ADD CONSTRAINT `PK_RESPONSE_LOG` PRIMARY KEY (
+	`response_log_id`
+);
+
+ALTER TABLE `control_log` ADD CONSTRAINT `PK_CONTROL_LOG` PRIMARY KEY (
+	`control_id`
+);
+ALTER TABLE `sensor_log` ADD CONSTRAINT `FK_facility_TO_sensor_log_1` FOREIGN KEY (
+    `facility_id`
+)
+REFERENCES `facility` (
+    `facility_id`
+);
+
+
+ALTER TABLE `response_log` ADD CONSTRAINT `FK_facility_TO_response_log_1` FOREIGN KEY (
+    `facility_id`
+)
+REFERENCES `facility` (
+    `facility_id`
+);
+
+
+
+ALTER TABLE `control_log` ADD CONSTRAINT `FK_facility_TO_control_log_1` FOREIGN KEY (
+    `facility_id`
+)
+REFERENCES `facility` (
+    `facility_id`
+);
+
+ALTER TABLE `sensor_log` MODIFY COLUMN `sensor_log_id` bigint AUTO_INCREMENT;
+ALTER TABLE `control_log` MODIFY COLUMN `control_id` bigint AUTO_INCREMENT;
+ALTER TABLE `response_log` MODIFY COLUMN `response_log_id` bigint AUTO_INCREMENT;
 
 # 아파트 주소 컬럼 추가
 alter table apart
