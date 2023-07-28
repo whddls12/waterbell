@@ -25,7 +25,7 @@ export default defineComponent({
     const loadScript = () => {
       const script = document.createElement('script')
       script.type = 'text/javascript'
-      script.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=374cff0d8903c1ed2bf1e9533bb0feab&libraries=clusterer,drawing,services'
+      script.src = '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=[key]&libraries=clusterer,drawing,services'
       script.addEventListener('load', () => {
         (window as any).kakao.maps.load(initMap)
       })
