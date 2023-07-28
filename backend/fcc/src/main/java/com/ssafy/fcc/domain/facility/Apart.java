@@ -15,6 +15,8 @@ public class Apart extends Facility{
 
     private String apartCode;
 
+    private String address;
+
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "apart")
     private ApartManager apartManager;
 }
