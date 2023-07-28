@@ -1,15 +1,17 @@
-<template lang="">
-    <div>
-
-    </div>
+<template>
+    <div>신고접수 글쓰기</div>
 </template>
+
+
 <script>
 import { defineComponent } from "vue";
 
 export default defineComponent({
-    name: 'RoadManage'
+    name: 'roadReportCreateVue',
+
 })
 </script>
-<style lang="">
+
+<style>
 
 </style>
