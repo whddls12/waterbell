@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+stages {
+    stage('Springboot build') {
+        steps {
+            dir('backend/fcc'){
+                sh '''
+                echo 'springboot build'
+                chmod +x gradlew
+                ./gradlew clean build
+                '''
+            }
+        }
+    }
+    stage('Dockerimage build') {
+        steps {
+            dir('backend/fcc'){
+                sh '''
+                echo 'Dockerimage build'
+                docker build -t docker-springboot:0.0.1 .
+                '''
+            }
+        }
+    }
+    stage('Deploy') {
+        steps {
+            dir('backend/fcc'){
+                sh '''
+                echo 'Deploy'
+                docker stop WaterBell
+                docker run -d -p 8080:8080 --name WaterBell docker-springboot:0.0.1
+                '''
+            }
+        }
+    }
+
+
+}
+}
