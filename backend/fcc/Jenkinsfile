@@ -28,6 +28,7 @@ stages {
             dir('backend/fcc'){
                 sh '''
                 echo 'Deploy'
+                docker stop WaterBell
                 docker run -d -p 8080:8080 --name WaterBell docker-springboot:0.0.1
                 '''
             }
