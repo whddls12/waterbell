@@ -57,13 +57,13 @@ allow_anonymous true
 ```
 0.0.0.0 -> 모든 ip 접속 허용
 
-재실행
-
-```jsx
+4. restart mosquitto
+   
+```
 sudo systemctl restart mosquitto
 ```
 
-3. mosquitto 실행
+1. mosquitto 실행
 
 ```
 sudo /etc/init.d/mosquitto start
@@ -98,12 +98,20 @@ https://mosquitto.org/download/
 
 2. Set up mosquitto.conf
 
+C:\Program Files\mosquitto.conf 경로의 파일에서 아래 두줄 추가
 
+```
+listener 1883 0.0.0.0
+allow_anonymous true
+```
+
+listener -> 허용할 ip주소, port    
+allow_anonymous -> client id 유무에 다른 허용 여부
 
 3. Start Mosquitto
 ```
 cd "C:\Program Files\mosquitto"
-mosquitto.exe -c mosquitto.conf -v
+mosquitto -v -c mosquitto.conf
 ```
 
 4. subscribe 등록
