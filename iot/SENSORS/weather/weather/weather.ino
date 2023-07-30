@@ -2,14 +2,28 @@
 #include <PubSubClient.h>
 #include <WiFiEsp.h>
 #include <SoftwareSerial.h>
+#include <DHT.h>
+
+#define DHTPIN 6
+float hum; //Stores humidity value
+float temp; //Stores temperature value
+
+
+unsigned long lastMsg = 0;
+#define MSG_BUFFER_SIZE  (10)
+char msg[MSG_BUFFER_SIZE];
+
+
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
 
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "SK_WiFi5861";             // your network SSID (name)
-char pass[] = "1412009095";        // your network password
+char ssid[] = "";             // your network SSID (name)
+char pass[] = "";        // your network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "192.168.25.36";    // IP address of the MQTT server
+char server[] = "";    // IP address of the MQTT server
 char topic[] = "test";            // Default topic string
 char clientId[] = "Arduino weather";      // Cliwent id: Must be unique on the broker
 
@@ -18,7 +32,7 @@ PubSubClient mqttClient(wifi);    // Initialize the MQTT client
 
 void setup() {
   Serial.begin(115200);
-
+  dht.begin();
   // Set baud rate of ESP8266 to 9600 regardless of original setting
   set_esp8266_baud_rate(baudRate);
 
@@ -55,26 +69,74 @@ void setup() {
 }
 
 void loop() {
-  char message[256]="connected!";
-  int i;
+
+  if (!mqttClient.connected()) {
+    reconnect();
+  }
+  mqttClient.loop();
+
+  unsigned long now = millis();
+
+  if(now-lastMsg>2000){
+    lastMsg=now;
+
+    hum = dht.readHumidity();
+    temp = dht.readTemperature();
+    Serial.print("humidity : ");
+    Serial.print(hum);
+    Serial.print("Temp:");
+    Serial.print(temp);
+    snprintf (msg, MSG_BUFFER_SIZE, "%d", (int)temp);
+    mqttClient.publish("test", msg);
+    snprintf (msg, MSG_BUFFER_SIZE, "%d", (int)hum);
+    mqttClient.publish("test", msg);
+  }
+
+
+
+  // char message[256]="connected!";
+  // int i;
 
   // for (i=0; i<256; i++) {
   //   message[i] = 0;
   // }
 
-  if (Serial.available()) {
-    Serial.print("publish!!");
-    Serial.readBytesUntil("\r",message, 255);
-    mqttClient.publish(topic, message);
-  }
+  // if (Serial.available()) {
+  //   Serial.print("publish!!");
+  //   Serial.readBytesUntil("\r",message, 255);
+  //   mqttClient.publish(topic, message);
+  // }
 
+
+  // hum = dht.readHumidity();
+  // temp = dht.readTemperature();
+
+  // char msg[256] ="";
+
+  char h[20] ="";
+  // char t[10] = "";
+
+  // sprintf(h, "%f", hum);
+  // sprintf(t, "%f", temp);
+
+  // strcat(h, ":");
+  // strcat(h, t);
+
+
+  // Serial.print("Humidity: ");
+  // Serial.print(hum);
+  // Serial.print(" %, Temp: ");
+  // Serial.print(temp);
+  // Serial.println(" Celsius");
+
+  // mqttClient.publish(topic, h);
+
+  // delay(1000); //Delay 2 sec.
   // mqttClient.publish(topic, "sussess!!!");
 
-  if (!mqttClient.connected()) {
-    reconnect();
-  }
 
-  mqttClient.loop();
+
+
 
 }
 

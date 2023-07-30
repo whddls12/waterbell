@@ -4,21 +4,22 @@
 - Arduino Uno
 - ESP 8266 (WiFi Module)
 - DHT11 (Temperature and Humidity Sensor)
-- Resistor (1k$\Omega$)
+- Resistor (1k$\Omega$) x 3
 
 
 ### Pin Map
 
-| 센서 | 센서 pin | Arduino 핀| Sensor Pin |
-|:--:|:--:|:--:|:--:|
-|ESP8266|TX|||
-|ESP8266|RX|||
-|ESP8266|EN|3.3V||
-|ESP8266|Data1|Digital 2||
-|ESP8266|Data2|Digital 3||
-|VCC_ESP8266||3.3V|
-|VCC_DHT11||5V|
-|GND||GND|
+| 센서 | 센서 pin | Arduino 핀|
+|:--:|:--:|:--:|
+|ESP8266|TX||
+|ESP8266|RX||
+|ESP8266|EN|3.3V|
+|ESP8266|Data1|Digital 2|
+|ESP8266|Data2|Digital 3|
+|DHT11|Data|Analog 1|
+|VCC_ESP8266|VCC|3.3V|
+|VCC_DHT11|VCC|5V|
+|GND|GND|GND|
 
 
 
