@@ -1,10 +1,9 @@
-# weather
+# waterHeight
 
 ### HW List
 - Arduino Uno
 - ESP 8266 (WiFi Module)
-- DHT11 (Temperature and Humidity Sensor)
-- Resistor (1k$\Omega$) x 3
+- IRDistanceSensor
 
 
 ### Pin Map
@@ -16,9 +15,8 @@
 |ESP8266|EN|3.3V|
 |ESP8266|Data1|Digital 2|
 |ESP8266|Data2|Digital 3|
-|DHT11|Data|Digital 6|
-|VCC_ESP8266|VCC|3.3V|
-|VCC_DHT11|VCC|5V|
+|IRDistanceSen|Data|Analog 0|
+|VCC_IRDistance|VCC|5V|
 |GND|GND|GND|
 
 
@@ -32,31 +30,23 @@
 
 
 ### How to set library
-1. DHT 11
-- 목적 : 온습도 센서
-
-2. Softwareserial
+1. Softwareserial
 - 목적 : Degital Pin을 TX/RX로 사용
 
-
-3. PubSubClient
+2. PubSubClient
 - 목적 : MQTT 통신
 
-4. WiFiEsp
+3. WiFiEsp
 - 목적 : SoftwareSerial를 사용하여 Internet과의 통신
 - 다운로드 : https://github.com/bportaluri/WiFiEsp
   
 
 ### Sensor Spec
-1. DHT 11
+1. IR Distance Sensor
    
 | 센서 | 값 |
 |:--:|:--:|
-|습도 측정 범위 | 20-90% RH|
-|습도 오차 범위 | ±5% RH|
-|측정 온도 범위 | 0-50 °C|
-|온도 오차 범위 | ±2% °C|
-|동작 전압 | 5V|
-|소비 전력 | 저전력|
 
-2. 
+2. ESP8266 (WiFi module)
+
+
