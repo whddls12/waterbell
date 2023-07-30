@@ -3,6 +3,7 @@ package com.ssafy.fcc.repository;
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -25,4 +26,5 @@ public class FacilityRepository {
     public Facility findById(Integer id) {
         return em.find(Facility.class, id);
     }
+
 }
