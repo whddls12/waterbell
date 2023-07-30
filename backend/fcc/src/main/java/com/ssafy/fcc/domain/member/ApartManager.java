@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Getter @Setter
 public class ApartManager extends Member {
 
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")
     private Apart apart;

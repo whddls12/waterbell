@@ -53,7 +53,7 @@ public class VerificationController {
                 status = HttpStatus.BAD_REQUEST;
             }
             else {
-                resultMap.put("message", "인증번호 만료기간이 지났습니다.");
+                resultMap.put("message", "인증번호 인증시간이 초과되었습니다.");
                 status = HttpStatus.BAD_REQUEST;
             }
         } catch (Exception e) {

@@ -202,7 +202,7 @@ DROP TABLE IF EXISTS `flood_alarm_log`;
 
 CREATE TABLE `flood_alarm_log` (
 	`alarm_id`	bigint	NOT NULL,
-	`step`	int	NOT NULL	COMMENT '침수관련 알림일 경우 침수 단계 입력1 : 1단계2 : 2단계, 차수판 올림 내림'
+	`step`	varchar(15)	NOT NULL	COMMENT '1단계, 2단계, 차수판 동작, 차수판 해제'
 );
 
 DROP TABLE IF EXISTS `board_alarm_log`;
@@ -567,3 +567,39 @@ INSERT INTO `gugun`(gugun_name, sido_id) VALUES
 
  # password 길이 변경
   ALTER TABLE member MODIFY COLUMN password VARCHAR(225);
+
+
+# ----------------------------------------------------------------------
+-- facility 테이블 데이터
+INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, second_flood_message, first_alarm_value, second_alarm_value, hub_ip, status)
+VALUES (1, 1, true, '1차 침수 위험', '2차 침수 위험', 10, 20, '192.168.0.1', 'DEFAULT');
+
+INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, second_flood_message, first_alarm_value, second_alarm_value, hub_ip, status)
+VALUES (2, 2, false, '1차 침수 경고', '2차 침수 경고', 15, 30, '192.168.0.2', 'DEFAULT');
+
+-- apart 테이블 데이터
+INSERT INTO apart (facility_id, apart_name, apart_code)
+VALUES (1, '테스트 아파트', 'TEST001');
+
+INSERT INTO underground_road (facility_id, underground_road_name, latitude, longitude)
+VALUES (2, '테스트 지하도로', 37.5640907, 126.9979403);
+
+INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
+VALUES (1, 'test_user1', 'test_password', NOW(), true, 'APART_MEMBER', '01012345678');
+
+INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
+VALUES (2, 'test_manager', 'manager_password', NOW(), true, 'APART_MANAGER', '01073877808');
+
+INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
+VALUES (3, 'test_user2', 'test_password', NOW(), true, 'APART_MEMBER', '01073877808');
+
+INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
+VALUES (4, 'test_user3', 'test_password', NOW(), true, 'APART_MEMBER', '01073877808');
+
+INSERT INTO apart_member (member_id, facility_id, is_system, platform_type, name, address_number)
+VALUES (3, 1, false, 'NAVER', '김동현', '1'),
+(4, 1, false, 'NAVER', '김동현2', '1');
+
+INSERT INTO apart_manager (member_id, facility_id)
+VALUES (2,1);
+
