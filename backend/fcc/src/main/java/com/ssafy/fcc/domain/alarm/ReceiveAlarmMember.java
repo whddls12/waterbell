@@ -2,6 +2,7 @@ package com.ssafy.fcc.domain.alarm;
 
 import com.ssafy.fcc.domain.alarm.Alarm;
 import com.ssafy.fcc.domain.member.ApartMember;
+import com.ssafy.fcc.domain.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +23,7 @@ public class ReceiveAlarmMember {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private ApartMember apartMember;
+    private Member member;
 
     private boolean isRead;
 

@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class SystemService {
 
-    private final FacilityRepository facilityRepository;
-    private final SensorLogRepository sensorLogRepository;
+    public final FacilityRepository facilityRepository;
+    public final SensorLogRepository sensorLogRepository;
 
     public void insertLog(String category, int value) {
 

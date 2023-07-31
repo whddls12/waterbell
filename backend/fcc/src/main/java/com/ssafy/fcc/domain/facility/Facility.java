@@ -24,7 +24,9 @@ public class Facility {
 
     private String firstFloodMessage;
 
-    private String secondFloodMessage;
+    private String activation_message;
+
+    private String deactivation_message;
 
     private Integer firstAlarmValue;
 

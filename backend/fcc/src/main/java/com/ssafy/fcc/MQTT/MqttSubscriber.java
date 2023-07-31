@@ -1,19 +1,21 @@
 package com.ssafy.fcc.MQTT;
 
 import com.ssafy.fcc.service.SystemService;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 
 public class MqttSubscriber implements MqttCallback {
 
-    private MqttClient mqttclient;
+    public MqttClient mqttclient;
 
-    @Autowired
-    private SystemService systemService;
+    public SystemService systemService;
 
     //Mqtt프로토콜를 이용해서 broker에 연결하면서 연결정보를 설정할 수 있는 객체
-    private MqttConnectOptions mqttOption;
-
+    public MqttConnectOptions mqttOption;
     public MqttSubscriber init(String server, String clientId) {
         try {
             mqttOption = new MqttConnectOptions();
@@ -44,7 +46,7 @@ public class MqttSubscriber implements MqttCallback {
             String category = result[0];
             int value = Integer.parseInt(result[result.length - 1]);
             System.out.println(category + " " + value);
-            systemService.insertLog(category, value);
+//            systemService.insertLog(category, value);
         }catch (Exception e) {
             e.printStackTrace();
         }

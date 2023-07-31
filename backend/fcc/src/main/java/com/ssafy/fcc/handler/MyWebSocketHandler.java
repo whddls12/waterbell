@@ -18,14 +18,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        // 클라이언트와의 연결이 수립되면 세션을 추가
-        // 이건 시큐리티 쓰게되면
-//      String name = (String) session.getPrincipal().getName();
-        String name = "관리자" + (sessions.size()+1);
-        session.getAttributes().put("userId", name);
-        sessions.put(name, session);
-        System.out.println(sessions);
-        System.out.println(name);
+        // 클라이언트와의 연결이 수립되면 처리할 로직
     }
 
     // 서버에서 클라이언트 전원에게 알림을 보내는 메소드
@@ -44,8 +37,13 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
-        // 클라이언트로부터 받은 메시지를 처리하는 로직 (필요한 경우 구현)
+    // 클라이언트로부터 받은 메시지를 처리하는 로직
+    protected void handleTextMessage(WebSocketSession session, TextMessage userId) {
+        // 소켓 연결 -> userId 받으면 -> sessions에 <id, session>으로담기
+        String id = userId.getPayload();
+        session.getAttributes().put("userId", id);
+        sessions.put(id, session);
+        System.out.println(sessions);
     }
 
     @Override

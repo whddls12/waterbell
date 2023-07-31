@@ -11,10 +11,7 @@ public class SystemController {
     @GetMapping("/")
     public String index() {
         MqttSubscriber heightSensor = new MqttSubscriber();
-        heightSensor.init("tcp:192.168.0.10:1883", "DashBoard1").subscribe("heightSensor");
-
-        MqttSubscriber tempDustSensor = new MqttSubscriber();
-        tempDustSensor.init("tcp:192.168.0.10:1883", "DashBoard2").subscribe("tempDustSensor");
+        heightSensor.init("tcp://172.20.10.8:1883", "DashBoard1").subscribe("heightSensor");
 
         // 위에서 값 받아오면 DB에 저장
 
