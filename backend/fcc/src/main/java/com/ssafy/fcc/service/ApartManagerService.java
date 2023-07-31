@@ -3,6 +3,7 @@ package com.ssafy.fcc.service;
 import com.ssafy.fcc.domain.alarm.FloodAlarmLog;
 import com.ssafy.fcc.domain.alarm.ReceiveAlarmMember;
 import com.ssafy.fcc.domain.alarm.Step;
+import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.member.ApartManager;
 import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.domain.sms.ReceiveSmsMember;
@@ -50,17 +51,18 @@ public class ApartManagerService {
     // 입주민들 차수판 웹알림 보내기
     @Transactional
     public void sendFloodWebNotification(int member_id, Step step) throws IOException {
+        ApartManager manager = apartManagerRepository.findById(member_id);
+        Apart apart = manager.getApart();
         // 알림 메세지
         String notificationMessage;
-        if(step.name().equals("ACTIVATION")){
-            notificationMessage = "차수판 동작 메시지"; // 차수판 동작
+        if(step.name().equals(Step.ACTIVATION.name())){
+            notificationMessage = apart.getActivation_message();
         }
         else {
-            notificationMessage = "차수판 해제 메시지"; // 차수판 해제
+            notificationMessage = apart.getDeactivation_message(); // 차수판 해제
         }
-        // 알림 로그 만들고 저장하기
+        // 알림 로그
         FloodAlarmLog log = new FloodAlarmLog();
-        ApartManager manager = apartManagerRepository.findById(member_id);
         log.setMember(manager);
         log.setFacility(manager.getApart());
         log.setRegDate(LocalDateTime.now());
@@ -70,12 +72,12 @@ public class ApartManagerService {
         log.setStep(step);
         floodAlarmLogRepository.save(log);
 
-        // 입주민들에게 웹 소켓 알림 보내면서 알림 받은 사람 만들고 저장하기
+        // 입주민들에게 웹 알림 보내고 저장하기(로그인 상태라면 소켓 실시간 알림)
         List<ApartMember> members = getMembersOfManager(member_id);
         for(ApartMember member : members){
             ReceiveAlarmMember receiveAlarmMember = new ReceiveAlarmMember();
             receiveAlarmMember.setAlarm(log);
-            receiveAlarmMember.setApartMember(member);
+            receiveAlarmMember.setMember(member);
             receiveAlarmMember.setRead(false);
             receiveAlarmMemberRepository.save(receiveAlarmMember);
             myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), notificationMessage);
@@ -86,23 +88,24 @@ public class ApartManagerService {
     // 입주민들 차수판 문자 알림 보내기
     @Transactional
     public void sendSmsWebNotification(int member_id, Step step) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+        ApartManager manager = apartManagerRepository.findById(member_id);
+        Apart apart = manager.getApart();
         // 알림 메세지
         String notificationMessage;
         if(step.name().equals("ACTIVATION")){
-            notificationMessage = "차수판 동작 메시지"; // 차수판 동작
+            notificationMessage = apart.getActivation_message();
         }
         else {
-            notificationMessage = "차수판 해제 메시지"; // 차수판 해제
+            notificationMessage = apart.getDeactivation_message();
         }
-        // sms 로그 만들고 저장하기
-        ApartManager manager = apartManagerRepository.findById(member_id);
+        // sms 로그
         SmsLog smsLog = new SmsLog();
         smsLog.setMember(manager);
         smsLog.setSendDate(LocalDateTime.now());
         smsLog.setContent(notificationMessage);
         smsLogRepository.save(smsLog);
 
-        // 입주민들에게 sms 알림 보내면서 알림 받은 사람 만들고 저장하기
+        // 입주민들에게 sms 알림 보내고 저장
         List<ApartMember> members = getMembersOfManager(member_id);
         for(ApartMember member : members){
             ReceiveSmsMember receiveSmsMember = new ReceiveSmsMember();

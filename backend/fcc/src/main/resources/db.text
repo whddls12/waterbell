@@ -1,605 +1,631 @@
-DROP DATABASE IF EXISTS waterbell;
-CREATE DATABASE waterbell;
-use waterbell;
-
-DROP TABLE IF EXISTS `sensor_log`;
-CREATE TABLE `sensor_log` (
-	`sensor_log_id`	bigint	NOT NULL,
-	`facility_id`	int	NOT NULL,
-	`category`	varchar(5)	NOT NULL	COMMENT '수위센서/온도/습도/미세먼지',
-	`sensor_time`	datetime	NOT NULL	COMMENT '센서의 데이터를 응답 받은 시간',
-	`sensor_data`	int	NOT NULL	COMMENT '응답 받은 데이터'
-);
-
-DROP TABLE IF EXISTS `control_log`;
-CREATE TABLE `control_log` (
-	`control_id`	bigint	NOT NULL,
-	`facility_id`	int	NOT NULL,
-	`category`	varchar(5)	NOT NULL	COMMENT '차수판 / 전광판',
-	`control_time`	datetime	NOT NULL	COMMENT '관리자가 차수판/차량통제 제어를 명령한 시간',
-	`water_height`	int	NOT NULL	COMMENT '차수판/차량통제 제어 당시 측정된 수위',
-	`command`	varchar(5)	NOT NULL	COMMENT '명령한 작동/ 해제 여부'
-);
-
-
-DROP TABLE IF EXISTS `response_log`;
-CREATE TABLE `response_log` (
-	`response_log_id`	bigint	NOT NULL,
-	`facility_id`	int	NOT NULL,
-	`category`	varchar(5)	NOT NULL	COMMENT '차수판 / 전광판',
-	`response_time`	datetime	NOT NULL	COMMENT '동작 상태 응답 시간',
-	`status`	boolean	NOT NULL	COMMENT '현재 기기의 상태 (T:동작 F:해제)'
-);
-
-
-DROP TABLE IF EXISTS `facility`;
-
-CREATE TABLE `facility` (
-	`facility_id`	int	NOT NULL,
-	`gugun_id`	int	NOT NULL,
-	`is_apart`	boolean	NOT NULL,
-	`first_flood_message`	varchar(50)	NOT NULL	COMMENT '1차 침수 알림/LED 메시지',
-	`second_flood_message`	varchar(50)	NOT NULL	COMMENT '2차 침수 알림/LED 메시지',
-	`first_alarm_value`	int	NOT NULL	COMMENT '1차 수위 기준치',
-	`second_alarm_value`	int	NOT NULL	COMMENT '2차 수위 기준치',
-	`hub_ip`	varchar(30)	NOT NULL	COMMENT '연결된 허브 주소',
-	`status`	varchar(10)	NOT NULL	COMMENT '정상(Default)/1차/ 2차,/작동 상태'
-);
-
-
-DROP TABLE IF EXISTS `apart`;
-
-
-CREATE TABLE `apart` (
-	`facility_id`	int	NOT NULL,
-	`apart_name`	varchar(20)	NOT NULL,
-	`apart_code`	varchar(10)	NOT NULL
-);
-
-
-DROP TABLE IF EXISTS `underground_road`;
-
-CREATE TABLE `underground_road` (
-	`facility_id`	int	NOT NULL,
-	`underground_road_name`	varchar(20)	NOT NULL,
-	`latitude`	decimal(18,10)	NOT NULL,
-	`longitude`	decimal(18,10)	NOT NULL
-);
-
-DROP TABLE IF EXISTS `member`;
-
-CREATE TABLE `member` (
-	`member_id`	int	NOT NULL ,
-	`login_id`	VARCHAR(15)	NOT NULL,
-	`password`	VARCHAR(64)	NOT NULL,
-	`refresh_token`	VARCHAR(255)	NULL,
-	`created_at`	DATETIME	NOT NULL,
-	`state`	BOOLEAN	NOT NULL	COMMENT '활성 : true,  비활성: false',
-	`role`	VARCHAR(15)	NOT NULL	COMMENT 'apart_member / apart_manager/ public_manager / system',
-	`expired_at`	DATETIME	NULL,
-	`phone`	VARCHAR(11)	NOT NULL
-);
-
-DROP TABLE IF EXISTS `underground_road_board`;
-
-CREATE TABLE `underground_road_board` (
-	`board_id`	int	NOT NULL ,
-	`facility_id`	int	NOT NULL,
-	`title`	varchar(50)	NOT NULL,
-	`content`	text	NOT NULL,
-	`name`	varchar(15)	NOT NULL,
-	`phone`	varchar(15)	NOT NULL,
-	`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
-	`create_date`	datetime	NOT NULL,
-	`view_count`	int	NOT NULL,
-	`board_password` int	NOT NULL	COMMENT '4자리 숫자'
-);
-
-
-DROP TABLE IF EXISTS `apart_member`;
-
-CREATE TABLE `apart_member` (
-	`member_id`	int	NOT NULL,
-	`facility_id`	int	NOT NULL,
-	`is_system`	boolean	NOT NULL	COMMENT 'SYSTEM -true/ SOCIAL-false',
-	`platform_type`	VARCHAR(6)	NULL	COMMENT 'KAKAO, NABER, GOOGLE',
-	`name`	VARCHAR(10)	NOT NULL,
-	`address_number`	int	NULL
-);
-DROP TABLE IF EXISTS `image`;
-
-CREATE TABLE `image` (
-	`image_id`	int	NOT NULL,
-	`apart_board_id`	int	NULL,
-	`underground_road_board_id`	int	NULL,
-	`image_name`	varchar(50)	NOT NULL,
-	`image_path`	varchar(225)	NOT NULL
-);
-
-DROP TABLE IF EXISTS `public_manager`;
-
-CREATE TABLE `public_manager` (
-	`member_id`	int	NOT NULL,
-	`sido_id`	int	NOT NULL
-);
-
-DROP TABLE IF EXISTS `apart_manager`;
-
-CREATE TABLE `apart_manager` (
-	`member_id`	int	NOT NULL,
-	`facility_id`	int	NOT NULL
-);
-
-
-DROP TABLE IF EXISTS `sido`;
-
-CREATE TABLE `sido` (
-	`sido_id`	int	NOT NULL,
-	`sido_name`	varchar(10)	NOT NULL
-);
-
-DROP TABLE IF EXISTS `gugun`;
-
-CREATE TABLE `gugun` (
-	`gugun_id`	int	NOT NULL ,
-	`sido_id`	int	NOT NULL,
-	`gugun_name`	varchar(10)	NOT NULL
-);
-
-DROP TABLE IF EXISTS `apart_board`;
-
-CREATE TABLE `apart_board` (
-	`board_id`	int	NOT NULL ,
-	`facility_id`	int	NOT NULL,
-	`member_id`	int	NOT NULL,
-	`title`	varchar(50)	NOT NULL,
-	`content`	text	NOT NULL,
-	`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
-	`create_date`	datetime	NOT NULL,
-	`view_count`	int	NOT NULL
-);
+	DROP DATABASE IF EXISTS WaterBell;
+	CREATE DATABASE WaterBell;
+	use WaterBell;
+
+	DROP TABLE IF EXISTS `sensor_log`;
+	CREATE TABLE `sensor_log` (
+		`sensor_log_id`	bigint	NOT NULL,
+		`facility_id`	int	NOT NULL,
+		`category`	varchar(5)	NOT NULL	COMMENT '수위센서/온도/습도/미세먼지',
+		`sensor_time`	datetime	NOT NULL	COMMENT '센서의 데이터를 응답 받은 시간',
+		`sensor_data`	int	NOT NULL	COMMENT '응답 받은 데이터'
+	);
+
+	DROP TABLE IF EXISTS `control_log`;
+	CREATE TABLE `control_log` (
+		`control_id`	bigint	NOT NULL,
+		`facility_id`	int	NOT NULL,
+		`category`	varchar(5)	NOT NULL	COMMENT '차수판 / 전광판',
+		`control_time`	datetime	NOT NULL	COMMENT '관리자가 차수판/차량통제 제어를 명령한 시간',
+		`water_height`	int	NOT NULL	COMMENT '차수판/차량통제 제어 당시 측정된 수위',
+		`command`	varchar(5)	NOT NULL	COMMENT '명령한 작동/ 해제 여부'
+	);
+
+
+	DROP TABLE IF EXISTS `response_log`;
+	CREATE TABLE `response_log` (
+		`response_log_id`	bigint	NOT NULL,
+		`facility_id`	int	NOT NULL,
+		`category`	varchar(5)	NOT NULL	COMMENT '차수판 / 전광판',
+		`response_time`	datetime	NOT NULL	COMMENT '동작 상태 응답 시간',
+		`status`	boolean	NOT NULL	COMMENT '현재 기기의 상태 (T:동작 F:해제)'
+	);
+
+
+	DROP TABLE IF EXISTS `facility`;
+
+	CREATE TABLE `facility` (
+		`facility_id`	int	NOT NULL,
+		`gugun_id`	int	NOT NULL,
+		`is_apart`	boolean	NOT NULL,
+		`first_flood_message`	varchar(225)	NOT NULL	COMMENT '1차 침수 알림/LED 메시지',
+		`activation_message`	varchar(225)	NOT NULL	COMMENT '차수판 동작 알림/LED 동작 메시지',
+        `deactivation_message`	varchar(225)	NOT NULL	COMMENT '차수판 해제 알림/LED 해제 메시지',
+		`first_alarm_value`	int	NOT NULL	COMMENT '1차 수위 기준치',
+		`second_alarm_value`	int	NOT NULL	COMMENT '2차 수위 기준치',
+		`hub_ip`	varchar(30)	NOT NULL	COMMENT '연결된 허브 주소',
+		`status`	varchar(10)	NOT NULL	COMMENT '정상(Default)/1차/ 2차,/작동 상태'
+	);
+
+
+	DROP TABLE IF EXISTS `apart`;
+
+
+	CREATE TABLE `apart` (
+		`facility_id`	int	NOT NULL,
+		`apart_name`	varchar(20)	NOT NULL,
+		`apart_code`	varchar(10)	NOT NULL
+	);
+
+
+	DROP TABLE IF EXISTS `underground_road`;
+
+	CREATE TABLE `underground_road` (
+		`facility_id`	int	NOT NULL,
+		`underground_road_name`	varchar(20)	NOT NULL,
+		`latitude`	decimal(18,10)	NOT NULL,
+		`longitude`	decimal(18,10)	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `member`;
+
+	CREATE TABLE `member` (
+		`member_id`	int	NOT NULL ,
+		`login_id`	VARCHAR(15)	NOT NULL,
+		`password`	VARCHAR(225)	NOT NULL,
+		`created_at`	DATETIME	NOT NULL,
+		`state`	BOOLEAN	NOT NULL	COMMENT '활성 : true,  비활성: false',
+		`role`	VARCHAR(15)	NOT NULL	COMMENT 'apart_member / apart_manager/ public_manager / system',
+		`expired_at`	DATETIME	NULL,
+		`phone`	VARCHAR(11)	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `underground_road_board`;
+
+	CREATE TABLE `underground_road_board` (
+		`board_id`	int	NOT NULL ,
+		`facility_id`	int	NOT NULL,
+		`title`	varchar(50)	NOT NULL,
+		`content`	text	NOT NULL,
+		`name`	varchar(15)	NOT NULL,
+		`phone`	varchar(15)	NOT NULL,
+		`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
+		`create_date`	datetime	NOT NULL,
+		`view_count`	int	NOT NULL,
+		`board_password` int	NOT NULL	COMMENT '4자리 숫자'
+	);
+
+
+	DROP TABLE IF EXISTS `apart_member`;
+
+	CREATE TABLE `apart_member` (
+		`member_id`	int	NOT NULL,
+		`facility_id`	int	NOT NULL,
+		`is_system`	boolean	NOT NULL	COMMENT 'SYSTEM -true/ SOCIAL-false',
+		`platform_type`	VARCHAR(6)	NULL	COMMENT 'KAKAO, NABER, GOOGLE',
+		`name`	VARCHAR(10)	NOT NULL,
+		`address_number`	int	NULL
+	);
+	DROP TABLE IF EXISTS `image`;
+
+	CREATE TABLE `image` (
+		`image_id`	int	NOT NULL,
+		`apart_board_id`	int	NULL,
+		`underground_road_board_id`	int	NULL,
+		`image_name`	varchar(50)	NOT NULL,
+		`image_path`	varchar(225)	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `public_manager`;
+
+	CREATE TABLE `public_manager` (
+		`member_id`	int	NOT NULL,
+		`sido_id`	int	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `apart_manager`;
+
+	CREATE TABLE `apart_manager` (
+		`member_id`	int	NOT NULL,
+		`facility_id`	int	NOT NULL
+	);
+
+
+	DROP TABLE IF EXISTS `sido`;
+
+	CREATE TABLE `sido` (
+		`sido_id`	int	NOT NULL,
+		`sido_name`	varchar(10)	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `gugun`;
+
+	CREATE TABLE `gugun` (
+		`gugun_id`	int	NOT NULL ,
+		`sido_id`	int	NOT NULL,
+		`gugun_name`	varchar(10)	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `apart_board`;
+
+	CREATE TABLE `apart_board` (
+		`board_id`	int	NOT NULL ,
+		`facility_id`	int	NOT NULL,
+		`member_id`	int	NOT NULL,
+		`title`	varchar(50)	NOT NULL,
+		`content`	text	NOT NULL,
+		`status`	varchar(15)	NOT NULL	COMMENT '1. 처리전 2.  처리중 3. 처리완료',
+		`create_date`	datetime	NOT NULL,
+		`view_count`	int	NOT NULL
+	);
 
-DROP TABLE IF EXISTS `sms_log`;
-
-CREATE TABLE `sms_log` (
-	`sms_id`	bigint	NOT NULL,
-	`member_id`	int	NOT NULL	COMMENT '보낸사람',
-	`send_date`	timestamp	NOT NULL,
-	`content`	VARCHAR(100)	NOT NULL
-);
-
-DROP TABLE IF EXISTS `receive_sms_member`;
-
-CREATE TABLE `receive_sms_member` (
-	`recive_sms_id`	bigint	NOT NULL,
-	`member_id`	int	NOT NULL,
-	`sms_id`	bigint	NOT NULL
-);
-
-DROP TABLE IF EXISTS `receive_alarm_member`;
+	DROP TABLE IF EXISTS `sms_log`;
+
+	CREATE TABLE `sms_log` (
+		`sms_id`	bigint	NOT NULL,
+		`member_id`	int	NOT NULL	COMMENT '보낸사람',
+		`send_date`	timestamp	NOT NULL,
+		`content`	VARCHAR(100)	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `receive_sms_member`;
+
+	CREATE TABLE `receive_sms_member` (
+		`recive_sms_id`	bigint	NOT NULL,
+		`member_id`	int	NOT NULL,
+		`sms_id`	bigint	NOT NULL
+	);
+
+	DROP TABLE IF EXISTS `receive_alarm_member`;
 
-CREATE TABLE `receive_alarm_member` (
-	`recive_alarm_id`	bigint	NOT NULL,
-	`alarm_id`	bigint NOT NULL,
-	`member_id`	int	NOT NULL,
-	`is_read`	boolean	NOT NULL,
-	`read_date`	datetime	NULL
-);
-
-DROP TABLE IF EXISTS `alarm`;
-
-CREATE TABLE `alarm` (
-	`alarm_id`	bigint NOT NULL,
-	`member_id`	int	NOT NULL,
-	`facility_id`	int	NOT NULL,
-	`reg_date`	timestamp	NULL,
-	`content`	varchar(50)	NULL,
-	`is_apart`	boolean	NOT NULL,
-	`is_flood`	boolean	NOT NULL	COMMENT '침수 : true, 신고접수 : false'
-);
-
-DROP TABLE IF EXISTS `flood_alarm_log`;
-
-CREATE TABLE `flood_alarm_log` (
-	`alarm_id`	bigint	NOT NULL,
-	`step`	varchar(15)	NOT NULL	COMMENT '1단계, 2단계, 차수판 동작, 차수판 해제'
-);
-
-DROP TABLE IF EXISTS `board_alarm_log`;
-
-CREATE TABLE `board_alarm_log` (
-	`alarm_id`	bigint	NOT NULL,
-	`apart_board_id`	int	NULL,
-	`underground_board_id`	int	NULL
-);
-
-ALTER TABLE `underground_road_board` ADD CONSTRAINT `PK_UNDERGROUND_ROAD_BOARD` PRIMARY KEY (
-	`board_id`
-);
+	CREATE TABLE `receive_alarm_member` (
+		`recive_alarm_id`	bigint	NOT NULL,
+		`alarm_id`	bigint NOT NULL,
+		`member_id`	int	NOT NULL,
+		`is_read`	boolean	NOT NULL,
+		`read_date`	datetime	NULL
+	);
+
+	DROP TABLE IF EXISTS `alarm`;
+
+	CREATE TABLE `alarm` (
+		`alarm_id`	bigint NOT NULL,
+		`member_id`	int	NOT NULL,
+		`facility_id`	int	NOT NULL,
+		`reg_date`	timestamp	NULL,
+		`content`	varchar(50)	NULL,
+		`is_apart`	boolean	NOT NULL,
+		`is_flood`	boolean	NOT NULL	COMMENT '침수 : true, 신고접수 : false'
+	);
+
+	DROP TABLE IF EXISTS `flood_alarm_log`;
+
+	CREATE TABLE `flood_alarm_log` (
+		`alarm_id`	bigint	NOT NULL,
+		`step`	varchar(15)	NOT NULL	COMMENT '1단계, 2단계, 차수판 동작, 차수판 해제'
+	);
+
+	DROP TABLE IF EXISTS `board_alarm_log`;
+
+	CREATE TABLE `board_alarm_log` (
+		`alarm_id`	bigint	NOT NULL,
+		`apart_board_id`	int	NULL,
+		`underground_board_id`	int	NULL
+	);
+
+	ALTER TABLE `underground_road_board` ADD CONSTRAINT `PK_UNDERGROUND_ROAD_BOARD` PRIMARY KEY (
+		`board_id`
+	);
 
-ALTER TABLE `underground_road_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
+	ALTER TABLE `underground_road_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
 
-
-ALTER TABLE `image` ADD CONSTRAINT `PK_IMAGE` PRIMARY KEY (
-	`image_id`
-);
-
-ALTER TABLE `image` MODIFY COLUMN `image_id` INT AUTO_INCREMENT;
-
-
-ALTER TABLE `member` ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (
-	`member_id`
-);
-ALTER TABLE `member` MODIFY COLUMN `member_id` INT AUTO_INCREMENT;
-
-ALTER TABLE `apart_member` ADD CONSTRAINT `PK_APART_MEMBER` PRIMARY KEY (
-	`member_id`
-);
-
-ALTER TABLE `public_manager` ADD CONSTRAINT `PK_PUBLIC_MANAGER` PRIMARY KEY (
-	`member_id`
-);
-
-ALTER TABLE `apart_manager` ADD CONSTRAINT `PK_APART_MANAGER` PRIMARY KEY (
-	`member_id`
-);
-
-ALTER TABLE `sido` ADD CONSTRAINT `PK_SIDO` PRIMARY KEY (
-	`sido_id`
-);
-
-ALTER TABLE `sido` MODIFY COLUMN `sido_id` INT AUTO_INCREMENT;
-
-
-ALTER TABLE `gugun` ADD CONSTRAINT `PK_GUGUN` PRIMARY KEY (
-	`gugun_id`
-);
-ALTER TABLE `gugun` MODIFY COLUMN `gugun_id` INT AUTO_INCREMENT;
-
-
-ALTER TABLE `apart` ADD CONSTRAINT `PK_APART` PRIMARY KEY (
-	`facility_id`
-);
-
-ALTER TABLE `underground_road` ADD CONSTRAINT `PK_UNDERGROUND_ROAD` PRIMARY KEY (
-	`facility_id`
-);
-
-ALTER TABLE `facility` ADD CONSTRAINT `PK_FACILITY` PRIMARY KEY (
-	`facility_id`
-);
-ALTER TABLE `facility` MODIFY COLUMN `facility_id` INT AUTO_INCREMENT;
-
-
-ALTER TABLE `apart_board` ADD CONSTRAINT `PK_APART_BOARD` PRIMARY KEY (
-	`board_id`
-);
-ALTER TABLE `apart_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
-
-ALTER TABLE `sms_log` ADD CONSTRAINT `PK_SMS_LOG` PRIMARY KEY (
-	`sms_id`
-);
-ALTER TABLE `sms_log` MODIFY COLUMN `sms_id` bigint  AUTO_INCREMENT;
-
-ALTER TABLE `receive_sms_member` ADD CONSTRAINT `PK_RECEIVE_SMS_MEMBER` PRIMARY KEY (
-	`recive_sms_id`
-);
-ALTER TABLE `receive_sms_member` MODIFY COLUMN `recive_sms_id` bigint AUTO_INCREMENT;
-
-ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `PK_RECEIVE_ALARM_MEMBER` PRIMARY KEY (
-	`recive_alarm_id`
-);
-ALTER TABLE `receive_alarm_member` MODIFY COLUMN `recive_alarm_id` bigint AUTO_INCREMENT;
-
-ALTER TABLE `alarm` ADD CONSTRAINT `PK_ALARM` PRIMARY KEY (
-	`alarm_id`
-);
-ALTER TABLE `alarm` MODIFY COLUMN `alarm_id` bigint AUTO_INCREMENT;
-
-ALTER TABLE `flood_alarm_log` ADD CONSTRAINT `PK_FLOOD_ALARM_LOG` PRIMARY KEY (
-	`alarm_id`
-);
-
-ALTER TABLE `board_alarm_log` ADD CONSTRAINT `PK_BOARD_ALARM_LOG` PRIMARY KEY (
-	`alarm_id`
-);
-
-ALTER TABLE `image` ADD CONSTRAINT `FK_underground_road_board_TO_image` FOREIGN KEY (
-	`underground_road_board_id`
-)
-REFERENCES `underground_road_board` (
-	`board_id`
-);
-
-
-
-
-ALTER TABLE `apart_board` ADD CONSTRAINT `FK_apart_TO_apart_board_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `apart` (
-	`facility_id`
-);
-
-ALTER TABLE `apart_board` ADD CONSTRAINT `FK_apart_member_TO_apart_board_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `apart_member` (
-	`member_id`
-);
-
-ALTER TABLE `image` ADD CONSTRAINT `FK_apart_board_TO_image_1` FOREIGN KEY (
-	`apart_board_id`
-)
-REFERENCES `apart_board` (
-	`board_id`
-);
-
-ALTER TABLE `apart_member` ADD CONSTRAINT `FK_member_TO_apart_member_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
-
-ALTER TABLE `apart_member` ADD CONSTRAINT `FK_apart_TO_apart_member_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `apart` (
-	`facility_id`
-);
-
-ALTER TABLE `public_manager` ADD CONSTRAINT `FK_member_TO_public_manager_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
-
-ALTER TABLE `public_manager` ADD CONSTRAINT `FK_sido_TO_public_manager_1` FOREIGN KEY (
-	`sido_id`
-)
-REFERENCES `sido` (
-	`sido_id`
-);
-
-ALTER TABLE `apart_manager` ADD CONSTRAINT `FK_member_TO_apart_manager_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
-
-ALTER TABLE `apart_manager` ADD CONSTRAINT `FK_apart_TO_apart_manager_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `apart` (
-	`facility_id`
-);
-
-ALTER TABLE `gugun` ADD CONSTRAINT `FK_sido_TO_gugun_1` FOREIGN KEY (
-	`sido_id`
-)
-REFERENCES `sido` (
-	`sido_id`
-);
-
-ALTER TABLE `apart` ADD CONSTRAINT `FK_facility_TO_apart_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `facility` (
-	`facility_id`
-);
-
-###################################################
-
-ALTER TABLE `underground_road` ADD CONSTRAINT `FK_facility_TO_underground_road_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `facility` (
-	`facility_id`
-);
-
-ALTER TABLE `facility` ADD CONSTRAINT `FK_gugun_TO_facility_1` FOREIGN KEY (
-	`gugun_id`
-)
-REFERENCES `gugun` (
-	`gugun_id`
-);
-
-
-ALTER TABLE `underground_road_board` ADD CONSTRAINT `FK_underground_road_TO_underground_road_board_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `underground_road` (
-	`facility_id`
-);
-
-
-
-###########################################################################
-ALTER TABLE `flood_alarm_log` ADD CONSTRAINT `FK_alarm_TO_flood_alarm_log_1` FOREIGN KEY (
-	`alarm_id`
-)
-REFERENCES `alarm` (
-	`alarm_id`
-);
-
-ALTER TABLE `sms_log` ADD CONSTRAINT `FK_member_TO_sms_log_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
-
-ALTER TABLE `board_alarm_log` ADD CONSTRAINT `FK_alarm_TO_board_alarm_log_1` FOREIGN KEY (
-	`alarm_id`
-)
-REFERENCES `alarm` (
-	`alarm_id`
-);
-
-ALTER TABLE `receive_sms_member` ADD CONSTRAINT `FK_member_TO_receive_sms_member_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
-
-ALTER TABLE `receive_sms_member` ADD CONSTRAINT `FK_sms_log_TO_receive_sms_member_1` FOREIGN KEY (
-	`sms_id`
-)
-REFERENCES `sms_log` (
-	`sms_id`
-);
-
-ALTER TABLE `alarm` ADD CONSTRAINT `FK_member_TO_alarm_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `member` (
-	`member_id`
-);
-
-ALTER TABLE `alarm` ADD CONSTRAINT `FK_facility_TO_alarm_1` FOREIGN KEY (
-	`facility_id`
-)
-REFERENCES `facility` (
-	`facility_id`
-);
-
-ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_alarm_TO_receive_alarm_member_1` FOREIGN KEY (
-	`alarm_id`
-)
-REFERENCES `alarm` (
-	`alarm_id`
-);
-
-ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_apart_member_TO_receive_alarm_member_1` FOREIGN KEY (
-	`member_id`
-)
-REFERENCES `apart_member` (
-	`member_id`
-);
-
-ALTER TABLE `sensor_log` ADD CONSTRAINT `PK_SENSOR_LOG` PRIMARY KEY (
-	`sensor_log_id`
-);
-
-ALTER TABLE `response_log` ADD CONSTRAINT `PK_RESPONSE_LOG` PRIMARY KEY (
-	`response_log_id`
-);
-
-ALTER TABLE `control_log` ADD CONSTRAINT `PK_CONTROL_LOG` PRIMARY KEY (
-	`control_id`
-);
-ALTER TABLE `sensor_log` ADD CONSTRAINT `FK_facility_TO_sensor_log_1` FOREIGN KEY (
-    `facility_id`
-)
-REFERENCES `facility` (
-    `facility_id`
-);
-
-
-ALTER TABLE `response_log` ADD CONSTRAINT `FK_facility_TO_response_log_1` FOREIGN KEY (
-    `facility_id`
-)
-REFERENCES `facility` (
-    `facility_id`
-);
-
-
-
-ALTER TABLE `control_log` ADD CONSTRAINT `FK_facility_TO_control_log_1` FOREIGN KEY (
-    `facility_id`
-)
-REFERENCES `facility` (
-    `facility_id`
-);
-
-ALTER TABLE `sensor_log` MODIFY COLUMN `sensor_log_id` bigint AUTO_INCREMENT;
-ALTER TABLE `control_log` MODIFY COLUMN `control_id` bigint AUTO_INCREMENT;
-ALTER TABLE `response_log` MODIFY COLUMN `response_log_id` bigint AUTO_INCREMENT;
-
-# 아파트 주소 컬럼 추가
-alter table apart
-    add column address varchar(255);
-
-INSERT INTO `sido` VALUES (1,'서울'),(2,'인천'),(3,'대전'),(4,'대구'),(5,'광주'),(6,'부산'),(7,'울산'),(8,'세종특별자치시'),(31,'경기도'),(32,'강원도'),(33,'충청북도'),(34,'충청남도'),(35,'경상북도'),(36,'경상남도'),(37,'전라북도'),(38,'전라남도'),(39,'제주도');
-
-INSERT INTO `gugun`(gugun_name, sido_id) VALUES
- ('강남구',1),('강화군',2),('대덕구',3),
- ('남구',4),('광산구',5),('강서구',6),('중구',7),('세종특별자치시',8),
- ('가평군',31),('강릉시',32),
- ('괴산군',33),('공주시',34),('경산시',35),
- ('거제시',36),('고창군',37),('강진군',38),('남제주군',39),('강동구',1),('계양구',2),
- ('동구',3),('달서구',4),('남구',5),('금정구',6),('남구',7),('고양시',31),('고성군',32),
- ('단양군',33),('금산군',34),('경주시',35),('거창군',36),('군산시',37),('고흥군',38),
- ('북제주군',39),('강북구',1),('미추홀구',2),('서구',3),('달성군',4),('동구',5),
- ('기장군',6),('동구',7),('과천시',31),('동해시',32),('보은군',33),('논산시',34),
- ('고령군',35),('고성군',36),('김제시',37),('곡성군',38),('서귀포시',39),('강서구',1),
- ('남동구',2),('유성구',3),('동구',4),('북구',5),('남구',6),('북구',7),('광명시',31),
- ('삼척시',32),('영동군',33),('당진시',34),('구미시',35),('김해시',36),('남원시',37),('광양시',38),
- ('제주시',39),('관악구',1),('동구',2),('중구',3),('북구',4),('서구',5),('동구',6),('울주군',7),
- ('광주시',31),('속초시',32),('옥천군',33),('보령시',34),('군위군',35),('남해군',36),('무주군',37),
- ('구례군',38),('광진구',1),('부평구',2),('서구',4),('동래구',6),('구리시',31),('양구군',32),
- ('음성군',33),('부여군',34),('김천시',35),('마산시',36),('부안군',37),('나주시',38),('구로구',1),('서구',2), ('수성구',4),
- ('부산진구',6),('군포시',31),('양양군',32),('제천시', 33),('서산시',34),('문경시',35),('밀양시',36),
- ('순창군',37),('담양군',38),('금천구',1),('연수구',2),('중구',4),('북구',6),('김포시',31),('영월군',32),('진천군',33),
- ('서천군',34),('봉화군',35),('사천시',36),('완주군',37),('목포시',38),('노원구',1),('옹진군',2),('사상구',6),('남양주시',31),
- ('원주시',32),('청원군',33),('아산시',34),('상주시',35),('산청군',36),('익산시',37),('무안군',38),('도봉구',1),('중구',2),
- ('사하구',6),('동두천시',31),('인제군',32),('청주시',33),('성주군',35),('양산시',36),('임실군',37),('보성군',38),
- ('동대문구',1),('서구',6),('부천시',31),('정선군',32),('충주시',33),('예산군',34),('안동시',35),
- ('장수군',37),('순천시',38),('동작구',1),('수영구',6),('성남시',31),('철원군',32),('증평군',33),
- ('천안시',34),('영덕군',35),('의령군',36),('전주시',37),('신안군',38),('마포구',1),('연제구',6),
- ('수원시',31),('춘천시',32),('청양군',34),('영양군',35),('진주시',36),('정읍시',37),('여수시',38),
- ('서대문구',1),('영도구',6),('시흥시',31),('태백시',32),('태안군',34),('영주시',35),('진해시',36),
- ('진안군',37),('서초구',1),('중구',6),('안산시',31),('평창군',32),('홍성군',34),('영천시',35),
- ('창녕군',36),('성동구',1),('해운대구',6),('안성시',31),('홍천군',32),('계룡시',34),('예천군',35),
- ('창원시',36),('영광군',38),('성북구',1),('안양시',31),('화천군',32),('울릉군',35),('통영시',36),
- ('영암군',38),('송파구',1),('양주시',31),('횡성군',32),('울진군',35),('하동군',36),('완도군',38),
- ('양천구',1),('양평군',31),('의성군',35),('함안군',36),('장성군',38),('영등포구',1),('여주시',31),
- ('청도군',35),('함양군',36),('장흥군',38),('용산구',1),('연천군',31),('청송군',35),('합천군',36),
- ('진도군',38),('은평구',1),('오산시',31),('칠곡군',35),('함평군',38),('종로구',1),('용인시',31),
- ('포항시',35),('해남군',38),('중구',1),('의왕시',31),('화순군',38),('중랑구',1),('의정부시',31),
- ('이천시',31),('파주시',31),('평택시',31),('포천시',31),('하남시',31),('화성시',31);
-
-
-
- # password 길이 변경
-  ALTER TABLE member MODIFY COLUMN password VARCHAR(225);
-
-
-# ----------------------------------------------------------------------
--- facility 테이블 데이터
-INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, second_flood_message, first_alarm_value, second_alarm_value, hub_ip, status)
-VALUES (1, 1, true, '1차 침수 위험', '2차 침수 위험', 10, 20, '192.168.0.1', 'DEFAULT');
-
-INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, second_flood_message, first_alarm_value, second_alarm_value, hub_ip, status)
-VALUES (2, 2, false, '1차 침수 경고', '2차 침수 경고', 15, 30, '192.168.0.2', 'DEFAULT');
-
--- apart 테이블 데이터
-INSERT INTO apart (facility_id, apart_name, apart_code)
-VALUES (1, '테스트 아파트', 'TEST001');
-
-INSERT INTO underground_road (facility_id, underground_road_name, latitude, longitude)
-VALUES (2, '테스트 지하도로', 37.5640907, 126.9979403);
+
+	ALTER TABLE `image` ADD CONSTRAINT `PK_IMAGE` PRIMARY KEY (
+		`image_id`
+	);
+
+	ALTER TABLE `image` MODIFY COLUMN `image_id` INT AUTO_INCREMENT;
+
+
+	ALTER TABLE `member` ADD CONSTRAINT `PK_MEMBER` PRIMARY KEY (
+		`member_id`
+	);
+	ALTER TABLE `member` MODIFY COLUMN `member_id` INT AUTO_INCREMENT;
+
+	ALTER TABLE `apart_member` ADD CONSTRAINT `PK_APART_MEMBER` PRIMARY KEY (
+		`member_id`
+	);
+
+	ALTER TABLE `public_manager` ADD CONSTRAINT `PK_PUBLIC_MANAGER` PRIMARY KEY (
+		`member_id`
+	);
+
+	ALTER TABLE `apart_manager` ADD CONSTRAINT `PK_APART_MANAGER` PRIMARY KEY (
+		`member_id`
+	);
+
+	ALTER TABLE `sido` ADD CONSTRAINT `PK_SIDO` PRIMARY KEY (
+		`sido_id`
+	);
+
+	ALTER TABLE `sido` MODIFY COLUMN `sido_id` INT AUTO_INCREMENT;
+
+
+	ALTER TABLE `gugun` ADD CONSTRAINT `PK_GUGUN` PRIMARY KEY (
+		`gugun_id`
+	);
+	ALTER TABLE `gugun` MODIFY COLUMN `gugun_id` INT AUTO_INCREMENT;
+
+
+	ALTER TABLE `apart` ADD CONSTRAINT `PK_APART` PRIMARY KEY (
+		`facility_id`
+	);
+
+	ALTER TABLE `underground_road` ADD CONSTRAINT `PK_UNDERGROUND_ROAD` PRIMARY KEY (
+		`facility_id`
+	);
+
+	ALTER TABLE `facility` ADD CONSTRAINT `PK_FACILITY` PRIMARY KEY (
+		`facility_id`
+	);
+	ALTER TABLE `facility` MODIFY COLUMN `facility_id` INT AUTO_INCREMENT;
+
+
+	ALTER TABLE `apart_board` ADD CONSTRAINT `PK_APART_BOARD` PRIMARY KEY (
+		`board_id`
+	);
+	ALTER TABLE `apart_board` MODIFY COLUMN `board_id` INT AUTO_INCREMENT;
+
+	ALTER TABLE `sms_log` ADD CONSTRAINT `PK_SMS_LOG` PRIMARY KEY (
+		`sms_id`
+	);
+	ALTER TABLE `sms_log` MODIFY COLUMN `sms_id` bigint  AUTO_INCREMENT;
+
+	ALTER TABLE `receive_sms_member` ADD CONSTRAINT `PK_RECEIVE_SMS_MEMBER` PRIMARY KEY (
+		`recive_sms_id`
+	);
+	ALTER TABLE `receive_sms_member` MODIFY COLUMN `recive_sms_id` bigint AUTO_INCREMENT;
+
+	ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `PK_RECEIVE_ALARM_MEMBER` PRIMARY KEY (
+		`recive_alarm_id`
+	);
+	ALTER TABLE `receive_alarm_member` MODIFY COLUMN `recive_alarm_id` bigint AUTO_INCREMENT;
+
+	ALTER TABLE `alarm` ADD CONSTRAINT `PK_ALARM` PRIMARY KEY (
+		`alarm_id`
+	);
+	ALTER TABLE `alarm` MODIFY COLUMN `alarm_id` bigint AUTO_INCREMENT;
+
+	ALTER TABLE `flood_alarm_log` ADD CONSTRAINT `PK_FLOOD_ALARM_LOG` PRIMARY KEY (
+		`alarm_id`
+	);
+
+	ALTER TABLE `board_alarm_log` ADD CONSTRAINT `PK_BOARD_ALARM_LOG` PRIMARY KEY (
+		`alarm_id`
+	);
+
+	ALTER TABLE `image` ADD CONSTRAINT `FK_underground_road_board_TO_image` FOREIGN KEY (
+		`underground_road_board_id`
+	)
+	REFERENCES `underground_road_board` (
+		`board_id`
+	);
+
+
+
+
+	ALTER TABLE `apart_board` ADD CONSTRAINT `FK_apart_TO_apart_board_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `apart` (
+		`facility_id`
+	);
+
+	ALTER TABLE `apart_board` ADD CONSTRAINT `FK_apart_member_TO_apart_board_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `apart_member` (
+		`member_id`
+	);
+
+	ALTER TABLE `image` ADD CONSTRAINT `FK_apart_board_TO_image_1` FOREIGN KEY (
+		`apart_board_id`
+	)
+	REFERENCES `apart_board` (
+		`board_id`
+	);
+
+	ALTER TABLE `apart_member` ADD CONSTRAINT `FK_member_TO_apart_member_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `apart_member` ADD CONSTRAINT `FK_apart_TO_apart_member_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `apart` (
+		`facility_id`
+	);
+
+	ALTER TABLE `public_manager` ADD CONSTRAINT `FK_member_TO_public_manager_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `public_manager` ADD CONSTRAINT `FK_sido_TO_public_manager_1` FOREIGN KEY (
+		`sido_id`
+	)
+	REFERENCES `sido` (
+		`sido_id`
+	);
+
+	ALTER TABLE `apart_manager` ADD CONSTRAINT `FK_member_TO_apart_manager_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `apart_manager` ADD CONSTRAINT `FK_apart_TO_apart_manager_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `apart` (
+		`facility_id`
+	);
+
+	ALTER TABLE `gugun` ADD CONSTRAINT `FK_sido_TO_gugun_1` FOREIGN KEY (
+		`sido_id`
+	)
+	REFERENCES `sido` (
+		`sido_id`
+	);
+
+	ALTER TABLE `apart` ADD CONSTRAINT `FK_facility_TO_apart_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `facility` (
+		`facility_id`
+	);
+
+	###################################################
+
+	ALTER TABLE `underground_road` ADD CONSTRAINT `FK_facility_TO_underground_road_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `facility` (
+		`facility_id`
+	);
+
+	ALTER TABLE `facility` ADD CONSTRAINT `FK_gugun_TO_facility_1` FOREIGN KEY (
+		`gugun_id`
+	)
+	REFERENCES `gugun` (
+		`gugun_id`
+	);
+
+
+	ALTER TABLE `underground_road_board` ADD CONSTRAINT `FK_underground_road_TO_underground_road_board_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `underground_road` (
+		`facility_id`
+	);
+
+
+
+	###########################################################################
+	ALTER TABLE `flood_alarm_log` ADD CONSTRAINT `FK_alarm_TO_flood_alarm_log_1` FOREIGN KEY (
+		`alarm_id`
+	)
+	REFERENCES `alarm` (
+		`alarm_id`
+	);
+
+	ALTER TABLE `sms_log` ADD CONSTRAINT `FK_member_TO_sms_log_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `board_alarm_log` ADD CONSTRAINT `FK_alarm_TO_board_alarm_log_1` FOREIGN KEY (
+		`alarm_id`
+	)
+	REFERENCES `alarm` (
+		`alarm_id`
+	);
+
+	ALTER TABLE `receive_sms_member` ADD CONSTRAINT `FK_member_TO_receive_sms_member_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `receive_sms_member` ADD CONSTRAINT `FK_sms_log_TO_receive_sms_member_1` FOREIGN KEY (
+		`sms_id`
+	)
+	REFERENCES `sms_log` (
+		`sms_id`
+	);
+
+	ALTER TABLE `alarm` ADD CONSTRAINT `FK_member_TO_alarm_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `alarm` ADD CONSTRAINT `FK_facility_TO_alarm_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `facility` (
+		`facility_id`
+	);
+
+	ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_alarm_TO_receive_alarm_member_1` FOREIGN KEY (
+		`alarm_id`
+	)
+	REFERENCES `alarm` (
+		`alarm_id`
+	);
+
+	ALTER TABLE `receive_alarm_member` ADD CONSTRAINT `FK_member_TO_receive_alarm_member_1` FOREIGN KEY (
+		`member_id`
+	)
+	REFERENCES `member` (
+		`member_id`
+	);
+
+	ALTER TABLE `sensor_log` ADD CONSTRAINT `PK_SENSOR_LOG` PRIMARY KEY (
+		`sensor_log_id`
+	);
+
+	ALTER TABLE `response_log` ADD CONSTRAINT `PK_RESPONSE_LOG` PRIMARY KEY (
+		`response_log_id`
+	);
+
+	ALTER TABLE `control_log` ADD CONSTRAINT `PK_CONTROL_LOG` PRIMARY KEY (
+		`control_id`
+	);
+	ALTER TABLE `sensor_log` ADD CONSTRAINT `FK_facility_TO_sensor_log_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `facility` (
+		`facility_id`
+	);
+
+
+	ALTER TABLE `response_log` ADD CONSTRAINT `FK_facility_TO_response_log_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `facility` (
+		`facility_id`
+	);
+
+
+
+	ALTER TABLE `control_log` ADD CONSTRAINT `FK_facility_TO_control_log_1` FOREIGN KEY (
+		`facility_id`
+	)
+	REFERENCES `facility` (
+		`facility_id`
+	);
+
+	ALTER TABLE `sensor_log` MODIFY COLUMN `sensor_log_id` bigint AUTO_INCREMENT;
+	ALTER TABLE `control_log` MODIFY COLUMN `control_id` bigint AUTO_INCREMENT;
+	ALTER TABLE `response_log` MODIFY COLUMN `response_log_id` bigint AUTO_INCREMENT;
+
+	# 아파트 주소 컬럼 추가
+	alter table apart
+		add column address varchar(255);
+
+	INSERT INTO `sido` VALUES (1,'서울'),(2,'인천'),(3,'대전'),(4,'대구'),(5,'광주'),(6,'부산'),(7,'울산'),(8,'세종특별자치시'),(31,'경기도'),(32,'강원도'),(33,'충청북도'),(34,'충청남도'),(35,'경상북도'),(36,'경상남도'),(37,'전라북도'),(38,'전라남도'),(39,'제주도');
+
+	INSERT INTO `gugun`(gugun_name, sido_id) VALUES
+	 ('강남구',1),('강화군',2),('대덕구',3),
+	 ('남구',4),('광산구',5),('강서구',6),('중구',7),('세종특별자치시',8),
+	 ('가평군',31),('강릉시',32),
+	 ('괴산군',33),('공주시',34),('경산시',35),
+	 ('거제시',36),('고창군',37),('강진군',38),('남제주군',39),('강동구',1),('계양구',2),
+	 ('동구',3),('달서구',4),('남구',5),('금정구',6),('남구',7),('고양시',31),('고성군',32),
+	 ('단양군',33),('금산군',34),('경주시',35),('거창군',36),('군산시',37),('고흥군',38),
+	 ('북제주군',39),('강북구',1),('미추홀구',2),('서구',3),('달성군',4),('동구',5),
+	 ('기장군',6),('동구',7),('과천시',31),('동해시',32),('보은군',33),('논산시',34),
+	 ('고령군',35),('고성군',36),('김제시',37),('곡성군',38),('서귀포시',39),('강서구',1),
+	 ('남동구',2),('유성구',3),('동구',4),('북구',5),('남구',6),('북구',7),('광명시',31),
+	 ('삼척시',32),('영동군',33),('당진시',34),('구미시',35),('김해시',36),('남원시',37),('광양시',38),
+	 ('제주시',39),('관악구',1),('동구',2),('중구',3),('북구',4),('서구',5),('동구',6),('울주군',7),
+	 ('광주시',31),('속초시',32),('옥천군',33),('보령시',34),('군위군',35),('남해군',36),('무주군',37),
+	 ('구례군',38),('광진구',1),('부평구',2),('서구',4),('동래구',6),('구리시',31),('양구군',32),
+	 ('음성군',33),('부여군',34),('김천시',35),('마산시',36),('부안군',37),('나주시',38),('구로구',1),('서구',2), ('수성구',4),
+	 ('부산진구',6),('군포시',31),('양양군',32),('제천시', 33),('서산시',34),('문경시',35),('밀양시',36),
+	 ('순창군',37),('담양군',38),('금천구',1),('연수구',2),('중구',4),('북구',6),('김포시',31),('영월군',32),('진천군',33),
+	 ('서천군',34),('봉화군',35),('사천시',36),('완주군',37),('목포시',38),('노원구',1),('옹진군',2),('사상구',6),('남양주시',31),
+	 ('원주시',32),('청원군',33),('아산시',34),('상주시',35),('산청군',36),('익산시',37),('무안군',38),('도봉구',1),('중구',2),
+	 ('사하구',6),('동두천시',31),('인제군',32),('청주시',33),('성주군',35),('양산시',36),('임실군',37),('보성군',38),
+	 ('동대문구',1),('서구',6),('부천시',31),('정선군',32),('충주시',33),('예산군',34),('안동시',35),
+	 ('장수군',37),('순천시',38),('동작구',1),('수영구',6),('성남시',31),('철원군',32),('증평군',33),
+	 ('천안시',34),('영덕군',35),('의령군',36),('전주시',37),('신안군',38),('마포구',1),('연제구',6),
+	 ('수원시',31),('춘천시',32),('청양군',34),('영양군',35),('진주시',36),('정읍시',37),('여수시',38),
+	 ('서대문구',1),('영도구',6),('시흥시',31),('태백시',32),('태안군',34),('영주시',35),('진해시',36),
+	 ('진안군',37),('서초구',1),('중구',6),('안산시',31),('평창군',32),('홍성군',34),('영천시',35),
+	 ('창녕군',36),('성동구',1),('해운대구',6),('안성시',31),('홍천군',32),('계룡시',34),('예천군',35),
+	 ('창원시',36),('영광군',38),('성북구',1),('안양시',31),('화천군',32),('울릉군',35),('통영시',36),
+	 ('영암군',38),('송파구',1),('양주시',31),('횡성군',32),('울진군',35),('하동군',36),('완도군',38),
+	 ('양천구',1),('양평군',31),('의성군',35),('함안군',36),('장성군',38),('영등포구',1),('여주시',31),
+	 ('청도군',35),('함양군',36),('장흥군',38),('용산구',1),('연천군',31),('청송군',35),('합천군',36),
+	 ('진도군',38),('은평구',1),('오산시',31),('칠곡군',35),('함평군',38),('종로구',1),('용인시',31),
+	 ('포항시',35),('해남군',38),('중구',1),('의왕시',31),('화순군',38),('중랑구',1),('의정부시',31),
+	 ('이천시',31),('파주시',31),('평택시',31),('포천시',31),('하남시',31),('화성시',31);
+
+	# ----------------------------------------------------------------------
+############--시설--#######################
+
+ INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, activation_message, deactivation_message, first_alarm_value, second_alarm_value, hub_ip, status)
+    VALUES
+    (1, 52, false,  '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (2, 36, false,  '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (3, 36, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (4, 36, false, '침수 고 안전유의', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (5, 36, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (6, 68, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (7, 52, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (8, 20, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (9, 20, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (10, 3, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT');
+
+ INSERT INTO underground_road (facility_id, underground_road_name, latitude, longitude)
+    VALUES
+    (1, '월드컵지하차도', 36.3666867, 127.326719),
+    (2, '만년지하차도', 36.3517723, 127.3514948),
+    (3, '갈마지하차도', 36.3486342, 127.3766314),
+    (4, '엑스포지하차도', 36.3707984, 127.3880463),
+    (5, '태평지하차도', 36.3274983, 127.4013243),
+    (6, '도마지하차도', 36.3159161, 127.3845481),
+    (7, '상대지하차도', 36.3390513, 127.3364132),
+    (8, '가오지하차도', 36.3143898, 127.4562358),
+    (9, '판암지하차도', 36.3185561, 127.4656236),
+    (10, '대전IC지하차도', 36.3599119, 127.4480964);
+
+
+
+ INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, activation_message, deactivation_message, first_alarm_value, second_alarm_value, hub_ip, status)
+    VALUES
+   (11, 52, true, '주의: 지하주차장의 수위가 1차 경고 기준치에 도달했습니다. 주차장에 차량을 주차하신 분들은 가능한 빠르게 차량을 지상으로 이동시켜 주시기 바랍니다.', '차수판이 작동되었습니다. 지하 주자장 내 차량을 이동하시던 분들은 정차하시고 주차장 밖으로 나와주시길 바랍니다.','차수판 동작이 해제되었습니다. 차량 이동이 가능하나 주차장이 혼잡할 수 있으니 천천히 출차 바랍니다.', 10, 20, '192.168.0.1', 'DEFAULT'),
+   (12, 52, true, '주의: 지하주차장의 수위가 1차 경고 기준치에 도달했습니다. 주차장에 차량을 주차하신 분들은 가능한 빠르게 차량을 지상으로 이동시켜 주시기 바랍니다.', '차수판이 작동되었습니다. 지하 주자장 내 차량을 이동하시던 분들은 정차하시고 주차장 밖으로 나와주시길 바랍니다.','차수판 동작이 해제되었습니다. 차량 이동이 가능하나 주차장이 혼잡할 수 있으니 천천히 출차 바랍니다.', 10, 20, '192.168.0.1', 'DEFAULT');
+
+
+
+ INSERT INTO apart (facility_id, apart_name, apart_code)
+    VALUES
+    (11, '학하오투그란데미학1차아파트', 'apt001'),
+    (12, '유성자이(주상복합)', 'apt002');
+
+############--멤버--#######################
 
 INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
-VALUES (1, 'test_user1', 'test_password', NOW(), true, 'APART_MEMBER', '01012345678');
+    VALUES
+   (1, 'asdf1234', 'ASdf!@34', NOW(), true, 'APART_MEMBER', '01023781926'),
+   (2, 'qwer1234', 'QWer!@34', NOW(), true, 'APART_MEMBER', '01088742165'),
+   (3, 'zxcv1234', 'ZXcv!@34', NOW(), true, 'APART_MEMBER', '01073402210'),
+   (4, 'aManager1', '1234', NOW(), true, 'APART_MANAGER', '01071797299'),
+   (5, 'aManager2', '1234', NOW(), true, 'APART_MANAGER', '01023781926'),
+   (6, 'pManager1', '1234', NOW(), true, 'PUBLIC_MANAGER', '01064723285');
 
-INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
-VALUES (2, 'test_manager', 'manager_password', NOW(), true, 'APART_MANAGER', '01073877808');
-
-INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
-VALUES (3, 'test_user2', 'test_password', NOW(), true, 'APART_MEMBER', '01073877808');
-
-INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
-VALUES (4, 'test_user3', 'test_password', NOW(), true, 'APART_MEMBER', '01073877808');
 
 INSERT INTO apart_member (member_id, facility_id, is_system, platform_type, name, address_number)
-VALUES (3, 1, false, 'NAVER', '김동현', '1'),
-(4, 1, false, 'NAVER', '김동현2', '1');
+    VALUES
+   (1, 11, true,  null, '이효경', '101'),
+   (2, 11, true,  null, '조준희', '201'),
+   (3, 12, true,  null, '황종인', '301');
 
 INSERT INTO apart_manager (member_id, facility_id)
-VALUES (2,1);
+    VALUES (4,11), (5,12);
 
+INSERT INTO public_manager (member_id, sido_id)
+    values (6, 3);
