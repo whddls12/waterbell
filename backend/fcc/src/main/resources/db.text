@@ -610,12 +610,12 @@
 
 INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
     VALUES
-   (1, 'asdf1234', 'ASdf!@34', NOW(), true, 'APART_MEMBER', '01023781926'),
-   (2, 'qwer1234', 'QWer!@34', NOW(), true, 'APART_MEMBER', '01088742165'),
-   (3, 'zxcv1234', 'ZXcv!@34', NOW(), true, 'APART_MEMBER', '01073402210'),
-   (4, 'aManager1', '1234', NOW(), true, 'APART_MANAGER', '01071797299'),
-   (5, 'aManager2', '1234', NOW(), true, 'APART_MANAGER', '01023781926'),
-   (6, 'pManager1', '1234', NOW(), true, 'PUBLIC_MANAGER', '01064723285');
+   (1, 'asdf1234', '{bcrypt}$2a$10$JEjA1jSlmRnWNaPpAx8/3u2gMZOvH59nHku.39rrGHDCZLF7/I5cC', NOW(), true, 'APART_MEMBER', '01023781926'),
+   (2, 'qwer1234', '{bcrypt}$2a$10$TwE2fJqxInZTLXG0zRNPfuh//pfhkkRFrVpIK/zcLq4nKul/yMq9a', NOW(), true, 'APART_MEMBER', '01088742165'),
+   (3, 'zxcv1234', '{bcrypt}$2a$10$0xPIXBmZaqnlf3mt6wlNEO9ZEJK7RK0NaZjl2dTZekIRem2fFr0YO', NOW(), true, 'APART_MEMBER', '01073402210'),
+   (4, 'aManager1', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'APART_MANAGER', '01071797299'),
+   (5, 'aManager2', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'APART_MANAGER', '01023781926'),
+   (6, 'pManager1', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'PUBLIC_MANAGER', '01064723285');
 
 
 INSERT INTO apart_member (member_id, facility_id, is_system, platform_type, name, address_number)
