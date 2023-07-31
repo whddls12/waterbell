@@ -12,23 +12,24 @@
 <script>
 // import Map from '@/underroad/components/dashboard/roadDashNearUnderroad.vue'
 
-import { defineComponent } from "vue";
-import roadDashMapVue from "../components/dashboard/roadDashNearUnderroad.vue";
-import roadDashReportVue from "../components/dashboard/roadDashReportList.vue";
-import roadDashWarnMsgVue from "../components/dashboard/roadDashWarningMessage.vue";
-import roadDashWaterLevelVue from "../components/dashboard/roadDashWaterLevelHeight.vue";
-import roadDashCctvVue from "../components/dashboard/roadDashRealTimeVideo.vue";
-import roadDashRainAmountVue from "../components/dashboard/roadDashRainFallAmount.vue";
+import { defineComponent } from 'vue'
+import roadDashMapVue from '../components/dashboard/roadDashNearUnderroad.vue'
+import roadDashReportVue from '../components/dashboard/roadDashReportList.vue'
+import roadDashWarnMsgVue from '../components/dashboard/roadDashWarningMessage.vue'
+import roadDashWaterLevelVue from '../components/dashboard/roadDashWaterLevelHeight.vue'
+import roadDashCctvVue from '../components/dashboard/roadDashRealTimeVideo.vue'
+import roadDashRainAmountVue from '../components/dashboard/roadDashRainFallAmount.vue'
+
 export default defineComponent({
-  name: "RoadDash",
+  name: 'RoadDash',
   components: {
     roadDashCctvVue,
     roadDashMapVue,
     roadDashRainAmountVue,
     roadDashReportVue,
     roadDashWarnMsgVue,
-    roadDashWaterLevelVue,
-  },
-});
+    roadDashWaterLevelVue
+  }
+})
 </script>
 <style lang=""></style>

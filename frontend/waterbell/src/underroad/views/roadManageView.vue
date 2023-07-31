@@ -2,10 +2,10 @@
   <div></div>
 </template>
 <script>
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: "RoadManage",
-});
+  name: 'RoadManage'
+})
 </script>
 <style lang=""></style>

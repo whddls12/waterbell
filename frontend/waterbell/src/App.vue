@@ -2,12 +2,13 @@
   <div id="nav">
     <!-- <RoadDash /> -->
     <roadDashRainAmountVue />
+    <router-view />
   </div>
 </template>
 
 <script setup>
 // import RoadDash from "./underroad/views/roadDashboardView.vue";
-import roadDashRainAmountVue from "./underroad/components/dashboard/roadDashRainFallAmount.vue";
+import roadDashRainAmountVue from './underroad/components/dashboard/roadDashRainFallAmount.vue'
 </script>
 
 <style>
