@@ -31,8 +31,6 @@ public class Member {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  //json 결과로 출력하지 않기 위함
     private String password;
 
-    private String refreshToken;
-
     private LocalDateTime createdAt;
 
     private boolean state; //활성, 비활성

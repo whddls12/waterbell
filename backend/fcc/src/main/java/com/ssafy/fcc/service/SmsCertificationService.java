@@ -29,7 +29,6 @@ public class SmsCertificationService {
         Random rand = new Random();
         int number = rand.nextInt(1000000);
         String strNumber = String.format("%06d", number);
-        System.out.println("strNumber = " + strNumber);
 
         //redis에 저장
         redisUtil.setDataExpire(phoneNumber, strNumber, EXPIRATION_TIME);
@@ -38,18 +37,18 @@ public class SmsCertificationService {
     }
 
     // 사용자가 입력한 인증번호가 redis와 일치한지 확인
-    public boolean verifySms(String phoneNumber, String AuthenticationNumber){
+    public int verifySms(String phoneNumber, String AuthenticationNumber){
         String value = redisUtil.getData(phoneNumber);
-        // 만료기한이 지난 경우
-        if(value==null) return false;
+        // 만료기한이 지난 경우 or 번호가 잘못된 경우
+        if(value==null) return 0;
         // 인증번호 일치
         if(value.equals(AuthenticationNumber)){
             redisUtil.deleteData(phoneNumber);
-            return true;
+            return 2;
         }
         // 인증번호 불일치
         else{
-            return false;
+            return 1;
         }
     }
 }
