@@ -18,7 +18,21 @@ import roadImgSrc0 from '@/assets/images/map_road_0.png'
 export default defineComponent({
   name: 'roadDashMapVue',
   setup() {
-    const map = ref<any>(null)
+
+        //지도 script 추가하기
+    const loadScript = () => {
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=374cff0d8903c1ed2bf1e9533bb0feab&libraries=clusterer,drawing,services";
+      script.addEventListener("load", () => {
+        window.kakao.maps.load(initMap);
+      });
+      document.head.appendChild(script);
+    };
+    //지도 생성
+    const map = ref<any>(null);
+
 
     const initMap = () => {
       const container = document.getElementById('map')
@@ -32,16 +46,7 @@ export default defineComponent({
       makeMarker()
     }
 
-    const loadScript = () => {
-      const script = document.createElement('script')
-      script.type = 'text/javascript'
-      script.src =
-        '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=374cff0d8903c1ed2bf1e9533bb0feab&libraries=clusterer,drawing,services'
-      script.addEventListener('load', () => {
-        window.kakao.maps.load(initMap)
-      })
-      document.head.appendChild(script)
-    }
+
     // const roadImgSrc = "@/assets/map_roadIcon.png"
 
     const makeMarker = () => {
