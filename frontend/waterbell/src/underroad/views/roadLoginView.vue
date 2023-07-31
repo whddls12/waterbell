@@ -5,6 +5,10 @@
   </div>
 </template>
 <script>
+<<<<<<< HEAD
 export default {};
+=======
+export default {}
+>>>>>>> f02261b (feat: map 지하차도 status별 마커 커스텀)
 </script>
 <style lang=""></style>
