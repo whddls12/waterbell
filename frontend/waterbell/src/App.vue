@@ -1,14 +1,13 @@
 <template>
   <div id="nav">
-    <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> -->
-  <router-view />
+    <!-- <RoadDash /> -->
+    <roadDashRainAmountVue />
   </div>
 </template>
 
 <script setup>
-
-
+// import RoadDash from "./underroad/views/roadDashboardView.vue";
+import roadDashRainAmountVue from "./underroad/components/dashboard/roadDashRainFallAmount.vue";
 </script>
 
 <style>
