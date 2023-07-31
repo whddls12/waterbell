@@ -12,6 +12,7 @@
 <script>
 // import Map from '@/underroad/components/dashboard/roadDashNearUnderroad.vue'
 
+<<<<<<< HEAD
 import { defineComponent } from "vue";
 import roadDashMapVue from "../components/dashboard/roadDashNearUnderroad.vue";
 import roadDashReportVue from "../components/dashboard/roadDashReportList.vue";
@@ -19,6 +20,15 @@ import roadDashWarnMsgVue from "../components/dashboard/roadDashWarningMessage.v
 import roadDashWaterLevelVue from "../components/dashboard/roadDashWaterLevelHeight.vue";
 import roadDashCctvVue from "../components/dashboard/roadDashRealTimeVideo.vue";
 import roadDashRainAmountVue from "../components/dashboard/roadDashRainFallAmount.vue";
+=======
+import { defineComponent } from "vue"
+import roadDashMapVue from "../components/dashboard/roadDashNearUnderroad.vue"
+import roadDashReportVue from "../components/dashboard/roadDashReportList.vue"
+import roadDashWarnMsgVue from "../components/dashboard/roadDashWarningMessage.vue"
+import roadDashWaterLevelVue from "../components/dashboard/roadDashWaterLevelHeight.vue"
+import roadDashCctvVue from "../components/dashboard/roadDashRealTimeVideo.vue"
+import roadDashRainAmountVue from "../components/dashboard/roadDashRainFallAmount.vue"
+>>>>>>> 39cac92 (map_마커표시 완료)
 export default defineComponent({
   name: "RoadDash",
   components: {

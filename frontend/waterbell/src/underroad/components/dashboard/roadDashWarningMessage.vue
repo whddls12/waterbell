@@ -7,7 +7,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: 'roadDashWarnMsgVue'
+  name: "roadDashWarnMsgVue"
 })
 </script>
 <style lang="">
