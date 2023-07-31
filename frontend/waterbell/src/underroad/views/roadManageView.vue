@@ -1,15 +1,11 @@
 <template lang="">
-    <div>
-
-    </div>
+  <div></div>
 </template>
 <script>
 import { defineComponent } from "vue";
 
 export default defineComponent({
-    name: 'RoadManage'
-})
+  name: "RoadManage",
+});
 </script>
-<style lang="">
-
-</style>
+<style lang=""></style>
