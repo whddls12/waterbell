@@ -17,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter @Setter
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Member implements UserDetails {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,36 +42,4 @@ public class Member implements UserDetails {
 
     private String phone;
 
-    //############################################################
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + getRole().toString()));
-        return authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return state;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-       return state;
-    }
 }

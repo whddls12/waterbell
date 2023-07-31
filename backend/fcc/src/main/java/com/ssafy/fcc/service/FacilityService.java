@@ -2,7 +2,6 @@ package com.ssafy.fcc.service;
 
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
-import com.ssafy.fcc.repository.ApartManagerRepository;
 import com.ssafy.fcc.repository.FacilityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FacilityService {
 
     private final FacilityRepository facilityRepository;
-    private final ApartManagerRepository apartManagerRepository;
 
     public Apart findApartByCode(String apartCode) {
         return facilityRepository.findApartByCode(apartCode);
@@ -23,6 +21,4 @@ public class FacilityService {
     public Facility findById(Integer id) {
        return  facilityRepository.findById(id);
     }
-
-
 }
