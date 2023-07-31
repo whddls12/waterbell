@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "axios": "^1.4.0",
+<<<<<<< HEAD
     "chart.js": "^3.9.1",
+=======
+>>>>>>> d4eacb1 (map-axios 설치)
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
