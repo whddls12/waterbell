@@ -2,10 +2,13 @@ package com.ssafy.fcc.service;
 
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.location.Sido;
 import com.ssafy.fcc.repository.FacilityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,4 +24,6 @@ public class FacilityService {
     public Facility findById(Integer id) {
        return  facilityRepository.findById(id);
     }
+
+
 }
