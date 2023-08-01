@@ -1,6 +1,5 @@
 package com.ssafy.fcc.service;
 
-import com.ssafy.fcc.config.security.JwtTokenProvider;
 import com.ssafy.fcc.domain.member.*;
 import com.ssafy.fcc.dto.ApartManagerResponse;
 import com.ssafy.fcc.dto.ApartMemberRespose;
