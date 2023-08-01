@@ -193,7 +193,7 @@
 		`member_id`	int	NOT NULL,
 		`facility_id`	int	NOT NULL,
 		`reg_date`	timestamp	NULL,
-		`content`	varchar(50)	NULL,
+		`content`	varchar(255) NULL,
 		`is_apart`	boolean	NOT NULL,
 		`is_flood`	boolean	NOT NULL	COMMENT '침수 : true, 신고접수 : false'
 	);
@@ -571,7 +571,7 @@
     (1, 52, false,  '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
     (2, 36, false,  '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
     (3, 36, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
-    (4, 36, false, '침수 고 안전유의', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
+    (4, 36, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
     (5, 36, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
     (6, 68, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
     (7, 52, false, '침수경고 현재수위:15mm 이상', '진입금지', '진입금지 해제', 15, 30, '192.168.0.2', 'DEFAULT'),
@@ -596,8 +596,8 @@
 
  INSERT INTO facility (facility_id, gugun_id, is_apart, first_flood_message, activation_message, deactivation_message, first_alarm_value, second_alarm_value, hub_ip, status)
     VALUES
-   (11, 52, true, '주의: 지하주차장의 수위가 1차 경고 기준치에 도달했습니다. 주차장에 차량을 주차하신 분들은 가능한 빠르게 차량을 지상으로 이동시켜 주시기 바랍니다.', '차수판이 작동되었습니다. 지하 주자장 내 차량을 이동하시던 분들은 정차하시고 주차장 밖으로 나와주시길 바랍니다.','차수판 동작이 해제되었습니다. 차량 이동이 가능하나 주차장이 혼잡할 수 있으니 천천히 출차 바랍니다.', 10, 20, '192.168.0.1', 'DEFAULT'),
-   (12, 52, true, '주의: 지하주차장의 수위가 1차 경고 기준치에 도달했습니다. 주차장에 차량을 주차하신 분들은 가능한 빠르게 차량을 지상으로 이동시켜 주시기 바랍니다.', '차수판이 작동되었습니다. 지하 주자장 내 차량을 이동하시던 분들은 정차하시고 주차장 밖으로 나와주시길 바랍니다.','차수판 동작이 해제되었습니다. 차량 이동이 가능하나 주차장이 혼잡할 수 있으니 천천히 출차 바랍니다.', 10, 20, '192.168.0.1', 'DEFAULT');
+   (11, 52, true, '[WaterBell]주의: 지하주차장의 수위가 1차 경고 기준치에 도달했습니다. 주차장에 차량을 주차하신 분들은 가능한 빠르게 차량을 지상으로 이동시켜 주시기 바랍니다.', '[WaterBell]차수판이 작동되었습니다. 지하 주자장 내 차량을 이동하시던 분들은 정차하시고 주차장 밖으로 나와주시길 바랍니다.','[WaterBell]차수판 동작이 해제되었습니다. 차량 이동이 가능하나 주차장이 혼잡할 수 있으니 천천히 출차 바랍니다.', 10, 20, '192.168.0.1', 'DEFAULT'),
+   (12, 52, true, '[WaterBell]주의: 지하주차장의 수위가 1차 경고 기준치에 도달했습니다. 주차장에 차량을 주차하신 분들은 가능한 빠르게 차량을 지상으로 이동시켜 주시기 바랍니다.', '[WaterBell]차수판이 작동되었습니다. 지하 주자장 내 차량을 이동하시던 분들은 정차하시고 주차장 밖으로 나와주시길 바랍니다.','[WaterBell]차수판 동작이 해제되었습니다. 차량 이동이 가능하나 주차장이 혼잡할 수 있으니 천천히 출차 바랍니다.', 10, 20, '192.168.0.1', 'DEFAULT');
 
 
 
@@ -610,22 +610,23 @@
 
 INSERT INTO member (member_id, login_id, password, created_at, state, role, phone)
     VALUES
-   (1, 'asdf1234', '{bcrypt}$2a$10$JEjA1jSlmRnWNaPpAx8/3u2gMZOvH59nHku.39rrGHDCZLF7/I5cC', NOW(), true, 'APART_MEMBER', '01023781926'),
-   (2, 'qwer1234', '{bcrypt}$2a$10$TwE2fJqxInZTLXG0zRNPfuh//pfhkkRFrVpIK/zcLq4nKul/yMq9a', NOW(), true, 'APART_MEMBER', '01088742165'),
-   (3, 'zxcv1234', '{bcrypt}$2a$10$0xPIXBmZaqnlf3mt6wlNEO9ZEJK7RK0NaZjl2dTZekIRem2fFr0YO', NOW(), true, 'APART_MEMBER', '01073402210'),
-   (4, 'aManager1', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'APART_MANAGER', '01071797299'),
-   (5, 'aManager2', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'APART_MANAGER', '01023781926'),
-   (6, 'pManager1', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'PUBLIC_MANAGER', '01064723285');
+   (1, 'system', 'system', NOW(), true, 'SYSTEM', '01073877808'),
+   (2, 'asdf1234', '{bcrypt}$2a$10$JEjA1jSlmRnWNaPpAx8/3u2gMZOvH59nHku.39rrGHDCZLF7/I5cC', NOW(), true, 'APART_MEMBER', '01073877808'),
+   (3, 'qwer1234', '{bcrypt}$2a$10$TwE2fJqxInZTLXG0zRNPfuh//pfhkkRFrVpIK/zcLq4nKul/yMq9a', NOW(), true, 'APART_MEMBER', '01073877808'),
+   (4, 'zxcv1234', '{bcrypt}$2a$10$0xPIXBmZaqnlf3mt6wlNEO9ZEJK7RK0NaZjl2dTZekIRem2fFr0YO', NOW(), true, 'APART_MEMBER', '01073877808'),
+   (5, 'aManager1', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'APART_MANAGER', '01073877808'),
+   (6, 'aManager2', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'APART_MANAGER', '01073877808'),
+   (7, 'pManager1', '{bcrypt}$2a$10$Tzkt1iLHjO5qlslPfErVZu9ahoK7bcpX9GfpN2Js7oJT2P2XulKKO', NOW(), true, 'PUBLIC_MANAGER', '01073877808');
 
 
 INSERT INTO apart_member (member_id, facility_id, is_system, platform_type, name, address_number)
     VALUES
-   (1, 11, true,  null, '이효경', '101'),
-   (2, 11, true,  null, '조준희', '201'),
-   (3, 12, true,  null, '황종인', '301');
+   (2, 11, true,  null, '이효경', '101'),
+   (3, 11, true,  null, '조준희', '201'),
+   (4, 12, true,  null, '황종인', '301');
 
 INSERT INTO apart_manager (member_id, facility_id)
-    VALUES (4,11), (5,12);
+    VALUES (5,11), (6,12);
 
 INSERT INTO public_manager (member_id, sido_id)
-    values (6, 3);
+    values (7, 3);

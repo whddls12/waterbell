@@ -39,7 +39,7 @@ public class NotificationController {
     }
 
     //차수판 가동시 알림
-    @PostMapping("/notification/activation")
+    @PostMapping("/notification/apartManager/activation")
     public ResponseEntity<Map<String, String>> sendActivationNotification() {
         Map<String, String> resultMap = new HashMap<>();
         HttpStatus status = null;
@@ -59,8 +59,8 @@ public class NotificationController {
         return new ResponseEntity<>(resultMap, status);
     }
     //차수판 해제시 알림
-    @PostMapping("/notification/deactivation")
-    public ResponseEntity<Map<String, String>> sendDeactivationNotification(/**@RequestHeader("X-AUTH-TOKEN") String token /이건 2안 **/) throws IOException {
+    @PostMapping("/notification/apartManager/deactivation")
+    public ResponseEntity<Map<String, String>> sendDeactivationNotification() throws IOException {
         Map<String, String> resultMap = new HashMap<>();
         HttpStatus status = null;
         int member_id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
