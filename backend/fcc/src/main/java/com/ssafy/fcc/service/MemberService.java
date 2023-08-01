@@ -1,13 +1,16 @@
 package com.ssafy.fcc.service;
 
-import com.ssafy.fcc.domain.member.ApartMember;
-import com.ssafy.fcc.domain.member.Member;
+import com.ssafy.fcc.config.security.JwtTokenProvider;
+import com.ssafy.fcc.domain.member.*;
+import com.ssafy.fcc.dto.ApartManagerResponse;
+import com.ssafy.fcc.dto.ApartMemberRespose;
+import com.ssafy.fcc.dto.PublicManagerResponse;
+import com.ssafy.fcc.dto.TokenDto;
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -15,26 +18,30 @@ import java.util.List;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+//    private final JwtTokenProvider jwtTokenProvider;
 
-    public  Member login(String loginId, String password) {
+    public Member login(String loginId, String password) {
         Member loginMember = memberRepository.findLogin(loginId, password);
 
-        if(loginMember !=null)
+        if (loginMember != null)
             return loginMember;
         else return null;
     }
 
-    public Member findByLoginId(String loginId){
+    public Member findByLoginId(String loginId) throws Exception {
         Member loginMember = memberRepository.findByLoginId(loginId);
 
-        if(loginMember !=null )
-            return loginMember;
-        return null;
+
+        if (loginMember == null) {
+            throw new Exception("일치하는 회원이 없습니다.");
+        }
+        return loginMember;
+
     }
 
     //시스템 회원 가입
     @Transactional
-    public Integer joinApartMember(Member member) throws Exception{
+    public Integer joinApartMember(Member member) throws Exception {
         if (memberRepository.findByLoginId(member.getLoginId()) != null) {
             throw new Exception("아이디 중복입니다.");
         }
@@ -49,11 +56,35 @@ public class MemberService {
 
         return member.getId();
     }
-    
+
     //아이디 중복 검증
-    public boolean validationDuplicateId(String loginId){
+    public boolean validationDuplicateId(String loginId) {
         Member member = memberRepository.findByLoginId(loginId);
-        if(member !=null) return false;
+        if (member != null) return false;
         return true; //중복 없음 통과
+    }
+
+    //id로 멤버 찾기
+    public Member findById(int id) {
+        return memberRepository.findById(id);
+    }
+
+
+
+    public Object getMemberResponse(Member member, String token) {
+
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setAccessToken(token);
+        if (member.getRole() == Role.APART_MEMBER) {
+            ApartMemberRespose apartMemberRespose = new ApartMemberRespose((ApartMember) member, tokenDto);
+            return apartMemberRespose;
+        } else if (member.getRole() == Role.APART_MANAGER) {
+            ApartManagerResponse apartManagerResponse = new ApartManagerResponse((ApartManager) member, tokenDto);
+            return apartManagerResponse;
+        } else if (member.getRole() == Role.PUBLIC_MANAGER) {
+            PublicManagerResponse publicManagerResponse = new PublicManagerResponse((PublicManager) member, tokenDto);
+            return publicManagerResponse;
+        }
+        return null;
     }
 }

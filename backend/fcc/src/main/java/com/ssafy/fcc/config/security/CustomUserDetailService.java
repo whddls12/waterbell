@@ -1,5 +1,6 @@
 package com.ssafy.fcc.config.security;
 
+import com.ssafy.fcc.domain.member.Member;
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +16,9 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String memberPk) throws UsernameNotFoundException {
-        return memberRepository.findById(Integer.parseInt(memberPk));
+
+        Member member = memberRepository.findById(Integer.parseInt(memberPk));
+        return new CustomUserDetail(member);
     }
 
 }

@@ -11,7 +11,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class SmsUtilTest {
     @Autowired SmsUtil smsUtil;
 
