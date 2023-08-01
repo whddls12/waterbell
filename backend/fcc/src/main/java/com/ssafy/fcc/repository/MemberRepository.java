@@ -1,6 +1,7 @@
 package com.ssafy.fcc.repository;
 
 import com.ssafy.fcc.domain.member.Member;
+import com.ssafy.fcc.domain.member.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,17 @@ public class MemberRepository {
         try {
             return em.createQuery("select m from Member m where m.phone = :phone ", Member.class)
                     .setParameter("phone", phone)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    public Member getSystemMember(){
+        try {
+            return em.createQuery("select m from Member m where m.role = :role", Member.class)
+                    .setParameter("role", Role.SYSTEM)
                     .setMaxResults(1)
                     .getSingleResult();
         } catch (NoResultException e) {

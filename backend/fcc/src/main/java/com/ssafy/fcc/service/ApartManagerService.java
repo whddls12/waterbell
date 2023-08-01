@@ -28,25 +28,12 @@ import java.util.List;
 public class ApartManagerService {
 
     private final ApartManagerRepository apartManagerRepository;
-    private final ApartMemberRepository apartMemberRepository;
     private final FloodAlarmLogRepository floodAlarmLogRepository;
     private final ReceiveAlarmMemberRepository receiveAlarmMemberRepository;
     private final SmsLogRepository smsLogRepository;
     private final MyWebSocketHandler myWebSocketHandler;
     private final ReceiveSmsMemberRepository receiveSmsMemberRepository;
     private final SmsUtil smsUtil;
-
-    // 아파트관리자 입주민들 찾기
-    public List<ApartMember> getMembersOfManager(int member_id) {
-        // 주어진 ID로 ApartManager 찾기
-        ApartManager manager = apartManagerRepository.findById(member_id);
-        // 찾은 ApartManager의 facility_id 가져오기
-        Integer facilityId = manager.getApart().getId();
-        // 같은 facility_id를 가진 ApartMember 모두 찾기
-        List<ApartMember> members = apartMemberRepository.findByApartId(facilityId);
-
-        return members;
-    }
 
     // 입주민들 차수판 웹알림 보내기
     @Transactional
@@ -55,11 +42,11 @@ public class ApartManagerService {
         Apart apart = manager.getApart();
         // 알림 메세지
         String notificationMessage;
-        if(step.name().equals(Step.ACTIVATION.name())){
+        if(step==Step.ACTIVATION){
             notificationMessage = apart.getActivation_message();
         }
         else {
-            notificationMessage = apart.getDeactivation_message(); // 차수판 해제
+            notificationMessage = apart.getDeactivation_message();
         }
         // 알림 로그
         FloodAlarmLog log = new FloodAlarmLog();
@@ -73,7 +60,7 @@ public class ApartManagerService {
         floodAlarmLogRepository.save(log);
 
         // 입주민들에게 웹 알림 보내고 저장하기(로그인 상태라면 소켓 실시간 알림)
-        List<ApartMember> members = getMembersOfManager(member_id);
+        List<ApartMember> members = apartManagerRepository.findMembersByManagerId(member_id);
         for(ApartMember member : members){
             ReceiveAlarmMember receiveAlarmMember = new ReceiveAlarmMember();
             receiveAlarmMember.setAlarm(log);
@@ -92,7 +79,7 @@ public class ApartManagerService {
         Apart apart = manager.getApart();
         // 알림 메세지
         String notificationMessage;
-        if(step.name().equals("ACTIVATION")){
+        if(step==Step.ACTIVATION){
             notificationMessage = apart.getActivation_message();
         }
         else {
@@ -106,13 +93,13 @@ public class ApartManagerService {
         smsLogRepository.save(smsLog);
 
         // 입주민들에게 sms 알림 보내고 저장
-        List<ApartMember> members = getMembersOfManager(member_id);
+        List<ApartMember> members = apartManagerRepository.findMembersByManagerId(member_id);
         for(ApartMember member : members){
             ReceiveSmsMember receiveSmsMember = new ReceiveSmsMember();
             receiveSmsMember.setMember(member);
             receiveSmsMember.setSmslog(smsLog);
             receiveSmsMemberRepository.save(receiveSmsMember);
-            smsUtil.sendSMS(manager.getPhone(), member.getPhone(), notificationMessage);
+            smsUtil.sendSMS(member.getPhone(), notificationMessage);
         }
     }
 
