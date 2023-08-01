@@ -6,10 +6,10 @@
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "SK_WiFi5861";             // your network SSID (name)
-char pass[] = "1412009095";        // your network password
+char ssid[] = "Galaxy A313285";             // your network SSID (name)
+char pass[] = "12345678";        // your network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "192.168.25.36";    // IP address of the MQTT server
+char server[] = "192.168.43.41";    // IP address of the MQTT server
 char topic[] = "test";            // Default topic string
 char clientId[] = "Arduino weather";      // Cliwent id: Must be unique on the broker
 
@@ -58,9 +58,6 @@ void loop() {
   char message[256]="connected!";
   int i;
 
-  // for (i=0; i<256; i++) {
-  //   message[i] = 0;
-  // }
 
   if (Serial.available()) {
     Serial.print("publish!!");
