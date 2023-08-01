@@ -1,13 +1,8 @@
-<template lang="">
-    <div>
-        
-    </div>
+<template>
+  <div>지하주차장 대시보드 페이지</div>
 </template>
-<script>
-export default {
-    
-}
+
+<script lang="ts">
+export default {}
 </script>
-<style lang="">
-    
-</style>
+<style lang=""></style>
