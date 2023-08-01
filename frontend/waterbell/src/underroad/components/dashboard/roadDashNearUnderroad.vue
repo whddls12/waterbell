@@ -36,8 +36,8 @@ export default defineComponent({
     const tmplocation = computed(() => store.getters.tmplocation).value
 
     //임시 선택 위치에 원하는 값을 넣는 store의 mutation(click 이벤트 발생 시, 실행할 함수)
-    const setTmplotation = (obj: any) => {
-      store.commit('setTmplocation', obj)
+    const setTmplotation = (id: any) => {
+      store.commit('setTmplocation', id)
     }
 
     //마커 위치가 담긴 배열들
@@ -96,7 +96,7 @@ export default defineComponent({
     const initMap = async () => {
       const container = document.getElementById('map')
       let loc = await getMylocation()
-      console.log(loc)
+
       const options = {
         center: new window.kakao.maps.LatLng(loc.lat, loc.lon), //카카오 마커 확인용
         // center: new window.kakao.maps.LatLng(36.3549114724545, 127.345907414374),
@@ -123,7 +123,7 @@ export default defineComponent({
           i.road.latitude,
           i.road.longitude
         )
-        console.log(latlng)
+        // console.log(latlng)
         let marker = new window.kakao.maps.Marker({
           map: map.value,
           position: latlng,
@@ -151,8 +151,9 @@ export default defineComponent({
 
         window.kakao.maps.event.addListener(marker, 'click', function () {
           infowindow = makeInfoWindowRoad(i)
+          setTmplotation(i.road.id)
+          // console.log(store.getters.tmplocation)
           infowindow.open(map.value, marker)
-          setTmplotation(i.latlng)
         })
       }
 
@@ -189,7 +190,8 @@ export default defineComponent({
         window.kakao.maps.event.addListener(marker, 'click', function () {
           infowindow = makeInfoWindowRoad(i)
           infowindow.open(map.value, marker)
-          setTmplotation(i.latlng)
+          // console.log(store.getters.tmplocation)
+          setTmplotation(i.road.id)
         })
       }
 
@@ -225,8 +227,9 @@ export default defineComponent({
 
         window.kakao.maps.event.addListener(marker, 'click', function () {
           infowindow = makeInfoWindowRoad(i)
+          setTmplotation(i.road.latlng)
+          // console.log(store.getters.tmplocation)
           infowindow.open(map.value, marker)
-          setTmplotation(i.latlng)
         })
       }
 
@@ -299,7 +302,7 @@ export default defineComponent({
               let lon = position.coords.longitude // 경도
               resolve({ lat: lat, lon: lon })
             },
-            (error) => reject(error) // 위치 정보를 가져오는 데 실패했을 경우의 에러 처리
+            (error) => resolve({ lat: '36.3405', lon: '127.3939' }) // 위치 정보를 가져오는 데 실패했을 경우의 에러 처리
           )
         } else {
           resolve({ lat: '36.3405', lon: '127.3939' })
@@ -317,8 +320,11 @@ export default defineComponent({
         i.statusMsg +
         '</p></div>'
       let iwRemoveable = true // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
-      let iwPosition = new window.kakao.maps.LatLng(i.latitude, i.longitude)
-      console.log(iwPosition)
+      let iwPosition = new window.kakao.maps.LatLng(
+        i.road.latitude,
+        i.road.longitude
+      )
+      // console.log(iwPosition)
       // 인포윈도우를 생성합니다
       var infowindow = new window.kakao.maps.InfoWindow({
         content: iwContent,
