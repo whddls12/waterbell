@@ -27,6 +27,10 @@ stages {
         steps {
             dir('backend/fcc'){
                 sh '''
+                echo 'Pulling latest changes'
+                git pull origin master   # Assuming you are pulling from the 'master' branch, change it if needed
+                '''
+                sh '''
                 echo 'Deploy'
                 if [ "$(docker ps -q -f name=WaterBell)" ]; then
                 docker stop WaterBell
