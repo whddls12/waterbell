@@ -11,7 +11,7 @@ export interface Gugun {
 }
 
 export interface Underroad {
-  id: number
+  id: string
   gugun: Gugun
   firstFloodMessage: string
   secondFloodMessage: string
@@ -23,4 +23,6 @@ export interface Underroad {
   latitude: number
   longitude: number
   apart: boolean
+  //   statusMsg: string
+  //   //진입가능 /1차 경고/ 2차 경고/ 진입 금지
 }
