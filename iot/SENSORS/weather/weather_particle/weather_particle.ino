@@ -2,12 +2,30 @@
 #include <PubSubClient.h>
 #include <WiFiEsp.h>
 #include <SoftwareSerial.h>
+#include <DHT.h>
+#include <pm2008_i2c.h>
+
+PM2008_I2C pm2008_i2c;
+
+
+// #define DHTPIN 6
+// float hum; //Stores humidity value
+// float temp; //Stores temperature value
+
+
+unsigned long lastMsg = 0;
+#define MSG_BUFFER_SIZE  (10)
+char msg[MSG_BUFFER_SIZE];
+
+
+// #define DHTTYPE DHT11
+// DHT dht(DHTPIN, DHTTYPE);
 
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "jjhjjh";             // your network SSID (name)
-char pass[] = "123456700";        // your network password
+char ssid[] = "Galaxy A313285";             // your network SSID (name)
+char pass[] = "12345678";        // your network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
 char server[] = "192.168.43.41";    // IP address of the MQTT server
 char topic[] = "test";            // Default topic string
@@ -17,8 +35,10 @@ WiFiEspClient wifi;               // Initialize the Ethernet client object
 PubSubClient mqttClient(wifi);    // Initialize the MQTT client
 
 void setup() {
+  pm2008_i2c.begin();
   Serial.begin(115200);
-
+  pm2008_i2c.command();
+  dht.begin();
   // Set baud rate of ESP8266 to 9600 regardless of original setting
   set_esp8266_baud_rate(baudRate);
 
@@ -55,23 +75,44 @@ void setup() {
 }
 
 void loop() {
-  char message[256]="connected!";
-  int i;
-
-
-  if (Serial.available()) {
-    Serial.print("publish!!");
-    Serial.readBytesUntil("\r",message, 255);
-    mqttClient.publish(topic, message);
-  }
-
-  // mqttClient.publish(topic, "sussess!!!");
 
   if (!mqttClient.connected()) {
     reconnect();
   }
-
   mqttClient.loop();
+
+  unsigned long now = millis();
+
+  if(now-lastMsg>2000){
+    lastMsg=now;
+    uint8_t ret = pm2008_i2c.read();
+    if (ret == 0) {
+      Serial.print("PM 1.0 (GRIMM) : ");
+      Serial.println(pm2008_i2c.pm1p0_grimm);
+      Serial.print("PM 2.5 (GRIMM) : : ");
+      Serial.println(pm2008_i2c.pm2p5_grimm);
+      Serial.print("PM 10 (GRIMM) : : ");
+      Serial.println(pm2008_i2c.pm10_grimm);
+      Serial.print("PM 1.0 (TSI) : ");
+
+      mqttClient.publish("test", msg);
+    }
+
+
+
+  //   hum = dht.readHumidity();
+  //   temp = dht.readTemperature();
+  //   Serial.print("humidity : ");
+  //   Serial.print(hum);
+  //   Serial.print("Temp:");
+  //   Serial.print(temp);
+  //   snprintf (msg, MSG_BUFFER_SIZE, "%d", (int)temp);
+  //   mqttClient.publish("test", msg);
+  //   snprintf (msg, MSG_BUFFER_SIZE, "%d", (int)hum);
+  //   mqttClient.publish("test", msg);
+  }
+
+
 
 }
 
