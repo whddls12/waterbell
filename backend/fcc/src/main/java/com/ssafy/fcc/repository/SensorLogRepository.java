@@ -1,6 +1,7 @@
 package com.ssafy.fcc.repository;
 
-import com.ssafy.fcc.domain.facility.UndergroundRoad;
+
+import com.ssafy.fcc.domain.log.SensorLog;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -8,11 +9,11 @@ import javax.persistence.EntityManager;
 
 @Repository
 @RequiredArgsConstructor
-public class UndergroundRoadRepository {
+public class SensorLogRepository {
 
     private final EntityManager em;
 
-    public UndergroundRoad findById(int facility_id){
-        return em.find(UndergroundRoad.class, facility_id);
+    public void save(SensorLog sensorLog) {
+        em.persist(sensorLog);
     }
 }

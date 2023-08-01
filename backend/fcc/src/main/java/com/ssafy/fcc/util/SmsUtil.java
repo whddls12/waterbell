@@ -29,13 +29,17 @@ public class SmsUtil {
     @Value("${serviceId}")
     private String serviceId;
 
-    public void sendSMS(String from, String to, String content) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    @Value("${systemPhoneNumber}")
+    private String from;
+
+    public void sendSMS(String to, String content) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
 
         String hostNameUrl = "https://sens.apigw.ntruss.com";
         String requestUrl = "/sms/v2/services/" + serviceId + "/messages";
         String method = "POST";
         String timestamp = Long.toString(System.currentTimeMillis());
         String apiUrl = hostNameUrl + requestUrl;
+
 
         JSONObject bodyJson = createBodyJson(from, to, content);
 
@@ -57,7 +61,7 @@ public class SmsUtil {
         toArr.add(toJson);
 
         JSONObject bodyJson = new JSONObject();
-        bodyJson.put("type", "sms");
+        bodyJson.put("type", "lms");
         bodyJson.put("contentType", "comm");
         bodyJson.put("countryCode", "82");
         bodyJson.put("from", from);
@@ -126,6 +130,6 @@ public class SmsUtil {
     }
 
     public String makeSmsContent(String certificationNumber){
-        return "[WaterBell] 인증번호 ["+certificationNumber+"]를 입력해주세요.";
+        return "[WaterBell]인증번호 ["+certificationNumber+"]를 입력해주세요.";
     }
 }
