@@ -14,7 +14,7 @@ import java.util.List;
 public class MemberRepository {
     private final EntityManager em;
 
-    public UserDetails findById(int id) {
+    public Member findById(int id) {
         Member member = em.find(Member.class, id);
         return member;
     }
