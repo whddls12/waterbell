@@ -1,8 +1,7 @@
 package com.ssafy.fcc.domain.log;
 
 import com.ssafy.fcc.domain.facility.Facility;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@ToString
 public class SensorLog {
 
     @Id
@@ -28,4 +28,5 @@ public class SensorLog {
 
     @Column(name = "sensor_data")
     private Integer sensorData;
+
 }
