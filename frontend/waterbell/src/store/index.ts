@@ -9,7 +9,7 @@ export default createStore({
     underroadListByGugun: [],
     underroadList: [] as Underroad[],
     nowUnderroad: {},
-    location: {}
+    location: { lon: '127', lat: '55' }
   },
   getters: {
     underroadList(state) {
