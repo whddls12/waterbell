@@ -3,7 +3,6 @@ package com.ssafy.fcc.service;
 import com.ssafy.fcc.util.RedisUtil;
 import com.ssafy.fcc.util.SmsUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -18,8 +17,6 @@ public class SmsCertificationService {
     private final SmsUtil smsUtil;
     private final RedisUtil redisUtil;
 
-    @Value("${systemPhoneNumber}")
-    private String systemPhoneNumber;
     //인증만료시간(3분)
     private static final int EXPIRATION_TIME = 180000;
 
@@ -33,7 +30,7 @@ public class SmsCertificationService {
         //redis에 저장
         redisUtil.setDataExpire(phoneNumber, strNumber, EXPIRATION_TIME);
         //sms 인증번호 전송
-        smsUtil.sendSMS(systemPhoneNumber, phoneNumber, smsUtil.makeSmsContent(strNumber));
+        smsUtil.sendSMS(phoneNumber, smsUtil.makeSmsContent(strNumber));
     }
 
     // 사용자가 입력한 인증번호가 redis와 일치한지 확인
