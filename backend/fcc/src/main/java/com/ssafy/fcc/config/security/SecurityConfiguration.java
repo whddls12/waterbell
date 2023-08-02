@@ -59,7 +59,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() // 권한 관리를 하는 옵션의 시작점,
                 .antMatchers("/**/apartMember/**").hasRole("APART_MEMBER")
                 .antMatchers("/**/apartManager/**").hasRole("APART_MANAGER")
-                .antMatchers("/**/publicManager/**").hasRole("PUBLUC_NAMAGER")
+                .antMatchers("/**/publicManager/**").hasRole("PUBLIC_MANAGER")
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),
