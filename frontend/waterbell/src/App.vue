@@ -1,5 +1,9 @@
 <template>
+<<<<<<< frontend/waterbell/src/App.vue
   <div id="nav">
+    <div>
+    <Home />
+    </div>
     <TheHeader />
     <div class="router-view-container">
       <router-view></router-view>
@@ -8,14 +12,19 @@
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue'
 import TheHeader from './components/TheHeader.vue'
 
-export default {
+export default  defineComponent({
+ 
+   name: 'App',
   components: {
+    Home,
     TheHeader
   }
-}
-</script>
+})
+
+ 
 
 <style>
 /* template {
@@ -37,16 +46,30 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-content: flex-end;
+
+.service-select {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+.select-box {
+  border: 1px solid #939393;
+  width: 500px;
+  height: 300px;
+
+  margin: 20px;
+}
+
+.header {
+  display: flex;
 }
 
 #nav a.router-link-exact-active {
   color: #42b983;
 } */
+
 body {
   background-color: #f2f7ff;
   margin: 0;
@@ -104,5 +127,8 @@ router-view {
   align-items: center;
   width: calc(100% - 320px);
   padding: 0;
+
+#hello-msg {
+  display: inline-block;
 }
 </style>

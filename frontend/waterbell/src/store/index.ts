@@ -20,7 +20,8 @@ export default createStore({
       releaseMsg: string
     },
     location: { lon: '127', lat: '55' },
-    tmplocation: {} as { id: string } //임시 선택 위치
+    tmplocation: {} as { id: string }, //임시 선택 위치
+    isMainpage: true
   },
   getters: {
     underroadList(state) {
