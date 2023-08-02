@@ -1,11 +1,25 @@
 package com.ssafy.fcc.MQTT;
 
+import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.facility.WaterStatus;
+import com.ssafy.fcc.repository.FacilityRepository;
+import com.ssafy.fcc.repository.UndergroundRoadRepository;
+import com.ssafy.fcc.service.ApartService;
 import com.ssafy.fcc.service.SystemService;
+import com.ssafy.fcc.service.UndergroundRoadService;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.paho.client.mqttv3.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+import java.util.*;
+
+import static org.aspectj.util.LangUtil.split;
 
 @Component
 @RequiredArgsConstructor
@@ -15,9 +29,16 @@ public class MqttSubscriber implements MqttCallback {
 
     public final SystemService systemService;
 
+    public final FacilityRepository facilityRepository;
+
+    public final UndergroundRoadService undergroundRoadService;
+
+    public final ApartService apartService;
+
 
     //Mqtt프로토콜를 이용해서 broker에 연결하면서 연결정보를 설정할 수 있는 객체
     public MqttConnectOptions mqttOption;
+
     public MqttSubscriber init(String server, String clientId) {
         try {
             mqttOption = new MqttConnectOptions();
@@ -42,27 +63,55 @@ public class MqttSubscriber implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
 
-        String[] result = split(message.toString());
+        // TODO 만들어지는 topic 계층에 따라 (facility_id, Temp,Dust,Humid or Cam) 뽑아야함
 
-        try {
-            String category = result[0];
-            int value = Integer.parseInt(result[result.length - 1]);
-            System.out.println(category + " " + value);
-            saveLog(category,value);
-        }catch (Exception e) {
-            e.printStackTrace();
+
+        // TODO 예를들어 /A/7/Temp
+        // TODO facility_id = 7, category = Temp
+        String[] result = topic.toString().split("/");
+        int facilityId = Integer.parseInt(result[1]);
+        String category = result[2];
+        int value = Integer.parseInt(message.toString());
+        Facility facility = facilityRepository.findById(facilityId);
+
+        if(category.equals("height")) {
+            checkSituation(facility,value);
+        }
+
+
+        // TODO category에 따라 프론트로 웹소켓 통신 or 측정 로그 저장
+        if (topic.equals("Cam")) {
+
+            Base64.Encoder encode = Base64.getEncoder();
+
+            byte[] encodeByte = encode.encode(message.getPayload());
+
+            System.out.println("인코딩 후 : " + new String(encodeByte));
+
+        } else {
+            systemService.insertLog(facilityId, category, Integer.parseInt(message.toString()));
         }
     }
 
-    public void saveLog(String category, int value) {
-        systemService.insertLog(category,value);
+
+    public void checkSituation(Facility facility, int value) throws Exception {
+        WaterStatus status = facility.getStatus();
+        if (facility.getFirstAlarmValue() < value && status == WaterStatus.DEFAULT) { // 1차 기준치 초과
+            facility.setStatus(WaterStatus.FIRST);
+            if (facility.isApart()) { // 아파트
+                apartService.sendAutoNotificationToManager(facility.getId(),facility.getStatus());
+                apartService.sendAutoNotificationToMember(facility.getId());
+            } else { // 지하차도
+                undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus());
+            }
+        } else if(facility.getSecondAlarmValue() < value && status == WaterStatus.FIRST) { // 2차 기준치 초과
+            if (facility.isApart()) { // 아파트
+                apartService.sendAutoNotificationToManager(facility.getId(),facility.getStatus());
+            } else { // 지하차도
+                undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus());
+            }
+        }
     }
-
-
-    public String[] split(String message) {
-        return message.split(" ");
-    }
-
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken token) {
@@ -84,5 +133,4 @@ public class MqttSubscriber implements MqttCallback {
         }
         return result;
     }
-
 }

@@ -2,6 +2,7 @@ package com.ssafy.fcc.repository;
 
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.facility.WaterStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -24,5 +25,11 @@ public class FacilityRepository {
 
     public Facility findById(Integer id) {
         return em.find(Facility.class, id);
+    }
+
+    public WaterStatus findStatusById(Integer id) {
+        return em.createQuery("select f from Facility f where f.id = :id", Facility.class)
+                .setParameter("id",id)
+                .getSingleResult().getStatus();
     }
 }

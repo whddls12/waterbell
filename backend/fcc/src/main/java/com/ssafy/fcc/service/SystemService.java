@@ -7,6 +7,7 @@ import com.ssafy.fcc.repository.FacilityRepository;
 import com.ssafy.fcc.repository.GugunRepository;
 import com.ssafy.fcc.repository.SensorLogRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,14 +21,14 @@ public class SystemService {
     public final FacilityRepository facilityRepository;
     public final SensorLogRepository sensorLogRepository;
 
-    public void insertLog(String category, int value) {
+    public void insertLog(int facilityId, String category, int value) {
 
-        Facility facility = facilityRepository.findById(1);
+        Facility facility = facilityRepository.findById(facilityId);
 
         SensorLog sensorlog = new SensorLog();
         sensorlog.setFacility(facility);
         sensorlog.setCategory(category);
-        sensorlog.setSensorTime(LocalDateTime.now());
+        sensorlog.setSensorTime(LocalDateTime.now().withNano(0));
         sensorlog.setSensorData(value);
 
         sensorLogRepository.save(sensorlog);
