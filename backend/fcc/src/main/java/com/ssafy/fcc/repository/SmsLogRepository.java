@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,5 +16,9 @@ public class SmsLogRepository {
 
     public void save(SmsLog smsLog) {
         em.persist(smsLog);
+    }
+
+    public SmsLog findById(Long id) {
+        return em.find(SmsLog.class, id);
     }
 }
