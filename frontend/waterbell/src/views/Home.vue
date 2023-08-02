@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import TheHeader from '@/components/TheHeader.vue'
-import { ref, computed, defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 // import RoadDash from '../underroad/views/roadDashboardView.vue'
 function isInMain() {
