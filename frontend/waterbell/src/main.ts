@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from 'axios'
-import Geolocation from 'vue-geolocation-api'
+// import Geolocation from 'vue-geolocation-api'
 
 axios.defaults.baseURL = 'http://localhost:8080'
 
