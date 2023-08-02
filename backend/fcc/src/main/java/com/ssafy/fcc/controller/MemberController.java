@@ -153,7 +153,7 @@ public class MemberController {
 
 
                 if (loginUser.getRole() == Role.APART_MEMBER) {
-                    ApartMemberRespose apartMemberRespose = new ApartMemberRespose((ApartMember) loginUser, token);
+                    ApartMemberResponse apartMemberRespose = new ApartMemberResponse((ApartMember) loginUser, token);
                     resultMap.put("member", apartMemberRespose);
                 } else if (loginUser.getRole() == Role.APART_MANAGER) {
                     ApartManagerResponse apartManagerResponse = new ApartManagerResponse((ApartManager) loginUser, token);
