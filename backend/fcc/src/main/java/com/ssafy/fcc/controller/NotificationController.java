@@ -24,7 +24,6 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@Api("알림")
 public class NotificationController {
 
     private final MyWebSocketHandler myWebSocketHandler;

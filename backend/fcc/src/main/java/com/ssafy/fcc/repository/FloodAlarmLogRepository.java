@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -14,5 +15,9 @@ public class FloodAlarmLogRepository {
 
     public void save(FloodAlarmLog floodAlarmLog){
         em.persist(floodAlarmLog);
+    }
+
+    public FloodAlarmLog findById(Long id){
+        return em.find(FloodAlarmLog.class, id);
     }
 }

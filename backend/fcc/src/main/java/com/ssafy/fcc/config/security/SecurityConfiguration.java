@@ -12,7 +12,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -43,6 +45,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 config.setAllowedMethods(
                                         List.of("*")
                                 );
+                                config.setAllowedHeaders(
+                                        List.of("*")
+                                );
                                 return config;
                             };
                             c.configurationSource(source);
@@ -54,7 +59,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests() // 권한 관리를 하는 옵션의 시작점,
                 .antMatchers("/**/apartMember/**").hasRole("APART_MEMBER")
                 .antMatchers("/**/apartManager/**").hasRole("APART_MANAGER")
-                .antMatchers("/**/publicManager/**").hasRole("PUBLUC_NAMAGER")
+                .antMatchers("/**/publicManager/**").hasRole("PUBLIC_MANAGER")
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),
@@ -65,8 +70,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     }
-
-
 
     @Override //swagger 예외 처리
     public void configure(WebSecurity web) {
