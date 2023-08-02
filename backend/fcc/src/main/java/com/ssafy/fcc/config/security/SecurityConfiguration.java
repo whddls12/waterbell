@@ -43,6 +43,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 config.setAllowedMethods(
                                         List.of("*")
                                 );
+                                //여기 추가
+                                config.setAllowedHeaders(
+                                        List.of("*")
+                                );
+                                //여기까지
                                 return config;
                             };
                             c.configurationSource(source);
