@@ -1,12 +1,14 @@
 <template>
   <div>
-    <p>지하차도 대시보드 강수량 그래프</p>
-    <canvas
-      ref="chartCanvas"
-      id="chartCanvas"
-      width="400"
-      height="200"
-    ></canvas>
+    <div class="container" id="dash-cctv">
+      <p>지하차도 대시보드 강수량 그래프</p>
+      <canvas
+        ref="chartCanvas"
+        id="chartCanvas"
+        width="400"
+        height="200"
+      ></canvas>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -122,8 +124,12 @@ export default defineComponent({
       console.log(chartRef.value)
     })
 
-    return { chartRef, timeArr, amountArr }
-  }
-})
+//     return { chartRef, timeArr, amountArr }
+//   }
+// })
 </script>
-<style lang=""></style>
+<style lang="css">
+#dash-cctv {
+  height: 500px;
+}
+</style>
