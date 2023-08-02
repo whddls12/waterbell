@@ -1,8 +1,7 @@
 <template>
-<<<<<<< frontend/waterbell/src/App.vue
   <div id="nav">
     <div>
-    <Home />
+      <Home />
     </div>
     <TheHeader />
     <div class="router-view-container">
@@ -14,17 +13,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import TheHeader from './components/TheHeader.vue'
+import Home from './views/Home.vue'
 
-export default  defineComponent({
- 
-   name: 'App',
+export default defineComponent({
+  name: 'App',
   components: {
     Home,
     TheHeader
   }
 })
-
- 
+</script>
 
 <style>
 /* template {
@@ -127,7 +125,7 @@ router-view {
   align-items: center;
   width: calc(100% - 320px);
   padding: 0;
-
+}
 #hello-msg {
   display: inline-block;
 }

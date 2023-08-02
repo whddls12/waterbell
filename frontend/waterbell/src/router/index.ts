@@ -14,7 +14,6 @@ import roadReportListVue from '../underroad/components/report/roadReportList.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
-
 //지하주차장 로그인, 회원가입
 import parkLogin from '../undergroundParkingLot/views/parkLoginView.vue'
 import parkSignup from '../undergroundParkingLot/views/parkSignupView.vue'
@@ -25,7 +24,6 @@ import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
-
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -118,7 +116,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/park/control',
     name: 'ParkControl',
     component: ParkControl
-
   }
 ]
 
