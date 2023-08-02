@@ -10,21 +10,20 @@
   </div>
 </template>
 <script lang="ts">
-import Chart from 'chart.js/auto'
 import { ref, onMounted, nextTick } from 'vue'
 import { defineComponent } from 'vue'
-import axios from 'axios'
 import { useStore } from 'vuex'
+import axios from 'axios'
+import Chart from 'chart.js/auto'
 
 export default defineComponent({
   name: 'roadDashRainAmountVue',
   setup() {
     const chartRef = ref(null)
     const store = useStore()
-    const timeArr = ref([])
-    const amountArr = ref([])
+    const timeArr = ref<string[]>([])
+    const amountArr = ref<string[]>([])
 
-    // 차트로 활용하기 위한 데이터 가공
     const makeData = (i: Record<string, any>) => {
       // any 대신에 좀 더 구체적인 타입을 사용하려면 Record<string, any>를 사용하세요.
       for (const key in i) {
@@ -48,7 +47,7 @@ export default defineComponent({
         const lat = store.state.location['lat']
         // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
         const response = await axios.get(
-          'http://localhost:8080/dash/map/weather',
+          'http://localhost:8080/dash/map/rain',
           {
             params: {
               year: year,
@@ -62,9 +61,8 @@ export default defineComponent({
           }
         )
         const apiData = response.data
-        console.log(response)
-        // console.log('apiData')
-        // console.log(apiData)
+        console.log('apiData')
+        console.log(apiData)
         return { apiData }
         // 차트 생성을 위한 데이터 가공
         //apiData를 인자로 넘겨줍니다
@@ -73,18 +71,18 @@ export default defineComponent({
       }
     }
 
-    async function drawChart(chartCanvas) {
+    async function drawChart(chartCanvas: HTMLElement | null) {
+      // const labels = apiData.map((data) => data.label)
+      // const values = apiData.map((data) => data.value)
       // document.addEventListener('DOMContentLoaded', function () {
-      // -> onMounted에 의해 컴포넌트가 마운트 된 후에 실행된다. 중복되는 의미라서 주석처리
-
       console.log('차트 그리기 시작')
-      // console.log('drawChart에서 timeArr.value')
-      // console.log(timeArr.value)
+      console.log('drawChart에서 timeArr.value')
+      console.log(timeArr.value)
       const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement
       const ctx = canvas.getContext('2d')
       // 차트 그리기
       new Chart(ctx, {
-        type: 'line', // 차트 타입 (bar, line 등)
+        type: 'bar', // 차트 타입 (bar, line 등)
 
         data: {
           labels: timeArr.value,
@@ -92,8 +90,8 @@ export default defineComponent({
             {
               label: '강수량 데이터',
               data: amountArr.value,
-              backgroundColor: 'rgb(75, 192, 192, 0.2)',
-              borderColor: 'rgb(75, 192, 192, 1)',
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
               borderWidth: 1
             }
           ]
@@ -111,15 +109,17 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      const { apiData } = await getData()
-      makeData(apiData)
+      const apiData = await getData()
+      if (apiData) {
+        makeData(apiData)
+      }
       await nextTick()
       // 차트 그리기
-      // console.log('chartRef.value')
-      // console.log(chartRef.value)
+      console.log('chartRef.value')
+      console.log(chartRef.value)
       drawChart(chartRef.value)
-      // console.log('chartRef.value')
-      // console.log(chartRef.value)
+      console.log('chartRef.value')
+      console.log(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr }
