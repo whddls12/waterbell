@@ -124,9 +124,9 @@ export default defineComponent({
       console.log(chartRef.value)
     })
 
-//     return { chartRef, timeArr, amountArr }
-//   }
-// })
+    // return { chartRef, timeArr, amountArr }
+  }
+})
 </script>
 <style lang="css">
 #dash-cctv {

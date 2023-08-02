@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <!-- 진입화면 v-if="isMainpage"로 처음화면에 온 걸 구분? -->
-    <div v-if="isMainPage">
+    <div v-if="isMainPage" class="page-start">
       <!-- 서비스 로고 -->
       <div class="service-logo">
         <img src="../assets/images/waterbell-logo.png" alt="waterbell-logo" />
@@ -22,10 +22,12 @@
     </div>
 
     <!-- 서비스 화면 -->
-    <div v-if="!isMainPage">
+    <div v-else>
       <TheHeader />
       <hr />
-      <router-view></router-view>
+      <div class="router-view-container">
+        <router-view></router-view>
+      </div>
       <footer></footer>
     </div>
   </div>
@@ -33,30 +35,62 @@
 
 <script lang="ts">
 import TheHeader from '@/components/TheHeader.vue'
-import { ref, computed, defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 // import RoadDash from '../underroad/views/roadDashboardView.vue'
-function isInMain() {
-  const store = useStore()
-  let isMainPage = computed(() => store.state.isMainpage)
 
-  return { isMainPage }
-}
 export default defineComponent({
   name: 'Home',
   components: {
     TheHeader
   },
   setup() {
-    return {
-      ...isInMain()
+    const store = useStore()
+    const isMainPage = computed(() => store.state.isMainpage)
+
+    function goToOther() {
+      store.commit('setIsMainpage', false)
     }
-    // function goToOther() {
-    //   isMainPage = !isMainPage
-    // }
-    // function goToMain() {
-    //   isMainPage = true
-    // }
+
+    return {
+      isMainPage,
+      goToOther
+    }
   }
 })
 </script>
+
+<style>
+.service-select {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
+.select-box {
+  border: 1px solid #939393;
+  background-color: white;
+
+  width: 500px;
+  height: 300px;
+  margin: 20px;
+}
+
+.header {
+  display: flex;
+}
+
+.router-view-container {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: auto; /* prevent components from going out of bounds */
+  background-color: white;
+}
+
+router-view {
+  flex-flow: 1;
+}
+</style>

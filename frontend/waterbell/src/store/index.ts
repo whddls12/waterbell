@@ -44,6 +44,9 @@ export default createStore({
     //state에 tmplocation에 임시 위치 저장하기
     setTmplocation(state, payload) {
       state.tmplocation = payload
+    },
+    setIsMainpage(state, value) {
+      state.isMainpage = value
     }
   },
   actions: {

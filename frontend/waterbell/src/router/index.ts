@@ -14,7 +14,6 @@ import roadReportListVue from '../underroad/components/report/roadReportList.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
-
 //지하주차장 로그인, 회원가입
 import parkLogin from '../undergroundParkingLot/views/parkLoginView.vue'
 import parkSignup from '../undergroundParkingLot/views/parkSignupView.vue'
@@ -25,7 +24,6 @@ import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
-
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -118,13 +116,40 @@ const routes: Array<RouteRecordRaw> = [
     path: '/park/control',
     name: 'ParkControl',
     component: ParkControl
-
   }
 ]
 
+// const router = createRouter({
+//   history: createWebHistory(process.env.BASE_URL),
+//   routes
+// })
+
+// 진입화면에서 대시보드 페이지로 이동한 후 뒤로가기로 이동했을 경우
+// 메인페이지로 이동하면서 isMainPage 변수를 다시 바꿔주기 위해 추가
+import store from '@/store'
+
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/park/dash',
+      component: ParkDash
+    },
+    {
+      path: '/road/dash',
+      component: RoadDash
+    }
+  ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (from.path === '/park/dash' && to.path === '/') {
+    store.commit('setIsMainpage', true)
+  } else if (from.path === '/road/dash' && to.path === '/') {
+    store.commit('setIsMainpage', true)
+  }
+
+  next()
 })
 
 export default router

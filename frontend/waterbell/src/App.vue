@@ -1,42 +1,37 @@
 <template>
-<<<<<<< frontend/waterbell/src/App.vue
   <div id="nav">
-    <div>
     <Home />
-    </div>
-    <TheHeader />
-    <div class="router-view-container">
+    <!-- <TheHeader /> -->
+    <!-- <div class="router-view-container">
       <router-view></router-view>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import TheHeader from './components/TheHeader.vue'
+// import TheHeader from './components/TheHeader.vue'
+import Home from './views/Home.vue'
 
-export default  defineComponent({
- 
-   name: 'App',
+export default defineComponent({
+  name: 'App',
   components: {
-    Home,
-    TheHeader
+    Home
+    // TheHeader
   }
 })
-
- 
+</script>
 
 <style>
-/* template {
+template {
   background-color: #f2f7ff;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* flex-basis: 100%;
+  flex-basis: 100%;
   text-align: center;
-
   color: #2c3e50;
   background-color: #f2f7ff;
 }
@@ -46,31 +41,9 @@ export default  defineComponent({
   flex-direction: column;
   justify-content: center;
   align-content: flex-end;
-
-.service-select {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-
 }
 
-.select-box {
-  border: 1px solid #939393;
-  width: 500px;
-  height: 300px;
-
-  margin: 20px;
-}
-
-.header {
-  display: flex;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-} */
-
-body {
+*/ body {
   background-color: #f2f7ff;
   margin: 0;
   padding: 0;
@@ -92,6 +65,7 @@ div {
   color: #2c3e50;
   width: 80vw; /* set width to 80vw to give 10% padding on each side */
   height: 100vh;
+
   /* display: flex;
   justify-content: center;
   align-items: center;
@@ -106,19 +80,6 @@ div {
   margin-left: 10%;
   margin-right: 10%; */
 }
-.router-view-container {
-  padding: 10px 20px;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  overflow: auto; /* prevent components from going out of bounds */
-  background-color: white;
-}
-
-router-view {
-  flex-flow: 1;
-}
 
 #nav {
   display: flex;
@@ -127,8 +88,5 @@ router-view {
   align-items: center;
   width: calc(100% - 320px);
   padding: 0;
-
-#hello-msg {
-  display: inline-block;
 }
 </style>

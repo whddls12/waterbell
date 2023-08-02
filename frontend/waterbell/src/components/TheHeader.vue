@@ -19,11 +19,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 export default defineComponent({
-  name: 'TheHeader'
-  // setup() {}
+  name: 'TheHeader',
+  components: {},
+  setup() {
+    const store = useStore()
+    const isMainPage = computed(() => store.state.isMainpage)
+    const router = useRouter()
+
+    function goToMain() {
+      store.commit('setIsMainpage', true)
+      router.push({ path: '/' })
+    }
+
+    return {
+      isMainPage,
+      goToMain
+    }
+  }
 })
 </script>
 

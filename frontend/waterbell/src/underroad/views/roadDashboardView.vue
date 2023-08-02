@@ -31,14 +31,14 @@ import roadDashReportVue from '../components/dashboard/roadDashReportList.vue'
 import roadDashWarnMsgVue from '../components/dashboard/roadDashWarningMessage.vue'
 import roadDashWaterLevelVue from '../components/dashboard/roadDashWaterLevelHeight.vue'
 import roadDashCctvVue from '../components/dashboard/roadDashRealTimeVideo.vue'
-// import roadDashRainAmountVue from '../components/dashboard/roadDashRainFallAmount.vue'
+import roadDashRainAmountVue from '../components/dashboard/roadDashRainFallAmount.vue'
 
 export default defineComponent({
   name: 'RoadDash',
   components: {
     roadDashCctvVue,
     roadDashMapVue,
-    // roadDashRainAmountVue,
+    roadDashRainAmountVue,
     roadDashReportVue,
     roadDashWarnMsgVue,
     roadDashWaterLevelVue
