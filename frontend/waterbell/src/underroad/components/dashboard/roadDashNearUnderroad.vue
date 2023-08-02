@@ -34,13 +34,12 @@ export default defineComponent({
       () => store.getters.underroadListByGugun
     ).value
 
-    console.log(underroadListByGugun.value)
     //임시 선택된 위치가 저장된 state
-    const tmplocation = computed(() => store.getters.tmplocation).value
+    const tmpUnderroad = computed(() => store.getters.tmpUnderroad).value
 
     //임시 선택 위치에 원하는 값을 넣는 store의 mutation(click 이벤트 발생 시, 실행할 함수)
     const setTmplotation = (id: any) => {
-      store.commit('setTmplocation', id)
+      store.commit('setTmpUnderroad', id)
     }
 
     //마커 위치가 담긴 배열들
@@ -73,7 +72,6 @@ export default defineComponent({
             road.obj.value.statusMsg = '2차 경고'
             position_warn.value.push(roadobj.value)
           } else {
-            // console.log(road.status)
             road.obj.value.statusMsg = '진입 금지'
             position_block.value.push(road)
           }
@@ -105,7 +103,6 @@ export default defineComponent({
         // center: new window.kakao.maps.LatLng(36.3549114724545, 127.345907414374),
         level: 6
       }
-      console.log(options)
       map.value = new window.kakao.maps.Map(container, options)
       await getWaterHeight()
       setPositions()
@@ -126,7 +123,6 @@ export default defineComponent({
           i.road.latitude,
           i.road.longitude
         )
-        // console.log(latlng)
         let marker = new window.kakao.maps.Marker({
           map: map.value,
           position: latlng,
@@ -155,7 +151,6 @@ export default defineComponent({
         window.kakao.maps.event.addListener(marker, 'click', function () {
           infowindow = makeInfoWindowRoad(i)
           setTmplotation(i.road.id)
-          // console.log(store.getters.tmplocation)
           infowindow.open(map.value, marker)
         })
       }
@@ -193,7 +188,6 @@ export default defineComponent({
         window.kakao.maps.event.addListener(marker, 'click', function () {
           infowindow = makeInfoWindowRoad(i)
           infowindow.open(map.value, marker)
-          // console.log(store.getters.tmplocation)
           setTmplotation(i.road.id)
         })
       }
@@ -231,7 +225,6 @@ export default defineComponent({
         window.kakao.maps.event.addListener(marker, 'click', function () {
           infowindow = makeInfoWindowRoad(i)
           setTmplotation(i.road.latlng)
-          // console.log(store.getters.tmplocation)
           infowindow.open(map.value, marker)
         })
       }
@@ -327,7 +320,6 @@ export default defineComponent({
         i.road.latitude,
         i.road.longitude
       )
-      // console.log(iwPosition)
       // 인포윈도우를 생성합니다
       var infowindow = new window.kakao.maps.InfoWindow({
         content: iwContent,
@@ -349,7 +341,6 @@ export default defineComponent({
         '</p></div>'
       let iwRemoveable = true // removeable 속성을 ture 로 설정하면 인포윈도우를 닫을 수 있는 x버튼이 표시됩니다
       let iwPosition = new window.kakao.maps.LatLng(i.latitude, i.longitude)
-      // console.log(iwPosition)
       // 인포윈도우를 생성합니다
       var infowindow = new window.kakao.maps.InfoWindow({
         content: iwContent,
@@ -387,7 +378,7 @@ export default defineComponent({
       }
     }
 
-    onMounted(async () => {
+    onMounted(() => {
       if (window.kakao && window.kakao.maps) {
         initMap()
       } else {

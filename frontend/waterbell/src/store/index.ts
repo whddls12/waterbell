@@ -19,8 +19,8 @@ export default createStore({
       secondMsg: string
       releaseMsg: string
     },
-    location: { lon: '127', lat: '55' },
-    tmplocation: {} as { id: string }, //임시 선택 위치
+    location: { lon: '127', lat: '55' }, //현재 위치(gps)
+    tmpUnderroad: {} as { id: string }, //임시 선택 지하차도
     isMainpage: true
   },
   getters: {
@@ -30,11 +30,15 @@ export default createStore({
     underroadListByGugun(state) {
       return state.underroadListByGugun
     },
-    tmplocation(state) {
-      return state.tmplocation
+    tmpUnderroad(state) {
+      return state.tmpUnderroad
     },
     location(state) {
       return state.location
+    },
+
+    nowUnderroad(state) {
+      return state.nowUnderroad
     }
   },
   mutations: {
@@ -42,8 +46,8 @@ export default createStore({
       state.underroadListByGugun.push(payload)
     },
     //state에 tmplocation에 임시 위치 저장하기
-    setTmplocation(state, payload) {
-      state.tmplocation = payload
+    setTmpUnderroad(state, payload) {
+      state.tmpUnderroad = payload
     }
   },
   actions: {
@@ -56,8 +60,6 @@ export default createStore({
             res.data.forEach((element: any) => {
               //구군에 따른 지하차도 리스트 세팅
               context.commit('setUnderroadbygugun', element)
-              console.log('res.data')
-              console.log(res.data)
             })
           })
       } else {
@@ -66,8 +68,6 @@ export default createStore({
             //구군에 따른 지하차도 리스트 세팅
 
             context.commit('setUnderroadbygugun', element)
-            console.log('res.data')
-            console.log(res.data)
           })
         })
       }
