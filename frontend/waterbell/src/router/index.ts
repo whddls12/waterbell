@@ -14,6 +14,10 @@ import roadReportListVue from '../underroad/components/report/roadReportList.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
+//지하주차장 로그인, 회원가입
+import parkLogin from '../undergroundParkingLot/views/parkLoginView.vue'
+import parkSignup from '../undergroundParkingLot/views/parkSignupView.vue'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -72,9 +76,21 @@ const routes: Array<RouteRecordRaw> = [
     path: '/road/systemlog',
     name: 'RoadSystemlog',
     component: RoadSystemlog
-  }
+  },
 
   //지하주차장 라우터
+  //로그인,회원가입
+  {
+    path: '/park/login',
+    name: 'parkLogin',
+    component: parkLogin
+  },
+
+  {
+    path: '/park/signup',
+    name: 'parkSignup',
+    component: parkSignup
+  }
 ]
 
 const router = createRouter({

@@ -1,7 +1,9 @@
 <template>
-  <div id="outline">
-    <button>이동하기</button>
-    <div id="map" style="width: 1000px; height: 600px"></div>
+  <div class="container" id="outline bigbox">
+    <div id="inner-box">
+      <button>이동하기</button>
+      <div id="map"></div>
+    </div>
   </div>
 </template>
 
@@ -32,6 +34,7 @@ export default defineComponent({
       () => store.getters.underroadListByGugun
     ).value
 
+    console.log(underroadListByGugun.value)
     //임시 선택된 위치가 저장된 state
     const tmplocation = computed(() => store.getters.tmplocation).value
 
@@ -385,8 +388,6 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      await store.dispatch('fetchUnderroads')
-
       if (window.kakao && window.kakao.maps) {
         initMap()
       } else {
@@ -398,9 +399,44 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-#outline {
-  width: 400px;
-  border: 3px;
-  border-color: black;
+button {
+  width: 100px;
+  align-self: end;
 }
+
+#inner-box {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-self: stretch; /* stretch to match the height of other components */
+}
+
+#map {
+  margin-top: 10px;
+  min-width: 300px;
+  min-height: 200px;
+  max-width: 600px;
+  position: inherit;
+  flex-grow: 2;
+  align-self: stretch; /* stretch to match the height of other components */
+}
+/* button {
+  width: 100px;
+  align-self: end;
+}
+#inner-box {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-self: center;
+}
+#map {
+  margin-top: 10px;
+  min-width: 300px;
+  min-height: 200px;
+  max-width: 600px;
+  position: inherit;
+  flex-grow: 2;
+
+} */
 </style>
