@@ -2,6 +2,7 @@ package com.ssafy.fcc.repository;
 
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.facility.UndergroundRoad;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -25,4 +26,16 @@ public class FacilityRepository {
     public Facility findById(Integer id) {
         return em.find(Facility.class, id);
     }
+
+
+    public List<UndergroundRoad> findUndergroundRoadByGugunId(Integer gugunId){
+        List<UndergroundRoad> undergroundRoadList = em.createQuery("SELECT a FROM UndergroundRoad a WHERE a.gugun.id = :gugunId ", UndergroundRoad.class)
+                .setParameter("gugunId", gugunId)
+                .getResultList();
+
+        if(undergroundRoadList.size()>0) return undergroundRoadList;
+        else return null;
+    }
+
+
 }
