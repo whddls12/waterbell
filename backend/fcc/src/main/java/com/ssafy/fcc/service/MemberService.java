@@ -2,7 +2,7 @@ package com.ssafy.fcc.service;
 
 import com.ssafy.fcc.domain.member.*;
 import com.ssafy.fcc.dto.ApartManagerResponse;
-import com.ssafy.fcc.dto.ApartMemberRespose;
+import com.ssafy.fcc.dto.ApartMemberResponse;
 import com.ssafy.fcc.dto.PublicManagerResponse;
 import com.ssafy.fcc.dto.TokenDto;
 import com.ssafy.fcc.repository.MemberRepository;
@@ -75,8 +75,8 @@ public class MemberService {
         TokenDto tokenDto = new TokenDto();
         tokenDto.setAccessToken(token);
         if (member.getRole() == Role.APART_MEMBER) {
-            ApartMemberRespose apartMemberRespose = new ApartMemberRespose((ApartMember) member, tokenDto);
-            return apartMemberRespose;
+            ApartMemberResponse apartMemberResponse = new ApartMemberResponse((ApartMember) member, tokenDto);
+            return apartMemberResponse;
         } else if (member.getRole() == Role.APART_MANAGER) {
             ApartManagerResponse apartManagerResponse = new ApartManagerResponse((ApartManager) member, tokenDto);
             return apartManagerResponse;
