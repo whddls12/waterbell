@@ -17,28 +17,5 @@ import java.util.Random;
 @RunWith(SpringRunner.class)
 class FccApplicationTests {
 
-	@Autowired
-	SmsCertificationService smsCertificationService;
-
-	@Autowired
-	RedisUtil redisUtil;
-
-	@Test
-	void 저장(){
-		redisUtil.setDataExpire("asd", "qwe", 100000);
-	}
-
-	@Test
-	void contextLoads() {
-		try {
-			smsCertificationService.sendSms("01073877808");
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		} catch (InvalidKeyException e) {
-			throw new RuntimeException(e);
-		}
-	}
 
 }

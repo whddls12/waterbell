@@ -131,7 +131,8 @@ public class MemberController {
 
         String loginId = request.get("loginId");
         String password = request.get("password");
-
+        System.out.println("loginId = " + loginId);
+        System.out.println("password = " + password);
 
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
