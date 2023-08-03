@@ -134,13 +134,12 @@ public class BoardController {
     public ResponseEntity<Map<String, Object>>  undergroundRoadList(
             @PathVariable("facilityId") int facilityId,
             @PathVariable("page") int page){
-        Map<String, Object> resultMap = new HashMap<>();
+        Map<String, Object> resultMap= new HashMap<>();
         HttpStatus status = null;
 
         try {
-            final List<UndergroundRoadBoard> boadList = undergroundRoadBoardService.getBoadListByPage(facilityId,page);
+            resultMap = undergroundRoadBoardService.getBoadListByPage(facilityId,page);
             resultMap.put("message", "success");
-            resultMap.put("list", boadList);
             status = HttpStatus.ACCEPTED;
         }catch (Exception e){
             resultMap.put("message", "fail");
@@ -152,33 +151,6 @@ public class BoardController {
 
 
     }
-
-
-
-
-
-    // 페이지 번호와, 전체 글개수를 입력받는다.
-    public Map<String, Object>  list(int pgno, int totalCnt) {
-        final int naviSize = 5;
-        final int sizePerPage = 10;
-        PageNavigation page = new PageNavigation();
-
-        // int totalCnt = boardService.getCount(); //전체 글 수
-        int totalPageCnt = (totalCnt - 1) / sizePerPage + 1; // 전체 페이지 갯수
-        boolean startRange = pgno <= naviSize;
-        boolean endRange = (totalPageCnt - 1) / naviSize * naviSize < pgno;
-
-        page.setNaviSize(10);
-        page.setPageSize(sizePerPage);
-        page.setCurrentPage(pgno);
-        page.setTotalCnt(totalCnt);
-        page.setTotalPageCnt((totalCnt - 1) / sizePerPage + 1);
-        page.setStartRange(startRange);
-        page.setEndRange(endRange);
-
-        return page.calPage(pgno, sizePerPage);
-    }
-
 
 
 }

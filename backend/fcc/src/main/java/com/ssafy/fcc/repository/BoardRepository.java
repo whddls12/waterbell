@@ -4,6 +4,7 @@ import com.ssafy.fcc.domain.board.ApartBoard;
 import com.ssafy.fcc.domain.board.Image;
 import com.ssafy.fcc.domain.board.UndergroundRoadBoard;
 import com.ssafy.fcc.domain.member.Member;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -59,12 +60,21 @@ public class BoardRepository {
 
     }
 
-    public List<UndergroundRoadBoard> getUndergoundBoadList(int facilityId, int page) {
+    public List<UndergroundRoadBoard> getUndergoundBoadList(int facilityId, int start, int size) {
 
-        String latestQuery = "SELECT b FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId";
+        String latestQuery = "SELECT b FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId ORDER BY b.createDate DESC, b.id DESC";
         List<UndergroundRoadBoard> resultList = em.createQuery(latestQuery, UndergroundRoadBoard.class)
                 .setParameter("undergroundRoadId", facilityId)
+                .setFirstResult(start) // 시작 위치
+                .setMaxResults(size) // 가져올 개수
                 .getResultList();
         return resultList;
+    }
+
+    public Long getUndergroundBoardCnt(int facilityId) {
+        String jpqlQuery = "SELECT COUNT(b) FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId";
+        TypedQuery<Long> countQuery = em.createQuery(jpqlQuery, Long.class)
+                .setParameter("undergroundRoadId", facilityId);
+        return countQuery.getSingleResult();
     }
 }

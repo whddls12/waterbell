@@ -16,8 +16,10 @@ import com.ssafy.fcc.domain.member.PublicManager;
 import com.ssafy.fcc.dto.DashUndergroundRoadBoardResponseDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
+import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -159,12 +159,22 @@ public class UndergroundRoadBoardService {
         return list;
     }
 
-    public List<UndergroundRoadBoard> getBoadListByPage(int facilityId, int page)  throws Exception{
-        List<UndergroundRoadBoard> undergroundRoadBoards = boardRepository.getUndergoundBoadList(facilityId,page);
+    public Map<String, Object> getBoadListByPage(int facilityId, int page)  throws Exception{
+        Map<String, Object> resultMap = new HashMap<>();
+
+        Long totalCount = boardRepository.getUndergroundBoardCnt(facilityId);
+        PageNavigation pageNavigation = new PageNavigation(page,totalCount);
+
+        List<UndergroundRoadBoard> undergroundRoadBoards = boardRepository.getUndergoundBoadList(facilityId,pageNavigation.getStart(), pageNavigation.getSizePerPage());
         if(undergroundRoadBoards== null || undergroundRoadBoards.size()==0)
             throw new RuntimeException("데이터가 없습니다.");
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", undergroundRoadBoards);
         System.out.println(undergroundRoadBoards);
-        return undergroundRoadBoards;
+
+        return resultMap;
     }
+
+
 
 }
