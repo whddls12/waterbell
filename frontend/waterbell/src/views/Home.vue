@@ -24,7 +24,6 @@
     <!-- 서비스 화면 -->
     <div v-else>
       <TheHeader />
-      <hr />
       <div class="router-view-container">
         <router-view></router-view>
       </div>
@@ -81,6 +80,8 @@ export default defineComponent({
 }
 
 .router-view-container {
+  box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
+
   padding: 10px 20px;
   display: flex;
   justify-content: center;

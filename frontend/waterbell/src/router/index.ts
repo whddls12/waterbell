@@ -124,8 +124,8 @@ const routes: Array<RouteRecordRaw> = [
 //   routes
 // })
 
-// 진입화면에서 대시보드 페이지로 이동한 후 뒤로가기로 이동했을 경우
-// 메인페이지로 이동하면서 isMainPage 변수를 다시 바꿔주기 위해 추가
+// 뒤로가기로 페이지 이동했을 경우
+// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
 import store from '@/store'
 
 const router = createRouter({
@@ -143,10 +143,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (from.path === '/park/dash' && to.path === '/') {
+  if (from.path !== '/' && to.path === '/') {
     store.commit('setIsMainpage', true)
-  } else if (from.path === '/road/dash' && to.path === '/') {
-    store.commit('setIsMainpage', true)
+  } else if (from.path === '/' && to.path !== '/') {
+    store.commit('setIsMainpage', false)
   }
 
   next()
