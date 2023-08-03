@@ -1,10 +1,13 @@
 package com.ssafy.fcc.controller;
 
+import com.ssafy.fcc.service.SystemService;
+import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +22,7 @@ import java.lang.Math;
 
 @RestController
 @RequestMapping("/dash")
+@RequiredArgsConstructor
 public class DashController {
 
     private static String nx;
@@ -26,6 +30,8 @@ public class DashController {
     private static String baseDate;
     private static String baseTime;
     static int[] month_day = new int[]{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    private final SystemService systemService;
 
     //api base 날짜 입력하기 위해 계산하는 메서드
     public static void setBaseDate_Time(int year, int month, int day, int hour, int minute) {
@@ -55,7 +61,7 @@ public class DashController {
     }
 
 
-    @GetMapping("/map/weather")
+    @GetMapping("/map/rain")
     public ResponseEntity<Map<Integer, Double>> getRain(String year, String month, String day, String hour, String minute, String lat ,String lon) throws IOException {
         int y = Integer.parseInt(year);
         int m = Integer.parseInt(month);
@@ -307,5 +313,11 @@ public class DashController {
         else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
 
+    }
+
+    @GetMapping("/facilities/{facility_id}/sensors/{category}")
+    public int dashSensor(@PathVariable("facility_id") int facilityId, @PathVariable String category) {
+
+        return systemService.getSensorData(facilityId,category);
     }
 }
