@@ -11,7 +11,9 @@
     <button>로그인</button>
     <button>회원가입</button>
     <!-- 로그인 상태일 때 보여줄 메뉴 -->
-    <button>알림함</button>
+    <router-link to="/alarm">
+      <button>알림함</button>
+    </router-link>
     <p id="hello-msg">@@님 어서오세요!</p>
     <button>마이페이지</button>
     <button>로그아웃</button>

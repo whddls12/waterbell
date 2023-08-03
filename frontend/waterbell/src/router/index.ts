@@ -25,6 +25,9 @@ import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' 
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
 
+//알림함
+import alarmBox from '@/alarm/alarmBox.vue'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -116,6 +119,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/park/control',
     name: 'ParkControl',
     component: ParkControl
+  },
+  //알림함
+  {
+    path: '/alarm',
+    name: 'alarmBox',
+    component: alarmBox
   }
 ]
 
