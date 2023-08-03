@@ -72,10 +72,11 @@ public class SocialLoginServide {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             String sb = "grant_type=authorization_code" +
                     "&client_id="+kakaoClientId+ // REST_API_KEY
-                    "&redirect_uri="+kakaoRedirectUri + // REDIRECT_URI
+                    "&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/kakao" + // REDIRECT_URI
                     "&code=" + code;
             System.out.println("========================================");
             bufferedWriter.write(sb);
+            System.out.println("========================================");
             bufferedWriter.flush();
 
             int responseCode = conn.getResponseCode();
@@ -214,7 +215,6 @@ public class SocialLoginServide {
 
             System.out.println(naver_client);
             System.out.println(naver_secret);
-//            System.out.println(kakaoRedirectUri);
 
             URL url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
