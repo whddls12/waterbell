@@ -21,10 +21,10 @@
         >
           <td>{{ index + 1 }}</td>
           <td>{{ report.title }}</td>
-          <td>{{ report.author }}</td>
+          <td>{{ report.name }}</td>
           <td>{{ report.status }}</td>
-          <td>{{ report.create_date }}</td>
-          <td>{{ report.views }}</td>
+          <td>{{ report.createDate }}</td>
+          <td>{{ report.viewCount }}</td>
         </tr>
       </tbody>
       <tbody v-else>
@@ -57,17 +57,19 @@ export default defineComponent({
         title: string
         author: string
         status: string
-        create_date: string
-        views: string
+        createDate: string
+        viewCount: string
+        // 얘 이름달라도 가져와서 그냥 써지네 왜지
       }[]
     >([])
 
     const setList = () => {
       http
-        .get(`reports/facilities/${facility_id}/page=2&per_page=10`)
+        .get(`http://localhost:8080/reports/undergroudRoad/1/1`)
         .then((res) => {
           // 가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
-          reportList.value = res.data
+          console.log(res.data.list)
+          reportList.value = res.data.list
         })
     }
     const router = useRouter()
