@@ -12,11 +12,11 @@
   </div>
 </template>
 <script lang="ts">
+import Chart from 'chart.js/auto'
 import { ref, onMounted, nextTick } from 'vue'
 import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
 import axios from 'axios'
-import Chart from 'chart.js/auto'
+import { useStore } from 'vuex'
 
 export default defineComponent({
   name: 'roadDashRainAmountVue',
@@ -77,6 +77,8 @@ export default defineComponent({
       // const labels = apiData.map((data) => data.label)
       // const values = apiData.map((data) => data.value)
       // document.addEventListener('DOMContentLoaded', function () {
+      // -> onMounted에 의해 컴포넌트가 마운트 된 후에 실행된다. 중복되는 의미라서 주석처리
+
       console.log('차트 그리기 시작')
       console.log('drawChart에서 timeArr.value')
       console.log(timeArr.value)
