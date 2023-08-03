@@ -1,7 +1,7 @@
 <template lang="">
   <div class="container mt-4">
     <div><h5>최근 신고접수 내역</h5></div>
-    <table class="table table-hover table-bordered">
+    <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
           <th scope="col" class="text-center" style="width: 50px">번호</th>
@@ -67,7 +67,7 @@ export default defineComponent({
 
     const setList = () => {
       const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3Iiwicm9sZSI6WyJQVUJMSUNfTUFOQUdFUiJdLCJpYXQiOjE2OTEwMjYwNTksImV4cCI6MTY5MTAyOTY1OX0.J38jUW9xZUw9tGvlnD0DCKmfqlVlu5ABnkERbAxP3yM' // 실제 사용할 토큰 값으로 변경
+        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3Iiwicm9sZSI6WyJQVUJMSUNfTUFOQUdFUiJdLCJpYXQiOjE2OTEwMzg1MzUsImV4cCI6MTY5MTA0MjEzNX0.MvqxLLuOf4wIlmDThGqbHUwcdFEMEBeAyBABiMxesmY'
 
       http
         .get(`alarm/APART_MEMBER`, {
@@ -83,8 +83,8 @@ export default defineComponent({
       console.log(AlarmList)
     }
     const router = useRouter()
-    const movePage = (board_id: any) => {
-      router.push(`/road/report/item?board_id=${board_id}`)
+    const movePage = (alarm_id: any) => {
+      router.push(`/alarm/detail/${alarm_id}`)
     }
     onMounted(() => {
       setList()
@@ -143,5 +143,10 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6; /* 원하는 색상과 크기로 조정 가능 */
 }
 </style>
