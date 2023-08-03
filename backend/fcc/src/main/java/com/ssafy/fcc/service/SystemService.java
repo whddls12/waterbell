@@ -23,11 +23,7 @@ public class SystemService {
 
     public void insertLog(int facilityId, String category, int value) {
 
-
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         Facility facility = facilityRepository.findById(facilityId);
-
-
 
         SensorLog sensorlog = new SensorLog();
         sensorlog.setFacility(facility);
@@ -35,11 +31,13 @@ public class SystemService {
         sensorlog.setSensorTime(LocalDateTime.now().withNano(0));
         sensorlog.setSensorData(value);
 
-
         sensorLogRepository.save(sensorlog);
-
-
 
     }
 
+    public int getSensorData(int facilityId, String category) {
+        Facility facility = facilityRepository.findById(facilityId);
+
+        return sensorLogRepository.getRecentData(facility, category);
+    }
 }
