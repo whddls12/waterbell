@@ -3,24 +3,19 @@ package com.ssafy.fcc.MQTT;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.repository.FacilityRepository;
-import com.ssafy.fcc.repository.UndergroundRoadRepository;
+
 import com.ssafy.fcc.service.ApartService;
 import com.ssafy.fcc.service.FacilityService;
 import com.ssafy.fcc.service.SystemService;
 import com.ssafy.fcc.service.UndergroundRoadService;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.paho.client.mqttv3.*;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.*;
 
-import static org.aspectj.util.LangUtil.split;
 
 @Component
 @Transactional
@@ -69,12 +64,14 @@ public class MqttSubscriber implements MqttCallback {
 
         // TODO 만들어지는 topic 계층에 따라 (facility_id, Temp,Dust,Humid or Cam) 뽑아야함
 
-        // TODO 예를들어 /A/7/Temp
-        // TODO facility_id = 7, category = Temp
+        // 예를들어 /A/7/Temp
+        // facility_id = 7, category = Temp
         String[] result = topic.toString().split("/");
+
         int facilityId = Integer.parseInt(result[1]);
         String category = result[2];
         int value = Integer.parseInt(message.toString());
+
         Facility facility = facilityRepository.findById(facilityId);
 
         if (category.equals("height")) {
@@ -99,13 +96,14 @@ public class MqttSubscriber implements MqttCallback {
     @Transactional
     public void checkSituation(Facility facility, int value) throws Exception {
 
+        System.out.println("@@@@@@@@@@@@@@@@@@@@");
         if (value > facility.getSecondAlarmValue()) {
             if (facility.getStatus() == WaterStatus.FIRST) {
                 facilityService.updateStatus(facility, WaterStatus.SECOND);
                 if (facility.isApart()) { // 아파트
-                    apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus());
+                    apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
                 } else { // 지하차도
-                    undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus());
+                    undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus(), value);
                 }
             }
 
@@ -113,16 +111,17 @@ public class MqttSubscriber implements MqttCallback {
             if (facility.getStatus() == WaterStatus.DEFAULT) {
                 facilityService.updateStatus(facility, WaterStatus.FIRST);
                 if (facility.isApart()) { // 아파트
-                    apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus());
+                    apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
                     apartService.sendAutoNotificationToMember(facility.getId());
                 } else { // 지하차도
-                    undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus());
+                    undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus(), value);
                 }
-            } else if(facility.getStatus() == WaterStatus.SECOND) {
-                facilityService.updateStatus(facility,WaterStatus.FIRST);
+            } else if (facility.getStatus() == WaterStatus.SECOND) {
+                facilityService.updateStatus(facility, WaterStatus.FIRST);
             }
 
         } else {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");
             facilityService.updateStatus(facility, WaterStatus.DEFAULT);
         }
 
