@@ -78,17 +78,11 @@ export default defineComponent({
       // const labels = apiData.map((data) => data.label)
       // const values = apiData.map((data) => data.value)
       // document.addEventListener('DOMContentLoaded', function () {
-<<<<<<< HEAD
       // -> onMounted에 의해 컴포넌트가 마운트 된 후에 실행된다. 중복되는 의미라서 주석처리
 
       console.log('차트 그리기 시작')
       console.log('drawChart에서 timeArr.value')
       console.log(timeArr.value)
-=======
-      // console.log('차트 그리기 시작')
-      // console.log('drawChart에서 timeArr.value')
-      // console.log(timeArr.value)
->>>>>>> 61dff391441605a6d2c3ec8c31553b4117e7fd35
       const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement
       const ctx = canvas.getContext('2d')
       // 차트 그리기
