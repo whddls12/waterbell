@@ -27,6 +27,7 @@ public class alarmController {
         return new ResponseEntity<>(alarmList, HttpStatus.OK);
     }
 
+
     @GetMapping("/{role}/detail/{id}")
     public ResponseEntity<BoardAlarmDto> getAlarmDetail(@PathVariable String role, @PathVariable Long id) {
         if(!(role.equals(Role.APART_MANAGER.name()) || role.equals(Role.APART_MEMBER.name()) || role.equals(Role.PUBLIC_MANAGER.name())) )

@@ -15,9 +15,9 @@
       <tbody v-if="AlarmList && AlarmList.length">
         <tr
           v-for="(alarm, index) in AlarmList"
-          :key="alarm.alarm_id"
+          :key="alarm.id"
           class="tr"
-          @click="movePage(alarm.alarm_id)"
+          @click="movePage(alarm.id)"
           align="center"
         >
           <td>{{ index + 1 }}</td>
@@ -34,6 +34,23 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- 페이지네이션 컨트롤 -->
+    <div class="pagination-container">
+      <div class="pagination">
+        <!-- Page number links -->
+        <span
+          class="page-item"
+          v-for="page in pageCount"
+          :key="page"
+          :class="{ active: page - 1 === currentPage }"
+        >
+          <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">{{
+            page
+          }}</a>
+        </span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,11 +59,56 @@ import { defineComponent, onMounted, computed, ref } from 'vue'
 import http from '@/types/http'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'roadDashReportVue',
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
+  created() {
+    console.log('로그인한 사용자:', this.loginUser)
+    console.log('로그인 상태:', this.isLogin)
+    console.log('역할:', this.role)
+    console.log('접근 토큰:', this.accessToken)
+    console.log('갱신 토큰:', this.refreshToken)
+  },
 
   setup() {
+    const ITEMS_PER_PAGE = 10
+    const currentPage = ref(0)
+
+    const paginatedData = computed(() => {
+      const start = currentPage.value * ITEMS_PER_PAGE
+      const end = start + ITEMS_PER_PAGE
+      return AlarmList.value.slice(start, end)
+    })
+
+    const pageCount = computed(() => {
+      return Math.ceil(AlarmList.value.length / ITEMS_PER_PAGE)
+    })
+
+    const nextPage = () => {
+      if (currentPage.value < pageCount.value - 1) {
+        currentPage.value++
+      }
+    }
+
+    const prevPage = () => {
+      if (currentPage.value > 0) {
+        currentPage.value--
+      }
+    }
+
+    const goToPage = (page: number) => {
+      currentPage.value = page
+    }
     const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
@@ -56,7 +118,7 @@ export default defineComponent({
 
     let AlarmList = ref<
       {
-        alarm_id: string
+        id: string
         content: string
         alarmType: string
         sender: string
@@ -66,33 +128,38 @@ export default defineComponent({
     >([])
 
     const setList = () => {
-      const token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3Iiwicm9sZSI6WyJQVUJMSUNfTUFOQUdFUiJdLCJpYXQiOjE2OTEwMzg1MzUsImV4cCI6MTY5MTA0MjEzNX0.MvqxLLuOf4wIlmDThGqbHUwcdFEMEBeAyBABiMxesmY'
-
+      const role = computed(() => store.getters['auth/role']).value
+      const token = computed(() => store.getters['auth/accessToken']).value
+      console.log(token)
       http
-        .get(`alarm/APART_MEMBER`, {
+        .get(`/alarm/${role}`, {
           headers: {
-            Authorization: token
+            Authorization: `${token}`
           }
         })
         .then((res) => {
           AlarmList.value = res.data
         })
-
       console.log('ㅇㅇ')
       console.log(AlarmList)
     }
     const router = useRouter()
     const movePage = (alarm_id: any) => {
+      console.log('Clicked on alarm_id:', alarm_id)
       router.push(`/alarm/detail/${alarm_id}`)
     }
+
     onMounted(() => {
       setList()
     })
     return {
-      AlarmList,
+      AlarmList: paginatedData,
+      currentPage,
       movePage,
-      setList
+      nextPage,
+      prevPage,
+      goToPage,
+      pageCount
     }
   }
 })
@@ -148,5 +215,28 @@ export default defineComponent({
 .table-bordered th,
 .table-bordered td {
   border: 1px solid #dee2e6; /* 원하는 색상과 크기로 조정 가능 */
+}
+
+/* 페이지네이션 컨테이너를 아래쪽으로 배치 */
+.pagination-container {
+  text-align: center;
+}
+
+/* 페이지네이션 버튼들을 세로로 배치 */
+.pagination {
+  display: block;
+  margin: 10px auto;
+  width: 200px; /* Adjust the width as needed */
+}
+
+/* 페이지네이션 버튼 스타일 */
+.pagination span {
+  margin: 8px;
+  cursor: pointer;
+}
+
+/* Active page style */
+.pagination .active {
+  text-decoration: underline;
 }
 </style>
