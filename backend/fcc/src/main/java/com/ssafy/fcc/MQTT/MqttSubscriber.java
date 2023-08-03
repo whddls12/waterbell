@@ -98,7 +98,7 @@ public class MqttSubscriber implements MqttCallback {
 
         System.out.println("@@@@@@@@@@@@@@@@@@@@");
         if (value > facility.getSecondAlarmValue()) {
-            if (facility.getStatus() == WaterStatus.FIRST) {
+            if (facility.getStatus() == WaterStatus.FIRST || facility.getStatus() == WaterStatus.DEFAULT) {
                 facilityService.updateStatus(facility, WaterStatus.SECOND);
                 if (facility.isApart()) { // 아파트
                     apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
