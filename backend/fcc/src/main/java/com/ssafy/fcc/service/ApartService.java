@@ -72,7 +72,7 @@ public class ApartService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), receiveAlarmMember);
 
         // 문자 알림
         SmsLog smsLog = new SmsLog();
@@ -116,7 +116,7 @@ public class ApartService {
             receiveAlarmMember.setMember(member);
             receiveAlarmMember.setRead(false);
             receiveAlarmMemberRepository.save(receiveAlarmMember);
-            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), notificationMessage);
+            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), receiveAlarmMember);
         }
 
         // sms 로그

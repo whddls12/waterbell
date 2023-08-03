@@ -71,7 +71,7 @@ public class UndergroundRoadService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), receiveAlarmMember);
 
         // 문자 알림
         SmsLog smsLog = new SmsLog();
