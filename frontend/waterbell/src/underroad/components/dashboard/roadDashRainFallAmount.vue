@@ -32,8 +32,8 @@ export default defineComponent({
         timeArr.value.push(key)
         amountArr.value.push(i[key])
       }
-      console.log(timeArr.value)
-      console.log(amountArr.value)
+      // console.log(timeArr.value)
+      // console.log(amountArr.value)
     }
 
     async function getData() {
@@ -117,11 +117,11 @@ export default defineComponent({
       }
       await nextTick()
       // 차트 그리기
-      console.log('chartRef.value')
-      console.log(chartRef.value)
-      drawChart(chartRef.value)
-      console.log('chartRef.value')
-      console.log(chartRef.value)
+      // console.log('chartRef.value')
+      // console.log(chartRef.value)
+      // drawChart(chartRef.value)
+      // console.log('chartRef.value')
+      // console.log(chartRef.value)
     })
 
     // return { chartRef, timeArr, amountArr }

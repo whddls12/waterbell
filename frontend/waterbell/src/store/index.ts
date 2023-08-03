@@ -6,6 +6,7 @@ import { Underroad } from '@/types/underroad'
 export default createStore({
   state: {
     loginUser: null, //로그인 유저 정보
+    isLogin: false, //로그인 상태 true/false
     role: 'none', //로그인 유저의 권한
     underroadListByGugun: [] as any, //지하차도 리스트(구군에 따라 리스트로 되어 있음)
     underroadList: [] as Underroad[], //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
@@ -19,8 +20,8 @@ export default createStore({
       secondMsg: string
       releaseMsg: string
     },
-    location: { lon: '127', lat: '55' },
-    tmplocation: {} as { id: string }, //임시 선택 위치
+    location: { lon: '127', lat: '55' }, //현재 위치(gps)
+    tmpUnderroad: {} as { id: string }, //임시 선택 지하차도
     isMainpage: true
   },
   getters: {
@@ -30,11 +31,21 @@ export default createStore({
     underroadListByGugun(state) {
       return state.underroadListByGugun
     },
-    tmplocation(state) {
-      return state.tmplocation
+    tmpUnderroad(state) {
+      return state.tmpUnderroad
     },
     location(state) {
       return state.location
+    },
+
+    nowUnderroad(state) {
+      return state.nowUnderroad
+    },
+    loginUser(state) {
+      return state.loginUser
+    },
+    isLogin(state) {
+      return state.isLogin
     }
   },
   mutations: {
@@ -47,6 +58,9 @@ export default createStore({
     },
     setIsMainpage(state, value) {
       state.isMainpage = value
+    },
+    setTmpUnderroad(state, payload) {
+      state.tmpUnderroad = payload
     }
   },
   actions: {
@@ -59,8 +73,6 @@ export default createStore({
             res.data.forEach((element: any) => {
               //구군에 따른 지하차도 리스트 세팅
               context.commit('setUnderroadbygugun', element)
-              console.log('res.data')
-              console.log(res.data)
             })
           })
       } else {
@@ -69,8 +81,6 @@ export default createStore({
             //구군에 따른 지하차도 리스트 세팅
 
             context.commit('setUnderroadbygugun', element)
-            console.log('res.data')
-            console.log(res.data)
           })
         })
       }

@@ -25,7 +25,7 @@
 // import Map from '@/underroad/components/dashboard/roadDashNearUnderroad.vue'
 
 import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
+
 import roadDashMapVue from '../components/dashboard/roadDashNearUnderroad.vue'
 import roadDashReportVue from '../components/dashboard/roadDashReportList.vue'
 import roadDashWarnMsgVue from '../components/dashboard/roadDashWarningMessage.vue'
@@ -42,9 +42,6 @@ export default defineComponent({
     roadDashReportVue,
     roadDashWarnMsgVue,
     roadDashWaterLevelVue
-  },
-  setup() {
-    const store = useStore()
   }
 })
 </script>
