@@ -6,7 +6,7 @@
 	CREATE TABLE `sensor_log` (
 		`sensor_log_id`	bigint	NOT NULL,
 		`facility_id`	int	NOT NULL,
-		`category`	varchar(5)	NOT NULL	COMMENT '수위센서/온도/습도/미세먼지',
+		`category`	varchar(10)	NOT NULL	COMMENT '수위센서/온도/습도/미세먼지',
 		`sensor_time`	datetime	NOT NULL	COMMENT '센서의 데이터를 응답 받은 시간',
 		`sensor_data`	int	NOT NULL	COMMENT '응답 받은 데이터'
 	);
@@ -71,7 +71,7 @@
 
 	CREATE TABLE `member` (
 		`member_id`	int	NOT NULL ,
-		`login_id`	VARCHAR(15)	NOT NULL,
+		`login_id`	VARCHAR(50)	NOT NULL,
 		`password`	VARCHAR(225)	NOT NULL,
 		`created_at`	DATETIME	NOT NULL,
 		`state`	BOOLEAN	NOT NULL	COMMENT '활성 : true,  비활성: false',
@@ -165,7 +165,7 @@
 		`sms_id`	bigint	NOT NULL,
 		`member_id`	int	NOT NULL	COMMENT '보낸사람',
 		`send_date`	timestamp	NOT NULL,
-		`content`	VARCHAR(100)	NOT NULL
+		`content`	VARCHAR(255)	NOT NULL
 	);
 
 	DROP TABLE IF EXISTS `receive_sms_member`;
@@ -630,3 +630,4 @@ INSERT INTO apart_manager (member_id, facility_id)
 
 INSERT INTO public_manager (member_id, sido_id)
     values (7, 3);
+

@@ -1,13 +1,12 @@
 import { createStore } from 'vuex'
-// import createPersistedState from 'vuex-persistedstate'
+import createPersistedState from 'vuex-persistedstate'
 import http from '../types/http'
 import { Underroad } from '@/types/underroad'
+import auth from './auth/auth'
 // import axios from 'axios'
+
 export default createStore({
   state: {
-    loginUser: null, //로그인 유저 정보
-    isLogin: false, //로그인 상태 true/false
-    role: 'none', //로그인 유저의 권한
     underroadListByGugun: [] as any, //지하차도 리스트(구군에 따라 리스트로 되어 있음)
     underroadList: [] as Underroad[], //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
     nowUnderroad: {} as {
@@ -40,12 +39,6 @@ export default createStore({
 
     nowUnderroad(state) {
       return state.nowUnderroad
-    },
-    loginUser(state) {
-      return state.loginUser
-    },
-    isLogin(state) {
-      return state.isLogin
     }
   },
   mutations: {
@@ -65,27 +58,32 @@ export default createStore({
   },
   actions: {
     //아래 action을 페이지 로딩 되자마자 띄울 수 있도록 할 것.
+
     async fetchUnderroads(context: any, payload) {
-      if (this.state.role == 'pmanager') {
-        await http
-          .get('/facilities/pmanager/roads')
-          .then((res: { data: any }) => {
+      try {
+        const authGetters = context.rootGetters['auth/loginUser']
+        const isLogin = context.rootGetters['auth/isLogin']
+        const role = context.rootGetters['auth/role']
+        const user = context.rootGetters['auth/loginUser']
+        if (isLogin && role == 'PUBLIC_MANAGER') {
+          context.commit('setUnderroadbygugun', user.facilities)
+        } else {
+          await http.get('/facilities/roads').then((res: { data: any }) => {
             res.data.forEach((element: any) => {
               //구군에 따른 지하차도 리스트 세팅
+
               context.commit('setUnderroadbygugun', element)
             })
           })
-      } else {
-        await http.get('/facilities/roads').then((res: { data: any }) => {
-          res.data.forEach((element: any) => {
-            //구군에 따른 지하차도 리스트 세팅
-
-            context.commit('setUnderroadbygugun', element)
-          })
-        })
+        }
+      } catch (error) {
+        console.log('지하차도를 가져오는데 에러가 발생했습니다.')
       }
     }
   },
 
-  modules: {}
+  modules: {
+    auth
+  },
+  plugins: [createPersistedState()]
 })
