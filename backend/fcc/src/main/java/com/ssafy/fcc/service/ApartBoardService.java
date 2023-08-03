@@ -38,7 +38,6 @@ public class ApartBoardService {
     private final BoardAlarmLogRepository boardAlarmLogRepository;
     private final ReceiveAlarmMemberRepository receiveAlarmMemberRepository;
     private final MyWebSocketHandler myWebSocketHandler;
-
     private final BoardRepository boardRepository;
 
     @Value("${cloud.aws.s3.bucket}")

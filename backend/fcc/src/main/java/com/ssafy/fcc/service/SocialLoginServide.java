@@ -59,9 +59,9 @@ public class SocialLoginServide {
 
         try {
 
-            System.out.println(kakaoClientId);
+            System.out.println("kakaoClientId= "+ kakaoClientId);
             System.out.println(kakaoClienetSecret);
-            System.out.println(kakaoRedirectUri);
+            System.out.println("kakaoRedirectUri= "+kakaoRedirectUri);
 
             URL url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -74,6 +74,7 @@ public class SocialLoginServide {
                     "&client_id="+kakaoClientId+ // REST_API_KEY
                     "&redirect_uri="+kakaoRedirectUri + // REDIRECT_URI
                     "&code=" + code;
+            System.out.println("========================================");
             bufferedWriter.write(sb);
             bufferedWriter.flush();
 
@@ -137,9 +138,9 @@ public class SocialLoginServide {
             String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
 
 
-//            System.out.println("=========가져온 kakao user 정보=============");
-//            System.out.println(email);
-//            System.out.println(nickname);
+            System.out.println("=========가져온 kakao user 정보=============");
+            System.out.println(email);
+            System.out.println(nickname);
 
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
