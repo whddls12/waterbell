@@ -130,6 +130,28 @@ public class BoardController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
+    @GetMapping("/undergroudRoad/{facilityId}/{page}")
+    public ResponseEntity<Map<String, Object>>  undergroundRoadList(
+            @PathVariable("facilityId") int facilityId,
+            @PathVariable("page") int page){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+            final List<UndergroundRoadBoard> boadList = undergroundRoadBoardService.getBoadListByPage(facilityId,page);
+            resultMap.put("message", "success");
+            resultMap.put("list", boadList);
+            status = HttpStatus.ACCEPTED;
+        }catch (Exception e){
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+
+    }
 
 
 

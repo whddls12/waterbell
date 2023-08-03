@@ -58,4 +58,13 @@ public class BoardRepository {
 
 
     }
+
+    public List<UndergroundRoadBoard> getUndergoundBoadList(int facilityId, int page) {
+
+        String latestQuery = "SELECT b FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId";
+        List<UndergroundRoadBoard> resultList = em.createQuery(latestQuery, UndergroundRoadBoard.class)
+                .setParameter("undergroundRoadId", facilityId)
+                .getResultList();
+        return resultList;
+    }
 }

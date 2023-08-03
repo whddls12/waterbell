@@ -158,4 +158,13 @@ public class UndergroundRoadBoardService {
         }
         return list;
     }
+
+    public List<UndergroundRoadBoard> getBoadListByPage(int facilityId, int page)  throws Exception{
+        List<UndergroundRoadBoard> undergroundRoadBoards = boardRepository.getUndergoundBoadList(facilityId,page);
+        if(undergroundRoadBoards== null || undergroundRoadBoards.size()==0)
+            throw new RuntimeException("데이터가 없습니다.");
+        System.out.println(undergroundRoadBoards);
+        return undergroundRoadBoards;
+    }
+
 }
