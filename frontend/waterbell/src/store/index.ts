@@ -53,6 +53,12 @@ export default createStore({
       state.underroadListByGugun.push(payload)
     },
     //state에 tmplocation에 임시 위치 저장하기
+    setTmplocation(state, payload) {
+      state.tmplocation = payload
+    },
+    setIsMainpage(state, value) {
+      state.isMainpage = value
+    },
     setTmpUnderroad(state, payload) {
       state.tmpUnderroad = payload
     }
