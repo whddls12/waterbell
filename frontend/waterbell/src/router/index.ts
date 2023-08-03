@@ -43,7 +43,7 @@ import alarmDetail from '@/alarm/AlarmDetail.vue'
 import store from '@/store'
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -59,27 +59,20 @@ const router = createRouter({
     {
       path: '/road/report',
       name: 'RoadReport',
-      component: RoadReport,
-      children: [
-        {
-          path: 'list',
-          component: roadReportListVue
-        },
-        {
-          path: 'create',
-          component: roadReportCreateVue
-        },
-        {
-          path: 'update',
-          component: roadReportUpdateVue
-        },
-        {
-          path: 'item',
-          component: roadReportItemVue
-        }
-      ]
+      component: RoadReport
     },
-
+    {
+      path: '/road/report/create',
+      component: roadReportCreateVue
+    },
+    {
+      path: '/road/report/update',
+      component: roadReportUpdateVue
+    },
+    {
+      path: '/road/report/item',
+      component: roadReportItemVue
+    },
     {
       path: '/road/control',
       name: 'RoadControl',
@@ -104,13 +97,11 @@ const router = createRouter({
       name: 'parkLogin',
       component: parkLogin
     },
-
     {
       path: '/park/signup',
       name: 'parkSignup',
       component: parkSignup
     },
-
     {
       path: '/park/dash',
       name: 'ParkDash',
