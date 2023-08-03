@@ -119,9 +119,37 @@ const routes: Array<RouteRecordRaw> = [
   }
 ]
 
+// const router = createRouter({
+//   history: createWebHistory(process.env.BASE_URL),
+//   routes
+// })
+
+// 뒤로가기로 페이지 이동했을 경우
+// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
+import store from '@/store'
+
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
+  history: createWebHistory(),
+  routes: [
+    {
+      path: '/park/dash',
+      component: ParkDash
+    },
+    {
+      path: '/road/dash',
+      component: RoadDash
+    }
+  ]
+})
+
+router.beforeEach((to, from, next) => {
+  if (from.path !== '/' && to.path === '/') {
+    store.commit('setIsMainpage', true)
+  } else if (from.path === '/' && to.path !== '/') {
+    store.commit('setIsMainpage', false)
+  }
+
+  next()
 })
 
 export default router
