@@ -1,5 +1,9 @@
 package com.ssafy.fcc.handler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.ssafy.fcc.dto.BoardAlarmDto;
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -14,10 +18,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class MyWebSocketHandler extends TextWebSocketHandler {
 
     private final MemberRepository memberRepository;
+    private final ObjectMapper objectMapper;
+
+    public MyWebSocketHandler(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+    }
 
     // WebSocket 세션들을 관리하기 위한 HashMap
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
@@ -32,17 +43,11 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         System.out.println(sessions);
     }
 
-    // 서버에서 클라이언트 전원에게 알림을 보내는 메소드
-    public void sendNotificationToClient(String notificationMessage) throws IOException {
-        for (WebSocketSession session : sessions.values()) {
-            session.sendMessage(new TextMessage(notificationMessage));
-        }
-    }
-
     // 서버에서 클라이언트 특정 사용자에게 알림을 보내는 메소드
-    public void sendNotificationToSpecificUser(String loginId, String notificationMessage) throws IOException {
+    public void sendNotificationToSpecificUser(String loginId, Object o) throws IOException {
         WebSocketSession session = sessions.get(loginId);
         if (session != null) {
+            String notificationMessage = objectMapper.writeValueAsString(o);
             session.sendMessage(new TextMessage(notificationMessage));
         }
     }

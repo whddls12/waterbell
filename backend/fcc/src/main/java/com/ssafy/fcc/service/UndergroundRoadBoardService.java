@@ -51,6 +51,6 @@ public class UndergroundRoadBoardService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), receiveAlarmMember);
     }
 }
