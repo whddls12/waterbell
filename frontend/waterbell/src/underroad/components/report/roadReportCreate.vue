@@ -32,7 +32,7 @@
           <input type="text" v-model="report.content" />
         </div>
       </div>
-      <div class="report-box attachment">
+      <!-- <div class="report-box attachment">
         <div class="report-subtitle">파일첨부</div>
         <div class="report-filebox">
           <div class="report-file-list">
@@ -59,8 +59,8 @@
               </p>
             </div>
           </div>
-        </div>
-      </div>
+        </div> -->
+      <!-- </div> -->
     </div>
     <div class="report-btn">
       <button>취소</button>
@@ -93,62 +93,73 @@ export default defineComponent({
       uploadedfiles: null
     })
 
-    const fileInputRef = ref<HTMLInputElement | null>(null)
-    const selectedFiles = ref<FileList | null>(null) // 담긴 첨부파일을 저장할 변수
+    // const fileInputRef = ref<HTMLInputElement | null>(null)
+    // const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
 
-    function onFileChange() {
-      // 사용자가 첨부한 파일들 저장
-      if (fileInputRef.value && selectedFiles.value) {
-        selectedFiles.value = fileInputRef.value.files
-        // 첨부한 파일들을 보여주기 위함
-        const fileListName = fileInputRef.value.nextElementSibling
-        if (fileListName) {
-          fileListName.textContent = getSelectedFileNames()
-        }
-      }
-    }
+    // function onFileChange() {
+    //   console.log('파일 저장함수 실행?')
+    //   // 사용자가 첨부한 파일들 저장
+    //   console.log(fileInputRef.value)
+    //   if (fileInputRef.value && fileInputRef.value.files) {
+    //     selectedFiles.value = Array.from(fileInputRef.value.files)
+    //   } else {
+    //     selectedFiles.value = []
+    //   }
+    //   // 첨부한 파일들을 보여주기 위함
+    //   const fileListName = fileInputRef.value?.nextElementSibling
+    //   if (fileListName) {
+    //     fileListName.textContent = getSelectedFileNames()
+    //   }
+    // }
 
-    function getSelectedFileNames() {
-      if (selectedFiles.value && selectedFiles.value instanceof FileList) {
-        return Array.from(selectedFiles.value)
-          .map((file) => (file as File).name)
-          .join(', ')
-      }
-      return ''
-    }
+    // // 담긴 첨부파일들의 이름
+    // function getSelectedFileNames() {
+    //   return selectedFiles.value.map((file) => file.name).join(', ')
+    // }
 
     function writeReport() {
       // FormData 객체 만들기
       const formData = new FormData()
       // FormData에 양식 필드 넣기
+      console.log(report.value)
       formData.append('name', report.value.name)
       formData.append('phone', report.value.phone)
       formData.append('boardPassword', report.value.boardPassword)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
+      console.log(formData)
 
       // FormData에 첨부파일 넣기
-      if (selectedFiles.value) {
-        for (let i = 0; i < selectedFiles.value.length; i++) {
-          const file = selectedFiles.value[i]
-          if (file instanceof File) {
-            formData.append('uploadedfiles', file)
-          }
+      // if (selectedFiles.value) {
+      //   for (let i = 0; i < selectedFiles.value.length; i++) {
+      //     const file = selectedFiles.value[i]
+      //     formData.append('uploadedfiles', file)
+      //   }
+      // }
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
         }
-
-        http
-          .post(`http://192.168.31.10/reports/write/1`, formData)
-          .then((response) => {
-            if (response.data.success) {
-              console.log(response)
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
       }
+      http
+        .post(`http://localhost:8080/reports/write/1`, formData, config)
+        .then((response) => {
+          if (response.data.success) {
+            console.log(response)
+          }
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
-    return { report, onFileChange, getSelectedFileNames, writeReport }
+    return {
+      report,
+      // fileInputRef,
+      // selectedFiles,
+      // onFileChange,
+      // getSelectedFileNames,
+      writeReport
+    }
   }
 })
 </script>
