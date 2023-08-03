@@ -129,6 +129,12 @@ export default defineComponent({
       console.log(formData)
 
       // FormData에 첨부파일 넣기
+      // if (selectedFiles.value) {
+      //   for (let i = 0; i < selectedFiles.value.length; i++) {
+      //     const file = selectedFiles.value[i]
+      //     formData.append('uploadedfiles', file)
+      //   }
+      // }
       if (selectedFiles.value) {
         for (let i = 0; i < selectedFiles.value.length; i++) {
           const file = selectedFiles.value[i]
@@ -141,6 +147,7 @@ export default defineComponent({
         }
       }
       http
+        // .post(`http://localhost:8080/reports/write/1`, formData)
         .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
         .then((response) => {
           if (response.data.success) {
