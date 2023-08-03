@@ -119,11 +119,11 @@ const router = createRouter({
       name: 'parkLogin',
       component: parkLogin
     },
-    {
-      path: '/park/signup',
-      name: 'parkSignup',
-      component: parkSignup
-    },
+    // {
+    //   path: '/park/signup',
+    //   name: 'parkSignup',
+    //   component: parkSignup
+    // },
     {
       path: '/park/join',
       name: 'parkJoin',
