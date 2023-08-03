@@ -136,13 +136,8 @@ export default defineComponent({
       //     formData.append('uploadedfiles', file)
       //   }
       // }
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
       http
-        .post(`http://localhost:8080/reports/write/1`, formData, config)
+        .post(`http://localhost:8080/reports/write/1`, formData)
         .then((response) => {
           if (response.data.success) {
             console.log(response)
