@@ -12,6 +12,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": ["webpack-env"],
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "@/*": ["src/*"]
     },
@@ -28,5 +29,5 @@
     "tests/**/*.tsx",
     "src/**/*.png"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

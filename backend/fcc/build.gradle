@@ -68,6 +68,9 @@ dependencies {
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	//JSON 파싱
+	implementation group: 'org.json', name: 'json', version: '20160810'
+
 }
 
 tasks.named('test') {
