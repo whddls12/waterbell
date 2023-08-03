@@ -40,7 +40,6 @@ import alarmDetail from '@/alarm/AlarmDetail.vue'
 // //   routes
 // // })
 
-  
 //   {
 //     path: '/park/report',
 //     name: 'ParkReport',
@@ -63,10 +62,7 @@ import alarmDetail from '@/alarm/AlarmDetail.vue'
 //   }
 // ]
 
-// 뒤로가기로 페이지 이동했을 경우
-// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
 import store from '@/store'
-
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -123,25 +119,27 @@ const router = createRouter({
       name: 'parkLogin',
       component: parkLogin
     },
+    // {
+    //   path: '/park/signup',
+    //   name: 'parkSignup',
+    //   component: parkSignup
+    // },
     {
-      path: '/park/signup',
-      name: 'parkSignup',
-      component: parkSignup
+      path: '/park/join',
+      name: 'parkJoin',
+      component: parkJoin,
+      children: [
+        { path: '/agree', name: 'joinAgree', component: parkJoinAgree }
+      ]
     },
+
+    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
+
     {
-    path: '/park/join',
-    name: 'parkJoin',
-    component: parkJoin,
-    children: [{ path: '/agree', name: 'joinAgree', component: parkJoinAgree }]
-  },
-
-  { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
-
-  {
-    path: '/park/dash',
-    name: 'ParkDash',
-    component: ParkDash
-  },
+      path: '/park/dash',
+      name: 'ParkDash',
+      component: ParkDash
+    },
     {
       path: '/park/dash',
       name: 'ParkDash',
@@ -181,6 +179,8 @@ const router = createRouter({
   ]
 })
 
+// 뒤로가기로 페이지 이동했을 경우
+// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
 router.beforeEach((to, from, next) => {
   if (from.path !== '/' && to.path === '/') {
     store.commit('setIsMainpage', true)

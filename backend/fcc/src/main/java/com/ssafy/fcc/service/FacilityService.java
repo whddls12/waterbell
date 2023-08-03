@@ -4,6 +4,7 @@ import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.UndergroundRoad;
 import com.ssafy.fcc.domain.location.Gugun;
+import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.repository.FacilityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,17 +19,6 @@ import java.util.Map;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FacilityService {
-
-    private final FacilityRepository facilityRepository;
-
-    public Apart findApartByCode(String apartCode) {
-        return facilityRepository.findApartByCode(apartCode);
-    }
-
-    public Facility findById(Integer id) {
-       return  facilityRepository.findById(id);
-    }
-
 
     public List<Map<String, Object>> findUndergroundRoadByGugunList(List<Gugun> gugunList) {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -46,12 +36,30 @@ public class FacilityService {
 
 
             }
-        }else{
+        } else {
             return null;
         }
 
 
         return result;
+    }
+
+    @Transactional
+    public void updateStatus(Facility facility, WaterStatus status) {
+
+        facility.setStatus(status);
+        facilityRepository.merge(facility);
 
     }
+
+    private final FacilityRepository facilityRepository;
+
+    public Apart findApartByCode(String apartCode) {
+        return facilityRepository.findApartByCode(apartCode);
+    }
+
+    public Facility findById(Integer id) {
+        return facilityRepository.findById(id);
+    }
+
 }

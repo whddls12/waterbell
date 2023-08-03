@@ -1,11 +1,88 @@
 <template lang="">
-  <div>신고접수 리스트</div>
+  <div class="container mt-4">
+    <table class="table table-hover table-bordered table-bordered">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col" class="text-center" style="width: 50px">No.</th>
+          <th scope="col" class="text-center" style="width: 400px">제목</th>
+          <th scope="col" class="text-center" style="width: 150px">작성자</th>
+          <th scope="col" class="text-center" style="width: 150px">처리상태</th>
+          <th scope="col" class="text-center" style="width: 150px">작성일시</th>
+          <th scope="col" class="text-center" style="width: 150px">조회수</th>
+        </tr>
+      </thead>
+      <tbody v-if="reportList && reportList.length">
+        <tr
+          v-for="(report, index) in reportList"
+          :key="report.report_id"
+          class="tr"
+          @click="movePage(report.report_id)"
+          align="center"
+        >
+          <td>{{ index + 1 }}</td>
+          <td>{{ report.title }}</td>
+          <td>{{ report.author }}</td>
+          <td>{{ report.status }}</td>
+          <td>{{ report.create_date }}</td>
+          <td>{{ report.views }}</td>
+        </tr>
+      </tbody>
+      <tbody v-else>
+        <tr>
+          <td colspan="6" class="text-center">등록된 신고접수가 없습니다.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
-<script>
-import { defineComponent } from 'vue'
+<script lang="ts">
+import { defineComponent, onMounted, computed, ref } from 'vue'
+import http from '@/types/http'
+import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
-  name: 'roadReportListVue'
+  name: 'roadReportListVue',
+  setup() {
+    const store = useStore()
+
+    // getters에서 nowUnderroad 가져오기
+    const nowUnderroad = computed(() => store.getters.nowUnderroad).value
+
+    const facility_id = nowUnderroad.id
+
+    let reportList = ref<
+      {
+        report_id: string
+        title: string
+        author: string
+        status: string
+        create_date: string
+        views: string
+      }[]
+    >([])
+
+    const setList = () => {
+      http
+        .get(`reports/facilities/${facility_id}/page=2&per_page=10`)
+        .then((res) => {
+          // 가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
+          reportList.value = res.data
+        })
+    }
+    const router = useRouter()
+    const movePage = (report_id: any) => {
+      router.push(`reports/${report_id}/road`)
+    }
+    onMounted(() => {
+      setList()
+    })
+    return {
+      reportList,
+      movePage,
+      setList
+    }
+  }
 })
 </script>
 <style lang=""></style>
