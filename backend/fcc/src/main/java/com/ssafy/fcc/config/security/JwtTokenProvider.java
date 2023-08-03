@@ -27,10 +27,10 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증
 
     private final long accessTokenValidMillisecond = 1000L * 60 * 60; // 1시간 토큰 유효
 
-//    private final  long refreshTokenValidMillisecond = 1000L * 60 * 60* 14; // 14일 토큰 유효
+    private final  long refreshTokenValidMillisecond = 1000L * 60 * 60* 14; // 14일 토큰 유효
 
 //    private long accessTokenValidMillisecond = 1000L*60*2 ; // TEST 토큰 유효
-    private final  long refreshTokenValidMillisecond = 1000L * 60 * 5; //test
+//    private final  long refreshTokenValidMillisecond = 1000L * 60 * 5; //test
 
 
     private final UserDetailsService userDetailsService;
