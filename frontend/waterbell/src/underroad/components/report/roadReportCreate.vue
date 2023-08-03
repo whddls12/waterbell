@@ -32,13 +32,12 @@
           <input type="text" v-model="report.content" />
         </div>
       </div>
-      <!-- <div class="report-box attachment">
+      <div class="report-box attachment">
         <div class="report-subtitle">파일첨부</div>
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
-              {{ selectedFiles }}
-              첨부된 파일 목록 나오는 곳(지하차도1.jpg, 지하차도2.jpg, ... )
+              첨부된 파일 : {{ selectedFiles }}
             </div>
           </div>
           <div class="report-file-attach">
@@ -59,8 +58,8 @@
               </p>
             </div>
           </div>
-        </div> -->
-      <!-- </div> -->
+        </div>
+      </div>
     </div>
     <div class="report-btn">
       <button>취소</button>
@@ -93,29 +92,29 @@ export default defineComponent({
       uploadedfiles: null
     })
 
-    // const fileInputRef = ref<HTMLInputElement | null>(null)
-    // const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
+    const fileInputRef = ref<HTMLInputElement | null>(null)
+    const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
 
-    // function onFileChange() {
-    //   console.log('파일 저장함수 실행?')
-    //   // 사용자가 첨부한 파일들 저장
-    //   console.log(fileInputRef.value)
-    //   if (fileInputRef.value && fileInputRef.value.files) {
-    //     selectedFiles.value = Array.from(fileInputRef.value.files)
-    //   } else {
-    //     selectedFiles.value = []
-    //   }
-    //   // 첨부한 파일들을 보여주기 위함
-    //   const fileListName = fileInputRef.value?.nextElementSibling
-    //   if (fileListName) {
-    //     fileListName.textContent = getSelectedFileNames()
-    //   }
-    // }
+    function onFileChange() {
+      console.log('파일 저장함수 실행?')
+      // 사용자가 첨부한 파일들 저장
+      console.log(fileInputRef)
+      if (fileInputRef.value && fileInputRef.value.files) {
+        selectedFiles.value = Array.from(fileInputRef.value.files)
+        const fileListName = fileInputRef.value?.nextElementSibling
+        if (fileListName) {
+          fileListName.textContent = getSelectedFileNames()
+        }
+      } else {
+        selectedFiles.value = []
+      }
+      // 첨부한 파일들을 보여주기 위함
+    }
 
-    // // 담긴 첨부파일들의 이름
-    // function getSelectedFileNames() {
-    //   return selectedFiles.value.map((file) => file.name).join(', ')
-    // }
+    // 담긴 첨부파일들의 이름
+    function getSelectedFileNames() {
+      return selectedFiles.value.map((file) => file.name).join(', ')
+    }
 
     function writeReport() {
       // FormData 객체 만들기
@@ -130,19 +129,19 @@ export default defineComponent({
       console.log(formData)
 
       // FormData에 첨부파일 넣기
-      // if (selectedFiles.value) {
-      //   for (let i = 0; i < selectedFiles.value.length; i++) {
-      //     const file = selectedFiles.value[i]
-      //     formData.append('uploadedfiles', file)
-      //   }
-      // }
+      if (selectedFiles.value) {
+        for (let i = 0; i < selectedFiles.value.length; i++) {
+          const file = selectedFiles.value[i]
+          formData.append('uploadedfiles', file)
+        }
+      }
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       }
       http
-        .post(`http://localhost:8080/reports/write/1`, formData, config)
+        .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
         .then((response) => {
           if (response.data.success) {
             console.log(response)
@@ -154,10 +153,10 @@ export default defineComponent({
     }
     return {
       report,
-      // fileInputRef,
-      // selectedFiles,
-      // onFileChange,
-      // getSelectedFileNames,
+      fileInputRef,
+      selectedFiles,
+      onFileChange,
+      getSelectedFileNames,
       writeReport
     }
   }
