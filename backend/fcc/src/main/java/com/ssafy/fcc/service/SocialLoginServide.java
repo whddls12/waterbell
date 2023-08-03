@@ -76,6 +76,7 @@ public class SocialLoginServide {
                     "&code=" + code;
             System.out.println("========================================");
             bufferedWriter.write(sb);
+            System.out.println("========================================");
             bufferedWriter.flush();
 
             int responseCode = conn.getResponseCode();
