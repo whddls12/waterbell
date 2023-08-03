@@ -74,10 +74,6 @@ public class MqttSubscriber implements MqttCallback {
         String category = topic;
         int value = Integer.parseInt(result[1]);
 
-        System.out.println(facilityId);
-        System.out.println(category);
-        System.out.println(value);
-
         Facility facility = facilityRepository.findById(facilityId);
 
         if (category.equals("height")) {
