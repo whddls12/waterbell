@@ -55,7 +55,7 @@ public class DashController {
     }
 
 
-    @GetMapping("/map/rain")
+    @GetMapping("/map/weather")
     public ResponseEntity<Map<Integer, Double>> getRain(String year, String month, String day, String hour, String minute, String lat ,String lon) throws IOException {
         int y = Integer.parseInt(year);
         int m = Integer.parseInt(month);
