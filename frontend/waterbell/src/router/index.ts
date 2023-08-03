@@ -14,9 +14,11 @@ import roadReportListVue from '../underroad/components/report/roadReportList.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
-//지하주차장 로그인, 회원가입
-import parkLogin from '../undergroundParkingLot/views/parkLoginView.vue'
-import parkSignup from '../undergroundParkingLot/views/parkSignupView.vue'
+//지하주차장 회원관련(로그인, 회원가입, 마이페이지)
+import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
+import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
+import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
+import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -29,14 +31,36 @@ import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // �
 import alarmBox from '@/alarm/alarmBox.vue'
 import alarmDetail from '@/alarm/AlarmDetail.vue'
 
-// const routes: Array<RouteRecordRaw> = [
+// // const routes: Array<RouteRecordRaw> = [
 
+// // ]
+
+// // const router = createRouter({
+// //   history: createWebHistory(process.env.BASE_URL),
+// //   routes
+// // })
+
+//   {
+//     path: '/park/report',
+//     name: 'ParkReport',
+//     component: ParkReport
+//   },
+//   {
+//     path: '/park/systemlog',
+//     name: 'ParkSystemlog',
+//     component: ParkSystemlog
+//   },
+//   {
+//     path: '/park/manage',
+//     name: 'ParkManage',
+//     component: ParkManage
+//   },
+//   {
+//     path: '/park/control',
+//     name: 'ParkControl',
+//     component: ParkControl
+//   }
 // ]
-
-// const router = createRouter({
-//   history: createWebHistory(process.env.BASE_URL),
-//   routes
-// })
 
 import store from '@/store'
 
@@ -99,6 +123,22 @@ const router = createRouter({
       path: '/park/signup',
       name: 'parkSignup',
       component: parkSignup
+    },
+    {
+      path: '/park/join',
+      name: 'parkJoin',
+      component: parkJoin,
+      children: [
+        { path: '/agree', name: 'joinAgree', component: parkJoinAgree }
+      ]
+    },
+
+    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
+
+    {
+      path: '/park/dash',
+      name: 'ParkDash',
+      component: ParkDash
     },
     {
       path: '/park/dash',
