@@ -4,7 +4,7 @@
     <div v-if="isMainPage" class="page-start">
       <!-- 서비스 로고 -->
       <div class="service-logo">
-        <img src="../assets/images/waterbell-logo.png" alt="waterbell-logo" />
+        <img src="@/assets/images/waterbell-logo.png" alt="waterbell-logo" />
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
@@ -23,7 +23,8 @@
 
     <!-- 서비스 화면 -->
     <div v-else>
-      <TheHeader />
+      <RoadHeader />
+      <!-- <ParkHeader /> -->
       <div class="router-view-container">
         <router-view></router-view>
       </div>
@@ -33,7 +34,8 @@
 </template>
 
 <script lang="ts">
-import TheHeader from '@/components/TheHeader.vue'
+import RoadHeader from '@/components/RoadHeader.vue'
+// import ParkHeader from '@/components/ParkHeader.vue'
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 // import RoadDash from '../underroad/views/roadDashboardView.vue'
@@ -41,7 +43,8 @@ import { useStore } from 'vuex'
 export default defineComponent({
   name: 'Home',
   components: {
-    TheHeader
+    RoadHeader
+    // ParkHeader
   },
   setup() {
     const store = useStore()

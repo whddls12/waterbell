@@ -11,6 +11,9 @@ import roadReportItemVue from '../underroad/components/report/roadReportItem.vue
 import roadReportListVue from '../underroad/components/report/roadReportList.vue';
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue';
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue';
+//지하주차장 로그인, 회원가입
+import parkLogin from '../undergroundParkingLot/views/parkLoginView.vue';
+import parkSignup from '../undergroundParkingLot/views/parkSignupView.vue';
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue'; // 대쉬보드
 import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue'; // 신고접수
@@ -22,14 +25,6 @@ const routes = [
         path: '/',
         name: 'Home',
         component: Home
-    },
-    {
-        path: '/about',
-        name: 'About',
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
     },
     // 지하차도 라우터
     {
@@ -76,6 +71,17 @@ const routes = [
         component: RoadSystemlog
     },
     //지하주차장 라우터
+    //로그인,회원가입
+    {
+        path: '/park/login',
+        name: 'parkLogin',
+        component: parkLogin
+    },
+    {
+        path: '/park/signup',
+        name: 'parkSignup',
+        component: parkSignup
+    },
     {
         path: '/park/dash',
         name: 'ParkDash',
@@ -102,9 +108,34 @@ const routes = [
         component: ParkControl
     }
 ];
+// const router = createRouter({
+//   history: createWebHistory(process.env.BASE_URL),
+//   routes
+// })
+// 뒤로가기로 페이지 이동했을 경우
+// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
+import store from '@/store';
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
-    routes
+    history: createWebHistory(),
+    routes: [
+        {
+            path: '/park/dash',
+            component: ParkDash
+        },
+        {
+            path: '/road/dash',
+            component: RoadDash
+        }
+    ]
+});
+router.beforeEach((to, from, next) => {
+    if (from.path !== '/' && to.path === '/') {
+        store.commit('setIsMainpage', true);
+    }
+    else if (from.path === '/' && to.path !== '/') {
+        store.commit('setIsMainpage', false);
+    }
+    next();
 });
 export default router;
 //# sourceMappingURL=index.js.map

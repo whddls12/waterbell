@@ -13,9 +13,6 @@
       </div>
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <div class="header-btn">
-        <!-- 로그아웃 상태-->
-        <button>로그인</button>
-        <button>회원가입</button>
         <!-- 로그인 상태-->
         <button>알림함</button>
         <p id="hello-msg">@@님 어서오세요!</p>
@@ -41,6 +38,14 @@
         <router-link to="/road/manage">관리</router-link>
       </div>
     </div>
+    <!-- 지역 선택 바 -->
+    <div class="select-region">
+      <div class="select-region-box">시도</div>
+      <div class="select-region-box">시구군</div>
+      <div>
+        <button class="go-selected-btn">이동</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -50,7 +55,7 @@ import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 export default defineComponent({
-  name: 'TheHeader',
+  name: 'RoadHeader',
   components: {},
   setup() {
     const store = useStore()
@@ -98,5 +103,30 @@ export default defineComponent({
 a {
   color: white;
   text-decoration: none;
+}
+
+.select-region {
+  display: flex;
+  justify-content: center;
+}
+
+.select-region-box {
+  border: 1px solid #939393;
+  border-radius: 8px;
+  background-color: white;
+
+  width: 100px;
+  margin: 10px 10px;
+}
+
+.go-selected-btn {
+  display: block;
+  border: 1px solid #10316b;
+  border-radius: 8px;
+  color: white;
+  background-color: #10316b;
+
+  width: 50px;
+  margin: 10px 10px;
 }
 </style>
