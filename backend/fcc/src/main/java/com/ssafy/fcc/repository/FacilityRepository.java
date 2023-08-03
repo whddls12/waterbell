@@ -37,5 +37,8 @@ public class FacilityRepository {
         else return null;
     }
 
+    public void merge(Facility facility) {
+        em.merge(facility);
+    }
 
 }
