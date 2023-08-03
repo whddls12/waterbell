@@ -26,16 +26,18 @@ stages {
     stage('Deploy') {
         steps {
             dir('backend/fcc'){
+  
                 sh '''
                 echo 'Deploy'
-                if [ "$(docker ps -q -f name=WaterBell)" ]; then
                 docker stop WaterBell
-                fi
-                docker start WaterBell || docker run -d -p 8080:8080 --name WaterBell docker-springboot:0.0.1
+                docker rm WaterBell
+                docker run -d -p 8080:8080 --name WaterBell docker-springboot:0.0.1
                 '''
             }
         }
     }
+
+
 
 
 }

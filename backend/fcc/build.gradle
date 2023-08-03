@@ -64,6 +64,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	implementation'com.google.code.gson:gson:2.8.7'
+
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	//JSON 파싱
+	implementation group: 'org.json', name: 'json', version: '20160810'
+
 }
 
 tasks.named('test') {

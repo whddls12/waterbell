@@ -25,13 +25,18 @@ public class SystemService {
 
         Facility facility = facilityRepository.findById(facilityId);
 
+
+
         SensorLog sensorlog = new SensorLog();
         sensorlog.setFacility(facility);
         sensorlog.setCategory(category);
         sensorlog.setSensorTime(LocalDateTime.now().withNano(0));
         sensorlog.setSensorData(value);
 
+
         sensorLogRepository.save(sensorlog);
+
+
 
     }
 

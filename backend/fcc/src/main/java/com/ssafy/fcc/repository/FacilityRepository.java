@@ -2,7 +2,7 @@ package com.ssafy.fcc.repository;
 
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
-import com.ssafy.fcc.domain.facility.WaterStatus;
+import com.ssafy.fcc.domain.facility.UndergroundRoad;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +27,14 @@ public class FacilityRepository {
         return em.find(Facility.class, id);
     }
 
-    public WaterStatus findStatusById(Integer id) {
-        return em.createQuery("select f from Facility f where f.id = :id", Facility.class)
-                .setParameter("id",id)
-                .getSingleResult().getStatus();
+
+    public List<UndergroundRoad> findUndergroundRoadByGugunId(Integer gugunId){
+        List<UndergroundRoad> undergroundRoadList = em.createQuery("SELECT a FROM UndergroundRoad a WHERE a.gugun.id = :gugunId ", UndergroundRoad.class)
+                .setParameter("gugunId", gugunId)
+                .getResultList();
+
+        if(undergroundRoadList.size()>0) return undergroundRoadList;
+        else return null;
     }
+
 }
