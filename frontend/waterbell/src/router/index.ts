@@ -25,6 +25,10 @@ import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' 
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
 
+//알림함
+import alarmBox from '@/alarm/alarmBox.vue'
+import alarmDetail from '@/alarm/AlarmDetail.vue'
+
 // const routes: Array<RouteRecordRaw> = [
 
 // ]
@@ -122,6 +126,17 @@ const router = createRouter({
       path: '/park/control',
       name: 'ParkControl',
       component: ParkControl
+    },
+    //알림함
+    {
+      path: '/alarm',
+      name: 'Alarm',
+      component: alarmBox
+    },
+    {
+      path: '/alarm/detail/:alarm_id',
+      name: 'AlarmDetail',
+      component: alarmDetail
     }
   ]
 })

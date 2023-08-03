@@ -14,7 +14,9 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <div class="header-btn">
         <!-- 로그인 상태-->
-        <button>알림함</button>
+        <router-link to="/alarm">
+          <button>알림함</button>
+        </router-link>
         <p id="hello-msg">@@님 어서오세요!</p>
         <button>마이페이지</button>
         <button>로그아웃</button>
@@ -75,6 +77,11 @@ export default defineComponent({
     return {
       isMainPage,
       goToMain
+    }
+  },
+  methods: {
+    goToAlarmBox() {
+      this.$router.push('/alarmBox')
     }
   }
 })
