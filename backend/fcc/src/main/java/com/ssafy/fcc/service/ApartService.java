@@ -39,7 +39,7 @@ public class ApartService {
 
     // 1차, 2차 자동알림(관리자)
     @Transactional
-    public void sendAutoNotificationToManager(int facility_id, WaterStatus status) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void sendAutoNotificationToManager(int facility_id, WaterStatus status, int data) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
         Apart apart = apartRepository.findById(facility_id);
         ApartManager manager = apartManagerRepository.findByFacility(facility_id);
         // 알림 메시지
@@ -47,12 +47,12 @@ public class ApartService {
         // 1차 경고 상황
         if(status==WaterStatus.FIRST){
             notificationMessage = "[WaterBell] 주의 : " + apart.getApartName() + "의 수위 센서가 1차 경고 수치인 "
-                    + apart.getFirstAlarmValue() +"mm를 넘었습니다. CCTV를 확인하세요.";
+                    + apart.getFirstAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하세요.";
         }
         // 2차 경고 상황
         else {
             notificationMessage = "[WaterBell] 주의 : " + apart.getApartName() + "의 수위 센서가 2차 경고 수치인 "
-                    + apart.getSecondAlarmValue() +"mm를 넘었습니다. CCTV를 확인하고 차수판과 사이렌을 작동시키세요.";
+                    + apart.getSecondAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하고 차수판과 사이렌을 작동시키세요.";
         }
 
         // 알림 로그
