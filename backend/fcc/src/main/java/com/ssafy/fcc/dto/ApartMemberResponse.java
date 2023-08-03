@@ -20,7 +20,7 @@ public class ApartMemberResponse extends MemberResponse{
 
     public ApartMemberResponse(ApartMember member, TokenDto token){
         super(member, token);
-        facilityId = member.getId();
+        facilityId = member.getApart().getId();
         name= member.getName();
         addressNumber = member.getAddressNumber();
     }

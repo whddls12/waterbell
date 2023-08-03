@@ -30,17 +30,10 @@ public class NotificationController {
     private final ApartManagerService apartManagerService;
     private final Logger logger = LoggerFactory.getLogger(VerificationController.class);
 
-    //테스트용
-    @PostMapping("/send-notification")
-    public ResponseEntity<String> sendNotification(@RequestParam String message, @RequestParam String userId) throws IOException {
-        myWebSocketHandler.sendNotificationToSpecificUser(userId, message);
-        return new ResponseEntity<>("Notification sent successfully", HttpStatus.OK);
-    }
-
     //차수판 가동시 알림
     @PostMapping("/notification/apartManager/activation")
-    public ResponseEntity<Map<String, String>> sendActivationNotification() {
-        Map<String, String> resultMap = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> sendActivationNotification() {
+        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
         int member_id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         try {
@@ -53,14 +46,16 @@ public class NotificationController {
         } catch (Exception e){
             logger.error("알림 전송 실패 : {}", e);
             resultMap.put("message", "전송실패");
+            resultMap.put("excetpion", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        return new ResponseEntity<>(resultMap, status);
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
+
     //차수판 해제시 알림
     @PostMapping("/notification/apartManager/deactivation")
-    public ResponseEntity<Map<String, String>> sendDeactivationNotification() throws IOException {
-        Map<String, String> resultMap = new HashMap<>();
+    public ResponseEntity<Map<String, Object>> sendDeactivationNotification() throws IOException {
+        Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
         int member_id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         try {
@@ -73,6 +68,7 @@ public class NotificationController {
         } catch (Exception e){
             logger.error("알림 전송 실패 : {}", e);
             resultMap.put("message", "전송 실패");
+            resultMap.put("excetpion", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<>(resultMap, status);
