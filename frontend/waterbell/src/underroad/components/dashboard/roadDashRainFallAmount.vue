@@ -29,6 +29,7 @@ export default defineComponent({
     const makeData = (i: Record<string, any>) => {
       // any 대신에 좀 더 구체적인 타입을 사용하려면 Record<string, any>를 사용하세요.
       for (const key in i) {
+        console.log(key)
         timeArr.value.push(key)
         amountArr.value.push(i[key])
       }
@@ -77,14 +78,14 @@ export default defineComponent({
       // const labels = apiData.map((data) => data.label)
       // const values = apiData.map((data) => data.value)
       // document.addEventListener('DOMContentLoaded', function () {
-      console.log('차트 그리기 시작')
-      console.log('drawChart에서 timeArr.value')
-      console.log(timeArr.value)
+      // console.log('차트 그리기 시작')
+      // console.log('drawChart에서 timeArr.value')
+      // console.log(timeArr.value)
       const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement
       const ctx = canvas.getContext('2d')
       // 차트 그리기
       new Chart(ctx, {
-        type: 'bar', // 차트 타입 (bar, line 등)
+        type: 'line', // 차트 타입 (bar, line 등)
 
         data: {
           labels: timeArr.value,
@@ -113,18 +114,18 @@ export default defineComponent({
     onMounted(async () => {
       const apiData = await getData()
       if (apiData) {
-        makeData(apiData)
+        makeData(apiData.apiData)
       }
       await nextTick()
       // 차트 그리기
       // console.log('chartRef.value')
       // console.log(chartRef.value)
-      // drawChart(chartRef.value)
+      drawChart(chartRef.value)
       // console.log('chartRef.value')
       // console.log(chartRef.value)
     })
 
-    // return { chartRef, timeArr, amountArr }
+    return { chartRef, timeArr, amountArr }
   }
 })
 </script>
