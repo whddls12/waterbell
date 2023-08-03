@@ -57,7 +57,7 @@ public class SocialLoginController {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
         try {
-            System.out.println("=================================================================");
+            System.out.println("===========code: "+code +"======================================================");
             // URL에 포함된 code를 이용하여 액세스 토큰 발급
             String accessToken = socialLoginServide.getKakaoAccessToken(code);
             System.out.println(accessToken);

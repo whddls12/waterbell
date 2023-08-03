@@ -138,9 +138,9 @@ public class SocialLoginServide {
             String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
 
 
-//            System.out.println("=========가져온 kakao user 정보=============");
-//            System.out.println(email);
-//            System.out.println(nickname);
+            System.out.println("=========가져온 kakao user 정보=============");
+            System.out.println(email);
+            System.out.println(nickname);
 
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
