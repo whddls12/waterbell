@@ -2,8 +2,6 @@ package com.ssafy.fcc.handler;
 
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -13,6 +11,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 @RequiredArgsConstructor
@@ -21,13 +20,13 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     private final MemberRepository memberRepository;
 
     // WebSocket 세션들을 관리하기 위한 HashMap
-    private final Map<String, WebSocketSession> sessions = new HashMap<>();
+    private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         // 클라이언트와의 연결이 수립되면 처리할 로직
-        int member_id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-        String id = memberRepository.findById(member_id).getLoginId();
+        int memberId = (int) session.getAttributes().get("memberId");
+        String id = memberRepository.findById(memberId).getLoginId();
         session.getAttributes().put("userId", id);
         sessions.put(id, session);
         System.out.println(sessions);
@@ -56,8 +55,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         // 클라이언트와의 연결이 종료되면 세션을 제거
-        int member_id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
-        String id = memberRepository.findById(member_id).getLoginId();
+        String id = (String) session.getAttributes().get("userId");
         sessions.remove(id);
     }
 }
