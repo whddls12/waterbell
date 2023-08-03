@@ -15,11 +15,14 @@
     </div>
     <!-- 로그인 상태일 때 보여줄 메뉴 -->
     <div v-if="isLogin">
+       <router-link to="/alarmBox">
       <button>알림함</button>
-      <p id="hello-msg" v-if="loginUser">{{ loginUser.name }}님 어서오세요!</p>
+    </router-link>
+      <p id="hello-msg" v-if="loginUser">{{ loginUser.value.name }}님 어서오세요!</p>
       <button>마이페이지</button>
       <button @click="logout()">로그아웃</button>
     </div>
+
   </div>
 </template>
 

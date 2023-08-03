@@ -27,68 +27,108 @@ import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' 
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
 
-const routes: Array<RouteRecordRaw> = [
-  {
-    path: '/',
-    name: 'Home',
-    component: Home
-  },
-  // 지하차도 라우터
-  {
-    path: '/road/dash',
-    name: 'RoadDash',
-    component: RoadDash
-  },
-  {
-    path: '/road/report',
-    name: 'RoadReport',
-    component: RoadReport,
-    children: [
-      {
-        path: 'list',
-        component: roadReportListVue
-      },
-      {
-        path: 'create',
-        component: roadReportCreateVue
-      },
-      {
-        path: 'update',
-        component: roadReportUpdateVue
-      },
-      {
-        path: 'item',
-        component: roadReportItemVue
-      }
-    ]
-  },
+//알림함
+import alarmBox from '@/alarm/alarmBox.vue'
+import alarmDetail from '@/alarm/AlarmDetail.vue'
 
-  {
-    path: '/road/control',
-    name: 'RoadControl',
-    component: RoadControl
-  },
-  {
-    path: '/road/manage',
-    name: 'RoadManage',
-    component: RoadManage
-  },
-  {
-    path: '/road/systemlog',
-    name: 'RoadSystemlog',
-    component: RoadSystemlog
-  },
+// // const routes: Array<RouteRecordRaw> = [
 
-  //지하주차장 라우터
+// // ]
 
-  //로그인,회원가입
-  {
-    path: '/park/login',
-    name: 'parkLogin',
-    component: parkLogin
-  },
+// // const router = createRouter({
+// //   history: createWebHistory(process.env.BASE_URL),
+// //   routes
+// // })
 
-  {
+  
+//   {
+//     path: '/park/report',
+//     name: 'ParkReport',
+//     component: ParkReport
+//   },
+//   {
+//     path: '/park/systemlog',
+//     name: 'ParkSystemlog',
+//     component: ParkSystemlog
+//   },
+//   {
+//     path: '/park/manage',
+//     name: 'ParkManage',
+//     component: ParkManage
+//   },
+//   {
+//     path: '/park/control',
+//     name: 'ParkControl',
+//     component: ParkControl
+//   }
+// ]
+
+// 뒤로가기로 페이지 이동했을 경우
+// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
+import store from '@/store'
+
+
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    // 지하차도 라우터
+    {
+      path: '/road/dash',
+      name: 'RoadDash',
+      component: RoadDash
+    },
+    {
+      path: '/road/report',
+      name: 'RoadReport',
+      component: RoadReport
+    },
+    {
+      path: '/road/report/create',
+      component: roadReportCreateVue
+    },
+    {
+      path: '/road/report/update',
+      component: roadReportUpdateVue
+    },
+    {
+      path: '/road/report/item',
+      component: roadReportItemVue
+    },
+    {
+      path: '/road/control',
+      name: 'RoadControl',
+      component: RoadControl
+    },
+    {
+      path: '/road/manage',
+      name: 'RoadManage',
+      component: RoadManage
+    },
+    {
+      path: '/road/systemlog',
+      name: 'RoadSystemlog',
+      component: RoadSystemlog
+    },
+
+    //지하주차장 라우터
+
+    //로그인,회원가입
+    {
+      path: '/park/login',
+      name: 'parkLogin',
+      component: parkLogin
+    },
+    {
+      path: '/park/signup',
+      name: 'parkSignup',
+      component: parkSignup
+    },
+    {
     path: '/park/join',
     name: 'parkJoin',
     component: parkJoin,
@@ -102,31 +142,53 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ParkDash',
     component: ParkDash
   },
-  {
-    path: '/park/report',
-    name: 'ParkReport',
-    component: ParkReport
-  },
-  {
-    path: '/park/systemlog',
-    name: 'ParkSystemlog',
-    component: ParkSystemlog
-  },
-  {
-    path: '/park/manage',
-    name: 'ParkManage',
-    component: ParkManage
-  },
-  {
-    path: '/park/control',
-    name: 'ParkControl',
-    component: ParkControl
-  }
-]
+    {
+      path: '/park/dash',
+      name: 'ParkDash',
+      component: ParkDash
+    },
+    {
+      path: '/park/report',
+      name: 'ParkReport',
+      component: ParkReport
+    },
+    {
+      path: '/park/systemlog',
+      name: 'ParkSystemlog',
+      component: ParkSystemlog
+    },
+    {
+      path: '/park/manage',
+      name: 'ParkManage',
+      component: ParkManage
+    },
+    {
+      path: '/park/control',
+      name: 'ParkControl',
+      component: ParkControl
+    },
+    //알림함
+    {
+      path: '/alarm',
+      name: 'Alarm',
+      component: alarmBox
+    },
+    {
+      path: '/alarm/detail/:alarm_id',
+      name: 'AlarmDetail',
+      component: alarmDetail
+    }
+  ]
+})
 
-const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
+router.beforeEach((to, from, next) => {
+  if (from.path !== '/' && to.path === '/') {
+    store.commit('setIsMainpage', true)
+  } else if (from.path === '/' && to.path !== '/') {
+    store.commit('setIsMainpage', false)
+  }
+
+  next()
 })
 
 export default router
