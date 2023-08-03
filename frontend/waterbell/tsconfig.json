@@ -27,7 +27,8 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/**/*.png"
+    "src/**/*.png",
+    "@/**/*.png"
   ],
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules"]
 }

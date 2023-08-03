@@ -14,9 +14,11 @@ import roadReportListVue from '../underroad/components/report/roadReportList.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
-//지하주차장 로그인, 회원가입
-import parkLogin from '../undergroundParkingLot/views/parkLoginView.vue'
-import parkSignup from '../undergroundParkingLot/views/parkSignupView.vue'
+//지하주차장 회원관련(로그인, 회원가입, 마이페이지)
+import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
+import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
+import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
+import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -87,10 +89,13 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   {
-    path: '/park/signup',
-    name: 'parkSignup',
-    component: parkSignup
+    path: '/park/join',
+    name: 'parkJoin',
+    component: parkJoin,
+    children: [{ path: '/agree', name: 'joinAgree', component: parkJoinAgree }]
   },
+
+  { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
 
   {
     path: '/park/dash',

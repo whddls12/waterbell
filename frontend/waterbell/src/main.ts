@@ -1,6 +1,9 @@
 import { createApp } from 'vue'
+import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
+import createPersistedState from 'vuex-persistedstate'
+import auth from './store/auth/auth'
 import store from './store'
 import axios from 'axios'
 // import Geolocation from 'vue-geolocation-api'
@@ -11,6 +14,19 @@ const app = createApp(App)
 app.config.globalProperties.$http = axios
 app.config.globalProperties.$store = store
 app.use(store).use(router)
+
+// export default new Vuex.Store({
+//   modules: {
+//     auth: auth
+//   },
+
+//   plugins: [
+//     createPersistedState({
+//       //주목! : 여기에 쓴 모듈만 저장됩니다.
+//       paths: ['auth']
+//     })
+//   ]
+// })
 
 // fetchUnderroads 액션을 실행하고 완료될 때까지 기다립니다.
 store
