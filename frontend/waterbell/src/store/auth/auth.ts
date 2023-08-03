@@ -1,32 +1,24 @@
-import { createStore } from 'vuex'
-
-import { ApartManagaer, ApartMember, PublicManager } from '@/types/user'
+import { Module } from 'vuex'
+import { ApartManagaer, ApartMember, PublicManager } from '@/types/user' // Typo here: ApartManager
 import apiClient from '@/types/apiClient'
-// import axios from 'axios'
-export default createStore({
+import store from '@/store/index'
+import router from '@/router/index'
+
+const auth: Module<any, any> = {
+  namespaced: true,
   state: {
-    isLogin: false, //로그인됨 :  true 로그인 안됨 : false
-    loginUser: null as null | ApartManagaer | ApartMember | PublicManager, //로그인된 유저 정보
+    isLogin: false,
+    loginUser: null as null | ApartManagaer | ApartMember | PublicManager,
     role: null as null | string,
     accessToken: null as string | null,
     refreshToken: null as string | null
   },
   getters: {
-    loginUser(state) {
-      return state.loginUser
-    },
-    isLogin(state) {
-      return state.isLogin
-    },
-    role(state) {
-      return state.role
-    },
-    accessToken(state) {
-      return state.accessToken
-    },
-    refreshToken(state) {
-      return state.refreshToken
-    }
+    loginUser: (state) => state.loginUser,
+    isLogin: (state) => state.isLogin,
+    role: (state) => state.role,
+    accessToken: (state) => state.accessToken,
+    refreshToken: (state) => state.refreshToken
   },
   mutations: {
     setLoginUser(state, user) {
@@ -34,30 +26,30 @@ export default createStore({
       state.role = user.role
       state.isLogin = true
     },
-    set_Tokens(state, { accessToken, refreshToken }) {
+    setTokens(state, { accessToken, refreshToken }) {
       state.accessToken = accessToken
       state.refreshToken = refreshToken
+    },
+    setIsLogin(state, value) {
+      state.isLogin = value
+    },
+    logout(state) {
+      state.loginUser = null
+      state.isLogin = false
+      state.role = null
+      state.accessToken = null
+      state.refreshToken = null
     }
   },
   actions: {
     async login({ commit }, { loginId, password }) {
       try {
+        console.log('실행되는가?')
         const response = await apiClient.post('/member/login', {
           loginId,
           password
         })
 
-        if (response.data.message === 'fail') {
-          switch (response.data.exception) {
-            case '일치하는 회원이 없습니다.':
-              alert('존재하지 않는 회원입니다.')
-              break
-            case '비밀번호가 일치하지 않습니다.':
-              alert('비밀번호가 일치하지 않습니다.')
-              break
-          }
-          return
-        }
         let user
         const member = response.data.member
         const accessToken = member.accessToken
@@ -98,10 +90,39 @@ export default createStore({
 
         // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
         commit('setLoginUser', user)
+        // commit('setIslogin', true); // Typo here: setIsLogin
         commit('setTokens', { accessToken, refreshToken })
+        commit('setIsLogin', true)
+
+        // 여기에서 auth state에 있는 loginUser를 getter로 가져오고 싶어.
+        // 어떻게 해야해?
+        const isLogin = store.getters['auth/isLogin']
+        if (isLogin) {
+          router.push('/park/dash')
+        }
       } catch (error) {
-        console.error(error)
+        const { data, status, statusText } = error.response
+        if (error.response.data.message === 'fail') {
+          switch (error.response.data.exception) {
+            case '일치하는 회원이 없습니다.':
+              alert('존재하지 않는 회원입니다.')
+              break
+            case '비밀번호가 일치하지 않습니다.':
+              alert('비밀번호가 일치하지 않습니다.')
+              break
+          }
+          return
+        }
       }
+    },
+
+    async logout({ commit }) {
+      apiClient.post('/member/logout').then((res) => {
+        console.log(res.data)
+      })
+      commit('logout')
     }
-  }
-})
+  } // actions 객체의 닫는 중괄호
+} // auth 모듈의 닫는 중괄호
+
+export default auth

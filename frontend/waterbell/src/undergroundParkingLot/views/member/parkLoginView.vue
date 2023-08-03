@@ -35,15 +35,11 @@ export default defineComponent({
     const id = ref('')
     const password = ref('')
     const store = useStore() // 전역 스토어를 가져옵니다.
-    const login = async () => {
-      try {
-        await store.dispatch('/auth/login', {
-          loginId: id.value,
-          password: password.value
-        })
-      } catch (error) {
-        console.error(error)
-      }
+    const login = () => {
+      store.dispatch('auth/login', {
+        loginId: id.value,
+        password: password.value
+      })
     }
 
     return {

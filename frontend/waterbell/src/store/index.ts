@@ -5,15 +5,6 @@ import { Underroad } from '@/types/underroad'
 import auth from './auth/auth'
 // import axios from 'axios'
 
-const authStore = createPersistedState({
-  plugins: [
-    createPersistedState({
-      //주목! : 여기에 쓴 모듈만 저장됩니다.
-      paths: ['auth']
-    })
-  ]
-})
-
 export default createStore({
   state: {
     underroadListByGugun: [] as any, //지하차도 리스트(구군에 따라 리스트로 되어 있음)
@@ -88,5 +79,5 @@ export default createStore({
   modules: {
     auth
   },
-  plugins: [auth]
+  plugins: [createPersistedState()]
 })

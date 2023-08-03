@@ -11,7 +11,9 @@ const accessToken = function getToken() {
 }
 
 // axios 인스턴스 생성
-const apiClient = axios.create()
+const apiClient = axios.create({
+  baseURL: 'http://localhost:8080'
+})
 
 // request interceptor 설정
 apiClient.interceptors.request.use(
