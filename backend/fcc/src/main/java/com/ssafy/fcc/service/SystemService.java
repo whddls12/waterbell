@@ -23,6 +23,8 @@ public class SystemService {
 
     public void insertLog(int facilityId, String category, int value) {
 
+
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         Facility facility = facilityRepository.findById(facilityId);
 
 

@@ -62,15 +62,21 @@ public class MqttSubscriber implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
 
+
+//        System.out.println(topic + " " + message.toString());
         // TODO 만들어지는 topic 계층에 따라 (facility_id, Temp,Dust,Humid or Cam) 뽑아야함
 
-        // 예를들어 /A/7/Temp
+        // 예를들어 Temp
         // facility_id = 7, category = Temp
-        String[] result = topic.toString().split("/");
+        String[] result = message.toString().split("/");
 
-        int facilityId = Integer.parseInt(result[1]);
-        String category = result[2];
-        int value = Integer.parseInt(message.toString());
+        int facilityId = Integer.parseInt(result[0]);
+        String category = topic;
+        int value = Integer.parseInt(result[1]);
+
+        System.out.println(facilityId);
+        System.out.println(category);
+        System.out.println(value);
 
         Facility facility = facilityRepository.findById(facilityId);
 
@@ -89,14 +95,13 @@ public class MqttSubscriber implements MqttCallback {
             System.out.println("인코딩 후 : " + new String(encodeByte));
 
         } else {
-            systemService.insertLog(facilityId, category, Integer.parseInt(message.toString()));
+            systemService.insertLog(facilityId, category, value);
         }
     }
 
     @Transactional
     public void checkSituation(Facility facility, int value) throws Exception {
 
-        System.out.println("@@@@@@@@@@@@@@@@@@@@");
         if (value > facility.getSecondAlarmValue()) {
             if (facility.getStatus() == WaterStatus.FIRST || facility.getStatus() == WaterStatus.DEFAULT) {
                 facilityService.updateStatus(facility, WaterStatus.SECOND);
@@ -121,7 +126,6 @@ public class MqttSubscriber implements MqttCallback {
             }
 
         } else {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!");
             facilityService.updateStatus(facility, WaterStatus.DEFAULT);
         }
 
