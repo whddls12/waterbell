@@ -37,7 +37,7 @@ public class UndergroundRoadService {
 
     // 1,2차 자동알림(관리자)
     @Transactional
-    public void sendAutoNotification(int facility_id, WaterStatus status) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void sendAutoNotification(int facility_id, WaterStatus status, int data) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
         UndergroundRoad undergroundRoad = undergroundRoadRepository.findById(facility_id);
         // 해당 지하차도 관리자
         PublicManager manager = publicManagerRepository.findBySido(undergroundRoad.getGugun().getSido().getId());
@@ -46,12 +46,12 @@ public class UndergroundRoadService {
         // 1차 경고 상황
         if(status==WaterStatus.FIRST){
             notificationMessage = "[WaterBell]주의 : " + undergroundRoad.getUndergroundRoadName() + "의 수위 센서가 1차 경고 수치인 "
-                    + undergroundRoad.getFirstAlarmValue() +"mm를 넘었습니다. CCTV를 확인하세요.";
+                    + undergroundRoad.getFirstAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하세요.";
         }
         // 2차 경고 상황
         else {
             notificationMessage = "[WaterBell]주의 : " + undergroundRoad.getUndergroundRoadName() + "의 수위 센서가 2차 경고 수치인 "
-                    + undergroundRoad.getSecondAlarmValue() +"mm를 넘었습니다. CCTV를 확인하고 전광판과 경고등을 작동시키세요.";
+                    + undergroundRoad.getSecondAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하고 전광판과 경고등을 작동시키세요.";
         }
 
         // 알림 로그
