@@ -1,5 +1,6 @@
 package com.ssafy.fcc.repository;
 
+import com.ssafy.fcc.domain.location.Sido;
 import com.ssafy.fcc.domain.member.PublicManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,5 +26,13 @@ public class PublicManagerRepository {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public Sido findSidoByMemberId(Integer memberId){
+        Sido sido = em.createQuery("SELECT a FROM PublicManager a WHERE a.id = :memberId", PublicManager.class)
+                .setParameter("memberId", memberId)
+                .getSingleResult().getSido();
+
+        return sido;
     }
 }
