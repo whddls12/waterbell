@@ -17,7 +17,7 @@ export interface PublicManager {
   facilityId: number
 }
 
-export interface ApartManagaer {
+export interface ApartManager {
   id: number
   loginId: string
   name: string
