@@ -287,10 +287,6 @@ r
 Bbackend/fcc/src/main/java/com/ssafy/fcc/domain/facility/Apart.java,d\d\dd777d9901327f42e698d3a38c221e679942d03b
 ~
 Nbackend/fcc/src/main/java/com/ssafy/fcc/controller/VerificationController.java,7\a\7a26d4b57cdd73243a1a88cfeb68f248865d7ca6
-m
-=backend/fcc/src/test/java/com/ssafy/fcc/util/SmsUtilTest.java,5\a\5a82d3fc60c2af3cd57a443314a163ed81817329
-o
-?backend/fcc/src/test/java/com/ssafy/fcc/util/RedisUtilTest.java,9\0\9099b8b756acd288f738011c39bbc351658bf111
 H
 backend/fcc/build.gradle,c\e\ce4b8b5ec9e6589b2d4c7774d54296ae82e960e0
 |
@@ -301,5 +297,3 @@ r
 Bbackend/fcc/src/main/java/com/ssafy/fcc/domain/log/SensorType.java,8\4\84b6b8587dbcefd264a4787522420e347cfc2b6a
 r
 Bbackend/fcc/src/main/java/com/ssafy/fcc/service/MemberService.java,c\3\c3af8c01d63905a5948a4b2c6b4ec08646937ca2
-|
-Lbackend/fcc/src/test/java/com/ssafy/fcc/service/ApartManagerServiceTest.java,8\4\84e3a61873b3e577ddc5e170b9470eb4b20b0387
