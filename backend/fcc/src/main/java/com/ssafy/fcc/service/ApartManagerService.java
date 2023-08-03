@@ -4,6 +4,7 @@ import com.ssafy.fcc.domain.alarm.FloodAlarmLog;
 import com.ssafy.fcc.domain.alarm.ReceiveAlarmMember;
 import com.ssafy.fcc.domain.alarm.Step;
 import com.ssafy.fcc.domain.facility.Apart;
+import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.member.ApartManager;
 import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.domain.sms.ReceiveSmsMember;
@@ -46,9 +47,11 @@ public class ApartManagerService {
         String notificationMessage;
         if(step==Step.ACTIVATION){
             notificationMessage = apart.getActivation_message();
+            apart.setStatus(WaterStatus.WORKING);
         }
         else {
             notificationMessage = apart.getDeactivation_message();
+            apart.setStatus(WaterStatus.SECOND);
         }
         // 알림 로그
         FloodAlarmLog log = new FloodAlarmLog();
