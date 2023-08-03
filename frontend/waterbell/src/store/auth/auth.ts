@@ -118,11 +118,7 @@ const auth: Module<any, any> = {
 
     async logout({ commit }) {
       apiClient.post('/member/logout').then((res) => {
-        try {
-          console.log(res.data)
-        } catch (error) {
-          console.log(error.response)
-        }
+        console.log(res.data)
       })
       commit('logout')
     }
