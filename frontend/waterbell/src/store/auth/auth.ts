@@ -1,5 +1,5 @@
 import { Module } from 'vuex'
-import { ApartManagaer, ApartMember, PublicManager } from '@/types/user' // Typo here: ApartManager
+import { ApartManager, ApartMember, PublicManager } from '@/types/user' // Typo here: ApartManager
 import apiClient from '@/types/apiClient'
 import store from '@/store/index'
 import router from '@/router/index'
@@ -8,7 +8,7 @@ const auth: Module<any, any> = {
   namespaced: true,
   state: {
     isLogin: false,
-    loginUser: null as null | ApartManagaer | ApartMember | PublicManager,
+    loginUser: null as null | ApartManager | ApartMember | PublicManager,
     role: null as null | string,
     accessToken: null as string | null,
     refreshToken: null as string | null,
