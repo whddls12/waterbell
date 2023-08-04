@@ -13,6 +13,7 @@
     "bootstrap": "^5.3.1",
     "chart.js": "^3.9.1",
     "core-js": "^3.6.5",
+    "geolib": "^3.3.4",
     "multer": "^1.4.5-lts.1",
     "vue": "^3.0.0",
     "vue-geolocation-api": "^0.1.21",
