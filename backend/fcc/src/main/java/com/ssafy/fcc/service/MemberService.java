@@ -86,4 +86,15 @@ public class MemberService {
         }
         return null;
     }
+
+    @Transactional
+    public void modifyPassword(Integer id, String newPw) {
+        Member m = memberRepository.findById(id);
+        m.setPassword(newPw);
+    }
+
+
+    public ApartMember getMemberByNameAndPhone(String name, String phone) {
+        return memberRepository.findByPhoneAndName(name, phone);
+    }
 }

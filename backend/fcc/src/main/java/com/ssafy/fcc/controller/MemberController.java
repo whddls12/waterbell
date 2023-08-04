@@ -216,7 +216,6 @@ public class MemberController {
     }
 
 
-
     @PostMapping("/refresh-token")
     public ResponseEntity<Map<String, Object>> refreshAccessToken(@RequestBody RefreshToken refreshTokenObj) {
 
@@ -275,5 +274,126 @@ public class MemberController {
         return ResponseEntity.ok(resultMap);
 
     }
+
+
+    //아이디 찾기
+    @PostMapping("/apart/searchId")
+    public ResponseEntity<Map<String, Object>> searchId(@RequestBody Map<String, String> request) throws Exception {
+
+        String name = request.get("name");
+        String phone = request.get("phone");
+        System.out.println("loginId = " + name);
+        System.out.println("password = " + phone);
+
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+
+            ApartMember loginUser = memberService.getMemberByNameAndPhone(name, phone);
+
+            if (loginUser != null && loginUser.isSystem()) {
+                resultMap.put("message", "success");
+                resultMap.put("loginId", loginUser.getLoginId());
+                status = HttpStatus.ACCEPTED;
+            } else if (loginUser != null && !loginUser.isSystem()) {
+                throw new Exception("소셜 로그인 회원입니다.");
+            } else {
+                throw new Exception("일치하는 회원정보가 없습니다");
+            }
+
+        } catch (Exception e) {
+            logger.error("로그인 실패 : {}", e);
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+
+    //비밀번호 변경
+    @PostMapping("/reset/password")
+    public ResponseEntity<Map<String, Object>> resetPasswrd(@RequestBody Map<String, String> request) throws Exception {
+
+        String oldPw = request.get("oldPw");
+        String newPw = request.get("newPw");
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+            Integer id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            Member loginUser = memberService.findById(id);
+
+            if (!passwordEncoder.matches(oldPw, loginUser.getPassword())) {
+                throw new Exception("비밀번호가 일치하지 않아 변경 불가능합니다.");
+            }
+            memberService.modifyPassword(id, passwordEncoder.encode(newPw));
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+
+    //아파트 회원 마이페이지 조회
+    @GetMapping("/mypage")
+    public ResponseEntity<Map<String, Object>> getMyPage() throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        Integer id = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Member loginUser = memberService.findById(id);
+        try {
+
+            if (loginUser.getRole() == Role.APART_MEMBER) {
+                ApartMember apartMember = (ApartMember) loginUser;
+                MypageApartMemberDto memberDto = new MypageApartMemberDto(
+                        apartMember.getId(), apartMember.getLoginId(), apartMember.getPhone(),
+                        apartMember.getApart().getApartCode(), apartMember.getApart().getApartName(),
+                        apartMember.getApart().getAddress(), apartMember.getAddressNumber(), apartMember.getName()
+                );
+                resultMap.put("memberInfo", memberDto);
+            } else if (loginUser.getRole() == Role.APART_MANAGER) {
+                ApartManager apartManager = (ApartManager) loginUser;
+                MypageApartManagerDto managerDto = new MypageApartManagerDto(
+                        apartManager.getId(), apartManager.getLoginId(), apartManager.getPhone(),
+                        apartManager.getApart().getApartCode(), apartManager.getApart().getApartName(),
+                        apartManager.getApart().getAddress()
+                );
+                resultMap.put("memberInfo", managerDto);
+            } else if (loginUser.getRole() == Role.PUBLIC_MANAGER) {
+                PublicManager publicManager = (PublicManager) loginUser;
+                MyPagePubilicManagerDto managerDto = new MyPagePubilicManagerDto(
+                        publicManager.getId(), publicManager.getLoginId(), publicManager.getPhone(), publicManager.getSido().getSidoName()
+                );
+                resultMap.put("memberInfo", managerDto);
+            } else if (loginUser.getRole() == Role.USER) {
+                MyPageUserDto userDto = new MyPageUserDto(
+                        loginUser.getId(), loginUser.getLoginId(), loginUser.getPhone()
+                );
+                resultMap.put("memberInfo", userDto);
+
+            }
+            if (resultMap.isEmpty()) {
+                throw new Exception("일치하는 회원 정보가 없습니다");
+            }
+            status = HttpStatus.ACCEPTED;
+
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
 
 }
