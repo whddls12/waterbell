@@ -72,7 +72,7 @@ public class ApartManagerService {
             receiveAlarmMember.setMember(member);
             receiveAlarmMember.setRead(false);
             receiveAlarmMemberRepository.save(receiveAlarmMember);
-            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), notificationMessage);
+            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), receiveAlarmMember);
         }
 
     }

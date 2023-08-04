@@ -34,15 +34,14 @@ public class WebSocketConfig implements WebSocketConfigurer {
                             // URI에서 토큰을 추출
                             String token = request.getURI().getQuery().split("token=")[1];
                             if (jwtTokenProvider.validateToken(token)) {
-                                // 유효한 토큰일 경우 로직 처리
                                 int memberId = Integer.parseInt(jwtTokenProvider.getUserPk(token));
                                 attributes.put("memberId", memberId);
                             } else {
                                 throw new IllegalArgumentException("Invalid token");
                             }
                         } catch (IllegalArgumentException e) {
-                            response.setStatusCode(HttpStatus.UNAUTHORIZED); // 401 Unauthorized 상태 코드 설정
-                            return false; // 연결 수립 거부
+                            response.setStatusCode(HttpStatus.UNAUTHORIZED);
+                            return false;
                         }
                         return true;
                     }
