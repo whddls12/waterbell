@@ -40,11 +40,6 @@ export default defineComponent({
   name: 'roadDashReportVue',
 
   setup() {
-    // const store = useStore()
-
-    // getters에서 nowUnderroad 가져오기
-    // const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     let reportList = ref<

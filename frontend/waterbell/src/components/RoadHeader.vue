@@ -12,14 +12,15 @@
         />
       </div>
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
-      <div class="header-btn">
-        <!-- 로그인 상태-->
-        <router-link to="/alarm">
-          <button>알림함</button>
-        </router-link>
-        <p id="hello-msg">@@님 어서오세요!</p>
+      <!-- 로그인 상태-->
+      <div class="header-btn" v-if="accessToken">
+        <p id="hello-msg">김동현님 어서오세요!</p>
+        <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
-        <button>로그아웃</button>
+        <button @click="logout">로그아웃</button>
+      </div>
+      <div class="header-btn" v-else>
+        <button @click="goToLogin">로그인</button>
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
@@ -55,6 +56,7 @@
 import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
 // import roadControlView from '../underroad/views/roadControlView.vue'
 // import roadDashboardView from '../underroad/views/roadDashboardView.vue'
 // import roadManageView from '../underroad/views/roadManageView.vue'
@@ -64,6 +66,15 @@ import { useStore } from 'vuex'
 export default defineComponent({
   name: 'RoadHeader',
   components: {},
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
   setup() {
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
@@ -74,16 +85,28 @@ export default defineComponent({
       router.push({ path: '/' })
     }
 
+    function goToAlarm() {
+      router.push({ path: '/alarm' })
+    }
+
+    function goToLogin() {
+      router.push({ path: '/park/login' })
+    }
+
+    function logout() {
+      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
+    }
+
     return {
       isMainPage,
-      goToMain
+      goToMain,
+      goToAlarm,
+      goToLogin,
+      logout
     }
   },
-  methods: {
-    goToAlarmBox() {
-      this.$router.push('/alarmBox')
-    }
-  }
+  methods: {}
 })
 </script>
 

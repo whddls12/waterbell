@@ -141,7 +141,7 @@ const auth: Module<any, any> = {
         if (isLogin) {
           router.push('/park/dash')
         }
-      } catch (error) {
+      } catch (error: any) {
         const { data, status, statusText } = error.response
         if (error.response.data.message === 'fail') {
           switch (error.response.data.exception) {

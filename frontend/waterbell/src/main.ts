@@ -7,6 +7,7 @@ import axios from 'axios'
 import getMylocation, { getClosestLocation } from './types/getMylocation'
 
 // 날짜 포맷
+// import { Vue } from 'vue-property-decorator'
 // import { formatDate } from './util/filters'
 // Vue.filter('formatDate', formatDate)
 
