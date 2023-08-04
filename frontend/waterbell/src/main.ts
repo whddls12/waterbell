@@ -5,6 +5,7 @@ import store from './store'
 import axios from 'axios'
 
 // 날짜 포맷
+// import { Vue } from 'vue-property-decorator'
 // import { formatDate } from './util/filters'
 // Vue.filter('formatDate', formatDate)
 

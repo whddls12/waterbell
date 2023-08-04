@@ -48,7 +48,7 @@ export default defineComponent({
 
     // getters에서 nowUnderroad 가져오기
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
+    console.log(store.getters.nowUnderroad)
     const facility_id = nowUnderroad.id
 
     let reportList = ref<
