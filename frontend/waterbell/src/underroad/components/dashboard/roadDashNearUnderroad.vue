@@ -76,13 +76,13 @@ export default defineComponent({
           position_ok.value.push(roadobj)
         } else if (road.status == 'FIRST') {
           roadobj.statusMsg = '1차 경고'
-          position_warn.value.push(road)
+          position_warn.value.push(roadobj)
         } else if (road.status == 'SECOND') {
           roadobj.statusMsg = '2차 경고'
           position_warn.value.push(roadobj)
         } else {
           roadobj.statusMsg = '진입 금지'
-          position_block.value.push(road)
+          position_block.value.push(roadobj)
         }
       }
 
