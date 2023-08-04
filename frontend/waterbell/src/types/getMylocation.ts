@@ -24,10 +24,17 @@ const getMylocation = (): Promise<Location> => {
 
 const getClosestLocation = async (underroads: any[]): Promise<any> => {
   const myLocation = await getMylocation()
-  let closestLocation = {
-    distance: null as null | number,
-    id: null as null | string
-  }
+  let closestLocation = null as {
+    id: string
+    name: string
+    latitude: string
+    longitude: string
+    status: string
+    firstMsg: string
+    secondMsg: string
+    releaseMsg: string
+  } | null
+
   let minDistance = Number.MAX_VALUE
   console.log(underroads)
   for (const road of underroads) {
@@ -38,7 +45,16 @@ const getClosestLocation = async (underroads: any[]): Promise<any> => {
 
     if (distance < minDistance) {
       minDistance = distance
-      closestLocation = { distance: minDistance, id: road.id }
+      closestLocation = {
+        id: road.id,
+        name: road.name,
+        latitude: road.latitude,
+        longitude: road.longitude,
+        status: road.status,
+        firstMsg: road.firstMsg,
+        secondMsg: road.secondMsg,
+        releaseMsg: road.releaseMsg
+      }
     }
   }
 
