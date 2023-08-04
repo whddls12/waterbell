@@ -30,9 +30,7 @@ export default defineComponent({
   setup() {
     const store = useStore()
     //지도에 찍을 지하차도 list
-    const underroadListByGugun = computed(
-      () => store.getters.underroadListByGugun
-    ).value
+    const underroadList = computed(() => store.getters.underroadList).value
 
     //임시 선택된 위치가 저장된 state
     const tmpUnderroad = computed(() => store.getters.tmpUnderroad).value
@@ -54,27 +52,25 @@ export default defineComponent({
     >([])
 
     const setPositions = () => {
-      for (let roads of underroadListByGugun) {
-        for (let road of roads.underroads) {
-          let roadobj = ref<{ road: any; statusMsg: string }>({
-            road: road,
-            statusMsg: ''
-          })
+      for (let road of underroadList) {
+        let roadobj = ref<{ road: any; statusMsg: string }>({
+          road: road,
+          statusMsg: ''
+        })
 
-          if (road.status == 'DEFAULT') {
-            //진입가능한 지하차도
-            roadobj.value.statusMsg = '진입 가능'
-            position_ok.value.push(roadobj.value)
-          } else if (road.status == '1차') {
-            road.obj.value.statusMsg = '1차 경고'
-            position_warn.value.push(road)
-          } else if (road.status == '2차') {
-            road.obj.value.statusMsg = '2차 경고'
-            position_warn.value.push(roadobj.value)
-          } else {
-            road.obj.value.statusMsg = '진입 금지'
-            position_block.value.push(road)
-          }
+        if (road.status == 'DEFAULT') {
+          //진입가능한 지하차도
+          roadobj.value.statusMsg = '진입 가능'
+          position_ok.value.push(roadobj.value)
+        } else if (road.status == '1차') {
+          road.obj.value.statusMsg = '1차 경고'
+          position_warn.value.push(road)
+        } else if (road.status == '2차') {
+          road.obj.value.statusMsg = '2차 경고'
+          position_warn.value.push(roadobj.value)
+        } else {
+          road.obj.value.statusMsg = '진입 금지'
+          position_block.value.push(road)
         }
       }
     }

@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
     if (isLogin.value) {
       const token = accessToken()
       if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`
+        config.headers['Authorization'] = `Bearer ${accessToken()}`
       }
     }
     return config

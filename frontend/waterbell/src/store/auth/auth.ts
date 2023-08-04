@@ -11,14 +11,17 @@ const auth: Module<any, any> = {
     loginUser: null as null | ApartManager | ApartMember | PublicManager,
     role: null as null | string,
     accessToken: null as string | null,
-    refreshToken: null as string | null
+    refreshToken: null as string | null,
+
+    facilityId: null as string | null
   },
   getters: {
     loginUser: (state) => state.loginUser,
     isLogin: (state) => state.isLogin,
     role: (state) => state.role,
     accessToken: (state) => state.accessToken,
-    refreshToken: (state) => state.refreshToken
+    refreshToken: (state) => state.refreshToken,
+    facilityId: (state) => state.facilityId
   },
   mutations: {
     setLoginUser(state, user) {
@@ -39,6 +42,9 @@ const auth: Module<any, any> = {
       state.role = null
       state.accessToken = null
       state.refreshToken = null
+    },
+    setFacilityId(state, value) {
+      state.facilityId = value
     }
   },
   actions: {
