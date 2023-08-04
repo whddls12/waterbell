@@ -53,6 +53,16 @@ export default defineComponent({
 
     // console.log('지하차도 리스트')
     // console.log(underroadList.value)
+
+    console.log('position ok')
+    console.log(position_ok.value)
+
+    console.log('position warn')
+    console.log(position_warn.value)
+
+    console.log('position block')
+    console.log(position_block.value)
+
     const setPositions = () => {
       for (let road of underroadList.value) {
         let roadobj = ref<{ road: any; statusMsg: string }>({
@@ -64,10 +74,10 @@ export default defineComponent({
           //진입가능한 지하차도
           roadobj.statusMsg = '진입 가능'
           position_ok.value.push(roadobj)
-        } else if (road.status == '1차') {
+        } else if (road.status == 'FIRST') {
           roadobj.statusMsg = '1차 경고'
           position_warn.value.push(road)
-        } else if (road.status == '2차') {
+        } else if (road.status == 'SECOND') {
           roadobj.statusMsg = '2차 경고'
           position_warn.value.push(roadobj)
         } else {
@@ -75,6 +85,12 @@ export default defineComponent({
           position_block.value.push(road)
         }
       }
+
+      // console.log('여기는 setPositions')
+      // console.log(underroadList.value)
+      // console.log(position_ok.value)
+      // console.log(position_warn)
+      // console.log(position_block)
     }
 
     //지도 script 추가하기1
@@ -106,7 +122,7 @@ export default defineComponent({
       map.value = new window.kakao.maps.Map(container, options)
       await getWaterHeight()
       await setPositions()
-      makeMarker()
+      await makeMarker()
     }
     //마커 만들기
     const makeMarker = () => {
@@ -114,10 +130,13 @@ export default defineComponent({
 
       //통과 가능한 지하차도 마커 설정
       for (let i of position_ok.value) {
+        console.log(i.road.undergroundRoadName)
         let markerImage = new window.kakao.maps.MarkerImage(
           roadImgSrc0,
           imgSize
         )
+        // console.log('통과가능 지하차도 마커설정')
+        // console.log(i)
 
         let latlng = new window.kakao.maps.LatLng(
           i.road.latitude,
@@ -131,8 +150,6 @@ export default defineComponent({
           clickable: true
         })
 
-        // 마커를 지도에 표시합니다.
-        // marker.setMap(map)
         let infowindow = makeInfoWindowRoad(i)
         // 마커에 클릭이벤트를 등록합니다
         window.kakao.maps.event.addListener(marker, 'mouseover', function () {
@@ -154,13 +171,15 @@ export default defineComponent({
           infowindow.open(map.value, marker)
         })
       }
-
+      // console.log(position_warn)
       //경고 받은 지하차도 마커 설정
       for (let i of position_warn.value) {
         let markerImage = new window.kakao.maps.MarkerImage(
           roadImgSrc1,
           imgSize
         )
+        // console.log('경고지하차도')
+        // console.log(i)
 
         let marker = new window.kakao.maps.Marker({
           map: map.value,
@@ -191,9 +210,13 @@ export default defineComponent({
           setTmplotation(i.road.id)
         })
       }
+      console.log('진입금지 지하차도 목록')
+      console.log(position_block.value)
 
       //진입금지 지하차도 마커 설정
       for (let i of position_block.value) {
+        console.log('진입금지 지하차도')
+        console.log(i.value)
         let markerImage = new window.kakao.maps.MarkerImage(
           roadImgSrc2,
           imgSize
@@ -231,6 +254,7 @@ export default defineComponent({
 
       //하천 경보 발령된 하천 마커생성
       for (let i of position_Y.value) {
+        console.log('하천')
         let markerImage = new window.kakao.maps.MarkerImage(riverY, imgSize)
 
         let marker = new window.kakao.maps.Marker({
@@ -286,28 +310,11 @@ export default defineComponent({
         })
       }
     }
-    const getMylocation = (): Promise<any> => {
-      // HTML5의 geolocation으로 사용할 수 있는지 확인합니다
-      return new Promise((resolve, reject) => {
-        if (navigator.geolocation) {
-          // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-          navigator.geolocation.getCurrentPosition(
-            function (position) {
-              let lat = position.coords.latitude // 위도
-              let lon = position.coords.longitude // 경도
-              resolve({ lat: lat, lon: lon })
-            },
-            (error) => resolve({ lat: '36.3405', lon: '127.3939' }) // 위치 정보를 가져오는 데 실패했을 경우의 에러 처리
-          )
-        } else {
-          resolve({ lat: '36.3405', lon: '127.3939' })
-        }
-      })
-    }
 
     const makeInfoWindowRoad = (i: any) => {
       // 마커를 클릭했을 때 마커 위에 표시할 인포윈도우를 생성합니다
-
+      // console.log('i가 뭐가 잘못됐나! ')
+      // console.log(i.road.undergroundRoadName)
       let iwContent =
         '<div style="padding:5px; width: 200px;"> <p>' +
         i.road.undergroundRoadName +
