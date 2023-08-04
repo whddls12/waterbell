@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '@/views/Home.vue'
 
 //지하차도 페이지
 import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
@@ -10,7 +10,7 @@ import RoadControl from '@/underroad/views/roadControlView.vue' // 제어
 
 //지하차도 신고접수
 import roadReportItemVue from '../underroad/components/report/roadReportItem.vue'
-import roadReportListVue from '../underroad/components/report/roadReportList.vue'
+// import roadReportListVue from '../underroad/components/report/roadReportList.vue'
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
@@ -35,6 +35,10 @@ import store from '@/store'
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: [
+    {
+      path: '',
+      redirect: { name: 'Home' }
+    },
     {
       path: '/',
       name: 'Home',
@@ -105,11 +109,6 @@ const router = createRouter({
       component: ParkDash
     },
     {
-      path: '/park/dash',
-      name: 'ParkDash',
-      component: ParkDash
-    },
-    {
       path: '/park/report',
       name: 'ParkReport',
       component: ParkReport
@@ -146,9 +145,9 @@ const router = createRouter({
 // 뒤로가기로 페이지 이동했을 경우
 // isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
 router.beforeEach((to, from, next) => {
-  if (from.path !== '/' && to.path === '/') {
+  if (to.path === '/') {
     store.commit('setIsMainpage', true)
-  } else if (from.path === '/' && to.path !== '/') {
+  } else {
     store.commit('setIsMainpage', false)
   }
 
