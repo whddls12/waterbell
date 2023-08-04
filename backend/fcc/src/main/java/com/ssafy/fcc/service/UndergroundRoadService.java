@@ -43,19 +43,22 @@ public class UndergroundRoadService {
         PublicManager manager = publicManagerRepository.findBySido(undergroundRoad.getGugun().getSido().getId());
         // 알림 메시지
         String notificationMessage;
+        // 알림 로그
+        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
         // 1차 경고 상황
         if(status==WaterStatus.FIRST){
             notificationMessage = "[WaterBell]주의 : " + undergroundRoad.getUndergroundRoadName() + "의 수위 센서가 1차 경고 수치인 "
                     + undergroundRoad.getFirstAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하세요.";
+            floodAlarmLog.setStep(Step.FIRST);
         }
         // 2차 경고 상황
         else {
             notificationMessage = "[WaterBell]주의 : " + undergroundRoad.getUndergroundRoadName() + "의 수위 센서가 2차 경고 수치인 "
                     + undergroundRoad.getSecondAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하고 전광판과 경고등을 작동시키세요.";
+            floodAlarmLog.setStep(Step.SECOND);
         }
 
-        // 알림 로그
-        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
+
         floodAlarmLog.setMember(memberRepository.getSystemMember());
         floodAlarmLog.setFacility(undergroundRoad);
         floodAlarmLog.setRegDate(LocalDateTime.now());
