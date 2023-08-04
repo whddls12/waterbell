@@ -30,38 +30,6 @@ import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // �
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
 import alarmDetail from '@/alarm/AlarmDetail.vue'
-
-// // const routes: Array<RouteRecordRaw> = [
-
-// // ]
-
-// // const router = createRouter({
-// //   history: createWebHistory(process.env.BASE_URL),
-// //   routes
-// // })
-
-//   {
-//     path: '/park/report',
-//     name: 'ParkReport',
-//     component: ParkReport
-//   },
-//   {
-//     path: '/park/systemlog',
-//     name: 'ParkSystemlog',
-//     component: ParkSystemlog
-//   },
-//   {
-//     path: '/park/manage',
-//     name: 'ParkManage',
-//     component: ParkManage
-//   },
-//   {
-//     path: '/park/control',
-//     name: 'ParkControl',
-//     component: ParkControl
-//   }
-// ]
-
 import store from '@/store'
 
 const router = createRouter({
@@ -119,11 +87,7 @@ const router = createRouter({
       name: 'parkLogin',
       component: parkLogin
     },
-    // {
-    //   path: '/park/signup',
-    //   name: 'parkSignup',
-    //   component: parkSignup
-    // },
+
     {
       path: '/park/join',
       name: 'parkJoin',
