@@ -12,9 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,9 +43,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 config.setAllowedMethods(
                                         List.of("*")
                                 );
+                                //여기 추가
                                 config.setAllowedHeaders(
                                         List.of("*")
                                 );
+                                //여기까지
                                 return config;
                             };
                             c.configurationSource(source);
@@ -70,6 +70,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
     }
+
+
 
     @Override //swagger 예외 처리
     public void configure(WebSecurity web) {
