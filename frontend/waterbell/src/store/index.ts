@@ -36,7 +36,6 @@ export default createStore({
     location(state) {
       return state.location
     },
-
     nowUnderroad(state) {
       return state.nowUnderroad
     }
