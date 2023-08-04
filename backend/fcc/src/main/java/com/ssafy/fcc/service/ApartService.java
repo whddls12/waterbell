@@ -44,26 +44,28 @@ public class ApartService {
         ApartManager manager = apartManagerRepository.findByFacility(facility_id);
         // 알림 메시지
         String notificationMessage;
+        // 알림 로그
+        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
         // 1차 경고 상황
         if(status==WaterStatus.FIRST){
             notificationMessage = "[WaterBell]주의 : " + apart.getApartName() + "의 수위 센서가 1차 경고 수치인 "
                     + apart.getFirstAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하세요.";
+            floodAlarmLog.setStep(Step.FIRST);
         }
         // 2차 경고 상황
         else {
             notificationMessage = "[WaterBell]주의 : " + apart.getApartName() + "의 수위 센서가 2차 경고 수치인 "
                     + apart.getSecondAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하고 차수판과 사이렌을 작동시키세요.";
+            floodAlarmLog.setStep(Step.SECOND);
         }
 
-        // 알림 로그
-        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
         floodAlarmLog.setMember(memberRepository.getSystemMember());
         floodAlarmLog.setFacility(apart);
         floodAlarmLog.setRegDate(LocalDateTime.now());
         floodAlarmLog.setContent(notificationMessage);
         floodAlarmLog.setIsApart(true);
         floodAlarmLog.setIsFlood(true);
-        floodAlarmLog.setStep(Step.FIRST);
+
         floodAlarmLogRepository.save(floodAlarmLog);
 
         // 웹 알림 보내고 저장
@@ -72,7 +74,7 @@ public class ApartService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), receiveAlarmMember);
 
         // 문자 알림
         SmsLog smsLog = new SmsLog();
@@ -116,7 +118,7 @@ public class ApartService {
             receiveAlarmMember.setMember(member);
             receiveAlarmMember.setRead(false);
             receiveAlarmMemberRepository.save(receiveAlarmMember);
-            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), notificationMessage);
+            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), receiveAlarmMember);
         }
 
         // sms 로그
