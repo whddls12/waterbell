@@ -9,7 +9,6 @@ export interface Gugun {
   gugunName: string
   sido: Sido
 }
-
 export interface Underroad {
   id: string
   gugun: Gugun
