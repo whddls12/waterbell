@@ -25,9 +25,9 @@ store
   .dispatch('fetchUnderroads')
   .then(async () => {
     // 액션이 완료되면 앱을 마운트합니다.
-    const underroadList = computed(() => store.getters.underroadList)
+    const underroadList = computed(() => store.getters['auth/underroadList'])
 
-    console.log(underroadList.value)
+    // console.log(underroadList.value)
     if (!Array.isArray(underroadList.value)) {
       throw new Error('underroadList.value is not iterable')
     }
@@ -39,7 +39,8 @@ store
   .then((result) => {
     // 결과 값을 auth 모듈의 facilityId에 저장합니다.
     store.commit('auth/setFacilityId', result.id)
-    console.log(store.getters['auth/facilityId'])
+    // console.log('facility_id는?')
+    // console.log(store.getters['auth/facilityId'])
     // 앱을 마운트합니다.
     app.mount('#app')
   })

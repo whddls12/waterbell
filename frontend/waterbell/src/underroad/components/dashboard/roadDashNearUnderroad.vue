@@ -21,16 +21,16 @@ import roadImgSrc1 from '@/assets/images/map_road_1.png'
 import roadImgSrc2 from '@/assets/images/map_road_2.png'
 import riverN from '@/assets/images/map_water_0.png'
 import riverY from '@/assets/images/map_water_1.png'
-import { useStore } from 'vuex'
+import store from '@/store/index'
 import http from '@/types/http'
 import Geolocation from 'vue-geolocation-api'
 
 export default defineComponent({
   name: 'roadDashMapVue',
   setup() {
-    const store = useStore()
+    // const store = useStore()
     //지도에 찍을 지하차도 list
-    const underroadList = computed(() => store.getters.underroadList).value
+    const underroadList = computed(() => store.getters['auth/underroadList'])
 
     //임시 선택된 위치가 저장된 state
     const tmpUnderroad = computed(() => store.getters.tmpUnderroad).value
@@ -51,25 +51,27 @@ export default defineComponent({
       { title: string; latlng: any; address: string; msg: string }[]
     >([])
 
+    // console.log('지하차도 리스트')
+    // console.log(underroadList.value)
     const setPositions = () => {
-      for (let road of underroadList) {
+      for (let road of underroadList.value) {
         let roadobj = ref<{ road: any; statusMsg: string }>({
           road: road,
           statusMsg: ''
-        })
+        }).value
 
         if (road.status == 'DEFAULT') {
           //진입가능한 지하차도
-          roadobj.value.statusMsg = '진입 가능'
-          position_ok.value.push(roadobj.value)
+          roadobj.statusMsg = '진입 가능'
+          position_ok.value.push(roadobj)
         } else if (road.status == '1차') {
-          road.obj.value.statusMsg = '1차 경고'
+          roadobj.statusMsg = '1차 경고'
           position_warn.value.push(road)
         } else if (road.status == '2차') {
-          road.obj.value.statusMsg = '2차 경고'
-          position_warn.value.push(roadobj.value)
+          roadobj.statusMsg = '2차 경고'
+          position_warn.value.push(roadobj)
         } else {
-          road.obj.value.statusMsg = '진입 금지'
+          roadobj.statusMsg = '진입 금지'
           position_block.value.push(road)
         }
       }
@@ -92,16 +94,18 @@ export default defineComponent({
 
     const initMap = async () => {
       const container = document.getElementById('map')
-      let loc = await getMylocation()
-
+      //내가 보고있는 지하차도의 경도 위도를 가져오자.
       const options = {
-        center: new window.kakao.maps.LatLng(loc.lat, loc.lon), //카카오 마커 확인용
+        center: new window.kakao.maps.LatLng(
+          36.3549114724545,
+          127.345907414374
+        ), //카카오 마커 확인용
         // center: new window.kakao.maps.LatLng(36.3549114724545, 127.345907414374),
         level: 6
       }
       map.value = new window.kakao.maps.Map(container, options)
       await getWaterHeight()
-      setPositions()
+      await setPositions()
       makeMarker()
     }
     //마커 만들기
@@ -281,8 +285,7 @@ export default defineComponent({
           infowindow = makeInfoWindowRiver(i)
         })
       }
-    } //makeMarker
-
+    }
     const getMylocation = (): Promise<any> => {
       // HTML5의 geolocation으로 사용할 수 있는지 확인합니다
       return new Promise((resolve, reject) => {
@@ -372,7 +375,7 @@ export default defineComponent({
       } catch (error) {
         console.error('Failed to fetch water height data:', error)
       }
-    }
+    } //getWaterHeight 함수 닫는 괄호
 
     onMounted(() => {
       if (window.kakao && window.kakao.maps) {

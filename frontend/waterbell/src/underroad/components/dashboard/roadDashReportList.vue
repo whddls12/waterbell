@@ -33,19 +33,19 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import http from '@/types/http'
-import { useStore } from 'vuex'
+import store from '@/store/index'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'roadDashReportVue',
 
   setup() {
-    const store = useStore()
+    // const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
-    const nowUnderroad = computed(() => store.getters.nowUnderroad).value
+    // const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
-    const facility_id = nowUnderroad.id
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     let reportList = ref<
       {
@@ -55,15 +55,13 @@ export default defineComponent({
         create_date: string
       }[]
     >([])
-
+    //  로 바꿔보기
     const setList = () => {
-      http
-        .get(`http://localhost:8080/reports/undergroudRoad/1/1`)
-        .then((res) => {
-          //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
-          console.log(res.data.list)
-          reportList.value = res.data.list
-        })
+      http.get(`/reports/dash/${facility_id}`).then((res) => {
+        //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
+        // console.log(res.data.list)
+        reportList.value = res.data.list
+      })
     }
     const router = useRouter()
     const movePage = (board_id: any) => {

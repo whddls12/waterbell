@@ -3,6 +3,7 @@ import { ApartManager, ApartMember, PublicManager } from '@/types/user' // Typo 
 import apiClient from '@/types/apiClient'
 import store from '@/store/index'
 import router from '@/router/index'
+import { Underroad } from '@/types/underroad'
 
 const auth: Module<any, any> = {
   namespaced: true,
@@ -12,8 +13,20 @@ const auth: Module<any, any> = {
     role: null as null | string,
     accessToken: null as string | null,
     refreshToken: null as string | null,
-
-    facilityId: null as string | null
+    //-------------------------------------------------------이하 지하차도
+    facilityId: null as string | null,
+    nowUnderroad: {} as {
+      id: string
+      name: string
+      latitude: string
+      longitude: string
+      status: string
+      firstMsg: string
+      secondMsg: string
+      releaseMsg: string
+    },
+    underroadListByGugun: [] as any, //지하차도 리스트(구군에 따라 리스트로 되어 있음)
+    underroadList: [] as Underroad[] //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
   },
   getters: {
     loginUser: (state) => state.loginUser,
@@ -21,7 +34,17 @@ const auth: Module<any, any> = {
     role: (state) => state.role,
     accessToken: (state) => state.accessToken,
     refreshToken: (state) => state.refreshToken,
-    facilityId: (state) => state.facilityId
+    //-------------------------------------------------------------- 지하차도
+    facilityId: (state) => state.facilityId,
+    nowUnderroad(state) {
+      return state.nowUnderroad
+    },
+    underroadList(state) {
+      return state.underroadList
+    },
+    underroadListByGugun(state) {
+      return state.underroadListByGugun
+    }
   },
   mutations: {
     setLoginUser(state, user) {
@@ -43,8 +66,20 @@ const auth: Module<any, any> = {
       state.accessToken = null
       state.refreshToken = null
     },
+
+    //--------------------------------------------------------------지하차도
     setFacilityId(state, value) {
       state.facilityId = value
+    },
+    setUnderroadbygugun(state, payload) {
+      state.underroadListByGugun.push(payload)
+    },
+    setUnderroadList(state, payload) {
+      state.underroadList.push(payload)
+    },
+    resetList(state) {
+      state.underroadList = []
+      state.underroadListByGugun = []
     }
   },
   actions: {
