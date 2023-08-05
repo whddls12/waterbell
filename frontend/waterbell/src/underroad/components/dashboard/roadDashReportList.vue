@@ -33,18 +33,15 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import http from '@/types/http'
-import { useStore } from 'vuex'
+import store from '@/store/index'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'roadDashReportVue',
 
   setup() {
-    const store = useStore()
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
 
-    // getters에서 nowUnderroad 가져오기
-    const facilityId = computed(() => store.getters['auth/facilityId']).value
-    let hasReport = ref(true)
     let reportList = ref<
       {
         board_id: string
@@ -53,10 +50,10 @@ export default defineComponent({
         create_date: string
       }[]
     >([])
-
+    //  로 바꿔보기
     const setList = () => {
       try {
-        http.get(`/reports/dash/${facilityId}`).then((res) => {
+        http.get(`/reports/dash/${facility_id}`).then((res) => {
           //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
           console.log(res.data.list)
           reportList.value = res.data.list
