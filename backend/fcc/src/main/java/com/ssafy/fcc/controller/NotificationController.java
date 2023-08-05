@@ -30,7 +30,6 @@ public class NotificationController {
 
     private final MyWebSocketHandler myWebSocketHandler;
     private final ApartManagerService apartManagerService;
-    private final AlarmService alarmService;
     private final Logger logger = LoggerFactory.getLogger(VerificationController.class);
 
     //차수판 가동시 알림
