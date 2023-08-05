@@ -16,10 +16,10 @@ public class MQTTSubscriberConfiguration {
     }
 
     private void initializeMQTTSubscribers() {
-//        mqttSubscriber.init("tcp://172.20.10.8:1883", "DashBoard1").subscribe("Humidity");
-//        mqttSubscriber.init("tcp://172.20.10.8:1883", "DashBoard2").subscribe("Temp");
-//        mqttSubscriber.init("tcp://172.20.10.8:1883", "DashBoard3").subscribe("Dust");
-//        mqttSubscriber.init("tcp://172.20.10.8:1883", "DashBoard4").subscribe("height");
-//        mqttSubscriber.init("tcp://172.20.10.8:1883", "test").subscribe("picture");
+//        mqttSubscriber.init("tcp://172.20.10.12:1883", "DashBoard1").subscribe("Humid");
+//        mqttSubscriber.init("tcp://172.20.10.12:1883", "DashBoard2").subscribe("Temp");
+//        mqttSubscriber.init("tcp://172.20.10.12:1883", "DashBoard3").subscribe("Dust");
+//        mqttSubscriber.init("tcp://172.20.10.12:1883", "DashBoard4").subscribe("height");
+//        mqttSubscriber.init("tcp://172.20.10.12:1883", "test").subscribe("picture");
     }
 }
