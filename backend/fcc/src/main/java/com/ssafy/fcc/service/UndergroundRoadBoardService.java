@@ -65,7 +65,7 @@ public class UndergroundRoadBoardService {
         boardAlarmLog.setContent(notificationMessage);
         boardAlarmLog.setIsApart(false);
         boardAlarmLog.setIsFlood(false);
-        boardAlarmLog.setApartBoardId(board_id);
+        boardAlarmLog.setUndergroundBoardId(board_id);
         boardAlarmLogRepository.save(boardAlarmLog);
         AlarmLogDto alarmLogDto = new AlarmLogDto(boardAlarmLog);
 
@@ -82,7 +82,6 @@ public class UndergroundRoadBoardService {
     public Integer undergroundRoadBoard(UndergroundRoadBoard undergroundRoadBoard, List<MultipartFile> uploadedfiles) throws Exception {
 
         Integer undergroundRoadBoardId = boardRepository.saveUndergroundRoadBoard(undergroundRoadBoard);
-
         if(uploadedfiles != null &&uploadedfiles.size()>0) {
             final List<String> fileList = uploadFile(uploadedfiles, undergroundRoadBoard);
             System.out.println(fileList);
