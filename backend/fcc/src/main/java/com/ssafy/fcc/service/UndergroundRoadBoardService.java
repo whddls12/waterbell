@@ -13,6 +13,7 @@ import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.member.ApartManager;
 import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.domain.member.PublicManager;
+import com.ssafy.fcc.dto.AlarmLogDto;
 import com.ssafy.fcc.dto.DashUndergroundRoadBoardResponseDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
@@ -66,6 +67,7 @@ public class UndergroundRoadBoardService {
         boardAlarmLog.setIsFlood(false);
         boardAlarmLog.setApartBoardId(board_id);
         boardAlarmLogRepository.save(boardAlarmLog);
+        AlarmLogDto alarmLogDto = new AlarmLogDto(boardAlarmLog);
 
         // 웹 알림 보내고 저장
         ReceiveAlarmMember receiveAlarmMember = new ReceiveAlarmMember();
@@ -73,7 +75,7 @@ public class UndergroundRoadBoardService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), alarmLogDto);
     }
 
     @Transactional

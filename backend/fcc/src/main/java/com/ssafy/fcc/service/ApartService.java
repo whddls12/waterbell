@@ -9,6 +9,8 @@ import com.ssafy.fcc.domain.member.ApartManager;
 import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.domain.sms.ReceiveSmsMember;
 import com.ssafy.fcc.domain.sms.SmsLog;
+import com.ssafy.fcc.dto.AlarmLogDto;
+import com.ssafy.fcc.dto.BoardAlarmDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.SmsUtil;
@@ -44,27 +46,29 @@ public class ApartService {
         ApartManager manager = apartManagerRepository.findByFacility(facility_id);
         // 알림 메시지
         String notificationMessage;
+        // 알림 로그
+        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
         // 1차 경고 상황
         if(status==WaterStatus.FIRST){
             notificationMessage = "[WaterBell]주의 : " + apart.getApartName() + "의 수위 센서가 1차 경고 수치인 "
                     + apart.getFirstAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하세요.";
+            floodAlarmLog.setStep(Step.FIRST);
         }
         // 2차 경고 상황
         else {
             notificationMessage = "[WaterBell]주의 : " + apart.getApartName() + "의 수위 센서가 2차 경고 수치인 "
                     + apart.getSecondAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하고 차수판과 사이렌을 작동시키세요.";
+            floodAlarmLog.setStep(Step.SECOND);
         }
 
-        // 알림 로그
-        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
         floodAlarmLog.setMember(memberRepository.getSystemMember());
         floodAlarmLog.setFacility(apart);
         floodAlarmLog.setRegDate(LocalDateTime.now());
         floodAlarmLog.setContent(notificationMessage);
         floodAlarmLog.setIsApart(true);
         floodAlarmLog.setIsFlood(true);
-        floodAlarmLog.setStep(Step.FIRST);
         floodAlarmLogRepository.save(floodAlarmLog);
+        AlarmLogDto alarmLogDto = new AlarmLogDto(floodAlarmLog);
 
         // 웹 알림 보내고 저장
         ReceiveAlarmMember receiveAlarmMember = new ReceiveAlarmMember();
@@ -72,7 +76,7 @@ public class ApartService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), alarmLogDto);
 
         // 문자 알림
         SmsLog smsLog = new SmsLog();
@@ -107,6 +111,7 @@ public class ApartService {
         log.setIsFlood(true);
         log.setStep(Step.FIRST);
         floodAlarmLogRepository.save(log);
+        AlarmLogDto alarmLogDto = new AlarmLogDto(log);
 
         // 입주민들에게 웹 알림 보내고 저장하기(로그인 상태라면 소켓 실시간 알림)
         List<ApartMember> members = apartManagerRepository.findMembersByManagerId(manager.getId());
@@ -116,7 +121,7 @@ public class ApartService {
             receiveAlarmMember.setMember(member);
             receiveAlarmMember.setRead(false);
             receiveAlarmMemberRepository.save(receiveAlarmMember);
-            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), notificationMessage);
+            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), alarmLogDto);
         }
 
         // sms 로그
