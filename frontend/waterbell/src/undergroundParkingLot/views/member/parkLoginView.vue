@@ -19,7 +19,7 @@
           :value="password"
           class="in"
         />
-        <input type="submit" id="btn" value="로그인" @click="login()" /><br />
+        <input type="submit" id="btn" value="로그인" /><br />
       </form>
       <a href="#none">비밀번호를 잊어버리셨나요?</a>
     </div>
@@ -36,7 +36,7 @@ export default defineComponent({
     const password = ref('')
     const store = useStore() // 전역 스토어를 가져옵니다.
     const login = () => {
-      store.dispatch('auth/login', {
+      store.dispatch('auth/memberLogin', {
         loginId: id.value,
         password: password.value
       })

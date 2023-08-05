@@ -70,18 +70,18 @@
 
 <script lang="ts">
 import { ref, computed, defineComponent } from 'vue'
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
+import store from '@/store/index'
 import http from '@/types/http'
+import router from '@/router/index'
 
 export default defineComponent({
   name: 'roadReportCreateVue',
   setup() {
-    const store = useStore()
+    // const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
-    const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
-    const facility_id = nowUnderroad.id
+    // const facility_id = computed(() => store.getters['auth/facilityId'])
 
     let report = ref({
       name: '',
@@ -126,7 +126,7 @@ export default defineComponent({
       formData.append('boardPassword', report.value.boardPassword)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
-      console.log(formData)
+      // console.log(formData)
 
       // FormData에 첨부파일 넣기
       // if (selectedFiles.value) {
@@ -146,12 +146,19 @@ export default defineComponent({
           'Content-Type': 'multipart/form-data'
         }
       }
+      const facilityId = computed(() => store.getters['auth/facilityId'])
+      // console.log(facilityId.value)
       http
         // .post(`http://localhost:8080/reports/write/1`, formData)
-        .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
+        // .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
+        .post(`reports/write/${facilityId.value}`, formData, config)
         .then((response) => {
+          // console.log(formData)
+          router.push('/road/report')
           if (response.data.success) {
+            console.log('여기 들어오나')
             console.log(response)
+            //상세보기로 이동하는 코드 넣어야 함
           }
         })
         .catch(function (error) {

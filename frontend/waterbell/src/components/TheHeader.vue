@@ -15,25 +15,35 @@
     </div>
     <!-- 로그인 상태일 때 보여줄 메뉴 -->
     <div v-if="isLogin">
-       <router-link to="/alarmBox">
-      <button>알림함</button>
-    </router-link>
-      <p id="hello-msg" v-if="loginUser">{{ loginUser.value.name }}님 어서오세요!</p>
+      <router-link to="/alarmBox">
+        <button>알림함</button>
+      </router-link>
+      <p id="hello-msg" v-if="loginUser">
+        {{ loginUser.value.name }}님 어서오세요!
+      </p>
       <button>마이페이지</button>
       <button @click="logout()">로그아웃</button>
     </div>
-
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, onMounted } from 'vue'
 import router from '../router/index'
 import store from '../store/index'
+import apiClient from '@/types/apiClient'
 export default defineComponent({
   name: 'TheHeader',
   setup() {
-    const loginUser = computed(() => store.getters['auth/loginUser'])
+    const accessToken = computed(() => store.getters['auth.accessToken'])
+    const loginUser = () => {
+      apiClient.get('/member/findMember/token').then((res) => {
+        console.log(res)
+        return res
+      })
+    }
+    const name = loginUser()
+    console.log(name)
     const isLogin = computed(() => store.getters['auth/isLogin'])
 
     const moveToLogin = () => {
@@ -48,7 +58,14 @@ export default defineComponent({
       store.dispatch('auth/logout')
     }
 
-    return { store, loginUser, isLogin, moveToLogin, logout }
+    const isUnderroad = () => {
+      const now = window.location.pathname
+      console.log(now)
+    }
+    onMounted(() => {
+      loginUser()
+    })
+    return { store, loginUser, isLogin, moveToLogin, logout, isUnderroad }
   }
 })
 </script>
