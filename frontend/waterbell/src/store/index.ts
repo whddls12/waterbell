@@ -81,7 +81,7 @@ export default createStore({
               context.commit('setUnderroadbygugun', element.underroads)
               for (const el of element.underroads) {
                 context.commit('setUnderroadList', el)
-                console.log(el)
+                // console.log(el)
               }
             })
           })
