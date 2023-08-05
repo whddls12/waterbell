@@ -65,7 +65,7 @@ public class UndergroundRoadBoardService {
         boardAlarmLog.setContent(notificationMessage);
         boardAlarmLog.setIsApart(false);
         boardAlarmLog.setIsFlood(false);
-        boardAlarmLog.setApartBoardId(board_id);
+        boardAlarmLog.setUndergroundBoardId(board_id);
         boardAlarmLogRepository.save(boardAlarmLog);
         AlarmLogDto alarmLogDto = new AlarmLogDto(boardAlarmLog);
 

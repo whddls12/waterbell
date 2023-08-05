@@ -37,8 +37,8 @@ public class AlarmLogDto {
         this.content = log.getContent();
         this.is_apart = log.getIsApart();
         this.is_flood = log.getIsFlood();
-        this.apart_board_id = log.getApartBoardId();
-        this.underground_board_id = log.getUndergroundBoardId();
+        if(this.is_apart) this.apart_board_id = log.getApartBoardId();
+        else this.underground_board_id = log.getUndergroundBoardId();
     }
 
     public AlarmLogDto(FloodAlarmLog log) {
