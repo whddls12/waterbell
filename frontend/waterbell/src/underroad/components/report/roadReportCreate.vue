@@ -80,8 +80,7 @@ export default defineComponent({
 
     // getters에서 nowUnderroad 가져오기
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
-    const facility_id = nowUnderroad.id
+    const facility_id = computed(() => store.getters['auth/facilityId'])
 
     let report = ref({
       name: '',
@@ -147,8 +146,12 @@ export default defineComponent({
         }
       }
       http
-        // .post(`http://localhost:8080/reports/write/1`, formData)
-        .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
+        .post(`/reports/write/10`, formData, config)
+        // .post(
+        //   `http://i9b101.p.ssafy.io:8080/reports/write/${facility_id.value}`,
+        //   formData,
+        //   config
+        // )
         .then((response) => {
           if (response.data.success) {
             console.log(response)
