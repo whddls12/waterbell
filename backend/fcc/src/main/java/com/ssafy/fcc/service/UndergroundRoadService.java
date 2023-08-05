@@ -65,7 +65,6 @@ public class UndergroundRoadService {
         floodAlarmLog.setContent(notificationMessage);
         floodAlarmLog.setIsApart(false);
         floodAlarmLog.setIsFlood(true);
-        floodAlarmLog.setStep(Step.FIRST);
         floodAlarmLogRepository.save(floodAlarmLog);
 
         // 웹 알림 보내고 저장
