@@ -46,9 +46,9 @@ export default defineComponent({
   setup() {
     // getters에서 nowUnderroad 가져오기
 
+    const facility_id = computed(() => store.getters['auth/facilityId'])
     // const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
-    const facility_id = computed(() => store.getters['auth/facilityId'])
     // console.log(facility_id.value)
     let reportList = ref<
       {
@@ -70,8 +70,9 @@ export default defineComponent({
           console.log(res.data.list)
           reportList.value = res.data.list
         })
-        .catch((error) => {
-          console.log('데이터 없음')
+
+        .catch(() => {
+          console.log('목록없음')
         })
     }
     const router = useRouter()

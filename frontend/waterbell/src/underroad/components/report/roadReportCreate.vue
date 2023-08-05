@@ -81,7 +81,10 @@ export default defineComponent({
     // const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
+
     // const facility_id = computed(() => store.getters['auth/facilityId'])
+
+    const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
     let report = ref({
       name: '',
@@ -149,9 +152,11 @@ export default defineComponent({
       const facilityId = computed(() => store.getters['auth/facilityId'])
       // console.log(facilityId.value)
       http
+
         // .post(`http://localhost:8080/reports/write/1`, formData)
         // .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
         .post(`reports/write/${facilityId.value}`, formData, config)
+
         .then((response) => {
           // console.log(formData)
           router.push('/road/report')

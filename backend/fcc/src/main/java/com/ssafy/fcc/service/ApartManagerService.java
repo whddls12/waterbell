@@ -9,6 +9,7 @@ import com.ssafy.fcc.domain.member.ApartManager;
 import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.domain.sms.ReceiveSmsMember;
 import com.ssafy.fcc.domain.sms.SmsLog;
+import com.ssafy.fcc.dto.AlarmLogDto;
 import com.ssafy.fcc.dto.BoardAlarmDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
@@ -63,6 +64,7 @@ public class ApartManagerService {
         log.setIsFlood(true);
         log.setStep(step);
         floodAlarmLogRepository.save(log);
+        AlarmLogDto alarmLogDto = new AlarmLogDto(log);
 
         // 입주민들에게 웹 알림 보내고 저장하기(로그인 상태라면 소켓 실시간 알림)
         List<ApartMember> members = apartManagerRepository.findMembersByManagerId(member_id);
@@ -72,7 +74,7 @@ public class ApartManagerService {
             receiveAlarmMember.setMember(member);
             receiveAlarmMember.setRead(false);
             receiveAlarmMemberRepository.save(receiveAlarmMember);
-            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), receiveAlarmMember);
+            myWebSocketHandler.sendNotificationToSpecificUser(member.getLoginId(), alarmLogDto);
         }
 
     }

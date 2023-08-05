@@ -8,6 +8,7 @@ import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.member.PublicManager;
 import com.ssafy.fcc.domain.sms.ReceiveSmsMember;
 import com.ssafy.fcc.domain.sms.SmsLog;
+import com.ssafy.fcc.dto.AlarmLogDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.SmsUtil;
@@ -67,6 +68,7 @@ public class UndergroundRoadService {
         floodAlarmLog.setIsFlood(true);
         floodAlarmLog.setStep(Step.FIRST);
         floodAlarmLogRepository.save(floodAlarmLog);
+        AlarmLogDto alarmLogDto = new AlarmLogDto(floodAlarmLog);
 
         // 웹 알림 보내고 저장
         ReceiveAlarmMember receiveAlarmMember = new ReceiveAlarmMember();
@@ -74,7 +76,7 @@ public class UndergroundRoadService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), receiveAlarmMember);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), alarmLogDto);
 
         // 문자 알림
         SmsLog smsLog = new SmsLog();
