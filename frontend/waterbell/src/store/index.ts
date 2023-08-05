@@ -36,7 +36,6 @@ export default createStore({
     location(state) {
       return state.location
     },
-
     nowUnderroad(state) {
       return state.nowUnderroad
     }
@@ -46,8 +45,21 @@ export default createStore({
       state.underroadListByGugun.push(payload)
     },
     //state에 tmplocation에 임시 위치 저장하기
+    // setTmplocation(state, payload) {
+    //   state.tmplocation = payload
+    // },
+    setIsMainpage(state, value) {
+      state.isMainpage = value
+    },
     setTmpUnderroad(state, payload) {
       state.tmpUnderroad = payload
+    },
+    setUnderroadList(state, payload) {
+      state.underroadList.push(payload)
+    },
+    resetList(state) {
+      state.underroadList = []
+      state.underroadListByGugun = []
     }
   },
   actions: {
@@ -55,18 +67,22 @@ export default createStore({
 
     async fetchUnderroads(context: any, payload) {
       try {
+        await context.commit('resetList')
         const authGetters = context.rootGetters['auth/loginUser']
         const isLogin = context.rootGetters['auth/isLogin']
         const role = context.rootGetters['auth/role']
         const user = context.rootGetters['auth/loginUser']
         if (isLogin && role == 'PUBLIC_MANAGER') {
-          context.commit('setUnderroadbygugun', user.facilities)
+          context.commit('setUnderroadbygugun', user.facilities) //지하차도 세팅하는거 로그인 때도 넣기
         } else {
           await http.get('/facilities/roads').then((res: { data: any }) => {
             res.data.forEach((element: any) => {
               //구군에 따른 지하차도 리스트 세팅
-
-              context.commit('setUnderroadbygugun', element)
+              context.commit('setUnderroadbygugun', element.underroads)
+              for (const el of element.underroads) {
+                context.commit('setUnderroadList', el)
+                console.log(el)
+              }
             })
           })
         }

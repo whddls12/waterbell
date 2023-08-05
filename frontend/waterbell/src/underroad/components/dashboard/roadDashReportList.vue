@@ -10,27 +10,17 @@
         </tr>
       </thead>
       <tbody v-if="reportList.length != 0">
-        <!-- <tr
-
-        >
-
-</tr> -->
-
         <tr
-          v-for="board in reportList"
-          :key="board.board_id"
-          :title="board.title"
-          :status="board.status"
-          :dateTime="board.create_date"
+          v-for="report in reportList"
+          :key="report.report_id"
           class="tr"
-          @click="movePage(board.board_id)"
+          @click="movePage(report.board_id)"
           align="center"
         >
-          <th scope="row">{{ no }}</th>
-          <td>{{ title }}</td>
-          <td>{{ status }}</td>
-
-          <td>{{ dateTime }}</td>
+          <!-- <th scope="row">{{ no }}</th> -->
+          <td>{{ report.title }}</td>
+          <td>{{ report.status }}</td>
+          <td>{{ report.createDate }}</td>
         </tr>
       </tbody>
 
@@ -53,9 +43,8 @@ export default defineComponent({
     const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
-    const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
-    const facility_id = nowUnderroad.id
+    const nowUnderroad = computed(() => store.getters['auth/facilityId']).value
+    const facility_id = nowUnderroad
 
     let reportList = ref<
       {
@@ -67,10 +56,14 @@ export default defineComponent({
     >([])
 
     const setList = () => {
-      http.get(`dash/facilities/{facility_id}/reports`).then((res) => {
-        //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
-        reportList.value = res.data
-      })
+      http
+        // .get(`http://localhost:8080/reports/dash/${facility_id}`)
+        .get(`http://localhost:8080/reports/dash/1`)
+        .then((res) => {
+          //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
+          console.log(res.data.list)
+          reportList.value = res.data.list
+        })
     }
     const router = useRouter()
     const movePage = (board_id: any) => {
