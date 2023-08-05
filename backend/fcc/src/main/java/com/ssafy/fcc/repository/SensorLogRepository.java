@@ -3,10 +3,12 @@ package com.ssafy.fcc.repository;
 
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.log.SensorLog;
+import com.ssafy.fcc.dto.SensorLogDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,5 +27,12 @@ public class SensorLogRepository {
                 .setMaxResults(1)
                 .getSingleResult()
                 .getSensorData();
+    }
+
+    public List<SensorLog> getLogList(Facility facility, String category) {
+        return em.createQuery("select a from SensorLog a where a.facility = :facility and a.category = :category", SensorLog.class)
+                .setParameter("facility", facility)
+                .setParameter("category",category)
+                .getResultList();
     }
 }
