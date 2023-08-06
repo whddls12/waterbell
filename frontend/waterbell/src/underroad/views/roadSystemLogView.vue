@@ -2,7 +2,9 @@
   <div>
     <div class="select-region">
       <div class="select-region-box">
-        <router-link to="/road/systemlog/">센서 측정 로그</router-link>
+        <router-link to="/road/systemlog/measureLog"
+          >센서 측정 로그</router-link
+        >
       </div>
       <div class="select-region-box">
         <router-link to="/road/systemlog/">기기 상태 로그</router-link>
