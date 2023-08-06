@@ -29,7 +29,11 @@ export function connectWebSocket(): void {
       const isFlood = notification._flood
 
       if (isFlood) {
+        //침수 경고일 때 모달창 띄우기
+        console.log('침수경고 모달창 띄우기')
       } else {
+        //신고접수일 때 모달창 띄우기
+        console.log('신고접수 모달창 띄우기')
       }
 
       // 알림이 도착하면 알림 아이콘을 표시합니다.
