@@ -63,14 +63,21 @@ export default defineComponent({
 </script>
 
 <style>
+.home {
+  width: 60%;
+}
+/* 서비스 선택 메뉴 */
 .service-select {
   display: flex;
+  /* 가운데 정렬 */
   align-content: center;
   justify-content: center;
 }
 
+/* 지하주차장, 지하차도 박스 */
 .select-box {
   border: 1px solid #939393;
+  border-radius: 8px;
   background-color: white;
 
   width: 500px;
@@ -78,23 +85,15 @@ export default defineComponent({
   margin: 20px;
 }
 
-.header {
-  display: flex;
-}
-
+/* 메뉴 화면 (대시보드, 신고접수, 제어, 시스템로그, 관리) */
 .router-view-container {
   box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
-
   padding: 10px 20px;
   display: flex;
   justify-content: center;
   width: 100%;
   height: 100%;
-  overflow: auto; /* prevent components from going out of bounds */
+  /* overflow: auto; */
   background-color: white;
-}
-
-router-view {
-  flex-flow: 1;
 }
 </style>

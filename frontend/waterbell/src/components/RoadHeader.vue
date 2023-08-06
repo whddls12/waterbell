@@ -14,13 +14,14 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
+        <button @click="goToAlarm">Alarm</button>
         <p id="hello-msg">김동현님 어서오세요!</p>
-        <button @click="goToAlarm">알림함</button>
-        <button>마이페이지</button>
-        <button @click="logout">로그아웃</button>
+        <button>MY PAGE</button>
+        <button @click="logout">LOGOUT</button>
       </div>
+      <!-- 비로그인 상태 -->
       <div class="header-btn" v-else>
-        <button @click="goToLogin">로그인</button>
+        <button @click="goToLogin">LOGIN</button>
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
@@ -111,40 +112,58 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* 헤더 상단 로고와 버튼 포함하는 박스 */
 .header-top {
   display: flex;
   justify-content: space-between;
 
-  margin-bottom: 50px;
+  margin: 30px 0px;
 }
 
+.header-top > div {
+  display: flex;
+  align-items: center;
+}
+
+/* 헤더 상단 버튼 모아놓은 박스 */
 .header-btn {
   display: flex;
+  align-items: center;
 }
 
+.header-btn > button {
+  align-self: auto;
+}
+
+/* 메뉴 내비게이션 바 */
 .menu-navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding-left: 2rem;
+  padding-right: 2rem;
   background-color: #10316b;
-  padding-right: 20px;
-  padding-left: 20px;
 }
 
+/* 각 메뉴 박스 */
 .each-menu {
   width: 100px;
   margin: 10px 10px;
 }
 
+/* 메뉴 이름 */
 a {
   color: white;
   text-decoration: none;
 }
 
+/* 지역 선택 부분 */
 .select-region {
   display: flex;
   justify-content: center;
+  margin: 10px 0px;
 }
 
+/* 지역 선택 박스 (시도, 시구군) */
 .select-region-box {
   border: 1px solid #939393;
   border-radius: 8px;
@@ -153,7 +172,7 @@ a {
   width: 100px;
   margin: 10px 10px;
 }
-
+/* 이동 버튼 */
 .go-selected-btn {
   display: block;
   border: 1px solid #10316b;

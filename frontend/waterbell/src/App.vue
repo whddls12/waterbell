@@ -1,10 +1,6 @@
 <template>
   <div id="nav">
     <Home />
-    <!-- <TheHeader /> -->
-    <!-- <div class="router-view-container">
-      <router-view></router-view>
-    </div> -->
   </div>
 </template>
 
@@ -44,14 +40,10 @@ export default defineComponent({
 </script>
 
 <style>
-template {
+/* template {
   background-color: #f2f7ff;
-}
+} */
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  flex-basis: 100%;
   text-align: center;
   color: #2c3e50;
   background-color: #f2f7ff;
@@ -64,24 +56,23 @@ template {
   align-content: flex-end;
 }
 
+/* 홈페이지 배경색 설정 & 테두리여백 제거 */
 * body {
   background-color: #f2f7ff;
   margin: 0;
   padding: 0;
 }
 
-div {
-  margin: 0;
-}
-
+/* 홈페이지 구성요소 세로로 정렬 */
 #nav {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
   align-items: center;
-  width: calc(100% - 320px);
+  width: inherit;
   padding: 0;
 }
+
+/* 헤더상단 환영메시지 정렬을 위해 블럭화 */
 #hello-msg {
   display: inline-block;
 }
