@@ -14,7 +14,7 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
-        <p id="hello-msg">김동현님 어서오세요!</p>
+        <span id="hello-msg">김동현님 어서오세요!</span>
         <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
         <button @click="logout">로그아웃</button>
@@ -119,8 +119,11 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-
-  margin-bottom: 50px;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  /* padding-top: 100px; */
 }
 
 .header-btn {

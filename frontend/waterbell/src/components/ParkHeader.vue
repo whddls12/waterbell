@@ -39,7 +39,7 @@
         <router-link to="/park/systemlog">시스템 로그</router-link>
       </div>
       <div class="each-menu">
-        <router-link to="/park/manage/custom">관리</router-link>
+        <router-link to="/park/manage">관리</router-link>
       </div>
     </div>
   </div>

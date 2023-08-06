@@ -15,7 +15,8 @@ import roadReportCreateVue from '../underroad/components/report/roadReportCreate
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
 //지하차도 시스템 로그
-import roadDeviceAlarmlog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
+import roadAlarmlog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
+import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
 
 //지하주차장 회원관련(로그인, 회원가입, 마이페이지)
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
@@ -30,6 +31,10 @@ import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
+
+//지하주차장 시스템 로그
+import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
+import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDeviceAlarmLog.vue'
 
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
@@ -86,7 +91,12 @@ const router = createRouter({
       name: 'RoadSystemlog',
       component: RoadSystemlog,
       children: [
-        { path: 'alarmLog', name: 'alarmLog', component: roadDeviceAlarmlog }
+        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmlog },
+        {
+          path: 'measureLog',
+          name: 'roadMeasureLog',
+          component: roadMeasureLog
+        }
       ]
     },
 
@@ -123,7 +133,11 @@ const router = createRouter({
     {
       path: '/park/systemlog',
       name: 'ParkSystemlog',
-      component: ParkSystemlog
+      component: ParkSystemlog,
+      children: [
+        { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
+        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog }
+      ]
     },
     {
       path: '/park/manage',

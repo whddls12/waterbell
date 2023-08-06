@@ -30,7 +30,9 @@
         <input id="threshold2" type="number" v-model="threshold2" />
       </div>
     </div>
-    <button @click="setMessage">수정</button>
+    <div class="btn-container">
+      <button @click="setMessage">수정</button>
+    </div>
   </div>
 </template>
 
@@ -60,19 +62,25 @@ export default {
 
 <style scoped>
 .main {
-  width: 100%;
-  margin-left: 40px;
-  margin-right: 40px;
+  width: 90%;
 }
 
 .input-field {
+  margin-top: 5px;
   margin-bottom: 20px;
   width: 100%;
 }
 
 .input-field2 {
+  margin-top: 50px;
   margin-bottom: 20px;
-  width: 5%;
+  width: 10%; /* 가로 크기 변경 */
+  height: 50px; /* 세로 크기를 다른 입력 필드의 반으로 변경 */
+}
+
+.label-flex {
+  display: flex;
+  justify-content: flex-start; /* 왼쪽으로 정렬 */
 }
 
 label {
@@ -94,5 +102,23 @@ button {
 input {
   width: 100%;
   height: 50px;
+  margin-top: 5px;
+  text-align: center;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  margin-top: 50px; /* 버튼과 다른 입력 필드 간의 간격을 주기 위해 추가 */
 }
 </style>
