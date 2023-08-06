@@ -6,14 +6,13 @@ import com.ssafy.fcc.dto.BoardAlarmDto;
 import com.ssafy.fcc.repository.FloodAlarmLogRepository;
 import com.ssafy.fcc.repository.ReceiveAlarmMemberRepository;
 import com.ssafy.fcc.util.DescriptionUtil;
+import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,11 +23,18 @@ public class AlarmService {
     private final FloodAlarmLogRepository floodAlarmLogRepository;
     private final DescriptionUtil descriptionUtil;
 
-    // 내 알림 가져오기
-    public List<BoardAlarmDto> getAlarmList(int member_id) {
-        List<ReceiveAlarmMember> list = receiveAlarmMemberRepository.findByMemberId(member_id);
+    // 내 알림 가져오기(페이지네이션)
+    public Map<String, Object> getAlarmList(int member_id, int page) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        Long totalCount = receiveAlarmMemberRepository.getReceiveAlarmMemberCnt(member_id);
+        PageNavigation pageNavigation = new PageNavigation(page, totalCount);
+
+        List<ReceiveAlarmMember> receiveAlarmMemberList = receiveAlarmMemberRepository.findByMemberId(member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage());
+        if(receiveAlarmMemberList == null || receiveAlarmMemberList.size() == 0) throw new RuntimeException("데이터가 없습니다.");
+
         List<BoardAlarmDto> boardDtos= new ArrayList<>();
-        for(ReceiveAlarmMember receive : list){
+        for(ReceiveAlarmMember receive : receiveAlarmMemberList){
             BoardAlarmDto boardAlarm = new BoardAlarmDto();
             if(receive.getAlarm().getIsFlood()){
                 FloodAlarmLog flog = floodAlarmLogRepository.findById(receive.getAlarm().getId());
@@ -44,8 +50,9 @@ public class AlarmService {
             boardAlarm.setStatus(receive.isRead() ? "확인" : "미확인");
             boardDtos.add(boardAlarm);
         }
-        boardDtos.sort(Comparator.comparing(BoardAlarmDto::getRegDate).reversed());
-        return boardDtos;
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", boardDtos);
+        return resultMap;
     }
 
     // 알림 상세 조회
