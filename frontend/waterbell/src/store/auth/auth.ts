@@ -1,7 +1,7 @@
 import { Module } from 'vuex'
 import { ApartManager, ApartMember, PublicManager } from '@/types/user' // Typo here: ApartManager
 import apiModule from '@/types/apiClient'
-
+import { connectWebSocket, closeWebSocket } from '@/types/webSocket_alarm'
 import store from '@/store/index'
 import router from '@/router/index'
 import { Underroad } from '@/types/underroad'
@@ -11,7 +11,6 @@ const auth: Module<any, any> = {
   namespaced: true,
   state: {
     isLogin: false,
-    loginUser: null as null | ApartManager | ApartMember | PublicManager,
     role: null as null | string,
     accessToken: null as string | null,
     refreshToken: null as string | null,
@@ -31,7 +30,6 @@ const auth: Module<any, any> = {
     underroadList: [] as Underroad[] //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
   },
   getters: {
-    loginUser: (state) => state.loginUser,
     isLogin: (state) => state.isLogin,
     role: (state) => state.role,
     accessToken: (state) => state.accessToken,
@@ -62,12 +60,18 @@ const auth: Module<any, any> = {
     setIsLogin(state, value) {
       state.isLogin = value
     },
+    setRole(state, value) {
+      state.role = value
+    },
     logout(state) {
-      state.loginUser = null
       state.isLogin = false
       state.role = null
       state.accessToken = null
       state.refreshToken = null
+      localStorage.removeItem('auth')
+      // localStorage.removeItem('loginUser')
+      // localStorage.removeItem('isLogin')
+      console.log('되냐')
     },
 
     setAccessToken(state, accessToken) {
@@ -105,7 +109,7 @@ const auth: Module<any, any> = {
         const member = response.data.member
         const accessToken = member.accessToken
         const refreshToken = member.refreshToken
-
+        console.log(member.role)
         switch (member.role) {
           case 'APART_MANAGER':
           case 'PUBLIC_MANAGER': {
@@ -143,12 +147,16 @@ const auth: Module<any, any> = {
           // break
         }
 
-        // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
-        commit('setLoginUser', user)
-        // commit('setIslogin', true); // Typo here: setIsLogin
-        commit('setTokens', { accessToken, refreshToken })
-        commit('setIsLogin', true)
+        //웹소켓 연결
 
+        // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
+        // commit('setLoginUser', user)
+        // commit('setIslogin', true); // Typo here: setIsLogin
+        await commit('setTokens', { accessToken, refreshToken })
+        await commit('setIsLogin', true)
+        await commit('setRole', member.role)
+        console.log(response.data)
+        connectWebSocket()
         // 여기에서 auth state에 있는 loginUser를 getter로 가져오고 싶어.
         // 어떻게 해야해?
         const isLogin = store.getters['auth/isLogin']
@@ -175,10 +183,15 @@ const auth: Module<any, any> = {
     },
 
     async logout({ commit }) {
-      apiClient.post('/member/logout').then((res) => {
-        console.log(res.data)
-      })
-      commit('logout')
+      try {
+        await apiClient.post('/member/logout').then((res) => {
+          // console.log(res.data)
+          commit('auth/logout')
+        })
+        await closeWebSocket()
+      } catch (error) {
+        console.log(error.response)
+      }
     }
   } // actions 객체의 닫는 중괄호
 } // auth 모듈의 닫는 중괄호

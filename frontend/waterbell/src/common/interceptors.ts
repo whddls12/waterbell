@@ -1,5 +1,5 @@
 import store from '@/store/index'
-
+import router from '@/router/index'
 export function setInterceptors(instance: any) {
   instance.interceptors.request.use(
     function (config: any) {
@@ -40,6 +40,14 @@ export function setInterceptors(instance: any) {
 
           return instance(originRequest)
         }
+      } else if (
+        status === 400 &&
+        error.response.data.error == '유효하지 않은 토큰입니다.'
+      ) {
+        await store.commit('auth/logout')
+        localStorage.removeItem('auth')
+        console.log('removeItem 함')
+        router.push('/park/login')
       }
       return Promise.reject(error)
     }
