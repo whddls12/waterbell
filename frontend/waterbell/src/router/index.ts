@@ -14,11 +14,16 @@ import roadReportItemVue from '../underroad/components/report/roadReportItem.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
+//지하차도 시스템 로그
+import roadAlarmlog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
+import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
+
 //지하주차장 회원관련(로그인, 회원가입, 마이페이지)
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
 import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
 import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
 import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
+import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -26,6 +31,10 @@ import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
+
+//지하주차장 시스템 로그
+import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
+import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDeviceAlarmLog.vue'
 
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
@@ -80,7 +89,15 @@ const router = createRouter({
     {
       path: '/road/systemlog',
       name: 'RoadSystemlog',
-      component: RoadSystemlog
+      component: RoadSystemlog,
+      children: [
+        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmlog },
+        {
+          path: 'measureLog',
+          name: 'roadMeasureLog',
+          component: roadMeasureLog
+        }
+      ]
     },
 
     //지하주차장 라우터
@@ -116,12 +133,17 @@ const router = createRouter({
     {
       path: '/park/systemlog',
       name: 'ParkSystemlog',
-      component: ParkSystemlog
+      component: ParkSystemlog,
+      children: [
+        { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
+        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog }
+      ]
     },
     {
       path: '/park/manage',
       name: 'ParkManage',
-      component: ParkManage
+      component: ParkManage,
+      children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
     },
     {
       path: '/park/control',

@@ -14,16 +14,18 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
-        <p id="hello-msg">김동현님 어서오세요!</p>
+        <span id="hello-msg">김동현님 어서오세요!</span>
         <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
         <button @click="logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
+      <<<<<<< HEAD
       <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
         <button @click="goToJoin">회원가입</button>
       </div>
+      ======= >>>>>>> 286dc0cb829a6f1ac3bd5d0b58f5657447d80df6
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
@@ -133,8 +135,11 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-
-  margin-bottom: 50px;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  /* padding-top: 100px; */
 }
 
 .header-btn {
