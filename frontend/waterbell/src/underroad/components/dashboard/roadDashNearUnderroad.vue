@@ -79,6 +79,7 @@ export default defineComponent({
 
         if (road.status == 'DEFAULT') {
           //진입가능한 지하차도
+
           roadobj.statusMsg = '진입 가능'
           position_ok.value.push(roadobj)
         } else if (road.status == 'FIRST') {
