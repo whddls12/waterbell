@@ -1,5 +1,6 @@
 package com.ssafy.fcc.controller;
 
+import com.ssafy.fcc.domain.log.SensorType;
 import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -317,7 +318,6 @@ public class DashController {
 
     @GetMapping("/facilities/{facility_id}/sensors/{category}")
     public int dashSensor(@PathVariable("facility_id") int facilityId, @PathVariable String category) {
-
         return systemService.getSensorData(facilityId,category);
     }
 }

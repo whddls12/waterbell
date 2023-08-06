@@ -21,7 +21,8 @@ public class SensorLog {
     @JoinColumn(name = "facility_id")
     private Facility facility;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private SensorType category;
 
     @Column(name = "sensor_time")
     private LocalDateTime sensorTime;
