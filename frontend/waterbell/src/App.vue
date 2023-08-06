@@ -40,20 +40,10 @@ export default defineComponent({
 </script>
 
 <style>
-/* template {
-  background-color: #f2f7ff;
-} */
 #app {
   text-align: center;
   color: #2c3e50;
   background-color: #f2f7ff;
-}
-
-#nav {
-  display: flex-inline;
-  flex-direction: column;
-  justify-content: center;
-  align-content: flex-end;
 }
 
 /* 홈페이지 배경색 설정 & 테두리여백 제거 */
@@ -68,8 +58,14 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: center;
+  /* justify-content: center; */
+  /* align-content: flex-end; */
   width: inherit;
   padding: 0;
+  /* align-items: stretch; */
+  width: 100%;
+
+  /* height: 100vh; */
 }
 
 /* 헤더상단 환영메시지 정렬을 위해 블럭화 */

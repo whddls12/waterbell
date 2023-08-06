@@ -14,11 +14,15 @@ import roadReportItemVue from '../underroad/components/report/roadReportItem.vue
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
+//지하차도 시스템 로그
+import roadDeviceAlarmlog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
+
 //지하주차장 회원관련(로그인, 회원가입, 마이페이지)
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
 import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
 import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
 import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
+import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -80,7 +84,10 @@ const router = createRouter({
     {
       path: '/road/systemlog',
       name: 'RoadSystemlog',
-      component: RoadSystemlog
+      component: RoadSystemlog,
+      children: [
+        { path: 'alarmLog', name: 'alarmLog', component: roadDeviceAlarmlog }
+      ]
     },
 
     //지하주차장 라우터
@@ -121,7 +128,8 @@ const router = createRouter({
     {
       path: '/park/manage',
       name: 'ParkManage',
-      component: ParkManage
+      component: ParkManage,
+      children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
     },
     {
       path: '/park/control',

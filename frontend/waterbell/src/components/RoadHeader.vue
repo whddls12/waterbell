@@ -19,10 +19,7 @@
         <button>MY PAGE</button>
         <button @click="logout">LOGOUT</button>
       </div>
-      <!-- 비로그인 상태 -->
-      <div class="header-btn" v-else>
-        <button @click="goToLogin">LOGIN</button>
-      </div>
+      <!-- 지하차도는 로그인 버튼 불필요 -->
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
@@ -58,6 +55,8 @@ import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
+// import apiModule from '@/types/apiClient'
+
 // import roadControlView from '../underroad/views/roadControlView.vue'
 // import roadDashboardView from '../underroad/views/roadDashboardView.vue'
 // import roadManageView from '../underroad/views/roadManageView.vue'
@@ -80,6 +79,7 @@ export default defineComponent({
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
+    // const apiClient = apiModule.apiClient
 
     function goToMain() {
       store.commit('setIsMainpage', true)
@@ -90,20 +90,24 @@ export default defineComponent({
       router.push({ path: '/alarm' })
     }
 
-    function goToLogin() {
-      router.push({ path: '/park/login' })
-    }
-
     function logout() {
       store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
       router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
     }
 
+    // const loginUser = () => {
+    //   apiClient.get('/member/findMember/token').then((res) => {
+    //     console.log(res)
+    //     return res
+    //   })
+    // }
+    // const name = loginUser()
+    // console.log(name)
+    const loginUser = computed(() => store.getters['auth/loginUser'])
     return {
       isMainPage,
       goToMain,
       goToAlarm,
-      goToLogin,
       logout
     }
   },

@@ -2,6 +2,7 @@ package com.ssafy.fcc.MQTT;
 
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
+import com.ssafy.fcc.domain.log.SensorType;
 import com.ssafy.fcc.repository.FacilityRepository;
 
 import com.ssafy.fcc.service.ApartService;
@@ -71,7 +72,7 @@ public class MqttSubscriber implements MqttCallback {
         String[] result = message.toString().split("/");
 
         int facilityId = Integer.parseInt(result[0]);
-        String category = topic;
+        SensorType category = SensorType.valueOf(topic.toUpperCase());
         int value = Integer.parseInt(result[1]);
 
         Facility facility = facilityRepository.findById(facilityId);
