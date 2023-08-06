@@ -66,7 +66,6 @@ public class UndergroundRoadService {
         floodAlarmLog.setContent(notificationMessage);
         floodAlarmLog.setIsApart(false);
         floodAlarmLog.setIsFlood(true);
-        floodAlarmLog.setStep(Step.FIRST);
         floodAlarmLogRepository.save(floodAlarmLog);
         AlarmLogDto alarmLogDto = new AlarmLogDto(floodAlarmLog);
 
