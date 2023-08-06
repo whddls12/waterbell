@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
 // import TheHeader from './components/TheHeader.vue'
 import Home from './views/Home.vue'
-import webSocket from './types/webSocket_alarm'
-import { watch } from 'vue'
-import { useStore } from 'vuex'
+import webSocket from '@/types/webSocket_alarm'
+import store from '@/store/index'
+// import { useStore } from 'vuex'
 export default defineComponent({
   name: 'App',
   components: {
@@ -22,23 +22,14 @@ export default defineComponent({
     // TheHeader
   },
   setup() {
-    const store = useStore()
-    const alarm_socket = ref<WebSocket | null>(null)
-
-    //로그인 상태를 관찰하다가 변화하면 웹소켓 연결하기
-    watch(
-      () => store.state.isLoggedIn,
-      (newValue) => {
-        //로그인 감지
-        if (newValue) {
-          webSocket.connectWebSocket(alarm_socket.value)
-
-          //로그아웃 감지
-        } else {
-          webSocket.closeWebSocket(alarm_socket.value)
-        }
+    // const store = useStore()
+    onMounted(() => {
+      const isLogin = computed(() => store.getters['auth/isLogin'])
+      console.log(isLogin.value)
+      if (isLogin.value) {
+        webSocket.connectWebSocket() //새로고침 시, 웹소켓 연결
       }
-    )
+    })
   }
 })
 </script>

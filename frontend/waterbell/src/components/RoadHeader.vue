@@ -22,6 +22,7 @@
       <!-- 지하차도는 로그인 버튼 불필요 -->
       <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
+        <button @click="goToJoin">회원가입</button>
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
@@ -97,9 +98,13 @@ export default defineComponent({
       router.push({ path: '/park/login' })
     }
 
+    function goToJoin() {
+      router.push({ path: '/park/join' })
+    }
+
     function logout() {
       store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
+      router.push({ path: '/park/login' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {
@@ -116,7 +121,8 @@ export default defineComponent({
       goToMain,
       goToAlarm,
       goToLogin,
-      logout
+      logout,
+      goToJoin
     }
   },
   methods: {}
