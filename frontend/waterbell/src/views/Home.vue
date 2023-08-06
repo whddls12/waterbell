@@ -23,8 +23,8 @@
 
     <!-- 서비스 화면 -->
     <div v-else>
-      <RoadHeader v-if="isPark" />
-      <ParkHeader v-else />
+      <ParkHeader v-if="isPark" />
+      <RoadHeader v-else />
       <div class="router-view-container">
         <router-view></router-view>
       </div>
@@ -54,11 +54,13 @@ export default defineComponent({
     function goToOther1() {
       store.commit('setIsMainpage', false)
       store.commit('setIspark', true)
+      console.log(isPark)
     }
 
     function goToOther2() {
       store.commit('setIsMainpage', false)
       store.commit('setIspark', false)
+      console.log(isPark)
     }
 
     return {

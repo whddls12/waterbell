@@ -39,7 +39,7 @@
         <router-link to="/park/systemlog">시스템 로그</router-link>
       </div>
       <div class="each-menu">
-        <router-link to="/park/manage">관리</router-link>
+        <router-link to="/park/manage/custom">관리</router-link>
       </div>
     </div>
   </div>
@@ -49,10 +49,20 @@
 import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ParkHeader',
   components: {},
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
   setup() {
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)

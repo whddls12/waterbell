@@ -9,7 +9,7 @@ export default createStore({
     location: { lon: '127', lat: '55' }, //현재 위치(gps)
     tmpUnderroad: {} as { id: string }, //임시 선택 지하차도
     isMainpage: true,
-    ispark: true
+    isPark: true
   },
   getters: {
     tmpUnderroad(state) {
@@ -31,7 +31,7 @@ export default createStore({
       state.tmpUnderroad = payload
     },
     setIspark(state, value) {
-      state.ispark = value
+      state.isPark = value
     }
   },
   actions: {
