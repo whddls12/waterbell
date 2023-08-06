@@ -142,7 +142,7 @@ export default defineComponent({
 /* 메뉴 내비게이션 바 */
 .menu-navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   padding-left: 2rem;
   padding-right: 2rem;
   background-color: #10316b;

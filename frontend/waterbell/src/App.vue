@@ -57,12 +57,11 @@ export default defineComponent({
 #nav {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  flex-grow: 1;
   /* justify-content: center; */
   /* align-content: flex-end; */
-  width: inherit;
   padding: 0;
-  /* align-items: stretch; */
+  align-items: stretch;
   width: 100%;
 
   /* height: 100vh; */

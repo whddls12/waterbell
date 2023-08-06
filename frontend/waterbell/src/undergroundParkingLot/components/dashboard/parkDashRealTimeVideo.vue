@@ -1,5 +1,5 @@
-<template lang="">
-  <div></div>
+<template>
+  <div class="container">cctv</div>
 </template>
 <script>
 export default {}

@@ -131,7 +131,7 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="css">
+<style>
 #dash-cctv {
   height: 500px;
 }

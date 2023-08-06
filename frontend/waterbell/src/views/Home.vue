@@ -109,12 +109,12 @@ export default defineComponent({
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  /* overflow: auto; */
+  /* width: 100%;
+  height: 100%; */
+  overflow: auto;
   background-color: white;
-  /* margin-left: 200px;
+  margin-left: 200px;
   margin-right: 200px;
-  margin-top: 50px; */
+  margin-top: 50px;
 }
 </style>
