@@ -20,12 +20,11 @@
         <button @click="logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
-      <<<<<<< HEAD
+
       <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
         <button @click="goToJoin">회원가입</button>
       </div>
-      ======= >>>>>>> 286dc0cb829a6f1ac3bd5d0b58f5657447d80df6
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
@@ -117,7 +116,7 @@ export default defineComponent({
     // }
     // const name = loginUser()
     // console.log(name)
-    const loginUser = computed(() => store.getters['auth/loginUser'])
+    // const loginUser = computed(() => store.getters['auth/loginUser'])
     return {
       isMainPage,
       goToMain,
