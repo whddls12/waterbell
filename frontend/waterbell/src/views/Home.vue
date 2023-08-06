@@ -54,13 +54,11 @@ export default defineComponent({
     function goToOther1() {
       store.commit('setIsMainpage', false)
       store.commit('setIspark', true)
-      console.log(isPark)
     }
 
     function goToOther2() {
       store.commit('setIsMainpage', false)
       store.commit('setIspark', false)
-      console.log(isPark)
     }
 
     return {

@@ -1,5 +1,5 @@
 <template>
-  <div>asd</div>
+  <div>알림 로그</div>
 </template>
 
 <script>
