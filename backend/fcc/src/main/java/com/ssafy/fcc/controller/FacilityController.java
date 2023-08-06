@@ -1,5 +1,6 @@
 package com.ssafy.fcc.controller;
 
+import com.ssafy.fcc.MQTT.MqttPublisher;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.location.Gugun;
 import com.ssafy.fcc.service.FacilityService;
@@ -86,7 +87,6 @@ public class FacilityController {
 
     @GetMapping("/{facility_id}/status")
     public WaterStatus getWaterStatus(@PathVariable("facility_id") int facilityId) {
-
         return facilityService.getStatus(facilityId);
 
     }
