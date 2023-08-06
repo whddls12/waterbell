@@ -9,10 +9,10 @@
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
         <router-link to="/park/dash">
-          <div class="select-box park" @click="goToOther">지하주차장</div>
+          <div class="select-box park" @click="goToOther1">지하주차장</div>
         </router-link>
         <router-link to="/road/dash">
-          <div class="select-box road" @click="goToOther">지하차도</div>
+          <div class="select-box road" @click="goToOther2">지하차도</div>
         </router-link>
       </div>
       <!-- 관리자 로그인 버튼 -->
@@ -23,8 +23,8 @@
 
     <!-- 서비스 화면 -->
     <div v-else>
-      <RoadHeader />
-      <!-- <ParkHeader /> -->
+      <RoadHeader v-if="isPark" />
+      <ParkHeader v-else />
       <div class="router-view-container">
         <router-view></router-view>
       </div>
@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import RoadHeader from '@/components/RoadHeader.vue'
-// import ParkHeader from '@/components/ParkHeader.vue'
+import ParkHeader from '@/components/ParkHeader.vue'
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 // import RoadDash from '../underroad/views/roadDashboardView.vue'
@@ -43,20 +43,29 @@ import { useStore } from 'vuex'
 export default defineComponent({
   name: 'Home',
   components: {
-    RoadHeader
-    // ParkHeader
+    RoadHeader,
+    ParkHeader
   },
   setup() {
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
+    const isPark = computed(() => store.state.isPark)
 
-    function goToOther() {
+    function goToOther1() {
       store.commit('setIsMainpage', false)
+      store.commit('setIspark', true)
+    }
+
+    function goToOther2() {
+      store.commit('setIsMainpage', false)
+      store.commit('setIspark', false)
     }
 
     return {
       isMainPage,
-      goToOther
+      isPark,
+      goToOther1,
+      goToOther2
     }
   }
 })
@@ -88,10 +97,13 @@ export default defineComponent({
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  width: 100%;
-  height: 100%;
+  /* width: 100%; */
+  /* height: 100%; */
   overflow: auto; /* prevent components from going out of bounds */
   background-color: white;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 50px;
 }
 
 router-view {

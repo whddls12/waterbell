@@ -12,17 +12,16 @@
         />
       </div>
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
-      <div class="header-btn">
-        <!-- 로그아웃 상태-->
-        <button>로그인</button>
-        <button>회원가입</button>
-        <!-- 로그인 상태-->
-        <router-link to="/alarmBox">
-          <button>알림함</button>
-        </router-link>
-        <p id="hello-msg">@@님 어서오세요!</p>
+      <!-- 로그인 상태-->
+      <div class="header-btn" v-if="accessToken">
+        <p id="hello-msg">김동현님 어서오세요!</p>
+        <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
-        <button>로그아웃</button>
+        <button @click="logout">로그아웃</button>
+      </div>
+      <!-- 지하차도는 로그인 버튼 불필요 -->
+      <div class="header-btn" v-else>
+        <button @click="goToLogin">로그인</button>
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
