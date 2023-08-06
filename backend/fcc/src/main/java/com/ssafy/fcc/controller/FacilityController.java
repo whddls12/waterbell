@@ -1,5 +1,6 @@
 package com.ssafy.fcc.controller;
 
+import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.location.Gugun;
 import com.ssafy.fcc.service.FacilityService;
 import com.ssafy.fcc.service.GugunService;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -81,6 +83,14 @@ public class FacilityController {
         }
         return new ResponseEntity<>(response, status);
     }
+
+    @GetMapping("/{facility_id}/status")
+    public WaterStatus getWaterStatus(@PathVariable("facility_id") int facilityId) {
+
+        return facilityService.getStatus(facilityId);
+
+    }
+
 
 
 }
