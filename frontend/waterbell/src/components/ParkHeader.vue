@@ -63,9 +63,25 @@ export default defineComponent({
       router.push({ path: '/' })
     }
 
+    function goToAlarm() {
+      router.push({ path: '/alarm' })
+    }
+
+    function logout() {
+      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
+    }
+
+    function goToLogin() {
+      router.push({ path: '/park/login' })
+    }
+
     return {
       isMainPage,
-      goToMain
+      goToMain,
+      goToAlarm,
+      goToLogin,
+      logout
     }
   }
 })
@@ -75,8 +91,11 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-
-  margin-bottom: 50px;
+  margin-left: 200px;
+  margin-right: 100px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  /* padding-top: 100px; */
 }
 
 .header-btn {
