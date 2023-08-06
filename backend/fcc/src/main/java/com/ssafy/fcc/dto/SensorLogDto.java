@@ -1,6 +1,7 @@
 package com.ssafy.fcc.dto;
 
 import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.log.SensorType;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,6 @@ public class SensorLogDto {
     private long id;
     private LocalDateTime sensorTime;
     private String facilityName;
-    private String category;
+    private SensorType category;
     private Integer value;
 }
