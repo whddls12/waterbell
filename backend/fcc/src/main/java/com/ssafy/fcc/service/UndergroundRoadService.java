@@ -8,6 +8,7 @@ import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.member.PublicManager;
 import com.ssafy.fcc.domain.sms.ReceiveSmsMember;
 import com.ssafy.fcc.domain.sms.SmsLog;
+import com.ssafy.fcc.dto.AlarmLogDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.SmsUtil;
@@ -43,27 +44,30 @@ public class UndergroundRoadService {
         PublicManager manager = publicManagerRepository.findBySido(undergroundRoad.getGugun().getSido().getId());
         // 알림 메시지
         String notificationMessage;
+        // 알림 로그
+        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
         // 1차 경고 상황
         if(status==WaterStatus.FIRST){
             notificationMessage = "[WaterBell]주의 : " + undergroundRoad.getUndergroundRoadName() + "의 수위 센서가 1차 경고 수치인 "
                     + undergroundRoad.getFirstAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하세요.";
+            floodAlarmLog.setStep(Step.FIRST);
         }
         // 2차 경고 상황
         else {
             notificationMessage = "[WaterBell]주의 : " + undergroundRoad.getUndergroundRoadName() + "의 수위 센서가 2차 경고 수치인 "
                     + undergroundRoad.getSecondAlarmValue() +"mm를 넘었습니다. 현재 수위는 " + data + "mm입니다. CCTV를 확인하고 전광판과 경고등을 작동시키세요.";
+            floodAlarmLog.setStep(Step.SECOND);
         }
 
-        // 알림 로그
-        FloodAlarmLog floodAlarmLog = new FloodAlarmLog();
+
         floodAlarmLog.setMember(memberRepository.getSystemMember());
         floodAlarmLog.setFacility(undergroundRoad);
         floodAlarmLog.setRegDate(LocalDateTime.now());
         floodAlarmLog.setContent(notificationMessage);
         floodAlarmLog.setIsApart(false);
         floodAlarmLog.setIsFlood(true);
-        floodAlarmLog.setStep(Step.FIRST);
         floodAlarmLogRepository.save(floodAlarmLog);
+        AlarmLogDto alarmLogDto = new AlarmLogDto(floodAlarmLog);
 
         // 웹 알림 보내고 저장
         ReceiveAlarmMember receiveAlarmMember = new ReceiveAlarmMember();
@@ -71,7 +75,7 @@ public class UndergroundRoadService {
         receiveAlarmMember.setMember(manager);
         receiveAlarmMember.setRead(false);
         receiveAlarmMemberRepository.save(receiveAlarmMember);
-        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), notificationMessage);
+        myWebSocketHandler.sendNotificationToSpecificUser(manager.getLoginId(), alarmLogDto);
 
         // 문자 알림
         SmsLog smsLog = new SmsLog();

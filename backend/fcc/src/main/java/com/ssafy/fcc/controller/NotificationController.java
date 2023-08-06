@@ -2,7 +2,9 @@ package com.ssafy.fcc.controller;
 
 import com.ssafy.fcc.domain.alarm.Step;
 import com.ssafy.fcc.domain.member.ApartMember;
+import com.ssafy.fcc.dto.BoardAlarmDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
+import com.ssafy.fcc.service.AlarmService;
 import com.ssafy.fcc.service.ApartManagerService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
