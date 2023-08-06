@@ -78,9 +78,11 @@ div {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  align-items: center;
-  width: calc(100% - 320px);
   padding: 0;
+  align-items: stretch;
+  width: 100%;
+
+  /* height: 100vh; */
 }
 #hello-msg {
   display: inline-block;
