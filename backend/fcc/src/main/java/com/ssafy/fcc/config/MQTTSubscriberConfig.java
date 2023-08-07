@@ -22,5 +22,6 @@ public class MQTTSubscriberConfig {
 //        mqttSubscriber.init("tcp://192.168.0.10:1883", "DashBoard3").subscribe("Dust");
 //        mqttSubscriber.init("tcp://192.168.0.10:1883", "DashBoard4").subscribe("height");
 //        mqttSubscriber.init("tcp://192.168.0.10:1883", "test").subscribe("picture");
+//        mqttSubscriber.init("tcp://192.168.43.41:1883","Cam").subscribe("Cam");
     }
 }
