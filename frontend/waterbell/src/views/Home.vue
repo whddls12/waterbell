@@ -93,7 +93,6 @@ export default defineComponent({
 
 .router-view-container {
   box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
-
   padding: 10px 20px;
   display: flex;
   justify-content: center;
@@ -104,6 +103,8 @@ export default defineComponent({
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 50px;
+  min-height: 600px;
+  overflow-y: auto; /* 세로 스크롤이 필요한 경우 자동으로 스크롤 생성 */
 }
 
 router-view {

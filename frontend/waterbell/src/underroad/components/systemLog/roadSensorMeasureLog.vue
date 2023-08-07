@@ -2,6 +2,24 @@
   <div class="container mt-4">
     <div><h5>센서 측정 로그</h5></div>
     <div>
+      <div>
+        <label>Start Date:</label>
+        <span class="VueDatePicker">
+          <VueDatePicker
+            v-model="startDate"
+            placeholder="Select date"
+          ></VueDatePicker>
+        </span>
+      </div>
+      <div>
+        <label>End Date:</label>
+        <span class="VueDatePicker">
+          <VueDatePicker
+            v-model="endDate"
+            placeholder="Select date"
+          ></VueDatePicker>
+        </span>
+      </div>
       <label for="category-select">Category</label>
       <div id="category-select">
         <input type="radio" id="height" value="HEIGHT" v-model="category" />
@@ -76,6 +94,8 @@ import http from '@/types/http'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { mapGetters } from 'vuex'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default defineComponent({
   name: 'roadDashReportVue',
@@ -88,6 +108,7 @@ export default defineComponent({
       'refreshToken'
     ])
   },
+  components: { VueDatePicker },
   created() {
     console.log('로그인한 사용자:', this.loginUser)
     console.log('로그인 상태:', this.isLogin)
@@ -97,6 +118,8 @@ export default defineComponent({
   },
 
   setup() {
+    const startDate = ref(new Date()) // 오늘 날짜를 초기값으로 설정
+    const endDate = ref(new Date()) // 오늘 날짜를 초기값으로 설정
     const ITEMS_PER_PAGE = 10
     const currentPage = ref(0)
     const category = ref('')
@@ -177,6 +200,11 @@ export default defineComponent({
       }
     })
 
+    watch([startDate, endDate], ([newStartDate, newEndDate]) => {
+      console.log('Start Date:', newStartDate)
+      console.log('End Date:', newEndDate)
+    })
+
     onMounted(() => {
       setList()
     })
@@ -188,7 +216,9 @@ export default defineComponent({
       prevPage,
       goToPage,
       pageCount,
-      category
+      category,
+      startDate,
+      endDate
     }
   }
 })
@@ -267,5 +297,10 @@ export default defineComponent({
 /* Active page style */
 .pagination .active {
   text-decoration: underline;
+}
+
+.VueDatePicker {
+  height: 50px;
+  width: 50px;
 }
 </style>
