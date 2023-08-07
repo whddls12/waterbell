@@ -1,6 +1,7 @@
 package com.ssafy.fcc.config;
 
 import com.ssafy.fcc.config.security.JwtTokenProvider;
+import com.ssafy.fcc.handler.CamWebSocketHandler;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class WebSocketConfig implements WebSocketConfigurer {
 
     private final MyWebSocketHandler myWebSocketHandler;
+    private final CamWebSocketHandler camWebSocketHandler;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -47,6 +49,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
                     }
                 })
                 .setAllowedOrigins("*");
+
+
+        registry.addHandler(camWebSocketHandler, "/cam").setAllowedOrigins("*");
+
+
+
+
     }
 }
 
