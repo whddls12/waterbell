@@ -1,27 +1,61 @@
+div
 <template lang="">
   <div>
     <h2>로그인</h2>
+
     <div>
-      <form @submit.prevent="login">
-        <input
-          type="text"
-          id="id"
-          :value="id"
-          @input="(e) => (id = e.target.value)"
-          placeholder="아이디"
-          class="in"
-        />
-        <input
-          type="password"
-          id="password"
-          placeholder="비밀번호"
-          @input="(e) => (password = e.target.value)"
-          :value="password"
-          class="in"
-        />
-        <input type="submit" id="btn" value="로그인" /><br />
-      </form>
-      <a href="#none">비밀번호를 잊어버리셨나요?</a>
+      <div class="includeFinding">
+        <div class="loginForm">
+          <form @submit.prevent="login">
+            <div id="idAndPssBox">
+              <div id="idInput">
+                <label for="id">아이디</label>
+                <input
+                  type="text"
+                  id="id"
+                  :value="id"
+                  @input="(e) => (id = e.target.value)"
+                  class="in"
+                />
+              </div>
+              <div id="passInput">
+                <label for="password">비밀번호</label>
+                <input
+                  type="password"
+                  id="password"
+                  @input="(e) => (password = e.target.value)"
+                  :value="password"
+                  class="in"
+                />
+              </div>
+            </div>
+            <button type="submit" id="loginBtn">로그인</button><br />
+            <div class="socialBox">
+              <img src="@/assets/Login&Signup/OR.png" />
+              <div>
+                <button class="imgBtn" type="button">
+                  <img
+                    src="@/assets/Login&Signup/naver_login.png"
+                    @click="naverLogin"
+                    class="socialLoginBtn"
+                  />
+                </button>
+              </div>
+              <div>
+                <button class="imgBtn" type="button">
+                  <img
+                    src="@/assets/Login&Signup/kakao_login.png"
+                    class="socialLoginBtn"
+                    @click="kakaoLogin"
+                  />
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <a href="#none">비밀번호를 잊어버리셨나요?</a>
+      </div>
     </div>
   </div>
 </template>
@@ -41,11 +75,20 @@ export default defineComponent({
         password: password.value
       })
     }
+    const naverLogin = () => {
+      //로컬 서버 연결용
+      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:8080/login/oauth2/code/naver&state=WaterBell`
 
+      //운영용
+      // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
+
+      window.location.href = url
+    }
     return {
       id,
       password,
-      login // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
+      login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
+      naverLogin
     }
   }
 })
@@ -55,36 +98,85 @@ body {
   background-color: #1bbc9b;
 }
 
-div {
-  margin: auto;
-  width: 300px;
-  background-color: #eeeff1;
-  border-radius: 5px;
-  text-align: center;
-  padding: 20px;
-}
+/* div {
+  display: flex;
+  width: 1000px;
+  padding: 80px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+} */
 
 input {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
-  border-radius: 5px;
-  border: none;
+  height: 30px;
+  flex: 1 0 0;
+  border-radius: 10px;
+  border: 1px solid rgba(102, 102, 102, 0.35);
+}
+
+label {
+  flex-grow: 1;
 }
 
 .in {
   margin-bottom: 10px;
 }
 
-#btn {
-  background-color: #1bbc9b;
-  margin-bottom: 30px;
-  color: white;
+#loginBtn {
+  border-radius: 40px;
+  background: #114cb1;
 }
-
-a {
+#idAndPassBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+}
+/* a {
   text-decoration: none;
   color: #9b9b9b;
   font-size: 12px;
+} */
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 68px;
+}
+
+.includeFinding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+}
+
+.socialBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+}
+
+/* .socialBox button {
+  text-align: center;
+} */
+
+button img {
+  display: block;
+  margin: auto;
+}
+
+.imgBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
