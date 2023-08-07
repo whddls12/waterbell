@@ -5,10 +5,7 @@ import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/control")
@@ -18,8 +15,9 @@ public class ControlController {
     private final MqttPublisher mqttPublisher;
     private final SystemService systemService;
 
-    @GetMapping("/{facility_id}/{command}")
+    @PostMapping("/{facility_id}/{command}")
     public ResponseEntity<Integer> command(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
+
 
         try {
             String topic = "";
@@ -45,7 +43,7 @@ public class ControlController {
                     break;
             }
         } catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(1);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(1);
