@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p>미세먼지</p>
+    <p>미세먼지 {{ current_dust }}</p>
   </div>
 </template>
 <script lang="ts">
@@ -17,15 +17,15 @@ export default defineComponent({
 
     async function getDustData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors/DUST`)
-
+        const response = await http.get(`/dash/facilities/10/sensors`)
+        current_dust.value = response.data.Dust
         return { current_dust }
       } catch (error) {
         console.log('미세먼지 측정 데이터 가져오기 실패:', error)
       }
     }
     onMounted(async () => {
-      // await getDustData()
+      await getDustData()
     })
 
     return { current_dust, getDustData }

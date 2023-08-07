@@ -21,8 +21,8 @@ export default defineComponent({
       try {
         const response = await http.get(`/dash/facilities/10/sensors`)
 
-        current_temp.value = response.data.HEIGHT
-        current_humid.value = response.data.HUMIDITY
+        current_temp.value = response.data.Temperature
+        current_humid.value = response.data.Humidity
       } catch (error) {
         console.log('미세먼지 측정 데이터 가져오기 실패:', error)
       }

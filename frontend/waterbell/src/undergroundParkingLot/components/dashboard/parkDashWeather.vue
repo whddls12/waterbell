@@ -1,6 +1,12 @@
 <template>
   <div class="container">
     <p>날씨 컴포넌트</p>
+    <img
+      v-if="SKY && PTY"
+      :src="`@/assets/images/weather/${SKY}/${PTY}`"
+      alt="weather-img"
+    />
+    <p v-else>관측되지 않는 지역입니다.</p>
   </div>
 </template>
 <script lang="ts">
@@ -28,6 +34,10 @@ export default defineComponent({
     const status_sky = ref(null) // 하늘 상태
     const type_rainfall = ref(null) // 기상 상태
 
+    // 이미지 폴더 경로
+    const SKY = ref<string | null>(null) // 하늘 상태
+    const PTY = ref<string | null>(null) // 기상 상태
+
     async function getWeatherData() {
       try {
         const response = await http.get(`/dash/weather`, {
@@ -50,11 +60,40 @@ export default defineComponent({
         console.log('기상상태 데이터 가져오기 실패:', error)
       }
     }
+
+    function makeWeatherImage() {
+      // 폴더 지정
+      if (status_sky.value === '1') {
+        // 맑음
+        SKY.value = 'sunny'
+      } else if (status_sky.value === '3') {
+        // 구름 많음
+        SKY.value = 'cloudy'
+      } else if (status_sky.value === '4') {
+        // 흐림
+        SKY.value = 'blur'
+      }
+      console.log(SKY.value)
+      // 이미지 지정
+      if (type_rainfall.value === '0') {
+        PTY.value = 'none'
+      } else if (type_rainfall.value === '1' || type_rainfall.value === '5') {
+        PTY.value = 'rain'
+      } else if (type_rainfall.value === '2' || type_rainfall.value === '6') {
+        PTY.value = 'rainsnow'
+      } else if (type_rainfall.value === '3' || type_rainfall.value === '7') {
+        PTY.value = 'snow'
+      }
+      console.log(PTY.value)
+    }
+
     onMounted(async () => {
       await getWeatherData()
+
+      makeWeatherImage()
     })
 
-    return { status_sky, type_rainfall, getWeatherData }
+    return { status_sky, type_rainfall, SKY, PTY, getWeatherData }
   }
 })
 </script>
