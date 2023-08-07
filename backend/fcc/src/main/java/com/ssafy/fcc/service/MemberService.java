@@ -7,8 +7,11 @@ import com.ssafy.fcc.dto.PublicManagerResponse;
 import com.ssafy.fcc.dto.TokenDto;
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
 
 
 @Service
@@ -96,5 +99,22 @@ public class MemberService {
 
     public ApartMember getMemberByNameAndPhone(String name, String phone) {
         return memberRepository.findByPhoneAndName(name, phone);
+    }
+
+    @Transactional
+    public Member disableApartMember(Integer id) {
+
+        ApartMember member = (ApartMember) memberRepository.findById(id);
+        member.setRole(Role.USER);
+        return member;
+    }
+
+    @Transactional
+    public void withdrawalMember(Integer id) {
+        ApartMember member = (ApartMember) memberRepository.findById(id);
+        member.setState(false);
+        member.setExpiredAt(LocalDateTime.now());
+        member.setPhone(null);
+        member.setRole(Role.USER);
     }
 }

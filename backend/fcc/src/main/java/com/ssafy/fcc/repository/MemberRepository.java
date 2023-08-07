@@ -83,4 +83,8 @@ public class MemberRepository {
         }
 
     }
+
+    public void deleteApartMember(ApartMember member){
+       em.remove(member);
+    }
 }

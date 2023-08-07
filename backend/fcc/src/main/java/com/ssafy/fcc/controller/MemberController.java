@@ -138,8 +138,12 @@ public class MemberController {
         HttpStatus status = null;
 
         try {
-
+            
             Member loginUser = memberService.findByLoginId(loginId);
+            
+            if(!loginUser.isState()){
+                throw new Exception("탈퇴회원입니다.");
+            }
             if (!passwordEncoder.matches(password, loginUser.getPassword())) {
                 throw new Exception("비밀번호가 일치하지 않습니다.");
             }
@@ -163,6 +167,9 @@ public class MemberController {
 
                     PublicManagerResponse publicManagerResponse = new PublicManagerResponse((PublicManager) loginUser, token);
                     resultMap.put("member", publicManagerResponse);
+                }else{
+                    MemberResponse memberResponse = new MemberResponse(loginUser,token);
+                    resultMap.put("member", memberResponse);
                 }
 
                 //redis에 저장
@@ -394,6 +401,77 @@ public class MemberController {
         }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
+
+
+    // 아파트 회원 비활성화
+    @GetMapping("/disable/apart_member/{id}")
+    public ResponseEntity<Map<String, Object>> disableMember(@PathVariable("id") int id) throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        Integer loginId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Member loginUser = memberService.findById(loginId);
+
+        Member disableUser = memberService.findById(id);
+
+        System.out.println(loginUser.getRole());
+        try {
+            if (loginUser.getRole() == Role.APART_MANAGER) {
+                if (((ApartManager) loginUser).getApart() != ((ApartMember) disableUser).getApart())
+                    throw new Exception("관리인을 확인해주세요");
+                resultMap.put("notification", "관리인 해제 완료");
+                Member updateMember = memberService.disableApartMember(disableUser.getId());
+            } else if (loginUser.getRole() == Role.APART_MEMBER) {
+                if (loginUser.getId() != disableUser.getId())
+                    throw new Exception("본인 계정만 가능합니다");
+                Member updateMember=memberService.disableApartMember(disableUser.getId());
+                resultMap.put("notification", "logout");
+            }
+            status = HttpStatus.ACCEPTED;
+            resultMap.put("message", "success");
+
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    //회원 탈퇴
+    @GetMapping("/apartMember/withdrawal")
+    public ResponseEntity<Map<String, Object>> withdrawalMember() throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        Integer loginId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Member loginUser = memberService.findById(loginId);
+
+
+        memberService.withdrawalMember(loginId);
+        status = HttpStatus.ACCEPTED;
+        resultMap.put("message", "success");
+        resultMap.put("notification", "logout");
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+    }
+
+    //회원정보 변경 - 아파트 회원
+    @PostMapping("/apartMember/modify")
+    public ResponseEntity<Map<String, Object>> modifyMemberInfo() throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+
+
+
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+    }
+
 
 
 }
