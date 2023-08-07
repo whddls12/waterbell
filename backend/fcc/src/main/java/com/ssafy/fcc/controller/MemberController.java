@@ -460,18 +460,64 @@ public class MemberController {
 
     //회원정보 변경 - 아파트 회원
     @PostMapping("/apartMember/modify")
-    public ResponseEntity<Map<String, Object>> modifyMemberInfo() throws Exception {
+    public ResponseEntity<Map<String, Object>> modifyMemberInfo(@RequestBody  MypageApartMemberDto memberDto) throws Exception {
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+            //아파트 회원 비활성화
+            if (memberDto.getApartCode() == null || memberDto.getApartCode().equals("")) {
+                //휴대폰 번호 변경 && 아파트 권환 회수
+                memberService.reviseRoleAndPhone(memberDto.getId(), memberDto.getPhone());
+                resultMap.put("notification", "logout");
+            } else {
+                //휴대폰번호, 이름, 아파트 코드 다르면 수정, 호수 수정
+                Integer apartId =memberService.reviseMemberInfo(memberDto.getId(), memberDto.getPhone(), memberDto.getName(),
+                        memberDto.getApartCode(), memberDto.getAddressNumber());
+                if(apartId!=null) {
+                    resultMap.put("notification", "change facility");
+                    resultMap.put("facilityId", apartId);
+                }
+            }
+
+            status = HttpStatus.ACCEPTED;
+            resultMap.put("message", "success");
+
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+
+    }
+
+    @PostMapping("/manager/modify")
+    public ResponseEntity<Map<String, Object>> modifyManagerInfo(@RequestBody Map<String,String> request) throws Exception {
 
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
 
 
+        Integer loginId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+//        Member loginUser = memberService.findById(loginId);
 
+        try {
+            //관리자 휴대폰 변경
+            memberService.modifyMemberPhone(loginId, request.get("phone"));
 
+            status = HttpStatus.ACCEPTED;
+            resultMap.put("message", "success");
+
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
 
     }
-
 
 
 }
