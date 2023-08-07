@@ -316,8 +316,10 @@ public class DashController {
 
     }
 
-    @GetMapping("/facilities/{facility_id}/sensors/{category}")
-    public int dashSensor(@PathVariable("facility_id") int facilityId, @PathVariable String category) {
-        return systemService.getSensorData(facilityId,category);
+    @GetMapping("/facilities/{facility_id}/sensors")
+    public Map<String,Integer> dashSensor(@PathVariable("facility_id") int facilityId) {
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap = systemService.getSensorData(facilityId);
+        return resultMap;
     }
 }
