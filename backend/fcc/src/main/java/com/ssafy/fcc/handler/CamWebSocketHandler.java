@@ -1,9 +1,11 @@
 package com.ssafy.fcc.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.fcc.MQTT.MqttPublisher;
 import com.ssafy.fcc.MQTT.MqttSubscriber;
 import com.ssafy.fcc.repository.FacilityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.CloseStatus;
@@ -30,6 +32,7 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
     MqttSubscriber subscriber;
     MqttPublisher publisher;
 
+    ObjectMapper objectMapper;
     private final FacilityRepository facilityRepository;
 
     // 연결을 맺고 나서 실행되는 메소드
@@ -43,37 +46,41 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
         String clientId = generateClientId();
 
         // 세션에 식별자 저장
-        session.getAttributes().put("clientId", clientId);
+        session.getAttributes().put("camClient", clientId);
         sessions.put(clientId, session);
 
         //
-        session.sendMessage(new TextMessage(clientId));
+        objectMapper = new ObjectMapper();
+        Message msg = new Message("camClient", clientId);
+        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
+//        session.sendMessage(new TextMessage(clientId));
 
         // 클라이언트 연결 후
         // 쿼리에서 값 가져옴.
         String query = session.getUri().getQuery();
         MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString("?" + query).build().getQueryParams();
         String facilityId = queryParams.getFirst("facilityId");
-        session.getAttributes().put("facilityId", facilityId);
+        String camNum = queryParams.getFirst("camNum");
 
+        String topic = facilityId + "/cam" + camNum + "/picture";
+        session.getAttributes().put("facilityId", topic);
 
         // 연결된 건물 id
-        clients.put(clientId, facilityId);
+        clients.put(clientId, topic);
 
         // 연결된 건물 개수
-        if(facilityNum.containsKey(facilityId)){
-            facilityNum.put(facilityId, facilityNum.get(facilityId) + 1);
+        if(facilityNum.containsKey(topic)){
+            facilityNum.put(topic, facilityNum.get(topic) + 1);
         }else{
-            facilityNum.put(facilityId, 1);
+            facilityNum.put(topic, 1);
         }
         // subscriber, publisher 생성
         String hubIp = facilityRepository.findById(Integer.parseInt(facilityId)).getHubIp();
 
         // subscriber 등록
-        subscriber.init(hubIp,facilityId);
+        subscriber.init(hubIp,topic);
 
         // topic 생성
-        String topic = facilityId + "/picture";
         subscriber.subscribe(topic);
         subscribers.put(clientId, subscriber);
         publisher.send(topic, "ON");
@@ -85,7 +92,9 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
         for(String id : clients.values()){
             if(Integer.parseInt(id) == facilityId){
                 WebSocketSession session = sessions.get(id);
-                session.sendMessage(new TextMessage(temp_img));
+                objectMapper = new ObjectMapper();
+                Message msg = new Message("temp_img", temp_img);
+                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
             }
         }
     }
