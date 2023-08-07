@@ -3,6 +3,7 @@ package com.ssafy.fcc.MQTT;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.SensorType;
+import com.ssafy.fcc.handler.CamWebSocketHandler;
 import com.ssafy.fcc.repository.FacilityRepository;
 
 import com.ssafy.fcc.service.ApartService;
@@ -34,7 +35,7 @@ public class MqttSubscriber implements MqttCallback {
     public final UndergroundRoadService undergroundRoadService;
 
     public final ApartService apartService;
-
+    public CamWebSocketHandler camWebSocketHandler;
 
     //Mqtt프로토콜를 이용해서 broker에 연결하면서 연결정보를 설정할 수 있는 객체
     public MqttConnectOptions mqttOption;
@@ -83,9 +84,9 @@ public class MqttSubscriber implements MqttCallback {
 
             byte[] encodeByte = encode.encode(message.getPayload());
 
-            System.out.println("인코딩 후 : " + new String(encodeByte));
-
-        } else {
+                System.out.println("인코딩 후 : " + new String(encodeByte));
+                camWebSocketHandler.sendVideoImg(facilityId, new String(encodeByte));
+            } else {
             systemService.insertLog(facilityId, category, value);
         }
     }
