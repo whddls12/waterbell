@@ -8,7 +8,6 @@ import com.ssafy.fcc.domain.member.PublicManager;
 import com.ssafy.fcc.domain.member.Role;
 import com.ssafy.fcc.dto.FacilityManagementDto;
 import com.ssafy.fcc.service.FacilityService;
-import com.ssafy.fcc.service.ManagementService;
 import com.ssafy.fcc.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,6 @@ import java.util.Map;
 public class ManagementController {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final ManagementService managementService;
     private final MemberService memberService;
     private final FacilityService facilityService;
 
