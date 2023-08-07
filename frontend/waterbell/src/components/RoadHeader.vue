@@ -14,12 +14,17 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
-        <button @click="goToAlarm">Alarm</button>
-        <p id="hello-msg">김동현님 어서오세요!</p>
-        <button>MY PAGE</button>
-        <button @click="logout">LOGOUT</button>
+        <span id="hello-msg">김동현님 어서오세요!</span>
+        <button @click="goToAlarm">알림함</button>
+        <button>마이페이지</button>
+        <button @click="logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
+
+      <div class="header-btn" v-else>
+        <button @click="goToLogin">로그인</button>
+        <button @click="goToJoin">회원가입</button>
+      </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
@@ -90,9 +95,17 @@ export default defineComponent({
       router.push({ path: '/alarm' })
     }
 
+    function goToLogin() {
+      router.push({ path: '/park/login' })
+    }
+
+    function goToJoin() {
+      router.push({ path: '/park/join' })
+    }
+
     function logout() {
       store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
+      router.push({ path: '/park/login' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {
@@ -103,12 +116,14 @@ export default defineComponent({
     // }
     // const name = loginUser()
     // console.log(name)
-    const loginUser = computed(() => store.getters['auth/loginUser'])
+    // const loginUser = computed(() => store.getters['auth/loginUser'])
     return {
       isMainPage,
       goToMain,
       goToAlarm,
-      logout
+      goToLogin,
+      logout,
+      goToJoin
     }
   },
   methods: {}
@@ -120,13 +135,16 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-
-  margin: 30px 0px;
 }
 
 .header-top > div {
   display: flex;
   align-items: center;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  /* padding-top: 100px; */
 }
 
 /* 헤더 상단 버튼 모아놓은 박스 */
@@ -143,8 +161,8 @@ export default defineComponent({
 .menu-navbar {
   display: flex;
   justify-content: space-around;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 200px;
+  padding-right: 200px;
   background-color: #10316b;
 }
 

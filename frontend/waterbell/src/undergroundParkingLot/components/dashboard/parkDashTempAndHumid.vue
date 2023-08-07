@@ -14,6 +14,7 @@ export default defineComponent({
 
     const current_temp = ref(null)
     const current_humid = ref(null)
+
     async function getDustData() {
       try {
         const response = await http.get(`/dash/facilities/10/sensors`)

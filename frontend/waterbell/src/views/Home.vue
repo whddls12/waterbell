@@ -54,13 +54,11 @@ export default defineComponent({
     function goToOther1() {
       store.commit('setIsMainpage', false)
       store.commit('setIspark', true)
-      console.log(isPark)
     }
 
     function goToOther2() {
       store.commit('setIsMainpage', false)
       store.commit('setIspark', false)
-      console.log(isPark)
     }
 
     return {
@@ -75,7 +73,7 @@ export default defineComponent({
 
 <style>
 .home {
-  width: 60%;
+  width: 100%;
 }
 
 /* 진입화면 워터벨 로고 가운데 정렬 */
@@ -109,12 +107,11 @@ export default defineComponent({
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  /* width: 100%;
-  height: 100%; */
+  width: 1080px;
   overflow: auto;
   background-color: white;
   margin-left: 200px;
   margin-right: 200px;
-  margin-top: 50px;
+  margin-top: 20px;
 }
 </style>

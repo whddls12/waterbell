@@ -12,7 +12,9 @@ import { setInterceptors } from '@/common/interceptors'
 
 //accessToken 넣지 않은 일반 axios
 const api = axios.create({
-  baseURL: 'http://localhost:8080'
+  baseURL: 'http://localhost:8080',
+  timeout: 2000,
+  headers: { 'X-Custom-Header': 'waterbell' }
 })
 
 //accessToken을 헤더에 담은 axios

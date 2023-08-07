@@ -55,16 +55,18 @@ export default createStore({
           res.data.forEach((element: any) => {
             //구군에 따른 지하차도 리스트 세팅
             // console.log('여긴 들어와/?')
+            //그 지하차도 담당자의 관할 시도(시도가 같은 것만)만 보기
             if (element.sido.id == loginUser.sidoId) {
+              //그
               context.commit('setUnderroadbygugun', element.underroads)
             }
           })
+
+          context.commit('setUnderroadbygugun', loginUser.facilities) //지하차도 세팅하는거 로그인 때도 넣기
         })
-        context.commit('setUnderroadbygugun', loginUser.facilities) //지하차도 세팅하는거 로그인 때도 넣기
         //아니라면(비회원) 지하차도 전부 리스트로 받아오기(시군구별 + 전체)
       } else {
         await http.get('/facilities/roads').then((res: { data: any }) => {
-          // console.log(res.data)
           res.data.forEach((element: any) => {
             if (element.underroads.length != 0) {
               context.commit('auth/setUnderroadbygugun', element)
@@ -74,14 +76,8 @@ export default createStore({
             }
           })
         })
-        // console.log(context.getters['auth/underroadListByGugun'])
-        // console.log('store에서 underroadList 출력')
-        // console.log(context.getters['auth/underroadList'])
       }
     }
-    // } catch (error) {
-    //   console.log('지하차도를 가져오는데 에러가 발생했습니다.')
-    // }
   },
 
   modules: {

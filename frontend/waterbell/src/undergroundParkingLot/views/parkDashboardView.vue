@@ -9,7 +9,7 @@
         </div>
         <div id="columnflex">
           <parkDashWeatherVue class="right" id="dashcomponent" />
-          <parkDashTempAndHumidVue class="right" id="dashcomponent" />
+          <!-- <parkDashTempAndHumidVue class="right" id="dashcomponent" /> -->
           <parkDashDustVue class="right" id="dashcomponent" />
           <parkDashRainFallAmountVue class="right" id="dashcomponent" />
         </div>
@@ -28,7 +28,7 @@ import parkDashDustVue from '../components/dashboard/parkDashDust.vue'
 import parkDashRainFallAmountVue from '../components/dashboard/parkDashRainFallAmount.vue'
 import parkDashCctvVue from '../components/dashboard/parkDashRealTimeVideo.vue'
 import parkDashReportListVue from '../components/dashboard/parkDashReportList.vue'
-import parkDashTempAndHumidVue from '../components/dashboard/parkDashTempAndHumid.vue'
+// import parkDashTempAndHumidVue from '../components/dashboard/parkDashTempAndHumid.vue'
 import parkDashWarningMessageVue from '../components/dashboard/parkDashWarningMessage.vue'
 import parkDashWaterLevelHeightVue from '../components/dashboard/parkDashWaterLevelHeight.vue'
 import parkDashWeatherVue from '../components/dashboard/parkDashWeather.vue'
@@ -40,7 +40,7 @@ export default defineComponent({
     parkDashRainFallAmountVue,
     parkDashCctvVue,
     parkDashReportListVue,
-    parkDashTempAndHumidVue,
+    // parkDashTempAndHumidVue,
     parkDashWarningMessageVue,
     parkDashWaterLevelHeightVue,
     parkDashWeatherVue

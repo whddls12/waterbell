@@ -35,7 +35,7 @@ import apiClient from '@/types/apiClient'
 export default defineComponent({
   name: 'TheHeader',
   setup() {
-    const accessToken = computed(() => store.getters['auth.accessToken'])
+    // const accessToken = computed(() => store.getters['auth.accessToken'])
     const loginUser = () => {
       apiClient.get('/member/findMember/token').then((res) => {
         console.log(res)

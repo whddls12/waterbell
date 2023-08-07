@@ -34,7 +34,7 @@ export default defineComponent({
   name: 'parkDashWeather',
   setup() {
     // 시설 아이디 가져오기
-    // const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     // 현재 날짜 및 시간 가져오기
     const now = new Date()
@@ -112,9 +112,22 @@ export default defineComponent({
       return require(`@/assets/images/weather/${SKY.value}/${PTY.value}.png`)
     }
 
-    onMounted(async () => {
-      await getWeatherData()
+    const current_temp = ref(null)
+    const current_humid = ref(null)
 
+    async function getTempAndHumidData() {
+      try {
+        const response = await http.get(`/dash/facilities/10/sensors`)
+
+        current_temp.value = response.data.Temperature
+        current_humid.value = response.data.Humidity
+      } catch (error) {
+        console.log('미세먼지 측정 데이터 가져오기 실패:', error)
+      }
+    }
+    onMounted(async () => {
+      await getTempAndHumidData()
+      await getWeatherData()
       makeWeatherImage()
     })
 
@@ -124,7 +137,10 @@ export default defineComponent({
       SKY,
       PTY,
       getWeatherData,
-      getWeatherImageUrl
+      getWeatherImageUrl,
+      current_temp,
+      current_humid,
+      getTempAndHumidData
     }
   }
 })

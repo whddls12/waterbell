@@ -61,6 +61,7 @@ export default defineComponent({
 .container {
   display: flex;
   flex-direction: column;
+  width: 480px;
   border-radius: 8px;
   padding: 10px;
   background-color: #f2f7ff;
