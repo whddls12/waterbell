@@ -6,6 +6,7 @@ import com.ssafy.fcc.domain.log.*;
 import com.ssafy.fcc.dto.ControlLogDto;
 import com.ssafy.fcc.dto.SensorLogDto;
 import com.ssafy.fcc.repository.*;
+import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -43,25 +44,30 @@ public class SystemService {
     }
 
     public Map<String, Integer> getSensorData(int facilityId) {
-        Map<String,Integer> map = new HashMap<>();
+        Map<String, Integer> map = new HashMap<>();
         Facility facility = facilityRepository.findById(facilityId);
 
-        map.put("Dust",sensorLogRepository.getRecentData(facility,SensorType.DUST));
-        map.put("HEIGHT",sensorLogRepository.getRecentData(facility,SensorType.TEMPERATURE));
-        map.put("HUMIDITY",sensorLogRepository.getRecentData(facility,SensorType.HUMIDITY));
+        map.put("Dust", sensorLogRepository.getRecentData(facility, SensorType.DUST));
+        map.put("Temperature", sensorLogRepository.getRecentData(facility, SensorType.TEMPERATURE));
+        map.put("Humidity", sensorLogRepository.getRecentData(facility, SensorType.HUMIDITY));
 
         return map;
     }
 
-    public List<SensorLogDto> getSensorLogList(int facilityId, String category_str) {
+    public Map<String, Object> getSensorLogList(int facilityId, String category_str, int page) {
 
         Facility facility = facilityRepository.findById(facilityId);
         boolean isApart = facility.isApart();
         SensorType category = SensorType.valueOf(category_str.toUpperCase());
-        List<SensorLog> sensorLogList = sensorLogRepository.getLogList(facility, category);
+
+        Long totalCount = sensorLogRepository.getSensorLogCnt(facility, category);
+        PageNavigation pageNavigation = new PageNavigation(page, totalCount);
+
+
+        List<SensorLog> sensorLogList = sensorLogRepository.getLogList(facility, category, pageNavigation.getStart(), pageNavigation.getSizePerPage());
 
         String name;
-        if(isApart) {
+        if (isApart) {
             name = apartRepository.findById(facilityId).getApartName();
         } else {
             name = undergroundRoadRepository.findById(facilityId).getUndergroundRoadName();
@@ -71,40 +77,55 @@ public class SystemService {
         for (SensorLog log : sensorLogList) {
             logDtoList.add(new SensorLogDto(log.getId(), log.getSensorTime(), name, category, log.getSensorData()));
         }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", logDtoList);
 
-        return logDtoList;
+        return resultMap;
     }
 
-    public List<ControlLogDto> getControlLogList(int facilityId) {
+    public Map<String, Object> getControlLogList(int facilityId, int page) {
 
-        Facility facility = facilityRepository.findById(facilityId);
-        boolean isApart = facility.isApart();
+        try {
+            Facility facility = facilityRepository.findById(facilityId);
+            boolean isApart = facility.isApart();
 
-        List<ControlLog> logList = controlLogRepository.getLogList(facility);
+            Long totalCount = controlLogRepository.getControlLogCnt(facility);
+            PageNavigation pageNavigation = new PageNavigation(page, totalCount);
 
-        String name;
-        if(isApart) {
-            name = apartRepository.findById(facilityId).getApartName();
-        } else {
-            name = undergroundRoadRepository.findById(facilityId).getUndergroundRoadName();
+            List<ControlLog> logList = controlLogRepository.getLogList(facility, pageNavigation.getStart(), pageNavigation.getSizePerPage());
+
+            String name;
+            if (isApart) {
+                name = apartRepository.findById(facilityId).getApartName();
+            } else {
+                name = undergroundRoadRepository.findById(facilityId).getUndergroundRoadName();
+            }
+
+            List<ControlLogDto> logDtoList = new ArrayList<>();
+            for (ControlLog log : logList) {
+                logDtoList.add(new ControlLogDto(log.getControlId(), log.getControlTime(), name, log.getCategory(), log.getWaterHeight(), log.getCommand()));
+            }
+
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("pageNavigation", pageNavigation);
+            resultMap.put("list", logDtoList);
+            return resultMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
-
-        List<ControlLogDto> logDtoList = new ArrayList<>();
-        for(ControlLog log : logList) {
-            logDtoList.add(new ControlLogDto(log.getControlId(), log.getControlTime(), name, log.getCategory(),log.getWaterHeight(), log.getCommand()));
-        }
-
-        return logDtoList;
 
 
     }
+
     @Transactional
     public int insertControlLog(int facilityId, String command_str) {
 
         Facility facility = facilityRepository.findById(facilityId);
         ControlType category = facility.isApart() == true ? ControlType.WATERPLATE : ControlType.BILLBOARD;
         LocalDateTime time = LocalDateTime.now().withNano(0);
-        int height = sensorLogRepository.getRecentData(facility,SensorType.HEIGHT);
+        int height = sensorLogRepository.getRecentData(facility, SensorType.HEIGHT);
         CommandType command = CommandType.valueOf(command_str.toUpperCase());
 
         ControlLog controlLog = new ControlLog();
