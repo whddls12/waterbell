@@ -23,29 +23,30 @@ export default defineComponent({
   setup() {
     const chartRef = ref(null)
     const store = useStore()
-    const timeArr = ref<string[]>([])
-    const amountArr = ref<string[]>([])
+    const timeArr = ref<string[]>([]) // 시간 데이터
+    const amountArr = ref<string[]>([]) // 강수량 데이터
 
+    // 현재 날짜 및 시간 가져오기
+    const now = new Date()
+    const year = now.getFullYear().toString()
+    const month = (now.getMonth() + 1).toString().padStart(2, '0') // JavaScript의 getMonth()는 0(1월)에서 11(12월)까지의 값을 반환합니다.
+    const day = now.getDate().toString().padStart(2, '0')
+    const hour = now.getHours().toString().padStart(2, '0') // 24시간 형식
+    const minute = now.getMinutes().toString().padStart(2, '0')
+    const lon = store.state.location['lon']
+    const lat = store.state.location['lat']
+
+    // 차트에 들어갈 데이터로 가공하는 함수
     const makeData = (i: Record<string, any>) => {
-      // any 대신에 좀 더 구체적인 타입을 사용하려면 Record<string, any>를 사용하세요.
       for (const key in i) {
         timeArr.value.push(key)
         amountArr.value.push(i[key])
       }
     }
 
+    // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
       try {
-        // 현재 날짜 및 시간 가져오기
-        const now = new Date()
-        const year = now.getFullYear().toString()
-        const month = (now.getMonth() + 1).toString().padStart(2, '0') // JavaScript의 getMonth()는 0(1월)에서 11(12월)까지의 값을 반환합니다.
-        const day = now.getDate().toString().padStart(2, '0')
-        const hour = now.getHours().toString().padStart(2, '0') // 24시간 형식
-        const minute = now.getMinutes().toString().padStart(2, '0')
-        const lon = store.state.location['lon']
-        const lat = store.state.location['lat']
-        // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
         const response = await http.get('http://localhost:8080/dash/map/rain', {
           params: {
             year: year,
@@ -58,21 +59,18 @@ export default defineComponent({
           }
         })
         const apiData = response.data
-        // console.log('apiData')
-        // console.log(apiData)
         return { apiData }
         // 차트 생성을 위한 데이터 가공
-        //apiData를 인자로 넘겨줍니다
+        // apiData를 인자로 넘겨줍니다
       } catch (error) {
         console.error('API 데이터 가져오기 실패:', error)
       }
     }
-
+    // 차트를 화면에 그려주는 함수
     async function drawChart(chartCanvas: HTMLElement | null) {
-      // document.addEventListener('DOMContentLoaded', function () {
-      // -> onMounted에 의해 컴포넌트가 마운트 된 후에 실행된다. 중복되는 의미라서 주석처리
       const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement
       const ctx = canvas.getContext('2d')
+
       // 차트 그리기
       new Chart(ctx, {
         type: 'line', // 차트 타입 (bar, line 등)
@@ -89,8 +87,8 @@ export default defineComponent({
             }
           ]
         },
+        // 차트 옵션 설정 (생략 가능)
         options: {
-          // 차트 옵션 설정 (생략 가능)
           scales: {
             y: {
               beginAtZero: true
@@ -98,7 +96,6 @@ export default defineComponent({
           }
         }
       })
-      // })
     }
 
     onMounted(async () => {
@@ -107,12 +104,7 @@ export default defineComponent({
         makeData(apiData.apiData)
       }
       await nextTick()
-      // 차트 그리기
-      // console.log('chartRef.value')
-      // console.log(chartRef.value)
       drawChart(chartRef.value)
-      // console.log('chartRef.value')
-      // console.log(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr }

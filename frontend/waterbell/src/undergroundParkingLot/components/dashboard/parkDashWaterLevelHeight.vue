@@ -80,12 +80,12 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      const apiData = await getSensorData()
-      if (apiData) {
-        makeData(apiData)
-      }
-      await nextTick()
-      drawChart(chartRef.value)
+      // const apiData = await getSensorData()
+      // if (apiData) {
+      //   makeData(apiData)
+      // }
+      // await nextTick()
+      // drawChart(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr, getSensorData }
