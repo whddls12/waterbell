@@ -62,7 +62,7 @@ public class BoardRepository {
 
     public List<UndergroundRoadBoard> getUndergoundBoadList(int facilityId, int start, int size) {
 
-        String latestQuery = "SELECT b FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId ORDER BY b.createDate DESC, b.id DESC";
+        String latestQuery = "SELECT b FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId ORDER BY b.createDate DESC, b.id DESC ";
         List<UndergroundRoadBoard> resultList = em.createQuery(latestQuery, UndergroundRoadBoard.class)
                 .setParameter("undergroundRoadId", facilityId)
                 .setFirstResult(start) // 시작 위치
@@ -76,5 +76,9 @@ public class BoardRepository {
         TypedQuery<Long> countQuery = em.createQuery(jpqlQuery, Long.class)
                 .setParameter("undergroundRoadId", facilityId);
         return countQuery.getSingleResult();
+    }
+
+    public UndergroundRoadBoard getUndergoundBoardById(int boardId) {
+        return em.find(UndergroundRoadBoard.class,boardId);
     }
 }
