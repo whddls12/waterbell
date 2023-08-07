@@ -131,9 +131,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
+/* 헤더 상단 로고와 버튼 포함하는 박스 */
 .header-top {
   display: flex;
   justify-content: space-between;
+}
+
+.header-top > div {
+  display: flex;
+  align-items: center;
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 30px;
@@ -141,33 +147,45 @@ export default defineComponent({
   /* padding-top: 100px; */
 }
 
+/* 헤더 상단 버튼 모아놓은 박스 */
 .header-btn {
   display: flex;
+  align-items: center;
 }
 
+.header-btn > button {
+  align-self: auto;
+}
+
+/* 메뉴 내비게이션 바 */
 .menu-navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  padding-left: 200px;
+  padding-right: 200px;
   background-color: #10316b;
-  padding-right: 20px;
-  padding-left: 20px;
 }
 
+/* 각 메뉴 박스 */
 .each-menu {
   width: 100px;
   margin: 10px 10px;
 }
 
+/* 메뉴 이름 */
 a {
   color: white;
   text-decoration: none;
 }
 
+/* 지역 선택 부분 */
 .select-region {
   display: flex;
   justify-content: center;
+  margin: 10px 0px;
 }
 
+/* 지역 선택 박스 (시도, 시구군) */
 .select-region-box {
   border: 1px solid #939393;
   border-radius: 8px;
@@ -176,7 +194,7 @@ a {
   width: 100px;
   margin: 10px 10px;
 }
-
+/* 이동 버튼 */
 .go-selected-btn {
   display: block;
   border: 1px solid #10316b;

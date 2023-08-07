@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import auth from '@/store/index'
 import axios from 'axios'
+import FontAwesomeIcon from './util/fontawesome-icons'
 
 import getMylocation, { getClosestLocation } from './types/getMylocation'
 
@@ -18,6 +19,7 @@ import getMylocation, { getClosestLocation } from './types/getMylocation'
 // axios.defaults.baseURL = 'http://localhost:8080'
 
 const app = createApp(App)
+app.component('font-awesome-icon', FontAwesomeIcon)
 app.config.globalProperties.$http = axios
 app.config.globalProperties.$store = store
 app.use(store).use(router)
