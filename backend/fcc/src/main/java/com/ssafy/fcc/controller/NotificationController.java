@@ -34,8 +34,7 @@ public class NotificationController {
     private final MyWebSocketHandler myWebSocketHandler;
     private final ApartManagerService apartManagerService;
     private final Logger logger = LoggerFactory.getLogger(VerificationController.class);
-    private final MqttPublisher mqttPublisher;
-    private SystemService systemService;
+
 
     //차수판 가동시 알림
     @PostMapping("/notification/apartManager/activation")
@@ -48,12 +47,6 @@ public class NotificationController {
             apartManagerService.sendFloodWebNotification(member_id, Step.ACTIVATION);
             // 문자 알림
             apartManagerService.sendSmsWebNotification(member_id, Step.ACTIVATION);
-
-            // 차수판 동작 명령, cotrolLog 저장
-            int facilityId = 10; // temp
-            String topic = facilityId + "/activation";
-            mqttPublisher.send(topic, "activate");
-            systemService.insertControlLog(facilityId, "ON");
 
             resultMap.put("message", "전송완료");
             status = HttpStatus.OK;
@@ -77,12 +70,6 @@ public class NotificationController {
             apartManagerService.sendFloodWebNotification(member_id, Step.DEACTIVATION);
             // 문자 알림
             apartManagerService.sendSmsWebNotification(member_id, Step.DEACTIVATION);
-
-            // 차수판 해제 명령, cotrolLog 저장
-            int facilityId = 10; // temp
-            String topic = facilityId + "/deactivation";
-            mqttPublisher.send(topic, "deactivate");
-            systemService.insertControlLog(facilityId, "OFF");
 
             resultMap.put("message", "전송완료");
             status = HttpStatus.OK;
