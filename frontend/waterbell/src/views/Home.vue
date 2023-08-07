@@ -102,16 +102,33 @@ export default defineComponent({
 }
 
 /* 메뉴 화면 (대시보드, 신고접수, 제어, 시스템로그, 관리) */
+.header {
+  display: flex;
+  width: 100%;
+}
+
 .router-view-container {
   box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  width: 1080px;
-  overflow: auto;
+  overflow: auto; /* prevent components from going out of bounds */
   background-color: white;
   margin-left: 200px;
   margin-right: 200px;
-  margin-top: 20px;
+  margin-top: 50px;
+
+  display: flex;
+  width: 1000px;
+  padding: 80px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 139px;
+  border-radius: 10px;
+  background: var(--unnamed, #fff);
+}
+
+router-view {
+  flex-flow: 1;
 }
 </style>

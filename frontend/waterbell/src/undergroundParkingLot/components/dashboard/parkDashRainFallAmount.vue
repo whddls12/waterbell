@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container" id="dash-cctv">
-      <p>지하주차장 대시보드 강수량 그래프</p>
+      <p>강수량 그래프</p>
       <canvas
         ref="chartCanvas"
         id="chartCanvas"
@@ -19,7 +19,7 @@ import { useStore } from 'vuex'
 import http from '@/types/http'
 
 export default defineComponent({
-  name: 'roadDashRainAmountVue',
+  name: 'parkDashRainAmountVue',
   setup() {
     const chartRef = ref(null)
     const store = useStore()

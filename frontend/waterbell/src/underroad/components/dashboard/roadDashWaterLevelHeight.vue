@@ -85,7 +85,7 @@ export default defineComponent({
         makeData(apiData)
       }
       await nextTick()
-      drawChart(chartRef.value)
+      // drawChart(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr, getSensorData }

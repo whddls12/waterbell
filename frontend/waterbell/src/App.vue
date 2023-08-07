@@ -42,6 +42,10 @@ export default defineComponent({
   background-color: #f2f7ff;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
 }
 
 /* 홈페이지 구성요소 세로로 정렬 */
