@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,13 +23,15 @@ public class SystemController {
 
     private final SystemService systemService;
 
-    @GetMapping("/facilities/{facility_id}/sensors/{category}/logs")
-    public ResponseEntity<List<SensorLogDto>> SensorLogList(@PathVariable("facility_id") int facilityId, @PathVariable String category) {
+    @GetMapping("/facilities/{facility_id}/sensors/{category}/logs/{page}")
+    public ResponseEntity<Map<String,Object>> SensorLogList(@PathVariable("facility_id") int facilityId,
+                                                            @PathVariable String category,
+                                                            @PathVariable int page) {
 
-        List<SensorLogDto> logList;
+        Map<String,Object> logList;
 
         try {
-            logList = systemService.getSensorLogList(facilityId, category);
+            logList = systemService.getSensorLogList(facilityId, category, page);
             if(logList.size() == 0) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -39,13 +42,13 @@ public class SystemController {
         return new ResponseEntity<>(logList, HttpStatus.OK);
     }
 
-    @GetMapping("/facilities/{facility_id}/control/logs")
-    public ResponseEntity<List<ControlLogDto>> ControlLogList(@PathVariable("facility_id") int facilityId) {
+    @GetMapping("/facilities/{facility_id}/control/logs/{page}")
+    public ResponseEntity<Map<String,Object>> ControlLogList(@PathVariable("facility_id") int facilityId, @PathVariable int page) {
 
-        List<ControlLogDto> logList;
+        Map<String,Object> logList;
 
         try {
-            logList = systemService.getControlLogList(facilityId);
+            logList = systemService.getControlLogList(facilityId, page);
             if(logList.size() == 0) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
