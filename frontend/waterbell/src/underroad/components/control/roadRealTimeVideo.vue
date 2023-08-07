@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, beforeUnmount } from 'vue'
+import { defineComponent, onMounted, onbeforeUnmount } from 'vue'
 import webSocket1 from '@/types/webSocket_cam1'
 import webSocket2 from '@/types/webSocket_cam2'
 export default defineComponent({
@@ -21,7 +21,7 @@ export default defineComponent({
       webSocket1.connectWebSocket()
       webSocket2.connectWebSocket()
     })
-    beforeUnmount(() => {
+    onbeforeUnmount(() => {
       webSocket1.closeWebSocket()
       webSocket2.closeWebSocket()
     })
