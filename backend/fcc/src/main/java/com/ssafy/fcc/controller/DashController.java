@@ -2,8 +2,7 @@ package com.ssafy.fcc.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.json.parser.JSONParser;
-import com.ssafy.fcc.domain.log.SensorType;
+
 import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -21,7 +20,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.lang.Math;
 
@@ -411,11 +409,22 @@ public class DashController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @GetMapping("/facilities/{facility_id}/sensors/{category}")
-    public int dashSensor(@PathVariable("facility_id") int facilityId, @PathVariable String category) {
-        return systemService.getSensorData(facilityId,category);
+    @GetMapping("/facilities/{facility_id}/sensors")
+    public Map<String,Integer> dashSensor(@PathVariable("facility_id") int facilityId) {
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap = systemService.getSensorData(facilityId);
+        return resultMap;
     }
 
+    @GetMapping("/facilities/{facility_id}/sensors/heightPerhour")
+    public Map<Integer,Integer> getHeightPerhour(@PathVariable("facility_id") int facilityId) {
 
+        Map<Integer,Integer> resultMap = new HashMap<>();
+
+        resultMap = systemService.getHeightPerhour(facilityId);
+
+        return resultMap;
+
+    }
 
 }

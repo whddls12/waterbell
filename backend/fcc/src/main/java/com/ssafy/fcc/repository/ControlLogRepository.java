@@ -28,10 +28,21 @@ public class ControlLogRepository {
         }
     }
 
-    public List<ControlLog> getLogList(Facility facility) {
-        return em.createQuery("select c from ControlLog c where c.facility= :facility", ControlLog.class)
+    public List<ControlLog> getLogList(Facility facility, int start, int end, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        return em.createQuery("select c from ControlLog c " +
+                        "where c.facility= :facility and c.controlTime >= :searchStartDate and c.controlTime <= :searchEndDate", ControlLog.class)
                 .setParameter("facility",facility)
+                .setParameter("searchStartDate",searchStartDate)
+                .setParameter("searchEndDate",searchEndDate)
+                .setFirstResult(start)
+                .setMaxResults(end)
                 .getResultList();
+    }
+
+    public Long getControlLogCnt(Facility facility) {
+        return em.createQuery("select count(c.id) from ControlLog c where c.facility = :facility", Long.class)
+                .setParameter("facility",facility)
+                .getSingleResult();
     }
 
 }
