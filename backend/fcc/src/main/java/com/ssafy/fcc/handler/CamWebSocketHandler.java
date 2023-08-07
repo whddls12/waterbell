@@ -103,8 +103,8 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
         // 기존 토픽의 subscribe 요청 제한
         // 세션 제거
 
-        String facilityId = session.getAttributes().get("facilityId").toString();
-        String clinetId = clients.get(facilityId);
+        String facilityId = (String) session.getAttributes().get("facilityId");
+        String clientId = clients.get(facilityId);
         String topic = facilityId + "/picture";
 
         facilityNum.put(facilityId, facilityNum.get(facilityId)-1);
@@ -115,9 +115,9 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
         }
 
         publisher.close();
-        subscribers.remove(clinetId);
-        sessions.remove(clinetId);
-        clients.remove(clinetId);
+        subscribers.remove(clientId);
+        sessions.remove(clientId);
+        clients.remove(clientId);
     }
 
 }
