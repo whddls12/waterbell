@@ -64,40 +64,30 @@ public class MqttSubscriber implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
 
+        String[] result = message.toString().split("/");
 
-        try {
-            System.out.println(topic + " " + message.toString());
-            // TODO 만들어지는 topic 계층에 따라 (facility_id, Temp,Dust,Humid or Cam) 뽑아야함
+        int facilityId = Integer.parseInt(result[0]);
+        SensorType category = SensorType.valueOf(topic.toUpperCase());
+        int value = Integer.parseInt(result[1]);
 
-            // 예를들어 Temp
-            // facility_id = 7, category = Temp
-            String[] result = message.toString().split("/");
+        Facility facility = facilityRepository.findById(facilityId);
 
-            int facilityId = Integer.parseInt(result[0]);
-            SensorType category = SensorType.valueOf(topic.toUpperCase());
-            int value = Integer.parseInt(result[1]);
-
-            Facility facility = facilityRepository.findById(facilityId);
-
-            if (category.equals("height")) {
-                checkSituation(facility, value);
-            }
+        if (category.equals("height")) {
+            checkSituation(facility, value);
+        }
 
 
-            // TODO category에 따라 프론트로 웹소켓 통신 or 측정 로그 저장
-            if (topic.equals("Cam")) {
+        // TODO category에 따라 프론트로 웹소켓 통신 or 측정 로그 저장
+        if (topic.equals("Cam")) {
 
-                Base64.Encoder encode = Base64.getEncoder();
+            Base64.Encoder encode = Base64.getEncoder();
 
-                byte[] encodeByte = encode.encode(message.getPayload());
+            byte[] encodeByte = encode.encode(message.getPayload());
 
                 System.out.println("인코딩 후 : " + new String(encodeByte));
                 camWebSocketHandler.sendVideoImg(facilityId, new String(encodeByte));
             } else {
             systemService.insertLog(facilityId, category, value);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
