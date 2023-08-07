@@ -1,5 +1,6 @@
 package com.ssafy.fcc.repository;
 
+import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.domain.member.Member;
 import com.ssafy.fcc.domain.member.Role;
 import lombok.RequiredArgsConstructor;
@@ -67,5 +68,23 @@ public class MemberRepository {
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public ApartMember findByPhoneAndName(String name, String phone) {
+
+        try {
+            return em.createQuery("select m from ApartMember m where m.phone = :phone and m.name = :name ", ApartMember.class)
+                    .setParameter("phone", phone)
+                    .setParameter("name", name)
+                    .setMaxResults(1)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+
+    }
+
+    public void deleteApartMember(ApartMember member){
+       em.remove(member);
     }
 }

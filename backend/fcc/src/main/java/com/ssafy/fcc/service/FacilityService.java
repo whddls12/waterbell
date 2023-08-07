@@ -51,6 +51,10 @@ public class FacilityService {
         facilityRepository.merge(facility);
 
     }
+    public WaterStatus getStatus(int facilityId) {
+        Facility facility = facilityRepository.findById(facilityId);
+        return facility.getStatus();
+    }
 
     private final FacilityRepository facilityRepository;
 

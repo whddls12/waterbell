@@ -148,8 +148,33 @@ public class BoardController {
 
         }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    //자하차도 신고접수 상세페이지
+    @GetMapping("/undergroundRoad/detail/{boardId}")
+    public ResponseEntity<Map<String, Object>>  undergroundRoadList(@PathVariable("boardId") int boardId){
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+
+            //신고접수 게시글 내용
+            UndergroundRoadBoard board = undergroundRoadBoardService.getBoardById(boardId);
+            resultMap.put("board", board);
+            //이미지 전달
 
 
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+
+        }catch (Exception e){
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
 
