@@ -45,10 +45,10 @@ public class VerificationController {
 
         try {
             int verified = smsCertificationService.verifySms(phoneNumber, code);
-            if (verified == 1) {
+            if (verified == 2) {
                 resultMap.put("message", "인증완료");
                 status = HttpStatus.ACCEPTED;
-            } else if(verified == 2){
+            } else if(verified == 1){
                 resultMap.put("message", "인증번호가 틀렸습니다.");
                 status = HttpStatus.BAD_REQUEST;
             }

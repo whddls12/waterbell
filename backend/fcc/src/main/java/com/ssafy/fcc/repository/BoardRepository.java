@@ -77,4 +77,8 @@ public class BoardRepository {
                 .setParameter("undergroundRoadId", facilityId);
         return countQuery.getSingleResult();
     }
+
+    public UndergroundRoadBoard getUndergoundBoardById(int boardId) {
+        return em.find(UndergroundRoadBoard.class,boardId);
+    }
 }
