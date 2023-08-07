@@ -89,6 +89,7 @@ export default defineComponent({
 
 .header {
   display: flex;
+  width: 100%;
 }
 
 .router-view-container {
@@ -97,13 +98,20 @@ export default defineComponent({
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  /* width: 100%; */
-  /* height: 100%; */
   overflow: auto; /* prevent components from going out of bounds */
   background-color: white;
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 50px;
+
+  display: flex;
+  width: 1000px;
+  padding: 80px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 139px;
+  border-radius: 10px;
+  background: var(--unnamed, #fff);
 }
 
 router-view {
