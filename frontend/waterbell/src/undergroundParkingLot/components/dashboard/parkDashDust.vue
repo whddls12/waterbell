@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <p>미세먼지 {{ current_dust }}</p>
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <h3>미세먼지</h3>
+      </div>
+      <p>{{ current_dust }}</p>
+    </div>
   </div>
 </template>
 <script lang="ts">

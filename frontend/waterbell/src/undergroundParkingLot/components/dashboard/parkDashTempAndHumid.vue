@@ -1,8 +1,5 @@
 <template>
-  <div class="container">
-    <p>기온: {{ current_temp }}</p>
-    <p>습도: {{ current_humid }}</p>
-  </div>
+  <div class="container"></div>
 </template>
 <script lang="ts">
 import { ref, onMounted, computed, defineComponent } from 'vue'
@@ -35,4 +32,8 @@ export default defineComponent({
   }
 })
 </script>
-<style></style>
+<style scoped>
+.container {
+  display: flex;
+}
+</style>
