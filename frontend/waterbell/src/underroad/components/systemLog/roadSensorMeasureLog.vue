@@ -150,6 +150,22 @@ export default defineComponent({
     const goToPage = (page: number) => {
       currentPage.value = page
     }
+
+    function toLocalDateTime(date: any) {
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      const hours = date.getHours()
+      const minutes = date.getMinutes()
+      const seconds = date.getSeconds()
+
+      return `${year}-${month.toString().padStart(2, '0')}-${day
+        .toString()
+        .padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+
     const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
@@ -201,8 +217,10 @@ export default defineComponent({
     })
 
     watch([startDate, endDate], ([newStartDate, newEndDate]) => {
-      console.log('Start Date:', newStartDate)
-      console.log('End Date:', newEndDate)
+      let startDate = toLocalDateTime(newStartDate)
+      let endDate = toLocalDateTime(newEndDate)
+      console.log('Start Date:', startDate)
+      console.log('End Date:', endDate)
     })
 
     onMounted(() => {
