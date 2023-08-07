@@ -153,7 +153,8 @@ export default defineComponent({
       password:
         /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/,
       phone: /^010[0-9]{8}$/,
-      verification: /^[0-9]{6}$/
+      verification: /^[0-9]{6}$/,
+      detailAddress: /^[0-9]{1,6}$/
     }
 
     const validate = ref({
@@ -163,7 +164,9 @@ export default defineComponent({
       password: false, //양식 맞는가
       confirmPass: false, //양식 맞고 비밀번호와 일치하는가
       phoneNum: false, //양식이 맞는가
-      phoneVerification: false
+      phoneVerification: false,
+      apartCodeCheck: false,
+      detailAddress: false
     })
     //각 입력된 정보에 대한 유효성 검사
     const validatedName = () => {
@@ -245,6 +248,20 @@ export default defineComponent({
       }
     }
 
+    const validateDetailAddress = () => {
+      // validate.value.phoneVerification = true
+      if (detailAddress.value == '') {
+        validate.value.detailAddress = false
+        phoneMsg.value = '필수입력 항목입니다.'
+      } else if (!validateRule.phone.test(phoneNum.value)) {
+        validate.value.detailAddress = false
+        phoneMsg.value = '거주 중이신 세대의 호수를 숫자로 입력해주세요.'
+      } else {
+        validate.value.detailAddress = true
+        phoneMsg.value = ''
+      }
+    }
+
     //id 중복검사
     const checkId = async () => {
       try {
@@ -276,6 +293,8 @@ export default defineComponent({
           // 3. 인증시간 만료 시 메시지 표시 및 input 비활성화
           if (countdown.value === 0) {
             phoneMsg.value = '인증시간이 만료되었습니다. 인증을 재요청해주세요.'
+            countdown.value = 180
+            verification.value = ''
             verificationVisible.value = false
           }
         }, 1000)
@@ -347,6 +366,7 @@ export default defineComponent({
           .then((res) => {
             if (res.data.message == 'success') {
               address.value = res.data.address
+              validate.value.apartCodeCheck = true
             } else {
               alert('일치하는 아파트가 없습니다.')
             }
@@ -425,6 +445,13 @@ export default defineComponent({
         validatePhone()
       }
     })
+
+    //호수 입력 여부 확인을 위한 watch 함수
+    watch(detailAddress, (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        validateDetailAddress()
+      }
+    })
     return {
       name,
       id,
@@ -449,6 +476,7 @@ export default defineComponent({
       validatePass,
       validateConfirmPass,
       validatePhone,
+      validateDetailAddress,
       checkId,
       requestVerification,
       postVerification,
