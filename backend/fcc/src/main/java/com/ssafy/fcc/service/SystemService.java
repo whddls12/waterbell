@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -40,10 +42,15 @@ public class SystemService {
 
     }
 
-    public int getSensorData(int facilityId, String category_str) {
+    public Map<String, Integer> getSensorData(int facilityId) {
+        Map<String,Integer> map = new HashMap<>();
         Facility facility = facilityRepository.findById(facilityId);
-        SensorType category = SensorType.valueOf(category_str.toUpperCase());
-        return sensorLogRepository.getRecentData(facility, category);
+
+        map.put("Dust",sensorLogRepository.getRecentData(facility,SensorType.DUST));
+        map.put("HEIGHT",sensorLogRepository.getRecentData(facility,SensorType.TEMPERATURE));
+        map.put("HUMIDITY",sensorLogRepository.getRecentData(facility,SensorType.HUMIDITY));
+
+        return map;
     }
 
     public List<SensorLogDto> getSensorLogList(int facilityId, String category_str) {
@@ -97,7 +104,7 @@ public class SystemService {
         Facility facility = facilityRepository.findById(facilityId);
         ControlType category = facility.isApart() == true ? ControlType.WATERPLATE : ControlType.BILLBOARD;
         LocalDateTime time = LocalDateTime.now().withNano(0);
-        int height = getSensorData(facilityId, "height");
+        int height = sensorLogRepository.getRecentData(facility,SensorType.HEIGHT);
         CommandType command = CommandType.valueOf(command_str.toUpperCase());
 
         ControlLog controlLog = new ControlLog();
