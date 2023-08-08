@@ -38,7 +38,6 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증
     private final RedisTemplate redisTemplate;
 
 
-
     //키 초기화 //test
     @PostConstruct
     protected void init() {
