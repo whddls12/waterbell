@@ -2,11 +2,10 @@ package com.ssafy.fcc.controller;
 
 import com.ssafy.fcc.config.security.JwtTokenProvider;
 import com.ssafy.fcc.domain.facility.Facility;
-import com.ssafy.fcc.domain.member.ApartManager;
-import com.ssafy.fcc.domain.member.Member;
-import com.ssafy.fcc.domain.member.PublicManager;
-import com.ssafy.fcc.domain.member.Role;
+import com.ssafy.fcc.domain.member.*;
+import com.ssafy.fcc.dto.ApartMemberResponse;
 import com.ssafy.fcc.dto.FacilityManagementDto;
+import com.ssafy.fcc.dto.MemberSearch;
 import com.ssafy.fcc.service.FacilityService;
 import com.ssafy.fcc.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -14,9 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -99,6 +100,30 @@ public class ManagementController {
 
             resultMap.put("message", "success");
 
+            status = HttpStatus.ACCEPTED;
+
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+
+    @PostMapping("/apartManager/memberList")
+    public ResponseEntity<Map<String, Object>>  orderList( @RequestBody MemberSearch memberSearch){
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try{
+            resultMap= memberService.findMembers(memberSearch);
+            System.out.println(resultMap);
+
+            if(resultMap.get("list") == null || ((List)resultMap.get("list")).size()==0){
+                throw new Exception("결과가 없습니다.");
+            }
             status = HttpStatus.ACCEPTED;
 
         } catch (Exception e) {

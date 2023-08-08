@@ -2,10 +2,7 @@ package com.ssafy.fcc.service;
 
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.member.*;
-import com.ssafy.fcc.dto.ApartManagerResponse;
-import com.ssafy.fcc.dto.ApartMemberResponse;
-import com.ssafy.fcc.dto.PublicManagerResponse;
-import com.ssafy.fcc.dto.TokenDto;
+import com.ssafy.fcc.dto.*;
 import com.ssafy.fcc.repository.FacilityRepository;
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -150,4 +149,12 @@ public class MemberService {
         Member member =  memberRepository.findById(id);
         member.setPhone(phone);
     }
+
+    public Map<String, Object> findMembers(MemberSearch memberSearch) {
+
+        return memberRepository.findAllByCriteria(memberSearch);
+
+    }
+
+
 }
