@@ -16,7 +16,7 @@ function connectWebSocket(): void {
     socket = new WebSocket(
       `ws://localhost:8080/cam?facilityId=${facilityId.value}&camNum=2`
     )
-    console.log('웹소켓과 연결이 되었습니다.')
+    console.log('cam2 웹소켓과 연결이 되었습니다.')
   }
   // socket.onopen = function () {
   //   socket?.send(`token:${jwtToken.value}`)
@@ -28,7 +28,7 @@ function connectWebSocket(): void {
         store.commit('setCamClient2', data.camClient2)
       } else {
         const base64Image = data.temp_img2 // 받아온 이미지 데이터. Base64로 인코딩되어 있다고 가정.
-        console.log('서버로부터 이미지string을 받았습니다: ' + base64Image)
+        console.log('cam2 서버로부터 이미지string을 받았습니다: ' + base64Image)
 
         // 이미지를 화면에 표시할 요소 생성
         const imgTag = document.getElementById('cctv2') as HTMLImageElement
@@ -39,7 +39,7 @@ function connectWebSocket(): void {
 
     socket.onclose = function () {
       console.log(
-        'WebSocket 연결이 종료되었습니다. 1초 후 재연결을 시도합니다.'
+        'cam2 WebSocket 연결이 종료되었습니다. 1초 후 재연결을 시도합니다.'
       )
       const imgTag = document.getElementById('cctv2') as HTMLImageElement
 
@@ -48,7 +48,7 @@ function connectWebSocket(): void {
           setTimeout(() => connectWebSocket(), 1000)
         } else return
       } catch (error) {
-        console.log('WebSocket 연결이 더 이상 불가합니다.')
+        console.log('cam2 WebSocket 연결이 더 이상 불가합니다.')
       }
     }
   }

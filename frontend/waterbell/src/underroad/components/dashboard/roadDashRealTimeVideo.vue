@@ -11,21 +11,21 @@
   </div>
 </template>
 <script>
-import { defineComponent } from 'vue'
-// import webSocket1 from '@/types/webSocket_cam1'
+import { defineComponent, onMounted, onBeforeUnmount } from 'vue'
+import webSocket1 from '@/types/webSocket_cam1'
 // import webSocket2 from '@/types/webSocket_cam2'
 export default defineComponent({
-  name: 'roadDashCctvVue'
-  // setup() {
-  //   onMounted(() => {
-  //     webSocket1.connectWebSocket()
-  //     webSocket2.connectWebSocket()
-  //   })
-  //   beforeUnmount(() => {
-  //     webSocket1.closeWebSocket()
-  //     webSocket2.closeWebSocket()
-  //   })
-  // }
+  name: 'roadDashCctvVue',
+  setup() {
+    onMounted(() => {
+      webSocket1.connectWebSocket()
+      // webSocket2.connectWebSocket()
+    })
+    onBeforeUnmount(() => {
+      webSocket1.closeWebSocket()
+      // webSocket2.closeWebSocket()
+    })
+  }
 })
 </script>
 <style lang="css">

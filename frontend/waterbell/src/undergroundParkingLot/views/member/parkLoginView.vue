@@ -43,11 +43,12 @@ div
               </div>
               <div>
                 <button class="imgBtn" type="button">
-                  <img
-                    src="@/assets/Login&Signup/kakao_login.png"
-                    class="socialLoginBtn"
-                    @click="kakaoLogin"
-                  />
+                  <a :href="naverLoginURL">
+                    <img
+                      src="@/assets/Login&Signup/kakao_login.png"
+                      class="socialLoginBtn"
+                    />
+                  </a>
                 </button>
               </div>
             </div>
@@ -75,20 +76,22 @@ export default defineComponent({
         password: password.value
       })
     }
-    const naverLogin = () => {
+    const client_id = 'dIwg6T0yWa9t8y2yMsHJ'
+    const redirect_uri = 'http://localhost:8080/login/oauth2/code/naver'
+    const state = WaterBell
+
+    const naverLoginURL =
       //로컬 서버 연결용
-      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:8080/login/oauth2/code/naver&state=WaterBell`
+      `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}&state=${state}`
 
-      //운영용
-      // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
+    //운영용
+    // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
 
-      window.location.href = url
-    }
     return {
       id,
       password,
       login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
-      naverLogin
+      naverLoginURL
     }
   }
 })
