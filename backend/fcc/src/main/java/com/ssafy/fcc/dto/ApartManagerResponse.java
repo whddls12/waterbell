@@ -15,6 +15,6 @@ public class ApartManagerResponse extends MemberResponse{
 
     public ApartManagerResponse(ApartManager apartManager,TokenDto token){
         super(apartManager,token);
-        facilityId = apartManager.getId();
+        facilityId = apartManager.getApart().getId();
     }
 }

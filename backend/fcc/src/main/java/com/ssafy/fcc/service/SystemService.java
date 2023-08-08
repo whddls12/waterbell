@@ -1,5 +1,6 @@
 package com.ssafy.fcc.service;
 
+import com.ssafy.fcc.controller.DashController;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.*;
@@ -11,8 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Entity;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,7 +58,7 @@ public class SystemService {
         return map;
     }
 
-    public Map<String, Object> getSensorLogList(int facilityId, String category_str, int page) {
+    public Map<String, Object> getSensorLogList(int facilityId, String category_str, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
 
         Facility facility = facilityRepository.findById(facilityId);
         boolean isApart = facility.isApart();
@@ -64,7 +68,7 @@ public class SystemService {
         PageNavigation pageNavigation = new PageNavigation(page, totalCount);
 
 
-        List<SensorLog> sensorLogList = sensorLogRepository.getLogList(facility, category, pageNavigation.getStart(), pageNavigation.getSizePerPage());
+        List<SensorLog> sensorLogList = sensorLogRepository.getLogList(facility, category, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
 
         String name;
         if (isApart) {
@@ -84,7 +88,7 @@ public class SystemService {
         return resultMap;
     }
 
-    public Map<String, Object> getControlLogList(int facilityId, int page) {
+    public Map<String, Object> getControlLogList(int facilityId, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
 
         try {
             Facility facility = facilityRepository.findById(facilityId);
@@ -93,7 +97,7 @@ public class SystemService {
             Long totalCount = controlLogRepository.getControlLogCnt(facility);
             PageNavigation pageNavigation = new PageNavigation(page, totalCount);
 
-            List<ControlLog> logList = controlLogRepository.getLogList(facility, pageNavigation.getStart(), pageNavigation.getSizePerPage());
+            List<ControlLog> logList = controlLogRepository.getLogList(facility, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
 
             String name;
             if (isApart) {
@@ -115,8 +119,6 @@ public class SystemService {
             e.printStackTrace();
             return null;
         }
-
-
     }
 
     @Transactional
@@ -140,5 +142,18 @@ public class SystemService {
         return 1;
     }
 
+    public Map<Integer,Integer> getHeightPerhour(int facilityId) {
+
+        Map<Integer,Integer> resultMap = new HashMap<>();
+
+        Facility facility = facilityRepository.findById(facilityId);
+
+        for (int i = 5; i >= 0; i--) {
+            LocalDateTime time = LocalDateTime.now().minusHours(i);
+            int height = sensorLogRepository.getHeightPerhour(facility,SensorType.HEIGHT,time);
+            resultMap.put(LocalDateTime.now().minusHours(i).getHour(), height);
+        }
+        return resultMap;
+    }
 
 }
