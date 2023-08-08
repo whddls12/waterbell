@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
 
+//관리자 로그인
+import managerLogin from '@/views/ManagerLogin.vue'
 //지하차도 페이지
 import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
 import RoadReport from '@/underroad/views/roadReportView.vue' // 신고접수
@@ -53,6 +55,8 @@ const router = createRouter({
       name: 'Home',
       component: Home
     },
+    //매니저 로그인
+    { path: '/manager/login', name: 'managerLogin', component: managerLogin },
     // 지하차도 라우터
     {
       path: '/road/dash',
