@@ -137,6 +137,105 @@ const router = createRouter({
         }
     ]
 });
+import Alarm from '@/alarm/alarmBox.vue'
+
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  // 지하차도 라우터
+  {
+    path: '/road/dash',
+    name: 'RoadDash',
+    component: RoadDash
+  },
+  {
+    path: '/road/report',
+    name: 'RoadReport',
+    component: RoadReport,
+    children: [
+      {
+        path: 'list',
+        component: roadReportListVue
+      },
+      {
+        path: 'create',
+        component: roadReportCreateVue
+      },
+      {
+        path: 'update',
+        component: roadReportUpdateVue
+      },
+      {
+        path: 'item',
+        component: roadReportItemVue
+      }
+    ]
+  },
+  {
+    path: '/road/controll',
+    name: 'RoadControl',
+    component: RoadControl
+  },
+  {
+    path: '/road/manage',
+    name: 'RoadManage',
+    component: RoadManage
+  },
+  {
+    path: '/road/systemlog',
+    name: 'RoadSystemlog',
+    component: RoadSystemlog
+  },
+  //지하주차장 라우터
+  //로그인,회원가입
+  {
+    path: '/park/login',
+    name: 'parkLogin',
+    component: parkLogin
+  },
+  {
+    path: '/park/signup',
+    name: 'parkSignup',
+    component: parkSignup
+  },
+  {
+    path: '/park/dash',
+    name: 'ParkDash',
+    component: ParkDash
+  },
+  {
+    path: '/park/report',
+    name: 'ParkReport',
+    component: ParkReport
+  },
+  {
+    path: '/park/systemlog',
+    name: 'ParkSystemlog',
+    component: ParkSystemlog
+  },
+  {
+    path: '/park/manage',
+    name: 'ParkManage',
+    component: ParkManage
+  },
+  {
+    path: '/park/control',
+    name: 'ParkControl',
+    component: ParkControl
+  },
+  {
+    path: '/alarmBox',
+    name: 'Alarm',
+    component: Alarm
+  }
+]
+// const router = createRouter({
+//   history: createWebHistory(process.env.BASE_URL),
+//   routes
+// })
 // 뒤로가기로 페이지 이동했을 경우
 // isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
 router.beforeEach((to, from, next) => {

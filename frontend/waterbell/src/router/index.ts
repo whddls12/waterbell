@@ -7,7 +7,7 @@ import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
 import RoadReport from '@/underroad/views/roadReportView.vue' // 신고접수
 import RoadSystemlog from '@/underroad/views/roadSystemLogView.vue' // 시스템로그
 import RoadManage from '@/underroad/views/roadManageView.vue' // 관리
-import RoadControl from '@/underroad/views/roadControlView.vue' // 제어
+import RoadControll from '@/underroad/views/roadControlView.vue' // 제어
 
 //지하차도 신고접수
 import roadReportItemVue from '../underroad/components/report/roadReportItem.vue'
@@ -199,17 +199,128 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
 })
+// <<<<<<< HEAD
+//   routes
+// =======
+//   routes: [
+//     {
+//       path: '',
+//       redirect: { name: 'Home' }
+//     },
+//     {
+//       path: '/',
+//       name: 'Home',
+//       component: Home
+//     },
+//     // 지하차도 라우터
+//     {
+//       path: '/road/dash',
+//       name: 'RoadDash',
+//       component: RoadDash
+//     },
+//     {
+//       path: '/road/report',
+//       name: 'RoadReport',
+//       component: RoadReport
+//     },
+//     {
+//       path: '/road/report/create',
+//       component: roadReportCreateVue
+//     },
+//     {
+//       path: '/road/report/update',
+//       component: roadReportUpdateVue
+//     },
+//     {
+//       path: '/road/report/item',
+//       component: roadReportItemVue
+//     },
+//     {
+//       path: '/road/controll',
+//       name: 'RoadControll',
+//       component: RoadControll
+//     },
+//     {
+//       path: '/road/manage',
+//       name: 'RoadManage',
+//       component: RoadManage
+//     },
+//     {
+//       path: '/road/systemlog',
+//       name: 'RoadSystemlog',
+//       component: RoadSystemlog,
+//       children: [
+//         { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmlog },
+//         {
+//           path: 'measureLog',
+//           name: 'roadMeasureLog',
+//           component: roadMeasureLog
+//         }
+//       ]
+//     },
 
-// 뒤로가기로 페이지 이동했을 경우
-// isMainPage 변수를 바꿔줌 -> 진입화면 / 서비스화면 렌더링에 활용
-router.beforeEach((to, from, next) => {
-  if (to.path === '/') {
-    store.commit('setIsMainpage', true)
-  } else {
-    store.commit('setIsMainpage', false)
-  }
+//     //지하주차장 라우터
 
-  next()
-})
+//     //로그인,회원가입
+//     {
+//       path: '/park/login',
+//       name: 'parkLogin',
+//       component: parkLogin
+//     },
+
+//     {
+//       path: '/park/join',
+//       name: 'parkJoin',
+//       component: parkJoin,
+//       children: [
+//         { path: '/agree', name: 'joinAgree', component: parkJoinAgree }
+//       ]
+//     },
+
+//     { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
+
+//     {
+//       path: '/park/dash',
+//       name: 'ParkDash',
+//       component: ParkDash
+//     },
+//     {
+//       path: '/park/report',
+//       name: 'ParkReport',
+//       component: ParkReport
+//     },
+//     {
+//       path: '/park/systemlog',
+//       name: 'ParkSystemlog',
+//       component: ParkSystemlog,
+//       children: [
+//         { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
+//         { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog }
+//       ]
+//     },
+//     {
+//       path: '/park/manage',
+//       name: 'ParkManage',
+//       component: ParkManage,
+//       children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
+//     },
+//     {
+//       path: '/park/controll',
+//       name: 'ParkControll',
+//       component: ParkControll
+//     },
+//     //알림함
+//     {
+//       path: '/alarm',
+//       name: 'Alarm',
+//       component: alarmBox
+//     },
+//     {
+//       path: '/alarm/detail/:alarm_id',
+//       name: 'AlarmDetail',
+//       component: alarmDetail
+//     }
+//   ]
+// >>>>>>> 721701cbebe77c93e734b710b61fbc92925b5f32
 
 export default router
