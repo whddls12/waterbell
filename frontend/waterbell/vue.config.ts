@@ -1,6 +1,8 @@
 module.exports = {
   transpileDependencies: ['vuex-persist'],
+  // publicPath: process.env.NODE_ENV === 'production' ? '/my-app/' : '/',
   devServer: {
+    historyApiFallback: true,
     proxy: {
       '^/': {
         target: 'http://localhost:8080',
@@ -10,12 +12,12 @@ module.exports = {
         target: 'https://nid.naver.com/',
         changeOrigin: true,
         logLevel: 'debug'
-      },
-      '/v1': {
-        target: 'https://openapi.naver.com/',
-        changeOrigin: true,
-        logLevel: 'debug'
       }
+      // '/v1': {
+      //   target: 'https://openapi.naver.com/',
+      //   changeOrigin: true,
+      //   logLevel: 'debug'
+      // }
     }
   }
 }
