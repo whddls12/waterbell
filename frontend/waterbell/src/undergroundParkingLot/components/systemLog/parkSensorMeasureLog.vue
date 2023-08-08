@@ -1,25 +1,27 @@
 <template lang="">
   <div class="container mt-4">
-    <div><h5>센서 측정 로그</h5></div>
-    <div>
-      <label>Start Date:</label>
-      <span class="VueDatePicker">
-        <VueDatePicker
-          v-model="startDate"
-          placeholder="Select date"
-        ></VueDatePicker>
-      </span>
+    <div class="title">센서 측정 로그</div>
+    <div class="datepicker-row">
+      <div>
+        <label>시작일시</label>
+        <span class="VueDatePicker">
+          <VueDatePicker
+            v-model="startDate"
+            placeholder="Select date"
+          ></VueDatePicker>
+        </span>
+      </div>
+      <div>
+        <label>종료일시</label>
+        <span class="VueDatePicker">
+          <VueDatePicker
+            v-model="endDate"
+            placeholder="Select date"
+          ></VueDatePicker>
+        </span>
+      </div>
     </div>
-    <div>
-      <label>End Date:</label>
-      <span class="VueDatePicker">
-        <VueDatePicker
-          v-model="endDate"
-          placeholder="Select date"
-        ></VueDatePicker>
-      </span>
-    </div>
-    <label for="category-select">Category</label>
+
     <div id="category-select">
       <input type="radio" id="height" value="HEIGHT" v-model="category" />
       <label for="height">수위</label>
@@ -319,5 +321,38 @@ export default defineComponent({
 .VueDatePicker {
   height: 50px;
   width: 50px;
+}
+
+.datepicker-row {
+  display: flex;
+  justify-content: space-between; /* 두 요소 사이에 공간을 동일하게 분배 */
+}
+
+.datepicker-row > div {
+  flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
+}
+
+.VueDatePicker {
+  height: 50px;
+  width: 100%; /* 또는 적당한 %값 */
+}
+
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  /* 회원가입상자_제목 */
+  font-family: Roboto;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+#category-select {
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 </style>

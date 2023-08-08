@@ -92,19 +92,17 @@ export default defineComponent({
 }
 
 .router-view-container {
-  box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
-  padding: 10px 20px;
+  box-sizing: border-box;
+  padding: 1vh 1vw; /* Viewport width and height for padding */
   display: flex;
   justify-content: center;
-  /* width: 100%; */
-  /* height: 100%; */
-  overflow: auto; /* prevent components from going out of bounds */
+  overflow: auto;
   background-color: white;
-  margin-left: 200px;
-  margin-right: 200px;
-  margin-top: 50px;
-  min-height: 600px;
-  overflow-y: auto; /* 세로 스크롤이 필요한 경우 자동으로 스크롤 생성 */
+  margin: 5vh 5vw; /* Viewport width and height for margins */
+  min-height: 60vh; /* Minimum height based on viewport height */
+  overflow-y: auto;
+  width: 90vw; /* Width based on viewport width */
+  max-width: 90vw; /* Max-width based on viewport width */
 }
 
 router-view {

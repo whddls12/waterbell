@@ -59,7 +59,7 @@ const routes = [
     ]
   },
   {
-    path: '/road/control',
+    path: '/road/controll',
     name: 'RoadControl',
     component: RoadControl
   },
