@@ -32,11 +32,12 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 600px;
-  height: 249px;
+  width: 400px; /* 이전 크기의 절반 */
+  height: 180.5px; /* 이전 크기의 절반 */
   background: #f2f7ff;
-  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.17);
-  border-radius: 12px;
+  box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.17); /* 크기가 줄어드므로 그림자도 조절 */
+  border-radius: 6px; /* 반경도 절반으로 줄임 */
+  margin-left: 200px;
 }
 
 .controll1 {
@@ -44,7 +45,7 @@ export default defineComponent({
   height: 59px;
   text-align: center;
   color: black;
-  font-size: 20px;
+  font-size: 15px;
   font-family: Roboto;
   font-weight: 500;
   line-height: 28px;
@@ -57,7 +58,7 @@ export default defineComponent({
   height: 80px;
   text-align: center;
   color: black;
-  font-size: 34px;
+  font-size: 25px;
   font-family: Roboto;
   font-weight: 600;
   line-height: 48px;
@@ -69,7 +70,7 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   width: 100%;
-  padding: 0 20px; /* 버튼 간의 거리를 늘리기 위한 패딩 */
+  padding: 0 10px; /* 이전 패딩의 절반 */
 }
 
 .button1 {
@@ -85,6 +86,7 @@ export default defineComponent({
   background: var(--unnamed, #f86262);
   margin-right: 10px;
   color: #fff;
+  margin-bottom: 20px;
 }
 
 .button2 {
@@ -100,5 +102,6 @@ export default defineComponent({
   background: var(--1, #10316b);
   margin-left: 10px;
   color: #fff;
+  margin-bottom: 20px;
 }
 </style>
