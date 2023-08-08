@@ -1,13 +1,17 @@
 <template>
-  <div>
-    <div class="container" id="dash-cctv">
-      <p>강수량 그래프</p>
-      <canvas
-        ref="chartCanvas"
-        id="chartCanvas"
-        width="400"
-        height="200"
-      ></canvas>
+  <div class="container" id="dash-cctv">
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <h3>강수량 그래프</h3>
+      </div>
+      <div class="dash-box-content">
+        <canvas
+          ref="rainChartCanvas"
+          id="rainChartCanvas"
+          width="400"
+          height="200"
+        ></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -67,8 +71,10 @@ export default defineComponent({
       }
     }
     // 차트를 화면에 그려주는 함수
-    async function drawChart(chartCanvas: HTMLElement | null) {
-      const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement
+    async function drawChart(rainChartCanvas: HTMLElement | null) {
+      const canvas = document.getElementById(
+        'rainChartCanvas'
+      ) as HTMLCanvasElement
       const ctx = canvas.getContext('2d')
 
       // 차트 그리기

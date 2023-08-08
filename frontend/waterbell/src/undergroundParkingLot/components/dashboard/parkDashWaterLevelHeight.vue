@@ -1,12 +1,18 @@
 <template>
   <div class="container">
-    <p>수위센서 그래프</p>
-    <canvas
-      ref="chartCanvas"
-      id="chartCanvas"
-      width="400"
-      height="200"
-    ></canvas>
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <h3>수위센서 그래프</h3>
+      </div>
+      <div class="dash-box-content">
+        <canvas
+          ref="chartCanvas"
+          id="chartCanvas"
+          width="400"
+          height="200"
+        ></canvas>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -24,20 +30,22 @@ export default defineComponent({
 
     const makeData = (i: Record<string, any>) => {
       for (const key in i) {
+        console.log(key)
         timeArr.value.push(key)
         amountArr.value.push(i[key])
       }
     }
+    console.log(timeArr.value)
+    console.log(amountArr.value)
 
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
-    console.log(facility_id)
 
     // 수위 센서 데이터 가져오기
     async function getSensorData() {
       try {
         const response = await http.get(
-          `/dash/facilities/${facility_id}/sensors/heightPerhour`
+          `/dash/facilities/10/sensors/heightPerhour`
         )
 
         const apiData = response.data
@@ -80,12 +88,12 @@ export default defineComponent({
     }
 
     onMounted(async () => {
-      // const apiData = await getSensorData()
-      // if (apiData) {
-      //   makeData(apiData)
-      // }
-      // await nextTick()
-      // drawChart(chartRef.value)
+      const apiData = await getSensorData()
+      if (apiData) {
+        makeData(apiData.apiData)
+      }
+      await nextTick()
+      drawChart(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr, getSensorData }
