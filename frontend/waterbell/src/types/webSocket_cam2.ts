@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // types/websocket.ts 파일
 import { computed } from 'vue'
 import store from '@/store/index'
