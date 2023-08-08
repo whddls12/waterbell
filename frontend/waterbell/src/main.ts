@@ -4,6 +4,11 @@ import router from './router'
 import store from './store'
 import auth from '@/store/index'
 import axios from 'axios'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
+// Use plugin with optional defaults
+import FontAwesomeIcon from './util/fontawesome-icons'
 
 import getMylocation, { getClosestLocation } from './types/getMylocation'
 
@@ -18,10 +23,11 @@ import getMylocation, { getClosestLocation } from './types/getMylocation'
 // axios.defaults.baseURL = 'http://localhost:8080'
 
 const app = createApp(App)
+app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('VueDatePicker', VueDatePicker)
 app.config.globalProperties.$http = axios
 app.config.globalProperties.$store = store
 app.use(store).use(router)
-
 const facilityId = computed(() => auth.getters['auth/facilityId'])
 // fetchUnderroads 액션을 실행하고 완료될 때까지 기다립니다.
 

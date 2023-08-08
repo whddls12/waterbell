@@ -72,14 +72,28 @@ export default defineComponent({
 </script>
 
 <style>
+.home {
+  width: 100%;
+}
+
+/* 진입화면 워터벨 로고 가운데 정렬 */
+.service-logo {
+  display: flex;
+  justify-content: center;
+}
+
+/* 서비스 선택 메뉴 */
 .service-select {
   display: flex;
+  /* 가운데 정렬 */
   align-content: center;
   justify-content: center;
 }
 
+/* 지하주차장, 지하차도 박스 */
 .select-box {
   border: 1px solid #939393;
+  border-radius: 8px;
   background-color: white;
 
   width: 500px;
@@ -87,23 +101,31 @@ export default defineComponent({
   margin: 20px;
 }
 
+/* 메뉴 화면 (대시보드, 신고접수, 제어, 시스템로그, 관리) */
 .header {
   display: flex;
+  width: 100%;
 }
 
 .router-view-container {
   box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
-
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  /* width: 100%; */
-  /* height: 100%; */
   overflow: auto; /* prevent components from going out of bounds */
   background-color: white;
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 50px;
+
+  display: flex;
+  width: 1000px;
+  padding: 80px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 139px;
+  border-radius: 10px;
+  background: var(--unnamed, #fff);
 }
 
 router-view {

@@ -9,7 +9,9 @@ export default createStore({
     location: { lon: '127', lat: '55' }, //현재 위치(gps)
     tmpUnderroad: {} as { id: string }, //임시 선택 지하차도
     isMainpage: true,
-    isPark: true
+    isPark: true,
+    camClient1: null as null | string,
+    camClient2: null as null | string
   },
   getters: {
     tmpUnderroad(state) {
@@ -17,6 +19,13 @@ export default createStore({
     },
     location(state) {
       return state.location
+    },
+
+    camClient1(state) {
+      return state.camClient1
+    },
+    camClient2(state) {
+      return state.camClient2
     }
   },
   mutations: {
@@ -32,6 +41,13 @@ export default createStore({
     },
     setIspark(state, value) {
       state.isPark = value
+    },
+    setCamClient1(state, value) {
+      state.camClient1 = value
+    },
+
+    setCamClient2(state, value) {
+      state.camClient2 = value
     }
   },
   actions: {
