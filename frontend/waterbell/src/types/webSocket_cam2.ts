@@ -54,6 +54,19 @@ function connectWebSocket(): void {
   }
 }
 
+<<<<<<< HEAD
+=======
+// export function showAlarmModal(modalState): void {
+//   modalState.value = true
+//   // 알림 모달을 표시하는 로직
+// }
+
+// export function closeAlarmModal(modalState): void {
+//   // 알림 모달을 닫는 로직
+//   modalState.value = false
+// }
+
+>>>>>>> 2283e66c8a57924054a6e520a5c438f017cf126e
 function closeWebSocket() {
   socket?.close()
   console.log('웹소켓과의 연결을 끊었습니다.')

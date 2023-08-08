@@ -1,14 +1,5 @@
-<template lang="">
-  <div class="container">
-    <div>cctv</div>
-
-    <div>
-      <div><img id="cctv1" /></div>
-    </div>
-    <div>
-      <div><img id="cctv2" /></div>
-    </div>
-  </div>
+<template>
+  <div class="container">cctv</div>
 </template>
 <script>
 import { defineComponent, onMounted, onBeforeUnmount } from 'vue'
