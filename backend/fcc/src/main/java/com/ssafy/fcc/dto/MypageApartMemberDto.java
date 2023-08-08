@@ -14,6 +14,6 @@ public class MypageApartMemberDto {
     private String ApartCode;
     private  String apartName;
     private String address;
-    private int addressNumber;
+    private Integer addressNumber;
     private String name;
 }
