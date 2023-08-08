@@ -17,7 +17,7 @@
       </div>
       <!-- 관리자 로그인 버튼 -->
       <div class="manager-login">
-        <button>관리자 로그인</button>
+        <button @click="moveToLogin">관리자 로그인</button>
       </div>
     </div>
 
@@ -38,6 +38,8 @@ import RoadHeader from '@/components/RoadHeader.vue'
 import ParkHeader from '@/components/ParkHeader.vue'
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+
 // import RoadDash from '../underroad/views/roadDashboardView.vue'
 
 export default defineComponent({
@@ -47,6 +49,7 @@ export default defineComponent({
     ParkHeader
   },
   setup() {
+    const router = useRouter()
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
     const isPark = computed(() => store.state.isPark)
@@ -61,11 +64,16 @@ export default defineComponent({
       store.commit('setIspark', false)
     }
 
+    function moveToLogin() {
+      router.push('/manager/login')
+    }
+
     return {
       isMainPage,
       isPark,
       goToOther1,
-      goToOther2
+      goToOther2,
+      moveToLogin
     }
   }
 })
