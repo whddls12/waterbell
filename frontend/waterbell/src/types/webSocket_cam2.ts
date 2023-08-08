@@ -4,7 +4,7 @@ import store from '@/store/index'
 
 // const store = useStore()
 let socket: WebSocket | null = null
-export function connectWebSocket(): void {
+function connectWebSocket(): void {
   const facilityId = computed(() => store.getters['auth/facilityId'])
 
   //이미 소켓 연결되어 있을 경우
@@ -54,17 +54,7 @@ export function connectWebSocket(): void {
   }
 }
 
-// export function showAlarmModal(modalState): void {
-//   modalState.value = true
-//   // 알림 모달을 표시하는 로직
-// }
-
-// export function closeAlarmModal(modalState): void {
-//   // 알림 모달을 닫는 로직
-//   modalState.value = false
-// }
-
-export function closeWebSocket() {
+function closeWebSocket() {
   socket?.close()
   console.log('웹소켓과의 연결을 끊었습니다.')
 }

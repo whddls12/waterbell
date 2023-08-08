@@ -36,7 +36,7 @@ div
                 <button class="imgBtn" type="button">
                   <img
                     src="@/assets/Login&Signup/naver_login.png"
-                    @click="naverLogin"
+                    @click="handleNaverCallback"
                     class="socialLoginBtn"
                   />
                 </button>
@@ -62,10 +62,13 @@ div
 <script>
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-
+import apiModule from '@/types/apiClient'
+// import router from '@/router/index'
+// import axios from 'axios'
 export default defineComponent({
   name: 'parkLogin',
   setup() {
+    const api = apiModule.api
     const id = ref('')
     const password = ref('')
     const store = useStore() // 전역 스토어를 가져옵니다.
@@ -75,20 +78,47 @@ export default defineComponent({
         password: password.value
       })
     }
-    const naverLogin = () => {
-      //로컬 서버 연결용
-      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:8080/login/oauth2/code/naver&state=WaterBell`
 
-      //운영용
-      // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
+    const uri = '/login/oauth2/code'
 
-      window.location.href = url
-    }
-    return {
-      id,
-      password,
-      login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
-      naverLogin
+    const handleNaverCallback = async () => {
+      // URL에서 코드를 가져옵니다.
+      api.post(`${uri}/naver`).then((res) => {
+        console.log(res.data)
+      })
+
+      //   if (!code || !state) return
+
+      //   try {
+      //     // 백엔드 서버에 코드를 전달하고 토큰을 요청합니다.
+      //     const response = await api
+      //       .post('http://localhost:8080/login/oauth2/code/naver', {
+      //         code: code,
+      //         state: state
+      //       })
+      //       .then((res) => {
+      //         if (res.data.type == 'join') {
+      //           router.push('/park/join')
+      //         }
+      //       })
+
+      //     console.log(response)
+
+      //     // 응답을 처리합니다. 예를 들어 JWT 토큰을 local storage에 저장하는 등의 작업을 수행할 수 있습니다.
+      //     // ...
+      //   } catch (error) {
+      //     console.error('네이버 로그인 처리 중 오류가 발생했습니다:', error)
+      //   }
+      // }
+
+      // 네이버 콜백 처리를 실행합니다.
+      // handleNaverCallback()
+      return {
+        id,
+        password,
+        login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
+        handleNaverCallback
+      }
     }
   }
 })

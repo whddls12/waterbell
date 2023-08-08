@@ -24,7 +24,7 @@ import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
 import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
 import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
 import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
-
+// import naverSocialRedirect from '@/undergroundParkingLot/views/member/NaverSocialRedirect.vue'
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
 import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신고접수
