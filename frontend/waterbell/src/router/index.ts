@@ -1,7 +1,13 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
+<<<<<<< HEAD
 import http from '@/types/http'
 import store from '@/store/index'
+=======
+
+//관리자 로그인
+import managerLogin from '@/views/ManagerLogin.vue'
+>>>>>>> 24bf74d16a51386857c07f7ef28093ee791c388e
 //지하차도 페이지
 import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
 import RoadReport from '@/underroad/views/roadReportView.vue' // 신고접수
@@ -197,7 +203,129 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
-  routes
+
+  routes: [
+    {
+      path: '',
+      redirect: { name: 'Home' }
+    },
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    //매니저 로그인
+    { path: '/manager/login', name: 'managerLogin', component: managerLogin },
+    // 지하차도 라우터
+    {
+      path: '/road/dash',
+      name: 'RoadDash',
+      component: RoadDash
+    },
+    {
+      path: '/road/report',
+      name: 'RoadReport',
+      component: RoadReport
+    },
+    {
+      path: '/road/report/create',
+      component: roadReportCreateVue
+    },
+    {
+      path: '/road/report/update',
+      component: roadReportUpdateVue
+    },
+    {
+      path: '/road/report/item',
+      component: roadReportItemVue
+    },
+    {
+      path: '/road/controll',
+      name: 'RoadControll',
+      component: RoadControll
+    },
+    {
+      path: '/road/manage',
+      name: 'RoadManage',
+      component: RoadManage
+    },
+    {
+      path: '/road/systemlog',
+      name: 'RoadSystemlog',
+      component: RoadSystemlog,
+      children: [
+        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmlog },
+        {
+          path: 'measureLog',
+          name: 'roadMeasureLog',
+          component: roadMeasureLog
+        }
+      ]
+    },
+
+    //지하주차장 라우터
+
+    //로그인,회원가입
+    {
+      path: '/park/login',
+      name: 'parkLogin',
+      component: parkLogin
+    },
+
+    {
+      path: '/park/join',
+      name: 'parkJoin',
+      component: parkJoin,
+      children: [
+        { path: '/agree', name: 'joinAgree', component: parkJoinAgree }
+      ]
+    },
+
+    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
+
+    {
+      path: '/park/dash',
+      name: 'ParkDash',
+      component: ParkDash
+    },
+    {
+      path: '/park/report',
+      name: 'ParkReport',
+      component: ParkReport
+    },
+    {
+      path: '/park/systemlog',
+      name: 'ParkSystemlog',
+      component: ParkSystemlog,
+      children: [
+        { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
+        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog }
+      ]
+    },
+    {
+      path: '/park/manage',
+      name: 'ParkManage',
+      component: ParkManage,
+      children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
+    },
+    {
+      path: '/park/controll',
+      name: 'ParkControll',
+      component: ParkControll
+    },
+    //알림함
+    {
+      path: '/alarm',
+      name: 'Alarm',
+      component: alarmBox
+    },
+    {
+      path: '/alarm/detail/:alarm_id',
+      name: 'AlarmDetail',
+      component: alarmDetail
+    }
+  ]
+
 })
 // <<<<<<< HEAD
 //   routes
