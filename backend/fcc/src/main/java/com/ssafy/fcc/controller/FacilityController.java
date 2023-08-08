@@ -37,22 +37,14 @@ public class FacilityController {
         try {
             if (response == null) {
                 status = HttpStatus.NO_CONTENT;
-
-
             } else {
                 status = HttpStatus.ACCEPTED;
-
-
             }
-
-
-
         } catch (Exception e) {
             logger.error("지하차도 목록 조회 실패 : {}", e);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<>(response, status);
-
     }
 
     //memberId가 들어오는 방식 !@AuthenticationPrincipal 이게 맞는가 !
@@ -68,15 +60,9 @@ public class FacilityController {
         try {
             if (response == null) {
                 status = HttpStatus.NO_CONTENT;
-
-
             } else {
                 status = HttpStatus.ACCEPTED;
-
-
             }
-
-
 
         } catch (Exception e) {
             logger.error("지하차도 목록 조회 실패 : {}", e);
