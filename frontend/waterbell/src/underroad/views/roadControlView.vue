@@ -27,7 +27,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .road-control-cctv-com {
-  width: 1440px;
+  width: 770px;
   height: 500px;
   flex-shrink: 0;
   fill: var(--unnamed, #f2f7ff);
@@ -35,19 +35,21 @@ export default defineComponent({
 }
 
 .main-container {
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 40px;
+  width: 1000px;
 }
 
 .controll-container {
+  width: 1000px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 100px;
   align-self: stretch;
-  margin-right: 200px;
 }
 
 .header {
@@ -64,6 +66,5 @@ export default defineComponent({
   font-style: normal;
   font-weight: 600;
   line-height: 32px; /* 133.333% */
-  margin-right: 200px;
 }
 </style>

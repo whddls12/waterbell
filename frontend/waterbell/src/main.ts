@@ -8,6 +8,7 @@ import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 // Use plugin with optional defaults
+import FontAwesomeIcon from './util/fontawesome-icons'
 
 import getMylocation, { getClosestLocation } from './types/getMylocation'
 
@@ -22,6 +23,7 @@ import getMylocation, { getClosestLocation } from './types/getMylocation'
 // axios.defaults.baseURL = 'http://localhost:8080'
 
 const app = createApp(App)
+app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('VueDatePicker', VueDatePicker)
 app.config.globalProperties.$http = axios
 app.config.globalProperties.$store = store

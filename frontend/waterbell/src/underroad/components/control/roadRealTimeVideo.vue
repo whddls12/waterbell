@@ -5,35 +5,45 @@
   </div>
 </template>
 <script>
-import { defineComponent } from 'vue'
-
+import { defineComponent, onMounted, onBeforeUnmount } from 'vue'
+import webSocket1 from '@/types/webSocket_cam1'
+import webSocket2 from '@/types/webSocket_cam2'
 export default defineComponent({
-  name: 'roadControlCctvVue'
+  name: 'roadControlCctvVue',
+  setup() {
+    onMounted(() => {
+      webSocket1.connectWebSocket()
+      webSocket2.connectWebSocket()
+    })
+    onBeforeUnmount(() => {
+      webSocket1.closeWebSocket()
+      webSocket2.closeWebSocket()
+    })
+  }
 })
 </script>
 <style scoped>
 .cctv {
   display: flex;
-  width: 1232.255px;
-  height: 341.163px;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-shrink: 0;
+  width: 700px;
+  height: 341.163px;
 }
 
 .entrance {
-  width: 550px;
+  width: 300px;
   height: 280px;
-  flex-shrink: 0;
   background: url(<path-to-image>),
     lightgray -9.84px 0px / 120.982% 100% no-repeat;
+  margin-left: 50px;
 }
 
 .internal {
-  width: 550px;
+  width: 300px;
   height: 280px;
-  flex-shrink: 0;
   background: url(<path-to-image>),
     lightgray -9.84px 0px / 120.982% 100% no-repeat;
+  margin-left: 50px;
 }
 </style>

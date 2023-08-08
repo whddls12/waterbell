@@ -3,6 +3,7 @@ package com.ssafy.fcc.MQTT;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.SensorType;
+import com.ssafy.fcc.handler.CamWebSocketHandler;
 import com.ssafy.fcc.repository.FacilityRepository;
 
 import com.ssafy.fcc.service.ApartService;
@@ -34,7 +35,7 @@ public class MqttSubscriber implements MqttCallback {
     public final UndergroundRoadService undergroundRoadService;
 
     public final ApartService apartService;
-
+    public CamWebSocketHandler camWebSocketHandler;
 
     //Mqtt프로토콜를 이용해서 broker에 연결하면서 연결정보를 설정할 수 있는 객체
     public MqttConnectOptions mqttOption;
@@ -63,12 +64,6 @@ public class MqttSubscriber implements MqttCallback {
     @Override
     public void messageArrived(String topic, MqttMessage message) throws Exception {
 
-
-//        System.out.println(topic + " " + message.toString());
-        // TODO 만들어지는 topic 계층에 따라 (facility_id, Temp,Dust,Humid or Cam) 뽑아야함
-
-        // 예를들어 Temp
-        // facility_id = 7, category = Temp
         String[] result = message.toString().split("/");
 
         int facilityId = Integer.parseInt(result[0]);
@@ -89,9 +84,9 @@ public class MqttSubscriber implements MqttCallback {
 
             byte[] encodeByte = encode.encode(message.getPayload());
 
-            System.out.println("인코딩 후 : " + new String(encodeByte));
-
-        } else {
+                System.out.println("인코딩 후 : " + new String(encodeByte));
+                camWebSocketHandler.sendVideoImg(facilityId, new String(encodeByte));
+            } else {
             systemService.insertLog(facilityId, category, value);
         }
     }

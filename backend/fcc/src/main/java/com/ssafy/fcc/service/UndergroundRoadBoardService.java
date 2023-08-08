@@ -177,5 +177,9 @@ public class UndergroundRoadBoardService {
     }
 
 
-
+    public UndergroundRoadBoard getBoardById(int boardId) throws Exception{
+        UndergroundRoadBoard board =  boardRepository.getUndergoundBoardById(boardId);
+        if(board== null)  throw new RuntimeException("데이터가 없습니다.");
+        return boardRepository.getUndergoundBoardById(boardId);
+    }
 }

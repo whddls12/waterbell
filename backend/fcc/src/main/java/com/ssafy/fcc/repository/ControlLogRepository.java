@@ -28,10 +28,18 @@ public class ControlLogRepository {
         }
     }
 
-    public List<ControlLog> getLogList(Facility facility) {
+    public List<ControlLog> getLogList(Facility facility, int start, int end) {
         return em.createQuery("select c from ControlLog c where c.facility= :facility", ControlLog.class)
                 .setParameter("facility",facility)
+                .setFirstResult(start)
+                .setMaxResults(end)
                 .getResultList();
+    }
+
+    public Long getControlLogCnt(Facility facility) {
+        return em.createQuery("select count(c.id) from ControlLog c where c.facility = :facility", Long.class)
+                .setParameter("facility",facility)
+                .getSingleResult();
     }
 
 }

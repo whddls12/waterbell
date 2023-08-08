@@ -1,7 +1,7 @@
 <template>
   <div class="container" id="outline bigbox">
     <div id="inner-box">
-      <button>이동하기</button>
+      <button>이 동하기</button>
       <div id="map"></div>
     </div>
   </div>
