@@ -39,9 +39,6 @@ public class AwsIoTConfig {
 
     public void subscribe(String topicName) throws AWSIotException {
         MqttTopic topic = new MqttTopic(topicName);
-        AWSIotQos qos = AWSIotQos.QOS0;
-        long timeout = 3000;
-
 
         client.subscribe(topic);
     }
