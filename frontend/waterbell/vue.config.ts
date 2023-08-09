@@ -1,6 +1,7 @@
 module.exports = {
   transpileDependencies: ['vuex-persist'],
   devServer: {
+    port: 8082,
     proxy: {
       '^/': {
         target: 'http://localhost:8080',

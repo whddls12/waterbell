@@ -8,31 +8,62 @@
     </div>
   </div>
 </template>
-<script>
-import { defineComponent } from 'vue'
-import { apiClient } from '@/types/apiClient'
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
+import apiModule from '@/types/apiClient'
+
+// import http from '@/types/http'
 
 export default defineComponent({
   name: 'roadControlLedVue',
-  methods: {
-    onAction() {
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
+  setup() {
+    const apiClient = apiModule.apiClient
+    const store = useStore()
+
+    const onAction = () => {
       // 동작 버튼을 눌렀을 때 실행할 코드
       console.log('동작 버튼 클릭')
+      const role = computed(() => store.getters['auth/role']).value
+      const token = computed(() => store.getters['auth/accessToken']).value
+      console.log(role)
+      console.log(token)
       apiClient
-        .post('/notification/apartManager/activation')
+        .post('/notification/apartManager/activation', {
+          headers: {
+            Authorization: `${token}`
+          }
+        })
         .then((response) => {
           console.log(response.data)
         })
         .catch((error) => {
           console.error('Error sending the request:', error)
         })
-    },
+    }
 
-    onRelease() {
+    const onRelease = () => {
       // 해제 버튼을 눌렀을 때 실행할 코드
       console.log('해제 버튼 클릭')
     }
-  }
+
+    return {
+      apiClient,
+      store
+    }
+  },
+
+  methods: {}
 })
 </script>
 
