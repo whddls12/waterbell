@@ -12,6 +12,8 @@ unsigned long lastMsg = 0;
 char msg[MSG_BUFFER_SIZE];
 
 int distance = 0; // initial Distance
+int intevalTime = 5000;
+
 
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
@@ -20,7 +22,7 @@ char ssid[] = "";             // network SSID (name)
 char pass[] = "";        // network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
 char server[] = "";    // IP address of the MQTT server(Raspberry Pi)
-char topic[] = "test";            // Default topic string
+char topic[] = "Arduino/HEIGHT";            // Default topic string
 char clientId[] = "Arduino waterHeight";      // Cliwent id: Must be unique on the broker
 
 WiFiEspClient wifi;               // Initialize the Ethernet client object
@@ -76,7 +78,7 @@ void loop() {
   unsigned long now = millis();
 
   // publish interval is 2sec 
-  if(now-lastMsg>2000){
+  if(now-lastMsg>intevalTime){
     lastMsg=now;
 
     // sensing distances
@@ -90,8 +92,7 @@ void loop() {
     Serial.print(distance);
 
     snprintf (msg, MSG_BUFFER_SIZE, "%d", distance);
-    mqttClient.publish("test", msg);
-
+    mqttClient.publish(topic, msg);
   }
 
 }
