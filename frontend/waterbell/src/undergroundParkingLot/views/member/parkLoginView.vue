@@ -84,17 +84,12 @@ export default defineComponent({
 
     const handleNaverLogin = async () => {
       const clientId = 'dIwg6T0yWa9t8y2yMsHJ'
-      const redirectURI = encodeURIComponent(
-        'http://localhost:8080/login/oauth2/code/naver'
-      )
+      const redirectURI = encodeURIComponent('http://localhost:8081/auth/naver')
       const state = 'WaterBell'
 
       const authURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectURI}&state=${state}`
 
-      // window.open(authURL)
-      axios.get(authURL).then((res) => {
-        console.log(res)
-      })
+      window.location.href = authURL
     }
 
     return {
