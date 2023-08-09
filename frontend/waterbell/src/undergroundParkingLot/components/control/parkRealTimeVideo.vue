@@ -1,13 +1,7 @@
 <template lang="">
-  <div class="container">
-    <div>cctv</div>
-
-    <div>
-      <div><img id="cctv1" /></div>
-    </div>
-    <div>
-      <div><img id="cctv2" /></div>
-    </div>
+  <div class="cctv">
+    <div class="entrance">지하차도 입구<img id="cctv1" /></div>
+    <div class="internal">지하차도 내부<img id="cctv2" /></div>
   </div>
 </template>
 <script>
@@ -15,7 +9,7 @@ import { defineComponent, onMounted, onBeforeUnmount } from 'vue'
 import webSocket1 from '@/types/webSocket_cam1'
 import webSocket2 from '@/types/webSocket_cam2'
 export default defineComponent({
-  name: 'parkControlCctvVue',
+  name: 'roadControlCctvVue',
   setup() {
     onMounted(() => {
       webSocket1.connectWebSocket()
@@ -28,4 +22,28 @@ export default defineComponent({
   }
 })
 </script>
-<style lang=""></style>
+<style scoped>
+.cctv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 700px;
+  height: 341.163px;
+}
+
+.entrance {
+  width: 300px;
+  height: 280px;
+  background: url(<path-to-image>),
+    lightgray -9.84px 0px / 120.982% 100% no-repeat;
+  margin-left: 50px;
+}
+
+.internal {
+  width: 300px;
+  height: 280px;
+  background: url(<path-to-image>),
+    lightgray -9.84px 0px / 120.982% 100% no-repeat;
+  margin-left: 50px;
+}
+</style>
