@@ -36,7 +36,7 @@ auth
   .then(async () => {
     // 액션이 완료되면 앱을 마운트합니다.
     const underroadList = computed(() => auth.getters['auth/underroadList'])
-
+    // console.log(underroadList.value)
     // console.log(underroadList.value)
     if (!Array.isArray(underroadList.value)) {
       throw new Error('underroadList.value is not iterable')

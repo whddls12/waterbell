@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="container mt-4">
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
@@ -90,4 +90,4 @@ export default defineComponent({
   }
 })
 </script>
-<style lang=""></style>
+<style></style>

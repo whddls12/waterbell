@@ -1,12 +1,17 @@
-<template lang="">
+<template>
   <div class="container">
-    <div>cctv</div>
-
-    <div>
-      <div><img id="cctv1" /></div>
-    </div>
-    <div>
-      <div><img id="cctv2" /></div>
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <h3>CCTV</h3>
+      </div>
+      <div class="dash-box-content">
+        <div>
+          <img id="cctv1" />
+        </div>
+        <div>
+          <img id="cctv2" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -4,7 +4,9 @@
       <div class="dash-box-title">
         <h3>미세먼지</h3>
       </div>
-      <p>{{ current_dust }}</p>
+      <div class="dash-box-content">
+        {{ current_dust }}
+      </div>
     </div>
   </div>
 </template>
