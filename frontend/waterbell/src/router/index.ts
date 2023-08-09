@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
-import apiModule from '@/types/apiClient'
+// import apiModule from '@/types/apiClient'
+import http from '@/types/http'
 import Home from '@/views/Home.vue'
 
 //관리자 로그인
@@ -43,7 +44,7 @@ import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDevi
 import alarmBox from '@/alarm/alarmBox.vue'
 import alarmDetail from '@/alarm/AlarmDetail.vue'
 import store from '@/store'
-const api = apiModule.api
+// const api = apiModule.api
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
   routes: [
@@ -130,10 +131,10 @@ const router = createRouter({
       beforeEnter: async (to, from, next) => {
         const code = to.query.code as string
         const state = to.query.state as string
-
+        console.log(code)
         if (code && state) {
           try {
-            const response = await api.post(`/login/oauth2/code/naver`, {
+            const response = await http.post(`/login/oauth2/code/naver`, {
               code,
               state
             })
@@ -148,7 +149,7 @@ const router = createRouter({
             }
             // 이 부분에서 서버로부터 받은 토큰을 저장하거나 필요한 작업을 수행할 수 있습니다.
             // 그 후에 원하는 라우트로 리다이렉션합니다.
-            next('/success') // 성공 페이지로 이동
+            // next('/success') // 성공 페이지로 이동
           } catch (err) {
             console.error(err)
             next('/error') // 에러 페이지로 이동
