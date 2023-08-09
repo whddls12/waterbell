@@ -12,17 +12,16 @@
         />
       </div>
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
-      <div class="header-btn">
-        <!-- 로그아웃 상태-->
-        <button>로그인</button>
-        <button>회원가입</button>
-        <!-- 로그인 상태-->
-        <router-link to="/alarmBox">
-          <button>알림함</button>
-        </router-link>
-        <p id="hello-msg">@@님 어서오세요!</p>
+      <!-- 로그인 상태-->
+      <div class="header-btn" v-if="accessToken">
+        <p id="hello-msg">김동현님 어서오세요!</p>
+        <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
-        <button>로그아웃</button>
+        <button @click="logout">로그아웃</button>
+      </div>
+      <!-- 지하차도는 로그인 버튼 불필요 -->
+      <div class="header-btn" v-else>
+        <button @click="goToLogin">로그인</button>
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
@@ -34,7 +33,7 @@
         <router-link to="/park/report">신고접수</router-link>
       </div>
       <div class="each-menu">
-        <router-link to="/park/control">제어</router-link>
+        <router-link to="/park/controll">제어</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/park/systemlog">시스템 로그</router-link>
@@ -50,10 +49,20 @@
 import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'ParkHeader',
   components: {},
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
   setup() {
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
@@ -64,9 +73,25 @@ export default defineComponent({
       router.push({ path: '/' })
     }
 
+    function goToAlarm() {
+      router.push({ path: '/alarm' })
+    }
+
+    function logout() {
+      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
+    }
+
+    function goToLogin() {
+      router.push({ path: '/park/login' })
+    }
+
     return {
       isMainPage,
-      goToMain
+      goToMain,
+      goToAlarm,
+      goToLogin,
+      logout
     }
   }
 })
@@ -76,8 +101,11 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-
-  margin-bottom: 50px;
+  margin-left: 200px;
+  margin-right: 100px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  /* padding-top: 100px; */
 }
 
 .header-btn {
