@@ -18,7 +18,7 @@ public class PublicManagerResponse extends MemberResponse {
 
     public PublicManagerResponse(PublicManager publicManager,TokenDto token){
         super(publicManager, token);
-        sidoId = publicManager.getId();
+        sidoId = publicManager.getSido().getId();
         facilityId = new ArrayList<>();
     }
 
