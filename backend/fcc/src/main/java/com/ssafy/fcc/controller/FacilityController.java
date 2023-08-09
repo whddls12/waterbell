@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -37,22 +34,14 @@ public class FacilityController {
         try {
             if (response == null) {
                 status = HttpStatus.NO_CONTENT;
-
-
             } else {
                 status = HttpStatus.ACCEPTED;
-
-
             }
-
-
-
         } catch (Exception e) {
             logger.error("지하차도 목록 조회 실패 : {}", e);
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<>(response, status);
-
     }
 
     //memberId가 들어오는 방식 !@AuthenticationPrincipal 이게 맞는가 !
@@ -68,15 +57,9 @@ public class FacilityController {
         try {
             if (response == null) {
                 status = HttpStatus.NO_CONTENT;
-
-
             } else {
                 status = HttpStatus.ACCEPTED;
-
-
             }
-
-
 
         } catch (Exception e) {
             logger.error("지하차도 목록 조회 실패 : {}", e);
