@@ -10,6 +10,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue'
+import { apiClient } from '@/types/apiClient'
 
 export default defineComponent({
   name: 'roadControlLedVue',
@@ -17,6 +18,11 @@ export default defineComponent({
     onAction() {
       // 동작 버튼을 눌렀을 때 실행할 코드
       console.log('동작 버튼 클릭')
+      apiClient
+        .POST('/notification/apartManager/activation')
+        .then((response) => {
+          console.log(response.data)
+        })
     },
     onRelease() {
       // 해제 버튼을 눌렀을 때 실행할 코드
