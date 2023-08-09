@@ -1,7 +1,7 @@
 <template lang="">
   <div class="cctv">
-    <div class="entrance">지하차도 입구</div>
-    <div class="internal">지하차도 내부</div>
+    <div class="entrance">지하차도 입구<img id="cctv1" /></div>
+    <div class="internal">지하차도 내부<img id="cctv2" /></div>
   </div>
 </template>
 <script>
