@@ -31,5 +31,6 @@
     "@/**/*.png",
     "./**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "start": "webpack-dev-server --inline --content-base . --history-api-fallback"
 }

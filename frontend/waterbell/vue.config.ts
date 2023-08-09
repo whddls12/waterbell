@@ -1,4 +1,5 @@
 module.exports = {
+  historyApiFallback: true,
   transpileDependencies: ['vuex-persist'],
   devServer: {
     proxy: {
