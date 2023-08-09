@@ -10,7 +10,7 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 import ParkControlCctvCom from '../components/control/parkRealTimeVideo.vue'
 import ParkControlLedCom from '../components/control/parkWaterPlateControl.vue'

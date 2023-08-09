@@ -30,27 +30,37 @@ export default defineComponent({
   setup() {
     const apiClient = apiModule.apiClient
     const store = useStore()
+    const role = computed(() => store.getters['auth/role']).value
+    const token = computed(() => store.getters['auth/accessToken']).value
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     const onAction = () => {
       // 동작 버튼을 눌렀을 때 실행할 코드
       console.log('동작 버튼 클릭')
-      const role = computed(() => store.getters['auth/role']).value
-      const token = computed(() => store.getters['auth/accessToken']).value
-      console.log(role)
-      console.log(token)
+
+      // apiClient
+      //   .post('/notification/apartManager/activation')
+      //   .then((response) => {
+      //     console.log(response.data)
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error sending the request:', error)
+      //   })
+
       apiClient
-        .post('/notification/apartManager/activation')
+        .post(`/control/${facility_id}/ON`)
         .then((response) => {
           console.log(response.data)
         })
         .catch((error) => {
-          console.error('Error sending the request:', error)
+          console.log(error)
         })
     }
 
     const onRelease = () => {
       // 해제 버튼을 눌렀을 때 실행할 코드
-      console.log('해제 버튼 클릭')
+      console.log('해제 버튼 클릭1')
+      console.log(facility_id)
     }
 
     return {
