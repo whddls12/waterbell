@@ -1,6 +1,9 @@
 package com.ssafy.fcc.controller;
 
 import com.ssafy.fcc.MQTT.MqttPublisher;
+import com.ssafy.fcc.domain.facility.Facility;
+import com.ssafy.fcc.domain.facility.WaterStatus;
+import com.ssafy.fcc.service.FacilityService;
 import com.ssafy.fcc.service.MqttPubSubService;
 import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +18,12 @@ public class ControlController {
 
     private final SystemService systemService;
     private final MqttPubSubService mqttPubSubService;
+    private final FacilityService facilityService;
 
-    @PostMapping("/manager/{facility_id}/{command}")
+    @PostMapping("/{facility_id}/{command}")
     public ResponseEntity<Integer> command(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
 
-
+        Facility facility = facilityService.findById(facilityId);
         try {
             String topic = "";
             switch (command) {
@@ -29,7 +33,7 @@ public class ControlController {
                     topic = String.format("%d/activation", facilityId);
                     mqttPubSubService.publishMessage(topic, "activate");
                     systemService.insertControlLog(facilityId, "ON");
-
+                    facilityService.updateStatus(facility, WaterStatus.WORKING);
                     // 동작 알림
 
 
@@ -39,6 +43,7 @@ public class ControlController {
                     topic = String.format("%d/deactivation", facilityId);
                     mqttPubSubService.publishMessage(topic, "deactivate");
                     systemService.insertControlLog(facilityId, "OFF");
+                    facilityService.updateStatus(facility, WaterStatus.SECOND);
 
                     // 해제 알림
 
