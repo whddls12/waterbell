@@ -1,35 +1,49 @@
 <template>
-  <div>
-    <h2>지하주차장 대시보드 페이지</h2>
-    <parkDashDustVue />
-    <parkDashRainFallAmountVue />
-    <parkDashRealTimeVideoVue />
-    <parkDashReportListVue />
-    <parkDashTempAndHumidVue />
+  <div class="bigbox">
+    <!-- <div> -->
     <parkDashWarningMessageVue />
-    <parkDashWaterLevelHeightVue />
+    <div id="columnflex">
+      <div id="rowflex">
+        <div id="columnflex">
+          <parkDashCctvVue class="left" id="dashcomponent" />
+        </div>
+        <div id="columnflex">
+          <parkDashWeatherVue class="right" id="dashcomponent" />
+          <!-- <parkDashTempAndHumidVue class="right" id="dashcomponent" /> -->
+          <parkDashDustVue class="right" id="dashcomponent" />
+          <parkDashRainFallAmountVue class="right" id="dashcomponent" />
+        </div>
+      </div>
+
+      <div id="rowflex">
+        <parkDashReportListVue class="left" id="dashcomponent" />
+        <parkDashWaterLevelHeightVue class="right" id="dashcomponent" />
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { defineComponent } from 'vue'
 import parkDashDustVue from '../components/dashboard/parkDashDust.vue'
 import parkDashRainFallAmountVue from '../components/dashboard/parkDashRainFallAmount.vue'
-import parkDashRealTimeVideoVue from '../components/dashboard/parkDashRealTimeVideo.vue'
+import parkDashCctvVue from '../components/dashboard/parkDashRealTimeVideo.vue'
 import parkDashReportListVue from '../components/dashboard/parkDashReportList.vue'
-import parkDashTempAndHumidVue from '../components/dashboard/parkDashTempAndHumid.vue'
+// import parkDashTempAndHumidVue from '../components/dashboard/parkDashTempAndHumid.vue'
 import parkDashWarningMessageVue from '../components/dashboard/parkDashWarningMessage.vue'
 import parkDashWaterLevelHeightVue from '../components/dashboard/parkDashWaterLevelHeight.vue'
+import parkDashWeatherVue from '../components/dashboard/parkDashWeather.vue'
 
 export default defineComponent({
   name: 'ParkDash',
   components: {
     parkDashDustVue,
     parkDashRainFallAmountVue,
-    parkDashRealTimeVideoVue,
+    parkDashCctvVue,
     parkDashReportListVue,
-    parkDashTempAndHumidVue,
+    // parkDashTempAndHumidVue,
     parkDashWarningMessageVue,
-    parkDashWaterLevelHeightVue
+    parkDashWaterLevelHeightVue,
+    parkDashWeatherVue
   }
 })
 </script>
