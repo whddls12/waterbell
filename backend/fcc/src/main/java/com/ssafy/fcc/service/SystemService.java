@@ -119,8 +119,6 @@ public class SystemService {
             e.printStackTrace();
             return null;
         }
-
-
     }
 
     @Transactional
@@ -144,7 +142,6 @@ public class SystemService {
         return 1;
     }
 
-
     public Map<Integer,Integer> getHeightPerhour(int facilityId) {
 
         Map<Integer,Integer> resultMap = new HashMap<>();
@@ -154,11 +151,8 @@ public class SystemService {
         for (int i = 5; i >= 0; i--) {
             LocalDateTime time = LocalDateTime.now().minusHours(i);
             int height = sensorLogRepository.getHeightPerhour(facility,SensorType.HEIGHT,time);
-            System.out.println(height);
-            System.out.println(LocalDateTime.now().minusHours(i).getHour());
             resultMap.put(LocalDateTime.now().minusHours(i).getHour(), height);
         }
-
         return resultMap;
     }
 

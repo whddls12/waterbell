@@ -41,6 +41,7 @@ public class SocialRedisRepository {
     public Optional<SocialTempDto> findByEmail(String email) {
         ValueOperations<String, SocialTempDto> valueOperations = redisTemplate.opsForValue();
         SocialTempDto m = valueOperations.get(email);
+
         System.out.println(m);
         if (m == null) {
             return Optional.empty();
