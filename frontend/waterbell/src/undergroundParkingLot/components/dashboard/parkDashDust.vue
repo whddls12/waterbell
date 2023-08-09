@@ -1,7 +1,42 @@
-<template lang="">
-  <div></div>
+<template>
+  <div class="container">
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <h3>미세먼지</h3>
+      </div>
+      <div class="dash-box-content">
+        {{ current_dust }}
+      </div>
+    </div>
+  </div>
 </template>
-<script>
-export default {}
+<script lang="ts">
+import { ref, onMounted, computed, defineComponent } from 'vue'
+import store from '@/store/index'
+import http from '@/types/http'
+
+export default defineComponent({
+  name: 'parkDashDust',
+  setup() {
+    // 시설 아이디 가져오기
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const current_dust = ref(null)
+
+    async function getDustData() {
+      try {
+        const response = await http.get(`/dash/facilities/10/sensors`)
+        current_dust.value = response.data.Dust
+        return { current_dust }
+      } catch (error) {
+        console.log('미세먼지 측정 데이터 가져오기 실패:', error)
+      }
+    }
+    onMounted(async () => {
+      await getDustData()
+    })
+
+    return { current_dust, getDustData }
+  }
+})
 </script>
-<style lang=""></style>
+<style></style>

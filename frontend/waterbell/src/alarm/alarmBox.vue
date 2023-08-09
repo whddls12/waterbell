@@ -130,7 +130,6 @@ export default defineComponent({
     const setList = () => {
       const role = computed(() => store.getters['auth/role']).value
       const token = computed(() => store.getters['auth/accessToken']).value
-      console.log(token)
       http
         .get(`/alarm/${role}`, {
           headers: {

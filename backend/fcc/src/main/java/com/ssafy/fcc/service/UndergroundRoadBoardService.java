@@ -82,7 +82,6 @@ public class UndergroundRoadBoardService {
     public Integer undergroundRoadBoard(UndergroundRoadBoard undergroundRoadBoard, List<MultipartFile> uploadedfiles) throws Exception {
 
         Integer undergroundRoadBoardId = boardRepository.saveUndergroundRoadBoard(undergroundRoadBoard);
-
         if(uploadedfiles != null &&uploadedfiles.size()>0) {
             final List<String> fileList = uploadFile(uploadedfiles, undergroundRoadBoard);
             System.out.println(fileList);
