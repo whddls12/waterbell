@@ -39,11 +39,7 @@ export default defineComponent({
       console.log(role)
       console.log(token)
       apiClient
-        .post('/notification/apartManager/activation', {
-          headers: {
-            Authorization: `${token}`
-          }
-        })
+        .post('/notification/apartManager/activation')
         .then((response) => {
           console.log(response.data)
         })
@@ -59,7 +55,9 @@ export default defineComponent({
 
     return {
       apiClient,
-      store
+      store,
+      onAction,
+      onRelease
     }
   },
 
