@@ -1,12 +1,11 @@
 package com.ssafy.fcc.dto;
 
 import com.amazonaws.services.iot.client.AWSIotMessage;
-import com.amazonaws.services.iot.client.AWSIotQos;
 import com.amazonaws.services.iot.client.AWSIotTopic;
 
 public class MqttTopic extends AWSIotTopic {
     public MqttTopic(String topic){
-        super(String.valueOf(topic));
+        super(topic);
     }
 
     @Override
