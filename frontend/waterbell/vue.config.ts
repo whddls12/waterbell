@@ -1,6 +1,6 @@
 module.exports = {
   transpileDependencies: ['vuex-persist'],
-  // publicPath: process.env.NODE_ENV === 'production' ? '/my-app/' : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? '/my-app/' : '/',
   devServer: {
     historyApiFallback: true,
     proxy: {

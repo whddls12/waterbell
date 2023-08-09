@@ -105,7 +105,7 @@ export default defineComponent({
 
     function logout() {
       store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/park/login' }) // 로그아웃 후 리디렉션될 경로
+      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {

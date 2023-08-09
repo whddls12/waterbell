@@ -262,7 +262,9 @@ const auth: Module<any, any> = {
 
     async logout({ commit }) {
       try {
+        // const accessToken = this.getters['accessToken']
         await apiClient.post('/member/logout').then((res) => {
+          // console.log(this.getters['accessToken'])
           // console.log(res.data)
           commit('auth/logout')
         })
