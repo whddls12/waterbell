@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="container mt-4">
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
@@ -45,10 +45,11 @@ export default defineComponent({
   name: 'roadReportListVue',
   setup() {
     // getters에서 nowUnderroad 가져오기
-    const nowUnderroad = computed(() => store.getters['auth/facilityId']).value
-    console.log(nowUnderroad)
-    const facility_id = nowUnderroad
 
+    const facility_id = computed(() => store.getters['auth/facilityId'])
+    // const nowUnderroad = computed(() => store.getters.nowUnderroad).value
+
+    // console.log(facility_id.value)
     let reportList = ref<
       {
         report_id: string
@@ -63,12 +64,15 @@ export default defineComponent({
 
     const setList = () => {
       http
-        // .get(`http://localhost:8080/reports/undergroudRoad/${facility_id}/1`)
-        .get(`http://localhost:8080/reports/undergroudRoad/1/1`)
+        .get(`/reports/undergroudRoad/${facility_id.value}/1`)
         .then((res) => {
           // 가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
           console.log(res.data.list)
           reportList.value = res.data.list
+        })
+
+        .catch(() => {
+          console.log('목록없음')
         })
     }
     const router = useRouter()
@@ -86,4 +90,4 @@ export default defineComponent({
   }
 })
 </script>
-<style lang=""></style>
+<style></style>
