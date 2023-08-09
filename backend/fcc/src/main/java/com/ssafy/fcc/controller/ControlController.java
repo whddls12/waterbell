@@ -16,7 +16,7 @@ public class ControlController {
     private final SystemService systemService;
     private final MqttPubSubService mqttPubSubService;
 
-    @PostMapping("/{facility_id}/{command}")
+    @PostMapping("/manager/{facility_id}/{command}")
     public ResponseEntity<Integer> command(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
 
 
