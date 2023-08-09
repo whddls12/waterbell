@@ -1,5 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
+import NotFound from '@/views/NotFound.vue'
 
 //지하차도 페이지
 import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
@@ -42,7 +43,7 @@ import alarmDetail from '@/alarm/AlarmDetail.vue'
 import store from '@/store'
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes: [
     {
       path: '',
@@ -52,6 +53,16 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    // 사용자가 의도하지 않은 URL로 접근 시 뷰 라우터에 404 오류 페이지로 리다이렉션 설정
+    {
+      path: '/notFound',
+      name: 'notFound',
+      component: NotFound
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/notFound'
     },
     // 지하차도 라우터
     {
@@ -73,7 +84,7 @@ const router = createRouter({
       component: roadReportUpdateVue
     },
     {
-      path: '/road/report/item',
+      path: '/road/report/:report_id/detail',
       component: roadReportItemVue
     },
     {
