@@ -35,7 +35,7 @@
         <router-link to="/road/report">신고접수</router-link>
       </div>
       <div class="each-menu">
-        <router-link to="/road/control">제어</router-link>
+        <router-link to="/road/controll">제어</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/road/systemlog">시스템 로그</router-link>
