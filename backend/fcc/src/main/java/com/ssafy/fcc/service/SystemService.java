@@ -144,47 +144,35 @@ public class SystemService {
         return 1;
     }
 
-    public Map<Integer,Integer> getHeightPerhour(int facilityId) {
+    public Map<Integer, Integer> getHeightPerhour(int facilityId) {
 
-        Map<Integer,Integer> resultMap = new HashMap<>();
+        Map<Integer, Integer> resultMap = new HashMap<>();
 
         Facility facility = facilityRepository.findById(facilityId);
 
         for (int i = 5; i >= 0; i--) {
             LocalDateTime time = LocalDateTime.now().minusHours(i);
-            int height = sensorLogRepository.getHeightPerhour(facility,SensorType.HEIGHT,time);
+            int height = sensorLogRepository.getHeightPerhour(facility, SensorType.HEIGHT, time);
             resultMap.put(LocalDateTime.now().minusHours(i).getHour(), height);
         }
         return resultMap;
     }
 
-    public void fromSensor(String topic, String message) throws Exception {
-        System.out.println("@@@");
+    public void fromSensor(String message) throws Exception {
         String[] result = message.toString().split("/");
 
         int facilityId = Integer.parseInt(result[0]);
-        SensorType category = SensorType.valueOf(topic.toUpperCase());
-        int value = Integer.parseInt(result[1]);
+        SensorType sensorType = SensorType.valueOf(result[1]);
+        int value = Integer.parseInt(result[2]);
 
         Facility facility = facilityRepository.findById(facilityId);
 
-        if (category.equals("height")) {
+        if (sensorType.equals(SensorType.HEIGHT)) {
             checkSituation(facility, value);
         }
 
+        insertLog(facilityId, sensorType, value);
 
-//        // TODO category에 따라 프론트로 웹소켓 통신 or 측정 로그 저장
-        if (topic.equals("Cam")) {
-
-//            Base64.Encoder encode = Base64.getEncoder();
-//
-//            byte[] encodeByte = encode.encode(message.getPayload());
-//
-//            System.out.println("인코딩 후 : " + new String(encodeByte));
-//            camWebSocketHandler.sendVideoImg(facilityId, new String(encodeByte));
-        } else {
-            insertLog(facilityId, category, value);
-        }
     }
 
     @Transactional
