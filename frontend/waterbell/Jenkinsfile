@@ -2,11 +2,16 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs = "Node16"
+    }
+
 stages {
     stage('prepare') {
         steps {
             dir('frontend/waterbell'){
                 sh 'npm install'
+                sh 'CI=false npm run build'
                
             }
         }
