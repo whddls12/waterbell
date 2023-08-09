@@ -12,14 +12,8 @@ public class MqttPubSubService {
     @Autowired
     AwsIoTConfig mqttConfig;
 
-    public void publishMessage(raspPayload payload) throws AWSIotException {
-        mqttConfig.connectToIoT();
-        mqttConfig.publish(payload);
-    }
-
-    public void subscribeTopic(String topic) throws AWSIotException {
-        mqttConfig.connectToIoT();
-        mqttConfig.subscribe(topic);
+    public void publishMessage(String topic, String message) throws AWSIotException {
+        mqttConfig.publish(topic, message);
     }
 
 }

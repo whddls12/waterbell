@@ -4,7 +4,7 @@ import com.amazonaws.services.iot.client.AWSIotMessage;
 import com.amazonaws.services.iot.client.AWSIotQos;
 
 public class MqttMessage extends AWSIotMessage {
-    public MqttMessage(String topic, AWSIotQos qos, String payload){
+    public MqttMessage(String topic, String payload, AWSIotQos qos) {
         super(topic, qos, payload);
     }
 

@@ -1,6 +1,7 @@
 package com.ssafy.fcc.controller;
 
 import com.ssafy.fcc.MQTT.MqttPublisher;
+import com.ssafy.fcc.service.MqttPubSubService;
 import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ControlController {
 
-    private final MqttPublisher mqttPublisher;
     private final SystemService systemService;
+    private final MqttPubSubService mqttPubSubService;
 
     @PostMapping("/{facility_id}/{command}")
     public ResponseEntity<Integer> command(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
@@ -23,26 +24,27 @@ public class ControlController {
             String topic = "";
             switch (command) {
                 case "ON":
+                    System.out.println("!!!!!!!!!!!!!!!");
                     // 차수판 동작 명령, cotrolLog 저장
                     topic = String.format("%d/activation", facilityId);
-                    mqttPublisher.send(topic, "activate");
+                    mqttPubSubService.publishMessage(topic, "activate");
                     systemService.insertControlLog(facilityId, "ON");
-                    
+
                     // 동작 알림
-                    
-                    
+
+
                     break;
                 case "OFF":
                     // 차수판 해제 명령, cotrolLog 저장
                     topic = String.format("%d/deactivation", facilityId);
-                    mqttPublisher.send(topic, "deactivate");
+                    mqttPubSubService.publishMessage(topic, "deactivate");
                     systemService.insertControlLog(facilityId, "OFF");
-                    
+
                     // 해제 알림
-                    
+
                     break;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0);
         }
 
