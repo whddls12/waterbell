@@ -33,8 +33,8 @@ stages {
             dir('frontend/waterbell'){
                 sh '''
                 echo 'Deploy'
-                // docker stop WaterBellFront
-                // docker rm WaterBellFront
+                docker stop WaterBellFront
+                docker rm WaterBellFront
                 docker run -d -p 3000:3000 --name WaterBellFront docker-vue:0.0.1
                 '''
             }
