@@ -25,7 +25,7 @@ public class SystemController {
 
     private final SystemService systemService;
 
-    @GetMapping("/facilities/{facility_id}/sensors/{category}/logs/{page}")
+    @GetMapping("/manager/facilities/{facility_id}/sensors/{category}/logs/{page}")
     public ResponseEntity<Map<String, Object>> SensorLogList(@PathVariable("facility_id") int facilityId,
                                                              @PathVariable String category,
                                                              @PathVariable int page,
@@ -46,7 +46,7 @@ public class SystemController {
         return new ResponseEntity<>(logList, HttpStatus.OK);
     }
 
-    @GetMapping("/facilities/{facility_id}/control/logs/{page}")
+    @GetMapping("/manager/facilities/{facility_id}/control/logs/{page}")
     public ResponseEntity<Map<String, Object>> ControlLogList(@PathVariable("facility_id") int facilityId,
                                                               @PathVariable int page,
                                                               @RequestParam(value = "searchStartDate", required = false, defaultValue = "1900-01-01T00:00:00") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime searchStartDate,
@@ -66,7 +66,7 @@ public class SystemController {
         return new ResponseEntity<>(logList, HttpStatus.OK);
     }
 
-    @PostMapping("/facilities/{facility_id}/control/logs/{command}")
+    @PostMapping("/manager/facilities/{facility_id}/control/logs/{command}")
     public int saveControlLog(@PathVariable("facility_id") Integer facilityId, @PathVariable String command) {
 
         int result = systemService.insertControlLog(facilityId, command);
