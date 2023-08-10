@@ -6,6 +6,7 @@
 import { defineComponent, onCreated } from 'vue'
 
 import { useRouter, useRoute } from 'vue-router'
+import store from '@/store/index'
 import http from '@/types/http'
 export default defineComponent({
   name: 'naverSocialRedirect',
@@ -38,14 +39,21 @@ export default defineComponent({
     // })
 
     const nvalidateMember = async (code, state) => {
-      const response = await http.post(
-        `/oauth2/naver?code=${code}&state=${state}`,
-        {},
-        { withCredentials: true }
-      )
-
-      console.log(response.data)
-      //  = { ...response.data }
+      await http
+        .get(
+          `/oauth2/naver?code=${code}&state=${state}`,
+          {},
+          { withCredentials: true }
+        )
+        .then((response) => {
+          if (response.data.type == 'join') {
+            //vuex 임시에 이메일 주소 넣어둬야할까?
+            const key = response.data.key
+            router.push(`/social-join/extra?key=${key}`)
+          } else {
+            store.dispatch('auth/socialLogin', response.member)
+          }
+        })
     }
     const invalidateMember = async () => {
       alert('로그인 실패')
@@ -54,12 +62,22 @@ export default defineComponent({
     const nLogin = async (code, state) => {
       try {
         await nvalidateMember(code, state)
-        alert('네이버 로그인 성공')
-        router.push({ name: 'Home' })
       } catch (err) {
         alert('네이버 로그인 실패')
         console.error(err)
       }
+    }
+    onCreated(() => {
+      if (route.query.code && route.query.state) {
+        console.log(route.query.code)
+        nLogin(route.query.code, route.query.state)
+      }
+    })
+
+    return {
+      nLogin,
+      invalidateMember,
+      nvalidateMember
     }
     // create()
   }

@@ -114,18 +114,17 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue'
 import apiModules from '@/types/apiClient'
-import store from '@/store/index'
+// import store from '@/store/index'
+import { useRoute, useRouter } from 'vue-router'
 export default defineComponent({
   name: 'socialLoginExtraInfo',
 
   setup() {
     //api 통신을 위한 axios
     const api = apiModules.api
+    const route = useRoute()
+    const router = useRouter()
 
-    //각 input 에 입력된 값
-    const name = ref('')
-    const id = ref('')
-    const password = ref('')
     const confirmPass = ref('')
     const phoneNum = ref('')
     const verification = ref('')
@@ -148,89 +147,18 @@ export default defineComponent({
     const countdown = ref(180)
 
     const validateRule = {
-      name: /^[가-힣]{3,5}$/,
-      id: /^[a-z0-9]{4,10}$/,
-      password:
-        /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,20}$/,
-      phone: /^010[0-9]{8}$/,
       verification: /^[0-9]{6}$/,
+      phone: /^010[0-9]{8}$/,
       detailAddress: /^[0-9]{1,6}$/
     }
 
     const validate = ref({
-      name: false,
-      id: false, //양식 맞는가
-      isDuplicated: false,
-      password: false, //양식 맞는가
-      confirmPass: false, //양식 맞고 비밀번호와 일치하는가
       phoneNum: false, //양식이 맞는가
-      phoneVerification: false,
+      phoneVerification: false, //인증 했는가
       apartCodeCheck: false,
       detailAddress: false
     })
     //각 입력된 정보에 대한 유효성 검사
-    const validatedName = () => {
-      if (name.value == '') {
-        validate.value.name = false
-        nameMsg.value = '필수입력 항목 입니다.'
-      } else if (!validateRule.name.test(name.value)) {
-        validate.value.name = false
-        nameMsg.value = '한글 이름을 입력하세요.'
-      } else {
-        validate.value.name = true
-        nameMsg.value = ''
-      }
-    }
-
-    const validateId = () => {
-      validate.value.isDuplicated = false
-      if (id.value == '') {
-        validate.value.id = false
-        validate.value.isDuplicated = false
-        idMsg.value = '필수입력 항목 입니다.'
-      } else if (!validateRule.id.test(id.value)) {
-        validate.value.isDuplicated = false
-        validate.value.id = false
-        idMsg.value = '아이디는 영어 소문자+숫자로 4~10자 이내만 가능합니다.'
-      } else if (!validate.value.isDuplicated) {
-        validate.value.id = false
-        idMsg.value = '아이디 중복확인을 진행하세요.'
-      }
-      // } else {
-      //   validate.value.id = true
-      //   idMsg.value = '사용가능한 아이디입니다.'
-      // }
-    }
-
-    const validatePass = () => {
-      validate.value.confirmPass = false
-      if (!password.value || password.value == '') {
-        passMsg.value = '필수입력 항목 입니다.'
-        validate.value.password = false
-      } else if (!validateRule.password.test(password.value)) {
-        passMsg.value =
-          '비밀번호는 영문자, 숫자, 특수기호를 포함하여 6~20자 이내만 가능합니다.'
-        validate.value.password = false
-      } else {
-        passMsg.value = '사용가능한 비밀번호입니다.'
-        validate.value.password = true
-      }
-      validateConfirmPass()
-    }
-
-    const validateConfirmPass = () => {
-      if (confirmPass.value == '') {
-        validate.value.confirmPass = false
-        confirmPassMsg.value = '비밀번호 확인을 입력하세요.'
-      } else if (confirmPass.value != password.value) {
-        validate.value.confirmPass = false
-        confirmPassMsg.value = '비밀번호 확인이 일치하지 않습니다.'
-      } else if (confirmPass.value == password.value) {
-        validate.value.confirmPass = true
-        confirmPassMsg.value = '비밀번호 확인이 일치합니다.'
-      }
-    }
-
     const validatePhone = () => {
       // validate.value.phoneVerification = true
       if (phoneNum.value == '') {
@@ -247,7 +175,6 @@ export default defineComponent({
         phoneMsg.value = '휴대폰 인증이 완료되었습니다.'
       }
     }
-
     const validateDetailAddress = () => {
       // validate.value.phoneVerification = true
       if (detailAddress.value == '') {
@@ -259,26 +186,6 @@ export default defineComponent({
       } else {
         validate.value.detailAddress = true
         phoneMsg.value = ''
-      }
-    }
-
-    //id 중복검사
-    const checkId = async () => {
-      try {
-        await api.get(`/member/join/duplication/${id.value}`).then((res) => {
-          if (res.data == 'success') {
-            validate.value.isDuplicated = true
-            validate.value.id = true
-            idMsg.value = '사용가능한 아이디입니다.'
-            // console.log(validate.value.isDuplicated)
-          } else {
-            validate.value.isDuplicated = false
-            idMsg.value = '사용 불가한 아이디입니다.'
-          }
-        })
-      } catch (error) {
-        validate.value.isDuplicated = false
-        idMsg.value = '사용 불가한 아이디입니다.'
       }
     }
 
@@ -355,6 +262,10 @@ export default defineComponent({
         phoneMsg.value = '인증번호가 틀렸습니다. 시간 내에 다시 입력하세요.'
       }
     }
+    //인증번호 확인 클릭
+    const onConfirmClick = () => {
+      confirmVerification()
+    }
 
     //아파트 코드로 주소 조회
     const findAddressByCode = () => {
@@ -371,29 +282,21 @@ export default defineComponent({
               alert('일치하는 아파트가 없습니다.')
             }
             // console.log(apartCode.value)
-            console.log(res)
-            console.log(res.data)
+            // console.log(res)
+            // console.log(res.data)
           })
       } catch (error) {
         alert('일치하는 아파트가 없습니다.')
       }
     }
 
-    //인증번호 확인 클릭
-    const onConfirmClick = () => {
-      confirmVerification()
-    }
-
     //회원가입 클릭
     const join = () => {
       try {
-        console.log(validate.value)
+        const key = route.query.key
         if (Object.values(validate.value).every((v) => v === true)) {
           api
-            .post('/member/join', {
-              name: name.value,
-              loginId: id.value,
-              password: password.value,
+            .post(`/social/join/${key}`, {
               phone: phoneNum.value,
               apartCode: apartCode.value,
               addressNumber: detailAddress.value
@@ -401,10 +304,12 @@ export default defineComponent({
             .then((res) => {
               if ((res.data.message = 'success')) {
                 alert('회원가입이 완료되었습니다.')
-                store.dispatch('auth/memberLogin', {
-                  loginId: id.value,
-                  password: password.value
-                })
+
+                //--------------------------------------------------------------------------------------
+                //code 다시 끌어와서 로그인 시킬 것.
+                //   store.dispatch('auth/socialLogin', {
+
+                //   })
               }
             })
         }
@@ -412,32 +317,6 @@ export default defineComponent({
         alert('회원가입에 실패했습니다.')
       }
     }
-    // 이름 검증을 위한 watch 함수
-    watch(name, (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        validatedName()
-      }
-    })
-
-    watch(id, (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        validateId()
-      }
-    })
-
-    // 비밀번호 검증을 위한 watch 함수
-    watch(password, (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        validatePass()
-      }
-    })
-
-    // 비밀번호 확인 검증을 위한 watch 함수
-    watch(confirmPass, (newValue, oldValue) => {
-      if (newValue != oldValue) {
-        validateConfirmPass()
-      }
-    })
 
     // 휴대폰번호 검증을 위한 watch 함수
     watch(phoneNum, (newValue, oldValue) => {
@@ -453,15 +332,12 @@ export default defineComponent({
       }
     })
     return {
-      name,
-      id,
       phoneNum,
       validate,
       address,
-      nameMsg,
-      phoneMsg,
+
       verificationVisible,
-      password,
+
       detailAddress,
       confirmPass,
       apartCode,
@@ -471,16 +347,8 @@ export default defineComponent({
       idMsg,
       passMsg,
       confirmPassMsg,
-      validatedName,
-      validateId,
-      validatePass,
-      validateConfirmPass,
       validatePhone,
       validateDetailAddress,
-      checkId,
-      requestVerification,
-      postVerification,
-      formattedCountdown,
       confirmVerification,
       findAddressByCode,
       onConfirmClick,
