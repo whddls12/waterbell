@@ -2,6 +2,8 @@
 pipeline {
     agent any
 
+     tools {nodejs "node"}
+
 stages {
     stage('prepare') {
         steps {
@@ -18,7 +20,7 @@ stages {
 
                 sh '''
                 echo 'Dockerimage build'
-                docker build -t docker-vue:0.0.1
+                docker build -t docker-vue:0.0.1 .
                 '''
             }
         }
