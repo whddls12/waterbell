@@ -1,23 +1,41 @@
 <template lang="">
   <div class="container mt-4">
-    <div><h5>센서 측정 로그</h5></div>
-    <div>
-      <label for="category-select">Category</label>
-      <div id="category-select">
-        <input type="radio" id="height" value="HEIGHT" v-model="category" />
-        <label for="height">수위</label>
-        <input
-          type="radio"
-          id="temperature"
-          value="TEMPERATURE"
-          v-model="category"
-        />
-        <label for="temperature">온도</label>
-        <input type="radio" id="humidity" value="HUMIDITY" v-model="category" />
-        <label for="humidity">습도</label>
-        <input type="radio" id="dust" value="DUST" v-model="category" />
-        <label for="dust">미세먼지</label>
+    <div class="title">센서 측정 로그</div>
+    <div class="datepicker-row">
+      <div>
+        <label>시작일시</label>
+        <span class="VueDatePicker">
+          <VueDatePicker
+            v-model="startDate"
+            placeholder="Select date"
+          ></VueDatePicker>
+        </span>
       </div>
+      <div>
+        <label>종료일시</label>
+        <span class="VueDatePicker">
+          <VueDatePicker
+            v-model="endDate"
+            placeholder="Select date"
+          ></VueDatePicker>
+        </span>
+      </div>
+    </div>
+
+    <div id="category-select">
+      <input type="radio" id="height" value="HEIGHT" v-model="category" />
+      <label for="height">수위</label>
+      <input
+        type="radio"
+        id="temperature"
+        value="TEMPERATURE"
+        v-model="category"
+      />
+      <label for="temperature">온도</label>
+      <input type="radio" id="humidity" value="HUMIDITY" v-model="category" />
+      <label for="humidity">습도</label>
+      <input type="radio" id="dust" value="DUST" v-model="category" />
+      <label for="dust">미세먼지</label>
     </div>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
@@ -76,6 +94,8 @@ import http from '@/types/http'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { mapGetters } from 'vuex'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 export default defineComponent({
   name: 'roadDashReportVue',
@@ -88,6 +108,7 @@ export default defineComponent({
       'refreshToken'
     ])
   },
+  components: { VueDatePicker },
   created() {
     console.log('로그인한 사용자:', this.loginUser)
     console.log('로그인 상태:', this.isLogin)
@@ -97,6 +118,8 @@ export default defineComponent({
   },
 
   setup() {
+    const startDate = ref(new Date()) // 오늘 날짜를 초기값으로 설정
+    const endDate = ref(new Date()) // 오늘 날짜를 초기값으로 설정
     const ITEMS_PER_PAGE = 10
     const currentPage = ref(0)
     const category = ref('')
@@ -127,6 +150,22 @@ export default defineComponent({
     const goToPage = (page: number) => {
       currentPage.value = page
     }
+
+    function toLocalDateTime(date: any) {
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      const hours = date.getHours()
+      const minutes = date.getMinutes()
+      const seconds = date.getSeconds()
+
+      return `${year}-${month.toString().padStart(2, '0')}-${day
+        .toString()
+        .padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+
     const store = useStore()
 
     // getters에서 nowUnderroad 가져오기
@@ -169,12 +208,20 @@ export default defineComponent({
             {}
           )
           .then((res) => {
+            console.log(res)
             logList.value = res.data
           })
           .catch((error) => {
             console.log(error)
           })
       }
+    })
+
+    watch([startDate, endDate], ([newStartDate, newEndDate]) => {
+      let startDate = toLocalDateTime(newStartDate)
+      let endDate = toLocalDateTime(newEndDate)
+      console.log('Start Date:', startDate)
+      console.log('End Date:', endDate)
     })
 
     onMounted(() => {
@@ -188,7 +235,9 @@ export default defineComponent({
       prevPage,
       goToPage,
       pageCount,
-      category
+      category,
+      startDate,
+      endDate
     }
   }
 })
@@ -267,5 +316,43 @@ export default defineComponent({
 /* Active page style */
 .pagination .active {
   text-decoration: underline;
+}
+
+.VueDatePicker {
+  height: 50px;
+  width: 50px;
+}
+
+.datepicker-row {
+  display: flex;
+  justify-content: space-between; /* 두 요소 사이에 공간을 동일하게 분배 */
+}
+
+.datepicker-row > div {
+  flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
+}
+
+.VueDatePicker {
+  height: 50px;
+  width: 100%; /* 또는 적당한 %값 */
+}
+
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  /* 회원가입상자_제목 */
+  font-family: Roboto;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+#category-select {
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 </style>

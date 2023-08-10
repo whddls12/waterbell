@@ -4,6 +4,10 @@ import router from './router'
 import store from './store'
 import auth from '@/store/index'
 import axios from 'axios'
+import VueDatePicker from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
+
+// Use plugin with optional defaults
 import FontAwesomeIcon from './util/fontawesome-icons'
 
 import getMylocation, { getClosestLocation } from './types/getMylocation'
@@ -20,10 +24,10 @@ import getMylocation, { getClosestLocation } from './types/getMylocation'
 
 const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
+app.component('VueDatePicker', VueDatePicker)
 app.config.globalProperties.$http = axios
 app.config.globalProperties.$store = store
 app.use(store).use(router)
-
 const facilityId = computed(() => auth.getters['auth/facilityId'])
 // fetchUnderroads 액션을 실행하고 완료될 때까지 기다립니다.
 
@@ -32,7 +36,7 @@ auth
   .then(async () => {
     // 액션이 완료되면 앱을 마운트합니다.
     const underroadList = computed(() => auth.getters['auth/underroadList'])
-
+    // console.log(underroadList.value)
     // console.log(underroadList.value)
     if (!Array.isArray(underroadList.value)) {
       throw new Error('underroadList.value is not iterable')

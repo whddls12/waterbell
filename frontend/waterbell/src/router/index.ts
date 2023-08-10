@@ -2,12 +2,14 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
 import NotFound from '@/views/NotFound.vue'
 
+//관리자 로그인
+import managerLogin from '@/views/ManagerLogin.vue'
 //지하차도 페이지
 import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
 import RoadReport from '@/underroad/views/roadReportView.vue' // 신고접수
 import RoadSystemlog from '@/underroad/views/roadSystemLogView.vue' // 시스템로그
 import RoadManage from '@/underroad/views/roadManageView.vue' // 관리
-import RoadControl from '@/underroad/views/roadControlView.vue' // 제어
+import RoadControll from '@/underroad/views/roadControlView.vue' // 제어
 
 //지하차도 신고접수
 import roadReportItemVue from '../underroad/components/report/roadReportItem.vue'
@@ -31,7 +33,7 @@ import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // �
 import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신고접수
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
-import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
+import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
 
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
@@ -54,6 +56,7 @@ const router = createRouter({
       name: 'Home',
       component: Home
     },
+<<<<<<< HEAD
     // 사용자가 의도하지 않은 URL로 접근 시 뷰 라우터에 404 오류 페이지로 리다이렉션 설정
     {
       path: '/notFound',
@@ -64,6 +67,10 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       redirect: '/notFound'
     },
+=======
+    //매니저 로그인
+    { path: '/manager/login', name: 'managerLogin', component: managerLogin },
+>>>>>>> ef6d89b01203712d149a5c9462a6400f9bf64329
     // 지하차도 라우터
     {
       path: '/road/dash',
@@ -88,9 +95,9 @@ const router = createRouter({
       component: roadReportItemVue
     },
     {
-      path: '/road/control',
-      name: 'RoadControl',
-      component: RoadControl
+      path: '/road/controll',
+      name: 'RoadControll',
+      component: RoadControll
     },
     {
       path: '/road/manage',
@@ -157,9 +164,9 @@ const router = createRouter({
       children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
     },
     {
-      path: '/park/control',
-      name: 'ParkControl',
-      component: ParkControl
+      path: '/park/controll',
+      name: 'ParkControll',
+      component: ParkControll
     },
     //알림함
     {
