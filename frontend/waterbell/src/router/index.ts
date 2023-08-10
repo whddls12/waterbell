@@ -1,5 +1,6 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
+import NotFound from '@/views/NotFound.vue'
 
 //관리자 로그인
 import managerLogin from '@/views/ManagerLogin.vue'
@@ -44,7 +45,7 @@ import alarmDetail from '@/alarm/AlarmDetail.vue'
 import store from '@/store'
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(process.env.BASE_URL),
   routes: [
     {
       path: '',
@@ -54,6 +55,16 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    // 사용자가 의도하지 않은 URL로 접근 시 뷰 라우터에 404 오류 페이지로 리다이렉션 설정
+    {
+      path: '/notFound',
+      name: 'notFound',
+      component: NotFound
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/notFound'
     },
     //매니저 로그인
     { path: '/manager/login', name: 'managerLogin', component: managerLogin },
@@ -77,7 +88,7 @@ const router = createRouter({
       component: roadReportUpdateVue
     },
     {
-      path: '/road/report/item',
+      path: '/road/report/:report_id/detail',
       component: roadReportItemVue
     },
     {
@@ -122,7 +133,11 @@ const router = createRouter({
       ]
     },
 
-    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
+    {
+      path: '/park/mypage',
+      name: 'parkMypage',
+      component: parkMypage
+    },
 
     {
       path: '/park/dash',
