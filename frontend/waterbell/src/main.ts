@@ -30,7 +30,6 @@ app.config.globalProperties.$store = store
 app.use(store).use(router)
 const facilityId = computed(() => auth.getters['auth/facilityId'])
 // fetchUnderroads 액션을 실행하고 완료될 때까지 기다립니다.
-
 auth
   .dispatch('fetchUnderroads')
   .then(async () => {
@@ -48,7 +47,12 @@ auth
   })
   .then((result) => {
     // 결과 값을 auth 모듈의 facilityId에 저장합니다.
+    // if (
+    //   isLogin.value &&
+    //   (role.value == 'APART_MANAGER' || role.value == 'APART_MEMBER')
+    // ) {
 
+    // } else
     if (facilityId.value == null || facilityId.value == undefined) {
       auth.commit('auth/setFacilityId', result.id)
       // console.log(result)
