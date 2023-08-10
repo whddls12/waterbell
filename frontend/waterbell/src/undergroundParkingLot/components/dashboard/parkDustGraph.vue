@@ -1,39 +1,36 @@
 <template>
-  <div class="container">
-    <div class="dash-box">
-      <div class="dash-box-title">
-        <h3>미세먼지</h3>
-      </div>
-      <div class="dash-box-content">
-        <canvas
-          ref="dustChartCanvas"
-          id="dustChartCanvas"
-          width="400"
-          height="200"
-        ></canvas>
-      </div>
+  <div>
+    <div class="container">
+      <p>미세먼지 반도넛그래프 테스트</p>
+      <canvas
+        ref="dustChartCanvas"
+        id="dustChartCanvas"
+        width="400"
+        height="200"
+      ></canvas>
     </div>
   </div>
 </template>
 <script lang="ts">
 import Chart from 'chart.js/auto'
-import { ref, onMounted, computed, defineComponent, nextTick } from 'vue'
-import store from '@/store/index'
+import { ref, onMounted, computed, nextTick } from 'vue'
+import { defineComponent } from 'vue'
 import http from '@/types/http'
+import store from '@/store'
 
 export default defineComponent({
-  name: 'parkDashDust',
+  name: 'parkDustGraph',
   setup() {
-    // 시설 아이디 가져오기
-    const facility_id = computed(() => store.getters['auth/facilityId']).value
-
     const chartRef = ref(null)
-    const current_dust = ref(null) // 미세먼지 측정 값
-    const left_dust = ref<number | null>() // (미세먼지 측정 최대치) - (현재 측정값)
+
+    // 시설아이디 가져오기
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const current_dust = ref(null) // 미세먼지 농도
+    const left_dust = ref<number | null>() // 미세먼지 최대농도에서 현재 농도를 뺀 값
 
     async function getDustData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
+        const response = await http.get(`/dash/facilities/10/sensors`)
         current_dust.value = response.data.Dust
         left_dust.value = 500 - response.data.Dust
 
@@ -42,7 +39,7 @@ export default defineComponent({
         console.log('미세먼지 측정 데이터 가져오기 실패:', error)
       }
     }
-
+    // 차트를 화면에 그려주는 함수
     async function drawChart(dustChartCanvas: HTMLElement | null) {
       const canvas = document.getElementById(
         'dustChartCanvas'
@@ -61,7 +58,7 @@ export default defineComponent({
             {
               label: '미세먼지 그래프',
               data: [current_dust.value, left_dust.value],
-              backgroundColor: ['rgb(255, 72, 72)', 'rgb(147, 147, 147)'], // 그래프 색상
+              backgroundColor: ['rgb(255, 72, 72)', 'rgb(147, 147, 147)'],
               borderWidth: 0,
               borderRadius: 8,
               hoverBackgroundColor: ['rgb(255, 72, 72)', 'rgb(147, 147, 147)'],
@@ -78,7 +75,6 @@ export default defineComponent({
             // 범례삭제
             display: false
           },
-          // plugin이 있어야 적용될거같음.
           elements: {
             center: {
               text: current_dust,
@@ -88,7 +84,6 @@ export default defineComponent({
           cutout: 70, // 파이 차트의 가운데 부분을 얼마나 자를 건지
           rotation: -90, // 호를 그릴 시작 각도
           circumference: 180 // 호를 그리는 각도
-          // 그래프 가운데에 미세먼지 측정값을 띄우고 싶은데 아직 잘 안됨
           // plugins: {
           //   AfterDraw: function (chart: Chart) {
           //     let ctx = chart.ctx
@@ -119,8 +114,12 @@ export default defineComponent({
       drawChart(chartRef.value)
     })
 
-    return { chartRef, getDustData }
+    return { chartRef, current_dust }
   }
 })
 </script>
-<style></style>
+<style>
+#dash-cctv {
+  height: 500px;
+}
+</style>
