@@ -34,8 +34,7 @@ public class AwsIoTConfig {
     }
 
     private void subscribeToTopics() throws AWSIotException {
-
-        String[] topics = {"Arduino/SENSOR", "Arduino/CAM"};
+        String[] topics = {"TEMPERATURE", "Dust", "HUMIDITY","CAM"};
 
         for (String topicName : topics) {
             subscribeToTopic(topicName);
@@ -43,21 +42,16 @@ public class AwsIoTConfig {
     }
 
     private void subscribeToTopic(String topicName) throws AWSIotException {
-
-        if(topicName.equals("Arduino/SENSOR")) {
-            client.subscribe(new MqttTopic(topicName) {
-                @Override
-                public void onMessage(AWSIotMessage message) {
-                    try {
-                        handleReceivedMessage(message.getStringPayload());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+        client.subscribe(new MqttTopic(topicName) {
+            @Override
+            public void onMessage(AWSIotMessage message) {
+                try {
+                    handleReceivedMessage(message.getStringPayload());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-            });
-        } else if(topicName.equals("Arduino/CAM")) {
-
-        }
+            }
+        });
     }
 
     private void handleReceivedMessage(String message) throws Exception {
@@ -73,4 +67,8 @@ public class AwsIoTConfig {
         client.publish(mqttMessage, timeout);
     }
 
+    public void subscribe(String topicName) throws AWSIotException {
+        MqttTopic topic = new MqttTopic(topicName);
+        client.subscribe(topic);
+    }
 }
