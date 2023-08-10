@@ -65,7 +65,6 @@ export default createStore({
   },
   actions: {
     //아래 action을 페이지 로딩 되자마자 띄울 수 있도록 할 것.
-<<<<<<< HEAD
     // async fetchUnderroads(context: any, payload) {
     //   // try {
     //   //로그인된 유저의 자격이 지하차도 매니저이면 지하차도 목록을 list로 생성할 것.
@@ -158,7 +157,6 @@ export default createStore({
     //     })
     //   }
     // }
-
   },
 
   modules: {

@@ -87,6 +87,8 @@ export async function memberLogin(loginId: string, password: string) {
 export async function managerLogin(loginId: string, password: string) {
   try {
     // console.log('실행되는가?')
+    const apiClient = (await setAxios()).apiClient
+    const api = (await setAxios()).api
     const response = await api.post('/member/login', {
       loginId,
       password
@@ -160,6 +162,8 @@ export async function managerLogin(loginId: string, password: string) {
 
 export async function logout() {
   try {
+    const apiClient = (await setAxios()).apiClient
+    const api = (await setAxios()).api
     await apiClient.post('/member/logout').then((res) => {
       // console.log(res.data)
       store.commit('auth/logout')

@@ -28,10 +28,10 @@ export default defineComponent({
     ])
   },
   setup() {
+    const store = useStore()
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
-    const store = useStore()
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const warningText = ref('')
     const actionTriggered = computed(() => store.state.actionTriggered)
