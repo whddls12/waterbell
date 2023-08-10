@@ -14,13 +14,13 @@
 
 <script lang="ts">
 import { defineComponent, computed, ref, onMounted, watch } from 'vue'
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
+import store from '@/store/index'
 import { mapGetters } from 'vuex'
-import apiModule from '@/types/apiClient'
 import SirenGreenImage from '@/assets/images/Siren_green.png'
 import SirenOrange from '@/assets/images/Siren_orange.png'
 import SirenRed from '@/assets/images/Siren_red.png'
-
+import axios from '@/types/apiClient'
 // import http from '@/types/http'
 
 export default defineComponent({
@@ -35,9 +35,10 @@ export default defineComponent({
     ])
   },
   setup() {
-    const apiClient = apiModule.apiClient
-    const api = apiModule.api
-    const store = useStore()
+    // const store = useStore()
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const sirenImage = ref(SirenGreenImage)
     const currentState = ref('윤영이가 넣어줄 문구')
