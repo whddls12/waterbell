@@ -6,6 +6,7 @@ import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.*;
 import com.ssafy.fcc.dto.ControlLogDto;
 import com.ssafy.fcc.dto.SensorLogDto;
+import com.ssafy.fcc.handler.CamWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -32,6 +30,11 @@ public class SystemService {
     private final ApartRepository apartRepository;
     private final UndergroundRoadRepository undergroundRoadRepository;
     private final ControlLogRepository controlLogRepository;
+
+    public final FacilityService facilityService;
+    public final UndergroundRoadService undergroundRoadService;
+    public final ApartService apartService;
+    public CamWebSocketHandler camWebSocketHandler;
 
     public void insertLog(int facilityId, SensorType category, int value) {
 
@@ -52,8 +55,8 @@ public class SystemService {
         Facility facility = facilityRepository.findById(facilityId);
 
         map.put("Dust", sensorLogRepository.getRecentData(facility, SensorType.DUST));
-        map.put("Temperature", sensorLogRepository.getRecentData(facility, SensorType.TEMPERATURE));
-        map.put("Humidity", sensorLogRepository.getRecentData(facility, SensorType.HUMIDITY));
+        map.put("Temperature", sensorLogRepository.getRecentData(facility, SensorType.TEMP));
+        map.put("Humidity", sensorLogRepository.getRecentData(facility, SensorType.HUMID));
 
         return map;
     }
@@ -125,11 +128,10 @@ public class SystemService {
     public int insertControlLog(int facilityId, String command_str) {
 
         Facility facility = facilityRepository.findById(facilityId);
-        ControlType category = facility.isApart() == true ? ControlType.WATERPLATE : ControlType.BILLBOARD;
+        ControlType category = facility.isApart() == true ? ControlType.PLATE : ControlType.BOARD;
         LocalDateTime time = LocalDateTime.now().withNano(0);
         int height = sensorLogRepository.getRecentData(facility, SensorType.HEIGHT);
         CommandType command = CommandType.valueOf(command_str.toUpperCase());
-
         ControlLog controlLog = new ControlLog();
         controlLog.setFacility(facility);
         controlLog.setCategory(category);
@@ -156,4 +158,64 @@ public class SystemService {
         return resultMap;
     }
 
+    public void fromSensor(String topic, String message) throws Exception {
+        System.out.println("@@@");
+        String[] result = message.toString().split("/");
+
+        int facilityId = Integer.parseInt(result[0]);
+        SensorType category = SensorType.valueOf(topic.toUpperCase());
+        int value = Integer.parseInt(result[1]);
+
+        Facility facility = facilityRepository.findById(facilityId);
+
+        if (category.equals("height")) {
+            checkSituation(facility, value);
+        }
+
+
+//        // TODO category에 따라 프론트로 웹소켓 통신 or 측정 로그 저장
+        if (topic.equals("Cam")) {
+
+//            Base64.Encoder encode = Base64.getEncoder();
+//
+//            byte[] encodeByte = encode.encode(message.getPayload());
+//
+//            System.out.println("인코딩 후 : " + new String(encodeByte));
+//            camWebSocketHandler.sendVideoImg(facilityId, new String(encodeByte));
+        } else {
+            insertLog(facilityId, category, value);
+        }
+    }
+
+    @Transactional
+    public void checkSituation(Facility facility, int value) throws Exception {
+
+        if (value > facility.getSecondAlarmValue()) {
+            if (facility.getStatus() == WaterStatus.FIRST || facility.getStatus() == WaterStatus.DEFAULT) {
+                facilityService.updateStatus(facility, WaterStatus.SECOND);
+                if (facility.isApart()) { // 아파트
+                    apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
+                } else { // 지하차도
+                    undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus(), value);
+                }
+            }
+
+        } else if (value > facility.getFirstAlarmValue()) {
+            if (facility.getStatus() == WaterStatus.DEFAULT) {
+                facilityService.updateStatus(facility, WaterStatus.FIRST);
+                if (facility.isApart()) { // 아파트
+                    apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
+                    apartService.sendAutoNotificationToMember(facility.getId());
+                } else { // 지하차도
+                    undergroundRoadService.sendAutoNotification(facility.getId(), facility.getStatus(), value);
+                }
+            } else if (facility.getStatus() == WaterStatus.SECOND) {
+                facilityService.updateStatus(facility, WaterStatus.FIRST);
+            }
+
+        } else {
+            facilityService.updateStatus(facility, WaterStatus.DEFAULT);
+        }
+
+    }
 }
