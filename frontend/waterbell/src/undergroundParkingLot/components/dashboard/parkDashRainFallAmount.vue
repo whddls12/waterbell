@@ -2,6 +2,7 @@
   <div class="container" id="dash-cctv">
     <div class="dash-box">
       <div class="dash-box-title">
+        <i class="fas fa-chart-line"></i>
         <h3>강수량 그래프</h3>
       </div>
       <div class="dash-box-content">
@@ -87,8 +88,8 @@ export default defineComponent({
             {
               label: '강수량 데이터',
               data: amountArr.value,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(151, 143, 237, 0.2)',
+              borderColor: 'rgba(151, 143, 237, 1)',
               borderWidth: 1
             }
           ]
