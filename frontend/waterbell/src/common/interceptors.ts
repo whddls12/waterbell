@@ -1,6 +1,6 @@
-import store from '@/store/index'
+// import store from '@/store/index'
 import router from '@/router/index'
-export function setInterceptors(instance: any) {
+export function setInterceptors(instance: any, store: any) {
   instance.interceptors.request.use(
     function (config: any) {
       //accessToken을 store.auth 에서 가져오기

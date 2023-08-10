@@ -37,6 +37,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import http from '@/types/http'
+// import apiModule from '@/types/apiClient'
 import store from '@/store/index'
 import { useRouter } from 'vue-router'
 
@@ -44,6 +45,7 @@ export default defineComponent({
   name: 'roadDashReportVue',
 
   setup() {
+    // const apiClient = apiModule.apiClient
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     let reportList = ref<
