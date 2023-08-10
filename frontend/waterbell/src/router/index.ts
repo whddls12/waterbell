@@ -56,7 +56,6 @@ const router = createRouter({
       name: 'Home',
       component: Home
     },
-<<<<<<< HEAD
     // 사용자가 의도하지 않은 URL로 접근 시 뷰 라우터에 404 오류 페이지로 리다이렉션 설정
     {
       path: '/notFound',
@@ -67,10 +66,8 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       redirect: '/notFound'
     },
-=======
     //매니저 로그인
     { path: '/manager/login', name: 'managerLogin', component: managerLogin },
->>>>>>> ef6d89b01203712d149a5c9462a6400f9bf64329
     // 지하차도 라우터
     {
       path: '/road/dash',
