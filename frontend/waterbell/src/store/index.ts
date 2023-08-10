@@ -14,7 +14,9 @@ export default createStore({
     isMainpage: true,
     isPark: true,
     camClient1: null as null | string,
-    camClient2: null as null | string
+    camClient2: null as null | string,
+    actionTriggered: false,
+    UactionTriggered: false
   },
   getters: {
     tmpUnderroad(state) {
@@ -51,6 +53,14 @@ export default createStore({
 
     setCamClient2(state, value) {
       state.camClient2 = value
+    },
+
+    SET_ACTION_TRIGGERED(state, payload) {
+      state.actionTriggered = payload
+    },
+
+    SET_ACTION_UTRIGGERED(state, payload) {
+      state.UactionTriggered = payload
     }
   },
   actions: {
@@ -153,6 +163,18 @@ export default createStore({
           })
         })
       }
+    },
+    triggerAction({ commit }) {
+      commit('SET_ACTION_TRIGGERED', true)
+    },
+    resetActionTrigger({ commit }) {
+      commit('SET_ACTION_TRIGGERED', false)
+    },
+    UtriggerAction({ commit }) {
+      commit('SET_ACTION_UTRIGGERED', true)
+    },
+    UresetActionTrigger({ commit }) {
+      commit('SET_ACTION_UTRIGGERED', false)
     }
   },
 
