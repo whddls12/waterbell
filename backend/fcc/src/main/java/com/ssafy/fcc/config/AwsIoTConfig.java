@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 public class AwsIoTConfig {
 
     String clientEndpoint = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com";
-    String clientId = "IoTCore";
+    String clientId = "IoT";
     String awsAccessKeyId = "AKIASBP5HSYQ5IDP7QNO";
     String awsSecretAccessKey = "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";
 
@@ -46,7 +46,7 @@ public class AwsIoTConfig {
             @Override
             public void onMessage(AWSIotMessage message) {
                 try {
-                    handleReceivedMessage(topicName, message.getStringPayload());
+                    handleReceivedMessage(message.getStringPayload());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -54,8 +54,8 @@ public class AwsIoTConfig {
         });
     }
 
-    private void handleReceivedMessage(String topic, String message) throws Exception {
-        systemService.fromSensor(topic,message);
+    private void handleReceivedMessage(String message) throws Exception {
+        systemService.fromSensor(message);
     }
 
 
