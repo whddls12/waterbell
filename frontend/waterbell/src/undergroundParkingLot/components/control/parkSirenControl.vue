@@ -35,9 +35,9 @@ export default defineComponent({
     ])
   },
   setup() {
-    const apiClient = apiModule.apiClient
-    const api = apiModule.api
     const store = useStore()
+    const apiClient = apiModule.apiClient(store)
+    const api = apiModule.api
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const sirenImage = ref(SirenGreenImage)
     const currentState = ref('윤영이가 넣어줄 문구')
