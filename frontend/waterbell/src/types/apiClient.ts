@@ -12,7 +12,7 @@ import { setInterceptors } from '@/common/interceptors'
 
 //accessToken 넣지 않은 일반 axios
 const api = axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: process.env.VUE_APP_API,
   timeout: 2000,
   headers: { 'X-Custom-Header': 'waterbell' }
 })

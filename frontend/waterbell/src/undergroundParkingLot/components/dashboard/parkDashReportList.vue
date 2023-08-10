@@ -30,6 +30,9 @@
         <tbody v-if="reportList.length == 0">
           <td colspan="4" class="text-center">등록된 신고접수가 없습니다.</td>
         </tbody>
+
+        <!-- <i class="far fa-bell"></i>
+        <h3>신고접수 내역</h3> -->
       </div>
     </div>
   </div>

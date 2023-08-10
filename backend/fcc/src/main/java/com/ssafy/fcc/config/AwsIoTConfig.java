@@ -15,9 +15,9 @@ import org.springframework.context.annotation.Configuration;
 public class AwsIoTConfig {
 
     String clientEndpoint = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com";
-    String clientId = "IoTCore";
-    String awsAccessKeyId = "AKIASBP5HSYQYFK435XS";
-    String awsSecretAccessKey = "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";
+    String clientId = "IoT";
+    String awsAccessKeyId = "AKIASBP5HSYQ5IDP7QNO";
+    String awsSecretAccessKey = "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";
 
     AWSIotMqttClient client = null;
 
@@ -34,7 +34,8 @@ public class AwsIoTConfig {
     }
 
     private void subscribeToTopics() throws AWSIotException {
-        String[] topics = {"TEMPERATURE", "Dust", "HUMIDITY","CAM"};
+
+        String[] topics = {"Arduino/SENSOR", "Arduino/CAM"};
 
         for (String topicName : topics) {
             subscribeToTopic(topicName);
@@ -42,20 +43,25 @@ public class AwsIoTConfig {
     }
 
     private void subscribeToTopic(String topicName) throws AWSIotException {
-        client.subscribe(new MqttTopic(topicName) {
-            @Override
-            public void onMessage(AWSIotMessage message) {
-                try {
-                    handleReceivedMessage(topicName, message.getStringPayload());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+
+        if(topicName.equals("Arduino/SENSOR")) {
+            client.subscribe(new MqttTopic(topicName) {
+                @Override
+                public void onMessage(AWSIotMessage message) {
+                    try {
+                        handleReceivedMessage(message.getStringPayload());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        });
+            });
+        } else if(topicName.equals("Arduino/CAM")) {
+
+        }
     }
 
-    private void handleReceivedMessage(String topic, String message) throws Exception {
-        systemService.fromSensor(topic,message);
+    private void handleReceivedMessage(String message) throws Exception {
+        systemService.fromSensor(message);
     }
 
 
@@ -67,8 +73,4 @@ public class AwsIoTConfig {
         client.publish(mqttMessage, timeout);
     }
 
-    public void subscribe(String topicName) throws AWSIotException {
-        MqttTopic topic = new MqttTopic(topicName);
-        client.subscribe(topic);
-    }
 }
