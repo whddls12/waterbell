@@ -58,6 +58,7 @@ export default defineComponent({
     const minute = now.getMinutes().toString().padStart(2, '0')
     const lon = store.state.location['lon']
     const lat = store.state.location['lat']
+    console.log(now)
 
     // 날씨 정보 데이터
     const status_sky = ref(null) // 하늘 상태
@@ -80,7 +81,7 @@ export default defineComponent({
             lat: lat //여기 변경됨
           }
         })
-
+        console.log(response)
         status_sky.value = response.data.SKY.fcstValue
         type_rainfall.value = response.data.PTY.fcstValue
         console.log(status_sky.value)
@@ -102,7 +103,7 @@ export default defineComponent({
         // 흐림
         SKY.value = 'blur'
       }
-      SKY.value = 'cloudy'
+      // SKY.value = 'cloudy'
       // 이미지 지정
       if (type_rainfall.value === '0') {
         PTY.value = 'none'
@@ -113,7 +114,7 @@ export default defineComponent({
       } else if (type_rainfall.value === '3' || type_rainfall.value === '7') {
         PTY.value = 'snow'
       }
-      PTY.value = 'rain'
+      // PTY.value = 'rain'
     }
 
     function getWeatherImageUrl() {

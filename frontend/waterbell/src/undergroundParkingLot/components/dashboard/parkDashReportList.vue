@@ -2,7 +2,8 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>신고접수</h3>
+        <i class="far fa-bell"></i>
+        <h3>신고접수 내역</h3>
       </div>
       <div class="dash-box-content"></div>
     </div>
