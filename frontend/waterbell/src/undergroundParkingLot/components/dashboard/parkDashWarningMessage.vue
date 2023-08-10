@@ -4,32 +4,28 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, computed } from 'vue'
 import apiModule from '@/types/apiClient'
 import store from '@/store/index'
-export default defineComponent(()=>{
-name : 'parkDashWarningMsgVue',
+export default defineComponent({
+  name: 'parkDashWarningMsgVue',
+  setup() {
+    const api = apiModule.api
 
-setup(){
-const api = apiModule.api
+    // let warningMsg = ref()
+    let facilityId = computed(() => store.getters['auth/facilityId'])
 
-// let warningMsg = ref()
-let facilityId = computed(()=> store.getters['auth/facilityId'])
+    const getStatus = () => {
+      api.get(`/facilities/${facilityId.value}/status`).then((res) => {
+        console.log(res)
+      })
+    }
+    onMounted(() => {
+      getStatus()
+    })
 
-const getStatus = ()=> {
-  api.get(`/facilities/${facilityId.value}/status`).then((res)=>{
-  console.log(res)
-})
-}
-onMounted(()=>{
-getStatus()
-
-})
-
-return {facilityId, getStatus}
-
-}
-
+    return { facilityId, getStatus }
+  }
 })
 </script>
 <style lang=""></style>

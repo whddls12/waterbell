@@ -1,12 +1,14 @@
 import { Module } from 'vuex'
-import { ApartManager, ApartMember, PublicManager } from '@/types/user' // Typo here: ApartManager
+import { ApartMember, PublicManager } from '@/types/user' // Typo here: ApartManager
+// import apiModule from '@/types/apiClient'
 import apiModule from '@/types/apiClient'
 import { connectWebSocket, closeWebSocket } from '@/types/webSocket_alarm'
 import store from '@/store/index'
 import router from '@/router/index'
 import { Underroad } from '@/types/underroad'
-const apiClient = apiModule.apiClient
 
+const apiClient = apiModule.apiClient
+const api = apiModule.api
 const auth: Module<any, any> = {
   namespaced: true,
   state: {
@@ -27,7 +29,9 @@ const auth: Module<any, any> = {
       releaseMsg: string
     },
     underroadListByGugun: [] as any, //지하차도 리스트(구군에 따라 리스트로 되어 있음)
-    underroadList: [] as Underroad[] //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
+    underroadList: [] as Underroad[], //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
+    firstEnter: true as boolean
+    //----------------------------------------------------------------------------------
   },
   getters: {
     isLogin: (state) => state.isLogin,
@@ -45,6 +49,9 @@ const auth: Module<any, any> = {
     },
     underroadListByGugun(state) {
       return state.underroadListByGugun
+    },
+    isFirst(state) {
+      return state.isFirst
     }
   },
   mutations: {
@@ -94,6 +101,9 @@ const auth: Module<any, any> = {
     resetList(state) {
       state.underroadList = []
       state.underroadListByGugun = []
+    },
+    switchIsFirst(state) {
+      state.isFirst = !state.isFirst
     }
   },
   actions: {
@@ -104,7 +114,6 @@ const auth: Module<any, any> = {
           loginId,
           password
         })
-
         let user
         const member = response.data.member
         const accessToken = member.accessToken
@@ -134,24 +143,11 @@ const auth: Module<any, any> = {
               name: member.name,
               addressNumber: member.addressNumber
             }
+            commit('setFacilityId', member.facilityId)
             break
-          // case 'PUBLIC_MANAGER':
-          // user = {
-          //   id: member.id,
-          //   loginId: member.loginId,
-          //   role: member.role,
-          //   phone: member.phone,
-          //   sidoId: member.sidoId,
-          //   facilityId: member.facilityId || []
-          // }
-          // break
         }
-
         //웹소켓 연결
-
         // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
-        // commit('setLoginUser', user)
-        // commit('setIslogin', true); // Typo here: setIsLogin
         await commit('setTokens', { accessToken, refreshToken })
         await commit('setIsLogin', true)
         await commit('setRole', member.role)
@@ -181,21 +177,18 @@ const auth: Module<any, any> = {
         return
       }
     },
-
     async managerLogin({ commit }, { loginId, password }) {
       try {
         // console.log('실행되는가?')
-        const response = await apiClient.post('/member/login', {
+        const response = await api.post('/member/login', {
           loginId,
           password
         })
-
         let user
         const member = response.data.member
         const accessToken = member.accessToken
         const refreshToken = member.refreshToken
         console.log(member.role)
-
         switch (member.role) {
           case 'APART_MANAGER': {
             user = {
@@ -205,14 +198,13 @@ const auth: Module<any, any> = {
               phone: member.phone,
               facilityId: member.facilityId
             }
+            commit('setFacilityId', member.facilityId)
             break
           }
-
           case 'APART_MEMBER': {
             const error = new Error(`NOT_MEMBER`)
             throw error
           }
-
           case 'PUBLIC_MANAGER': {
             user = {
               id: member.id,
@@ -226,7 +218,6 @@ const auth: Module<any, any> = {
           }
         }
         //웹소켓 연결
-
         // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
         // commit('setLoginUser', user)
         // commit('setIslogin', true); // Typo here: setIsLogin
@@ -259,7 +250,6 @@ const auth: Module<any, any> = {
       }
       return
     },
-
     async logout({ commit }) {
       try {
         await apiClient.post('/member/logout').then((res) => {
