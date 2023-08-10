@@ -1,15 +1,16 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">전광판 제어</div>
-    <div class="warning1">1차 경고 작동 중</div>
+    <div class="controll1">차수판 제어</div>
+    <div class="warning1">{{ warningText }}</div>
     <div class="buttons">
       <button class="button1" @click="onAction">동작</button>
       <button class="button2" @click="onRelease">해제</button>
     </div>
   </div>
 </template>
+
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
 import apiModule from '@/types/apiClient'
@@ -17,7 +18,7 @@ import apiModule from '@/types/apiClient'
 // import http from '@/types/http'
 
 export default defineComponent({
-  name: 'roadControlLedVue',
+  name: 'ParkControlWallCom',
   computed: {
     ...mapGetters('auth', [
       'loginUser',
@@ -30,25 +31,21 @@ export default defineComponent({
   setup() {
     const apiClient = apiModule.apiClient
     const store = useStore()
-    const role = computed(() => store.getters['auth/role']).value
-    const token = computed(() => store.getters['auth/accessToken']).value
     const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const warningText = ref('작동 중')
 
     const onAction = () => {
-      // 동작 버튼을 눌렀을 때 실행할 코드
-      console.log('동작 버튼 클릭')
-
-      // apiClient
-      //   .post('/notification/apartManager/activation')
-      //   .then((response) => {
-      //     console.log(response.data)
-      //   })
-      //   .catch((error) => {
-      //     console.error('Error sending the request:', error)
-      //   })
+      apiClient
+        .post('/notification/apartManager/activation')
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.error('Error sending the request:', error)
+        })
 
       apiClient
-        .post(`/control/${facility_id}/ON`)
+        .post(`/control/manager/${facility_id}/ON`)
         .then((response) => {
           console.log(response.data)
         })
@@ -58,16 +55,31 @@ export default defineComponent({
     }
 
     const onRelease = () => {
-      // 해제 버튼을 눌렀을 때 실행할 코드
-      console.log('해제 버튼 클릭1')
-      console.log(facility_id)
+      apiClient
+        .post('/notification/apartManager/deactivation')
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.error('Error sending the request:', error)
+        })
+
+      apiClient
+        .post(`/control/manager/${facility_id}/OFF`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
 
     return {
       apiClient,
       store,
       onAction,
-      onRelease
+      onRelease,
+      warningText
     }
   },
 

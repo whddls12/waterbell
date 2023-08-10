@@ -1,6 +1,6 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">경고등 제어</div>
+    <div class="controll1">사이렌 제어</div>
     <div class="warning1">작동 중</div>
     <div class="buttons">
       <button class="button1" @click="onAction">동작</button>
@@ -9,23 +9,82 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script lang="ts">
+import { defineComponent, computed } from 'vue'
+import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
+import apiModule from '@/types/apiClient'
+
+// import http from '@/types/http'
 
 export default defineComponent({
-  name: 'roadControlLedVue',
-  methods: {
-    onAction() {
-      // 동작 버튼을 눌렀을 때 실행할 코드
-      console.log('동작 버튼 클릭')
-    },
-    onRelease() {
-      // 해제 버튼을 눌렀을 때 실행할 코드
-      console.log('해제 버튼 클릭')
+  name: 'ParkControlWallCom',
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
+  setup() {
+    const apiClient = apiModule.apiClient
+    const store = useStore()
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+
+    const onAction = () => {
+      apiClient
+        .post('/notification/apartManager/activation')
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.error('Error sending the request:', error)
+        })
+
+      apiClient
+        .post(`/control/manager/${facility_id}/ON`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
-  }
+
+    const onRelease = () => {
+      apiClient
+        .post('/notification/apartManager/deactivation')
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.error('Error sending the request:', error)
+        })
+
+      apiClient
+        .post(`/control/manager/${facility_id}/OFF`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
+    return {
+      apiClient,
+      store,
+      onAction,
+      onRelease
+    }
+  },
+
+  methods: {}
 })
 </script>
+
 <style scoped>
 .main {
   display: flex;

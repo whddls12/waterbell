@@ -16,8 +16,8 @@ public class AwsIoTConfig {
 
     String clientEndpoint = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com";
     String clientId = "IoTCore";
-    String awsAccessKeyId = "AKIASBP5HSYQYFK435XS";
-    String awsSecretAccessKey = "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";
+    String awsAccessKeyId = "AKIASBP5HSYQ5IDP7QNO";
+    String awsSecretAccessKey = "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";
 
     AWSIotMqttClient client = null;
 

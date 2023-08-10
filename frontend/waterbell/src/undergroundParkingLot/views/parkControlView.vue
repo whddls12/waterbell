@@ -1,11 +1,11 @@
 <template lang="">
   <div class="main-container">
-    <div class="header">지하차도 CCTV</div>
+    <div class="header">지하주차장 CCTV</div>
     <div class="road-control-cctv-com">
       <ParkControlCctvCom />
     </div>
     <div class="controll-container">
-      <ParkControlLedCom />
+      <ParkControlWallCom />
       <ParkControlWarningLightCom />
     </div>
   </div>
@@ -13,14 +13,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import ParkControlCctvCom from '../components/control/parkRealTimeVideo.vue'
-import ParkControlLedCom from '../components/control/parkWaterPlateControl.vue'
+import ParkControlWallCom from '../components/control/parkWaterPlateControl.vue'
 import ParkControlWarningLightCom from '../components/control/parkSirenControl.vue'
 
 export default defineComponent({
   name: 'ParkControl',
   components: {
     ParkControlCctvCom,
-    ParkControlLedCom,
+    ParkControlWallCom,
     ParkControlWarningLightCom
   }
 })
