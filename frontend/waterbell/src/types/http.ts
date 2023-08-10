@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 export default axios.create({
-  baseURL: 'http://localhost:8080',
+  baseURL: process.env.VUE_APP_PORT,
 
-  timeout: 4000,
-  headers: { 'X-Custom-Header': 'foobar' }
+  timeout: 10000,
+  headers: { 'X-Custom-Header': 'WaterBell' }
 })
