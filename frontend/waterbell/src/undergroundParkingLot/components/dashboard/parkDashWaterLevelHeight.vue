@@ -78,6 +78,11 @@ export default defineComponent({
           ]
         },
         options: {
+          elements: {
+            line: {
+              fill: true
+            }
+          },
           // 차트 옵션
           scales: {
             x: {

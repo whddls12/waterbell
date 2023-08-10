@@ -9,32 +9,57 @@
       <!-- 이름 -->
       <div class="myPage-content-box name">
         <label for="name">이름</label>
-        <input type="text" id="name" readonly placeholder="이름 띄워주기" />
+        <input type="text" id="name" readonly :placeholder="memberInfo?.name" />
       </div>
       <!-- 아이디 -->
-      <div class="myPage-content-box id">
+      <div class="myPage-content-box loginId">
         <label for="id">아이디</label>
-        <input type="text" id="id" disabled />
+        <input
+          type="text"
+          id="loginId"
+          disabled
+          :placeholder="memberInfo?.loginId"
+        />
       </div>
       <!-- 휴대폰번호 -->
       <div class="myPage-content-box phone">
         <label for="phone">휴대폰 번호</label>
-        <input type="text" id="phone" disabled />
+        <input
+          type="text"
+          id="phone"
+          disabled
+          :placeholder="memberInfo?.phone"
+        />
       </div>
       <!-- 아파트 인증코드 -->
-      <div class="myPage-content-box apart-code">
+      <div class="myPage-content-box apartCode">
         <label for="apart-code">아파트 인증코드</label>
-        <input type="text" id="apart-code" disabled />
+        <input
+          type="text"
+          id="apartCode"
+          disabled
+          :placeholder="memberInfo?.apartCode"
+        />
       </div>
       <!-- 주소 -->
       <div class="myPage-content-box address">
         <label for="address">주소</label>
-        <input type="text" id="address" disabled />
+        <input
+          type="text"
+          id="address"
+          disabled
+          :placeholder="memberInfo?.address"
+        />
       </div>
       <!-- 호수 -->
-      <div class="myPage-content-box unit">
+      <div class="myPage-content-box addressNumber">
         <label for="unit">호수</label>
-        <input type="text" id="unit" disabled />호
+        <input
+          type="text"
+          id="unit"
+          disabled
+          :placeholder="memberInfo?.addressNumber"
+        />호
       </div>
       <button>회원정보 수정하기</button>
       <button>회원탈퇴하기</button>
@@ -43,27 +68,49 @@
 </template>
 
 <script>
-import apiClient from '@/types/apiClient'
-import { defineComponent } from 'vue'
+import apiModule from '@/types/apiClient'
+import { ref, onMounted, defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'parkMypage'
-  // setup() {
-  //   function getMemberData() {
+  name: 'parkMypage',
+  setup() {
+    // const api = apiModule.api
+    const apiClient = apiModule.apiClient
+    const memberInfo = ref(null)
 
-  //   }
-  // }
-  // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
+    function getMemberData() {
+      apiClient
+        .get(`/member/apartMember/mypage`)
+        .then((res) => {
+          memberInfo.value = res.data.memberInfo
+          console.log(memberInfo.value)
+        })
+        .catch((error) => console.log(error))
+    }
+    // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
+    onMounted(() => {
+      getMemberData()
+    })
+    return { memberInfo, getMemberData }
+  }
 })
 </script>
 <style>
+.myPage {
+  display: flex;
+  width: 1440px;
+  padding: 80px 40px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.myPage-content {
+  gap: 50px;
+}
+
 .myPage-content-box {
   display: flex;
   flex-direction: column;
-}
-
-.myPage-content-box > label {
-  display: flex;
-  flex-direction: start;
+  align-items: flex-start;
 }
 </style>
