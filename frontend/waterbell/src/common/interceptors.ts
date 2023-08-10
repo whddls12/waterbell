@@ -4,7 +4,7 @@ export function setInterceptors(instance: any) {
   instance.interceptors.request.use(
     function (config: any) {
       //accessToken을 store.auth 에서 가져오기
-      config.headers.Authorization = store.getters['auth.accessToken']
+      config.headers.Authorization = store.getters['auth/accessToken']
       return config
     },
     function (error: any) {

@@ -133,7 +133,11 @@ const router = createRouter({
       ]
     },
 
-    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
+    {
+      path: '/park/mypage',
+      name: 'parkMypage',
+      component: parkMypage
+    },
 
     {
       path: '/park/dash',
