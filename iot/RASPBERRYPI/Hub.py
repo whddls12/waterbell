@@ -3,9 +3,9 @@ import paho.mqtt.client as mqtt
 import threading
 
 THING_NAME = 'IoT'
-CERTPATH =  "/home/jjhjjh/Desktop/Hub/IoT.cert.pem" # cert파일 경로
-KEYPATH = "/home/jjhjjh/Desktop/Hub/IoT.private.key" # key 파일 경로
-CAROOTPATH = "/home/jjhjjh/Desktop/Hub/root-CA.crt" # RootCaPem 파일 경로
+CERTPATH =  "" # cert파일 경로
+KEYPATH = "" # key 파일 경로
+CAROOTPATH = "" # RootCaPem 파일 경로
 
 msg_count = 0
 
