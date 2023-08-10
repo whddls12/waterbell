@@ -10,7 +10,6 @@
         <div id="columnflex">
           <parkDashWeatherVue class="right" id="dashcomponent" />
           <!-- <parkDashTempAndHumidVue class="right" id="dashcomponent" /> -->
-          <parkDustGraphVue class="right" id="dashcomponent" />
           <parkDashDustVue class="right" id="dashcomponent" />
           <parkDashRainFallAmountVue class="right" id="dashcomponent" />
         </div>
@@ -33,7 +32,6 @@ import parkDashReportListVue from '../components/dashboard/parkDashReportList.vu
 import parkDashWarningMessageVue from '../components/dashboard/parkDashWarningMessage.vue'
 import parkDashWaterLevelHeightVue from '../components/dashboard/parkDashWaterLevelHeight.vue'
 import parkDashWeatherVue from '../components/dashboard/parkDashWeather.vue'
-import parkDustGraphVue from '../components/dashboard/parkDustGraph.vue'
 
 export default defineComponent({
   name: 'ParkDash',
@@ -45,8 +43,7 @@ export default defineComponent({
     // parkDashTempAndHumidVue,
     parkDashWarningMessageVue,
     parkDashWaterLevelHeightVue,
-    parkDashWeatherVue,
-    parkDustGraphVue
+    parkDashWeatherVue
   }
 })
 </script>

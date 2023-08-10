@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container">
-      <p>미세먼지 반도넛그래프</p>
+      <p>미세먼지 반도넛그래프 테스트</p>
       <canvas
         ref="dustChartCanvas"
         id="dustChartCanvas"
@@ -13,7 +13,7 @@
 </template>
 <script lang="ts">
 import Chart from 'chart.js/auto'
-import { ref, onMounted, computed, nextTick, Ref } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { defineComponent } from 'vue'
 import http from '@/types/http'
 import store from '@/store'
