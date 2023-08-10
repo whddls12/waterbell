@@ -29,7 +29,8 @@
     "tests/**/*.tsx",
     "src/**/*.png",
     "@/**/*.png",
-    "./**/*.ts"
+    "./**/*.ts",
+    "@/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
