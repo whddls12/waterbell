@@ -13,9 +13,8 @@
 import { defineComponent, computed, ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
-import apiModule from '@/types/apiClient'
-
-// import http from '@/types/http'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'ParkControlWallCom',
@@ -29,9 +28,10 @@ export default defineComponent({
     ])
   },
   setup() {
-    const apiClient = apiModule.apiClient
-    const api = apiModule.api
     const store = useStore()
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const warningText = ref('')
     const actionTriggered = computed(() => store.state.actionTriggered)
