@@ -28,14 +28,18 @@ export default defineComponent({
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     const chartRef = ref(null)
-    const current_dust = ref(null) // 미세먼지 측정 값
+    const current_dust = ref<number | null>() // 미세먼지 측정 값
     const left_dust = ref<number | null>() // (미세먼지 측정 최대치) - (현재 측정값)
 
     async function getDustData() {
       try {
         const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
-        current_dust.value = response.data.Dust
-        left_dust.value = 500 - response.data.Dust
+        current_dust.value = 42
+        if (current_dust.value >= 250) {
+          left_dust.value = 0
+        } else {
+          left_dust.value = 250 - current_dust.value
+        }
 
         return { current_dust }
       } catch (error) {
@@ -54,61 +58,80 @@ export default defineComponent({
       }
 
       // 차트 그리기
-      new Chart(ctx, {
+      await new Chart(ctx, {
         type: 'doughnut', // 차트 타입
         data: {
           datasets: [
             {
               label: '미세먼지 그래프',
               data: [current_dust.value, left_dust.value],
-              backgroundColor: ['rgb(255, 72, 72)', 'rgb(147, 147, 147)'], // 그래프 색상
+              // backgroundColor: ['rgb(255, 72, 72)', 'rgb(147, 147, 147)'], // 그래프 색상
+              backgroundColor: function (context: any) {
+                const index = context.dataIndex
+                const value = context.dataset.data[index]
+                if (!index) {
+                  if (value >= 250) {
+                    return 'rgb(255, 72, 72, 0.8)'
+                  } else if (value >= 100) {
+                    return 'rgba(251, 233, 24, 0.8)'
+                  } else if (value >= 50) {
+                    return 'rgb(27, 218, 110, 0.8)'
+                  } else {
+                    return 'rgb(16, 96, 254, 0.8)'
+                  }
+                } else {
+                  return 'rgba(147, 147, 147, 0.2)'
+                }
+              },
               borderWidth: 0,
               borderRadius: 8,
-              hoverBackgroundColor: ['rgb(255, 72, 72)', 'rgb(147, 147, 147)'],
+              hoverBackgroundColor: function (context: any) {
+                const index = context.dataIndex
+                const value = context.dataset.data[index]
+                if (!index) {
+                  if (value >= 250) {
+                    return 'rgb(255, 72, 72)'
+                  } else if (value >= 100) {
+                    return 'rgb(251, 233, 24)'
+                  } else if (value >= 50) {
+                    return 'rgb(27, 218, 110)'
+                  } else {
+                    return 'rgb(16, 96, 254)'
+                  }
+                } else {
+                  return 'rgba(147, 147, 147, 0.2)'
+                }
+              },
               hoverOffset: 4
             }
           ]
         },
         options: {
-          tooltips: {
-            // 툴팁삭제
-            enabled: false
-          },
-          legend: {
-            // 범례삭제
-            display: false
-          },
           // plugin이 있어야 적용될거같음.
           elements: {
             center: {
               text: current_dust,
+              fontSize: '50',
               fontStyle: 'Helvetica'
             }
           },
-          cutout: 70, // 파이 차트의 가운데 부분을 얼마나 자를 건지
+          cutoutPercentage: 70, // 파이 차트의 가운데 부분을 얼마나 자를 건지
           rotation: -90, // 호를 그릴 시작 각도
-          circumference: 180 // 호를 그리는 각도
-          // 그래프 가운데에 미세먼지 측정값을 띄우고 싶은데 아직 잘 안됨
+          circumference: 180, // 호를 그리는 각도
+          // 그래프 가운데에 미세먼지 측정값을 띄우는 플러그인 구현해보기
           // plugins: {
-          //   AfterDraw: function (chart: Chart) {
-          //     let ctx = chart.ctx
-          //     let canvas = chart.canvas
-          //     let currentDust = current_dust.value
-
-          //     ctx.save()
-
-          //     let centerX = (chart.chartArea.left + chart.chartArea.right) / 2
-          //     let centerY = (chart.cahrtArea.top + chart.chartArea.bottom) / 1.3
-
-          //     ctx.textBaseline = 'middle'
-          //     ctx.textAlign = 'center'
-          //     ctx.font = 'bold 14px Helvetica'
-          //     ctx.fillStyle = 'black'
-          //     ctx.fillText(currentDust, centerX, centerY)
-
-          //     ctx.restore()
+          //   beforeDraw: function (context: any) {
+          //     console.log('차트 그리기 전!')
+          //     console.log(context)
+          //     let centerConfig = context.options.elements.center
+          //     let fontSize = centerConfig.fontSize || '50'
+          //     let fontStyle = centerConfig.fontStyle || 'Arial'
+          //     let txt = centerConfig.text
           //   }
-          // }
+          // },
+          layout: {
+            padding: 30
+          }
         }
       })
     }
