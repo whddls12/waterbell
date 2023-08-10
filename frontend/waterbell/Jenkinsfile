@@ -32,7 +32,7 @@ stages {
                 echo 'Deploy'
                 docker stop WaterBellFront
                 docker rm WaterBellFront
-                docker run -d -p 3000:80 --name WaterBellFront docker-vue:0.0.1
+                docker run -d -p 3000:3000 --name WaterBellFront docker-vue:0.0.1
                 '''
             }
         }
