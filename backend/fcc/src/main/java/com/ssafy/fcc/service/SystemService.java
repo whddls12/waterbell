@@ -206,4 +206,9 @@ public class SystemService {
         }
 
     }
+
+    public int getLatestHeightSensor(int facilityId){
+        Facility facility = facilityRepository.findById(facilityId);
+        return sensorLogRepository.getRecentData(facility, SensorType.HEIGHT);
+    }
 }

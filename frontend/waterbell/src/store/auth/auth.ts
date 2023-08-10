@@ -134,6 +134,7 @@ const auth: Module<any, any> = {
               name: member.name,
               addressNumber: member.addressNumber
             }
+            commit('setFacilityId', member.facilityId)
             break
           // case 'PUBLIC_MANAGER':
           // user = {
@@ -205,6 +206,7 @@ const auth: Module<any, any> = {
               phone: member.phone,
               facilityId: member.facilityId
             }
+            commit('setFacilityId', member.facilityId)
             break
           }
 
