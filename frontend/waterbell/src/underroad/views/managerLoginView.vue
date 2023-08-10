@@ -28,7 +28,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-import { managerLogin } from '@/types/authFunctionModul'
+import { managerLogin } from '@/types/authFunctionModule'
 export default defineComponent({
   name: 'parkLogin',
   setup() {

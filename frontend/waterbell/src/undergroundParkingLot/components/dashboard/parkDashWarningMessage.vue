@@ -14,9 +14,11 @@ export default defineComponent({
 
     // let warningMsg = ref()
     let facilityId = computed(() => store.getters['auth/facilityId'])
-
+    console.log('facilityId')
+    console.log(facilityId.value)
     const getStatus = () => {
       api.get(`/facilities/${facilityId.value}/status`).then((res) => {
+        console.log('status')
         console.log(res)
       })
     }
