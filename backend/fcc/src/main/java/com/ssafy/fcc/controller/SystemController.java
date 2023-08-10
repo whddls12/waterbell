@@ -74,9 +74,10 @@ public class SystemController {
         return result;
     }
 
-//    @GetMapping("/manager/facilities/{facilityId}/sensors/HEIGHT/latest")
-//    public int getLatestHeightSensor(@PathVariable Integer facilityId){
-////        int result = systemService.
-//    }
+    @GetMapping("/manager/facilities/{facilityId}/sensors/HEIGHT/latest")
+    public int getLatestHeightSensor(@PathVariable Integer facilityId){
+        System.out.println("facilityId = " + facilityId);
+        return systemService.getLatestHeightSensor(facilityId);
+    }
 
 }
