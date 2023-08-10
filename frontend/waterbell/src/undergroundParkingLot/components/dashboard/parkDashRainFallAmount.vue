@@ -1,5 +1,5 @@
 <template>
-  <div class="container" id="dash-cctv">
+  <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
         <i class="fas fa-chart-line"></i>
@@ -96,9 +96,35 @@ export default defineComponent({
         },
         // 차트 옵션 설정 (생략 가능)
         options: {
+          elements: {
+            line: {
+              fill: true
+            }
+          },
           scales: {
             y: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시간당 강수량(mm)'
+              },
               beginAtZero: true
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // 범례 제거
             }
           }
         }
@@ -119,7 +145,7 @@ export default defineComponent({
 })
 </script>
 <style>
-#dash-cctv {
+/* #dash-cctv {
   height: 500px;
-}
+} */
 </style>

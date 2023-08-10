@@ -80,8 +80,21 @@ export default defineComponent({
         options: {
           // 차트 옵션
           scales: {
+            x: {
+              grid: {
+                display: false
+              }
+            },
             y: {
-              beginAtZero: true
+              beginAtZero: true,
+              grid: {
+                display: false
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // 범례 제거
             }
           }
         }
