@@ -1,34 +1,106 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">전광판 제어</div>
-    <div class="warning1">1차 경고 작동 중</div>
+    <div class="controll1">전광판 & 경고등 제어</div>
+    <div class="warning1">{{ warningText }}</div>
     <div class="buttons">
       <button class="button1" @click="onAction">동작</button>
       <button class="button2" @click="onRelease">해제</button>
     </div>
   </div>
 </template>
-<script>
-import { defineComponent } from 'vue'
-import { apiClient } from '@/types/apiClient'
+
+<script lang="ts">
+import { defineComponent, computed, ref, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
+import apiModule from '@/types/apiClient'
 
 export default defineComponent({
-  name: 'roadControlLedVue',
-  methods: {
-    onAction() {
-      // 동작 버튼을 눌렀을 때 실행할 코드
-      console.log('동작 버튼 클릭')
+  name: 'ParkControlWallCom',
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
+  setup() {
+    const apiClient = apiModule.apiClient
+    const api = apiModule.api
+    const store = useStore()
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const warningText = ref('')
+    const UactionTriggered = computed(() => store.state.UactionTriggered)
+
+    const fetchStatusData = async () => {
+      try {
+        const response = await api.get(`/facilities/${facility_id}/status`)
+        if (response.data == 'DEFAULT') {
+          warningText.value = 'LED & 경고등 미작동'
+        } else if (response.data == 'FIRST' || response.data == 'SECOND') {
+          warningText.value = 'LED & 경고등 1차 경고 작동중'
+        } else {
+          warningText.value = 'LED & 경고등 2차 경고 작동중'
+        }
+      } catch (error) {
+        console.error('Error fetching status data:', error)
+      }
+    }
+
+    const onAction = () => {
       apiClient
-        .POST('/notification/apartManager/activation')
+        .post(`/control/manager/${facility_id}/ON`)
         .then((response) => {
           console.log(response.data)
         })
-    },
-    onRelease() {
-      // 해제 버튼을 눌렀을 때 실행할 코드
-      console.log('해제 버튼 클릭')
+        .catch((error) => {
+          console.log(error)
+        })
+
+      setTimeout(() => {
+        store.dispatch('UtriggerAction')
+      }, 1000)
     }
-  }
+
+    const onRelease = () => {
+      apiClient
+        .post(`/control/manager/${facility_id}/OFF`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      setTimeout(() => {
+        store.dispatch('UresetActionTrigger')
+      }, 1000)
+    }
+
+    onMounted(async () => {
+      await fetchStatusData()
+    })
+
+    watch(
+      () => UactionTriggered.value,
+      (newValue: any) => {
+        fetchStatusData()
+      }
+    )
+
+    return {
+      apiClient,
+      store,
+      onAction,
+      onRelease,
+      warningText,
+      fetchStatusData
+    }
+  },
+
+  methods: {}
 })
 </script>
 
@@ -43,7 +115,6 @@ export default defineComponent({
   background: #f2f7ff;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.17); /* 크기가 줄어드므로 그림자도 조절 */
   border-radius: 6px; /* 반경도 절반으로 줄임 */
-  margin-left: 200px;
 }
 
 .controll1 {
@@ -60,7 +131,7 @@ export default defineComponent({
 }
 
 .warning1 {
-  width: 300px;
+  width: 400px;
   height: 80px;
   text-align: center;
   color: black;

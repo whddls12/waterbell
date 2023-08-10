@@ -5,8 +5,8 @@
       <RoadControlCctvCom />
     </div>
     <div class="controll-container">
-      <RoadControlLedCom />
       <RoadControlWarningLightCom />
+      <RoadControlLedCom />
     </div>
   </div>
 </template>
