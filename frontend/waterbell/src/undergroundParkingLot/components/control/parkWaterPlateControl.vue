@@ -1,6 +1,6 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">차수판 제어</div>
+    <div class="controll1">차수판 & 경고등 제어</div>
     <div class="warning1">{{ warningText }}</div>
     <div class="buttons">
       <button class="button1" @click="onAction">동작</button>
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
 import apiModule from '@/types/apiClient'
@@ -30,9 +30,26 @@ export default defineComponent({
   },
   setup() {
     const apiClient = apiModule.apiClient
+    const api = apiModule.api
     const store = useStore()
     const facility_id = computed(() => store.getters['auth/facilityId']).value
-    const warningText = ref('작동 중')
+    const warningText = ref('')
+    const actionTriggered = computed(() => store.state.actionTriggered)
+
+    const fetchStatusData = async () => {
+      try {
+        const response = await api.get(`/facilities/${facility_id}/status`)
+        if (response.data == 'DEFAULT') {
+          warningText.value = '차수판 & 경고등 미작동'
+        } else if (response.data == 'FIRST' || response.data == 'SECOND') {
+          warningText.value = '1차 경고등 작동중'
+        } else {
+          warningText.value = '차수판 & 경고등 작동중'
+        }
+      } catch (error) {
+        console.error('Error fetching status data:', error)
+      }
+    }
 
     const onAction = () => {
       apiClient
@@ -52,6 +69,10 @@ export default defineComponent({
         .catch((error) => {
           console.log(error)
         })
+
+      setTimeout(() => {
+        store.dispatch('triggerAction')
+      }, 1000)
     }
 
     const onRelease = () => {
@@ -72,14 +93,30 @@ export default defineComponent({
         .catch((error) => {
           console.log(error)
         })
+
+      setTimeout(() => {
+        store.dispatch('resetActionTrigger')
+      }, 1000)
     }
+
+    onMounted(async () => {
+      await fetchStatusData()
+    })
+
+    watch(
+      () => actionTriggered.value,
+      (newValue: any) => {
+        fetchStatusData()
+      }
+    )
 
     return {
       apiClient,
       store,
       onAction,
       onRelease,
-      warningText
+      warningText,
+      fetchStatusData
     }
   },
 

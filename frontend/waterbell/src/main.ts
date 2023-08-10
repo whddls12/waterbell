@@ -30,8 +30,6 @@ app.config.globalProperties.$store = store
 app.use(store).use(router)
 const facilityId = computed(() => auth.getters['auth/facilityId'])
 // fetchUnderroads 액션을 실행하고 완료될 때까지 기다립니다.
-const isLogin = computed(() => auth.getters['auth/isLogin'])
-const role = computed(() => auth.getters['auth/role'])
 auth
   .dispatch('fetchUnderroads')
   .then(async () => {
