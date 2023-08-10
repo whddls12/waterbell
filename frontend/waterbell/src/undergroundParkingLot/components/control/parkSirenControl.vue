@@ -96,7 +96,6 @@ export default defineComponent({
   background: #f2f7ff;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.17); /* 크기가 줄어드므로 그림자도 조절 */
   border-radius: 6px; /* 반경도 절반으로 줄임 */
-  margin-right: 200px;
 }
 
 .controll1 {

@@ -5,8 +5,8 @@
       <ParkControlCctvCom />
     </div>
     <div class="controll-container">
-      <ParkControlWallCom />
       <ParkControlWarningLightCom />
+      <ParkControlWallCom />
     </div>
   </div>
 </template>
