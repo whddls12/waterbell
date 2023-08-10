@@ -93,5 +93,6 @@ export default defineComponent({
   border: 1px solid #cdd1de;
   background-color: white;
   border-radius: 10px;
+  padding: 20px;
 }
 </style>

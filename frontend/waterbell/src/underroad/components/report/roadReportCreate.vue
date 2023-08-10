@@ -36,17 +36,17 @@
         <div class="report-subtitle">파일첨부</div>
         <div class="report-filebox">
           <div class="report-file-list">
-            <div class="report-file-list-name">
-              첨부된 파일 : {{ selectedFiles }}
-            </div>
+            <div class="report-file-list-name">첨부된 파일 목록</div>
           </div>
           <div class="report-file-attach">
             <div class="search-btn">
               <input
                 type="file"
                 ref="fileInput"
+                accept="image/*"
                 style="display: none"
-                @change="onFileChange"
+                multiple
+                @change="upload($event)"
               />
               <button @click="$refs.fileInput.click()">파일 찾기</button>
             </div>
@@ -70,19 +70,15 @@
 
 <script lang="ts">
 import { ref, computed, defineComponent } from 'vue'
-// import { useStore } from 'vuex'
 import store from '@/store/index'
 import http from '@/types/http'
 import router from '@/router/index'
+import axios from 'axios'
 
 export default defineComponent({
   name: 'roadReportCreateVue',
   setup() {
-    // const store = useStore()
-
-    // getters에서 nowUnderroad 가져오기
-
-    // const facility_id = computed(() => store.getters['auth/facilityId'])
+    const facility_id = computed(() => store.getters['auth/facilityId'])
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
@@ -97,74 +93,58 @@ export default defineComponent({
 
     const fileInputRef = ref<HTMLInputElement | null>(null)
     const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
+    // FormData 객체 만들기
+    let formData = new FormData()
 
-    function onFileChange() {
+    // 사용자가 첨부한 파일들 저장
+    function upload(event: any) {
       console.log('파일 저장함수 실행?')
-      // 사용자가 첨부한 파일들 저장
-      console.log(fileInputRef)
-      if (fileInputRef.value && fileInputRef.value.files) {
-        selectedFiles.value = Array.from(fileInputRef.value.files)
-        const fileListName = fileInputRef.value?.nextElementSibling
-        if (fileListName) {
-          fileListName.textContent = getSelectedFileNames()
+      const files = event.target.files
+      if (files && files.length > 0) {
+        for (const file of files) {
+          formData.append('uploadedfiles', file)
         }
-      } else {
-        selectedFiles.value = []
+
+        const selectedFileNames = Array.from(files)
+          .map((file: any) => file.name)
+          .join(', ')
+        console.log('Selected files:', selectedFileNames)
+        for (const values of formData.values()) {
+          console.log(values)
+        }
       }
-      // 첨부한 파일들을 보여주기 위함
     }
 
-    // 담긴 첨부파일들의 이름
+    // 담긴 첨부파일들의 이름을 반환
     function getSelectedFileNames() {
       return selectedFiles.value.map((file) => file.name).join(', ')
     }
 
-    function writeReport() {
-      // FormData 객체 만들기
-      const formData = new FormData()
-      // FormData에 양식 필드 넣기
-      console.log(report.value)
+    // 신고접수 등록
+    async function writeReport() {
+      // FormData에 양식에 채워진 값들 넣기
       formData.append('name', report.value.name)
       formData.append('phone', report.value.phone)
       formData.append('boardPassword', report.value.boardPassword)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
-      // console.log(formData)
 
-      // FormData에 첨부파일 넣기
-      // if (selectedFiles.value) {
-      //   for (let i = 0; i < selectedFiles.value.length; i++) {
-      //     const file = selectedFiles.value[i]
-      //     formData.append('uploadedfiles', file)
-      //   }
-      // }
-      if (selectedFiles.value) {
-        for (let i = 0; i < selectedFiles.value.length; i++) {
-          const file = selectedFiles.value[i]
-          formData.append('uploadedfiles', file)
-        }
+      // formData 의 밸류값을 확인하는 방법
+      for (let values of formData.entries()) {
+        console.log(values[0] + ', ' + values[1])
       }
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-      const facilityId = computed(() => store.getters['auth/facilityId'])
-      // console.log(facilityId.value)
-      http
 
-        // .post(`http://localhost:8080/reports/write/1`, formData)
-        // .post(`http://i9b101.p.ssafy.io:8080/reports/write/1`, formData, config)
-        .post(`reports/write/${facilityId.value}`, formData, config)
-
-        .then((response) => {
-          // console.log(formData)
-          router.push('/road/report')
-          if (response.data.success) {
-            console.log('여기 들어오나')
-            console.log(response)
-            //상세보기로 이동하는 코드 넣어야 함
+      // 신고접수 등록하는 요청보내기
+      await http
+        .post(`/reports/write/${facility_id.value}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
           }
+        })
+        .then((response) => {
+          console.log(response)
+          // router.push('/road/report')
+          //상세보기로 이동하는 코드 넣어야 함
         })
         .catch(function (error) {
           console.log(error)
@@ -174,7 +154,7 @@ export default defineComponent({
       report,
       fileInputRef,
       selectedFiles,
-      onFileChange,
+      upload,
       getSelectedFileNames,
       writeReport
     }
