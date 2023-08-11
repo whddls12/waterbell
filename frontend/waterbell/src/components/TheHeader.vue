@@ -30,12 +30,16 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted } from 'vue'
 import router from '../router/index'
-import store from '../store/index'
-import apiClient from '@/types/apiClient'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
+import { logout } from '@/types/authFunctionModule'
 export default defineComponent({
   name: 'TheHeader',
   setup() {
     // const accessToken = computed(() => store.getters['auth.accessToken'])
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const loginUser = () => {
       apiClient.get('/member/findMember/token').then((res) => {
         console.log(res)
@@ -43,7 +47,7 @@ export default defineComponent({
       })
     }
     const name = loginUser()
-    console.log(name)
+    // console.log(name)
     const isLogin = computed(() => store.getters['auth/isLogin'])
 
     const moveToLogin = () => {
@@ -55,7 +59,7 @@ export default defineComponent({
     //   return ''
     // }
     const logout = () => {
-      store.dispatch('auth/logout')
+      logout()
     }
 
     const isUnderroad = () => {

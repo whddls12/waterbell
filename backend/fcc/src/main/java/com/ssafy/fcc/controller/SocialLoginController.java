@@ -162,6 +162,24 @@ public class SocialLoginController {
 
     }
 
+//    @GetMapping("/social/join/{key}")
+//    public ResponseEntity<Map<String, Object>> getSocialTemp(@RequestParam("key") String key) {
+//        Map<String, Object> resultMap = new HashMap<>();
+//        HttpStatus status = HttpStatus.ACCEPTED;
+//        try {
+//            SocialTempDto socialTempDto = socialLoginServide.getTempMember(key);
+//            if (socialTempDto == null) {
+//
+//                status = HttpStatus.BAD_REQUEST;
+//                resultMap.put("message", "fail");
+//            }
+//        }catch(Exception e){
+//
+//        }
+//
+//
+//
+//    }
 
 //    @ResponseBody
     @RequestMapping(value = "/login/oauth2/code/naver")

@@ -400,8 +400,6 @@ public class DashController {
             }
         }
 
-
-
         System.out.println(resultMap);
 
         resultMap.put("message", "success");
@@ -411,18 +409,18 @@ public class DashController {
 
     @GetMapping("/facilities/{facility_id}/sensors")
     public Map<String,Integer> dashSensor(@PathVariable("facility_id") int facilityId) {
-        Map<String, Integer> resultMap = new HashMap<>();
+
+        Map<String, Integer> resultMap;
         resultMap = systemService.getSensorData(facilityId);
         return resultMap;
+
     }
 
     @GetMapping("/facilities/{facility_id}/sensors/heightPerhour")
     public Map<Integer,Integer> getHeightPerhour(@PathVariable("facility_id") int facilityId) {
 
-        Map<Integer,Integer> resultMap = new HashMap<>();
-
+        Map<Integer,Integer> resultMap;
         resultMap = systemService.getHeightPerhour(facilityId);
-
         return resultMap;
 
     }

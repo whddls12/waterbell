@@ -23,7 +23,7 @@ import riverN from '@/assets/images/map_water_0.png'
 import riverY from '@/assets/images/map_water_1.png'
 import store from '@/store/index'
 import http from '@/types/http'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { changeFacility } from '@/types/changeFacility'
 
 import Geolocation from 'vue-geolocation-api'
@@ -33,6 +33,7 @@ export default defineComponent({
   setup() {
     // const store = useStore()
     const router = useRouter()
+    const route = useRoute()
     //지도에 찍을 지하차도 list
     const underroadList = computed(() => store.getters['auth/underroadList'])
 
@@ -43,7 +44,9 @@ export default defineComponent({
 
     //임시 선택 위치에 원하는 값을 넣는 store의 mutation(click 이벤트 발생 시, 실행할 함수)
     const moveFacility = (id: any) => {
+      // const nowRouter = route.
       changeFacility(id)
+      // window.location.reload
       router.go(0)
     }
 

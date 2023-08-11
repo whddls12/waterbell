@@ -5,8 +5,8 @@
       <RoadControlCctvCom />
     </div>
     <div class="controll-container">
-      <RoadControlLedCom />
       <RoadControlWarningLightCom />
+      <RoadControlLedCom />
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default defineComponent({
 <style scoped>
 .road-control-cctv-com {
   width: 770px;
-  height: 500px;
+  height: 400px;
   flex-shrink: 0;
   fill: var(--unnamed, #f2f7ff);
   filter: drop-shadow(0px 4px 30px rgba(0, 0, 0, 0.17));

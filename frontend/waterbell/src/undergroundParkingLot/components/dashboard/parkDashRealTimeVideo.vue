@@ -1,5 +1,13 @@
 <template>
-  <div class="container">cctv</div>
+  <div class="container">
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <i class="fas fa-video"></i>
+        <h3>CCTV</h3>
+      </div>
+      <div class="dash-box-content"></div>
+    </div>
+  </div>
 </template>
 <script>
 import { defineComponent } from 'vue'

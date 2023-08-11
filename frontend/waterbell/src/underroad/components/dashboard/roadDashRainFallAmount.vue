@@ -2,14 +2,16 @@
   <div class="container" id="dash-cctv">
     <div class="dash-box">
       <div class="dash-box-title">
-        <p>강수량 그래프</p>
+        <h3>강수량 그래프</h3>
       </div>
-      <canvas
-        ref="chartCanvas"
-        id="chartCanvas"
-        width="400"
-        height="200"
-      ></canvas>
+      <div class="dash-box-content">
+        <canvas
+          ref="rainChartCanvas"
+          id="rainChartCanvas"
+          width="400"
+          height="200"
+        ></canvas>
+      </div>
     </div>
   </div>
 </template>
@@ -69,7 +71,7 @@ export default defineComponent({
       }
     }
 
-    async function drawChart(chartCanvas: HTMLElement | null) {
+    async function drawChart(rainChartCanvas: HTMLElement | null) {
       // const labels = apiData.map((data) => data.label)
       // const values = apiData.map((data) => data.value)
       // document.addEventListener('DOMContentLoaded', function () {
@@ -78,7 +80,9 @@ export default defineComponent({
       // console.log('차트 그리기 시작')
       // console.log('drawChart에서 timeArr.value')
       // console.log(timeArr.value)
-      const canvas = document.getElementById('chartCanvas') as HTMLCanvasElement
+      const canvas = document.getElementById(
+        'rainChartCanvas'
+      ) as HTMLCanvasElement
       const ctx = canvas.getContext('2d')
       // 차트 그리기
       new Chart(ctx, {
@@ -90,8 +94,8 @@ export default defineComponent({
             {
               label: '강수량 데이터',
               data: amountArr.value,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(151, 143, 237, 0.2)',
+              borderColor: 'rgba(151, 143, 237, 1)',
               borderWidth: 1
             }
           ]

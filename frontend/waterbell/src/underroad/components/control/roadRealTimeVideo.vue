@@ -1,23 +1,23 @@
 <template lang="">
   <div class="cctv">
-    <div class="entrance">지하차도 입구</div>
-    <div class="internal">지하차도 내부</div>
+    <div class="entrance">지하차도 입구<img id="cctv1" /></div>
+    <div class="internal">지하차도 내부<img id="cctv2" /></div>
   </div>
 </template>
 <script>
 import { defineComponent, onMounted, onBeforeUnmount } from 'vue'
-import webSocket1 from '@/types/webSocket_cam1'
-import webSocket2 from '@/types/webSocket_cam2'
+// import webSocket1 from '@/types/webSocket_cam1'
+// import webSocket2 from '@/types/webSocket_cam2'
 export default defineComponent({
   name: 'roadControlCctvVue',
   setup() {
     onMounted(() => {
-      webSocket1.connectWebSocket()
-      webSocket2.connectWebSocket()
+      // webSocket1.connectWebSocket()
+      // webSocket2.connectWebSocket()
     })
     onBeforeUnmount(() => {
-      webSocket1.closeWebSocket()
-      webSocket2.closeWebSocket()
+      // webSocket1.closeWebSocket()
+      // webSocket2.closeWebSocket()
     })
   }
 })

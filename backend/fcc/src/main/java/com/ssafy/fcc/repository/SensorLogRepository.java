@@ -55,15 +55,15 @@ public class SensorLogRepository {
     public int getHeightPerhour(Facility facility, SensorType sensorType, LocalDateTime time) {
         try {
             return em.createQuery("select s from SensorLog s" +
-                            " where s.facility = :facility and s.category = :sensorType and s.sensorTime <= :time ORDER BY s.sensorTime DESC ", SensorLog.class)
-                    .setParameter("time", time)
+                            " where s.facility = :facility and s.category = :sensorType and s.sensorTime <= :time1 and s.sensorTime > :time2 ORDER BY s.sensorTime DESC ", SensorLog.class)
+                    .setParameter("time1", time)
+                    .setParameter("time2", time.minusHours(1))
                     .setParameter("facility", facility)
                     .setParameter("sensorType",sensorType)
                     .setMaxResults(1)
                     .getSingleResult()
                     .getSensorData();
         } catch (NoResultException e) {
-            e.printStackTrace();
             return 0;
         }
     }

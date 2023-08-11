@@ -1,12 +1,18 @@
 <template>
   <div class="container">
-    <p>수위센서 그래프</p>
-    <canvas
-      ref="chartCanvas"
-      id="chartCanvas"
-      width="400"
-      height="200"
-    ></canvas>
+    <div class="dash-box">
+      <div class="dash-box-title">
+        <h3>수위센서 그래프</h3>
+      </div>
+      <div class="dash-box-content">
+        <canvas
+          ref="chartCanvas"
+          id="chartCanvas"
+          width="400"
+          height="200"
+        ></canvas>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -37,7 +43,7 @@ export default defineComponent({
     async function getSensorData() {
       try {
         const response = await http.get(
-          `/dash/facilities/${facility_id}/sensors/heightPerhour`
+          `/dash/facilities/10/sensors/heightPerhour`
         )
 
         const apiData = response.data
@@ -62,8 +68,8 @@ export default defineComponent({
             {
               label: '수위 측정 데이터',
               data: amountArr.value,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(151, 143, 237, 0.2)',
+              borderColor: 'rgba(151, 143, 237, 1)',
               borderWidth: 1
             }
           ]
@@ -82,10 +88,10 @@ export default defineComponent({
     onMounted(async () => {
       const apiData = await getSensorData()
       if (apiData) {
-        makeData(apiData)
+        makeData(apiData.apiData)
       }
       await nextTick()
-      // drawChart(chartRef.value)
+      drawChart(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr, getSensorData }

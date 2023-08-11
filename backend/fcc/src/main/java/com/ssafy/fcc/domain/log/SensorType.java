@@ -7,11 +7,10 @@ public enum SensorType {
 
     @Enumerated(EnumType.STRING)
     HEIGHT,
-
     @Enumerated(EnumType.STRING)
-    TEMPERATURE,
+    TEMP,
     @Enumerated(EnumType.STRING)
-    HUMIDITY,
+    HUMID,
     @Enumerated(EnumType.STRING)
     DUST,
     @Enumerated(EnumType.STRING)

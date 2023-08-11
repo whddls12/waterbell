@@ -6,22 +6,35 @@
         <i class="fas fa-cloud dash-box-icon"></i>
         <h3>날씨</h3>
       </div>
-      <img
-        v-if="SKY && PTY"
-        :src="getWeatherImageUrl()"
-        alt="날씨 이미지"
-        width="80"
-        height="80"
-      />
-      <p v-else>관측되지 않는 지역입니다.</p>
+      <div class="dash-box-content">
+        <img
+          v-if="SKY && PTY"
+          :src="getWeatherImageUrl()"
+          alt="날씨 이미지"
+          width="80"
+          height="80"
+        />
+        <p v-else>관측되지 않는 지역입니다.</p>
+      </div>
     </div>
     <!-- 기온 -->
     <div class="dash-box">
-      <p>기온: {{ current_temp }}</p>
+      <div class="dash-box-title">
+        <i class="fas fa-thermometer-three-quarters"></i>
+        <h3>기온</h3>
+      </div>
+      <div class="dash-box-content">
+        {{ current_temp }}
+      </div>
     </div>
     <!-- 습도 -->
     <div class="dash-box">
-      <p>습도: {{ current_humid }}</p>
+      <div class="dash-box-title">
+        <h3>습도</h3>
+      </div>
+      <div class="dash-box-content">
+        {{ current_humid }}
+      </div>
     </div>
   </div>
 </template>
@@ -45,6 +58,7 @@ export default defineComponent({
     const minute = now.getMinutes().toString().padStart(2, '0')
     const lon = store.state.location['lon']
     const lat = store.state.location['lat']
+    console.log(now)
 
     // 날씨 정보 데이터
     const status_sky = ref(null) // 하늘 상태
@@ -67,7 +81,7 @@ export default defineComponent({
             lat: lat //여기 변경됨
           }
         })
-
+        console.log(response)
         status_sky.value = response.data.SKY.fcstValue
         type_rainfall.value = response.data.PTY.fcstValue
         console.log(status_sky.value)
@@ -89,7 +103,7 @@ export default defineComponent({
         // 흐림
         SKY.value = 'blur'
       }
-      SKY.value = 'cloudy'
+      // SKY.value = 'cloudy'
       // 이미지 지정
       if (type_rainfall.value === '0') {
         PTY.value = 'none'
@@ -100,7 +114,7 @@ export default defineComponent({
       } else if (type_rainfall.value === '3' || type_rainfall.value === '7') {
         PTY.value = 'snow'
       }
-      PTY.value = 'rain'
+      // PTY.value = 'rain'
     }
 
     function getWeatherImageUrl() {
@@ -153,15 +167,7 @@ export default defineComponent({
   gap: 20px;
 }
 
-.dash-box {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-}
-
-.dash-box-title {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+.weather-dash-box > div {
+  width: 100px;
 }
 </style>

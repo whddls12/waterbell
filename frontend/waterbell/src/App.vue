@@ -66,4 +66,33 @@ export default defineComponent({
 #hello-msg {
   display: inline-block;
 }
+
+/* 자주 쓰이는 컴포넌트 */
+
+.container {
+  border-radius: 10px;
+  background: var(--unnamed, #f2f7ff);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+/* 각 대시보드 박스들 */
+.dash-box {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+/* 대시보드 제목 */
+.dash-box-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px; /* 아이콘과 제목 사이 간격 */
+}
+/* 대시보드 내용 */
+.dash-box-content {
+  border: 1px solid #cdd1de;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
 </style>
