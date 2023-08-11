@@ -3,7 +3,7 @@
     <img class="siren" :src="sirenImage" />
     <div class="height">
       <img class="water" src="@/assets/images/Megaphone.png" />
-      <div class="state" :id="notDefault">{{ currentState }}</div>
+      <div id="state" :class="notDefault">{{ currentState }}</div>
     </div>
     <div class="height">
       <img class="water" src="@/assets/images/Vector.png" />
@@ -42,12 +42,17 @@ export default defineComponent({
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const sirenImage = ref(SirenGreenImage)
     const status = ref('')
-    const currentState = ref('윤영이가 넣어줄 문구')
+    const currentState = ref('')
     const currentHeight = ref('')
     const UactionTriggered = computed(() => store.state.UactionTriggered)
+
     const notDefault = computed(() => {
-      return {
-        'red-text': status.value != 'DEFAULT'
+      if (status.value == 'DEFAULT') {
+        return 'blue-text'
+      } else if (status.value == 'FIRST' || status.value == 'SECOND') {
+        return 'orange-text'
+      } else {
+        return 'red-text'
       }
     })
     const fetchHeightData = async () => {
@@ -122,8 +127,7 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 
-.state {
-  color: #114cb1;
+#state {
   font-size: 20px;
   font-family: Roboto;
   font-weight: 600;
@@ -153,7 +157,14 @@ export default defineComponent({
   height: 30px;
 }
 
-#notDefault {
+.blue-text {
+  color: #114cb1;
+}
+
+.orange-text {
+  color: orange;
+}
+.red-text {
   color: red;
 }
 </style>
