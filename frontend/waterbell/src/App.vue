@@ -32,6 +32,7 @@ export default defineComponent({
 
 <style>
 #app {
+  margin: auto;
   text-align: center;
   color: #2c3e50;
   background-color: #f2f7ff;
