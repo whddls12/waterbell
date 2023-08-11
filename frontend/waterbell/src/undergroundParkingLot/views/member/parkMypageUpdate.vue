@@ -23,11 +23,7 @@
           <input type="password" id="password" disabled value="********" />
           <button id="changebtn" @click="changePopState_PW">변경</button>
         </div>
-        <parkPasswordModal
-          v-if="popState_pw"
-          @close="changePopState_PW"
-          v-bind="modalData"
-        />
+        <parkPasswordModal v-if="popState_pw" @close="changePopState_PW" />
       </div>
       <!-- 휴대폰번호 -->
       <div class="myPage-content-box phone">
@@ -36,11 +32,7 @@
           <input type="text" id="phone" readonly :value="memberInfo?.phone" />
           <button id="changebtn" @click="changePopState_Phone">변경</button>
         </div>
-        <parkPhoneModal
-          v-if="popState_phone"
-          @close="changePopState_Phone"
-          v-bind="modalData"
-        />
+        <parkPhoneModal v-if="popState_phone" @close="changePopState_Phone" />
       </div>
       <!-- 아파트 인증코드 -->
       <div class="myPage-content-box apartCode">
