@@ -17,7 +17,7 @@
         <p id="hello-msg">김동현님 어서오세요!</p>
         <button @click="goToAlarm">알림함</button>
         <button @click="goToMypage">마이페이지</button>
-        <button @click="logout">로그아웃</button>
+        <button @click="Logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
       <div class="header-btn" v-else>
@@ -50,7 +50,7 @@ import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
-
+import { logout } from '@/types/authFunctionModule'
 export default defineComponent({
   name: 'ParkHeader',
   components: {},
@@ -81,8 +81,8 @@ export default defineComponent({
       router.push({ path: '/park/mypage' })
     }
 
-    function logout() {
-      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+    async function Logout() {
+      await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
       router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
     }
 
@@ -96,7 +96,7 @@ export default defineComponent({
       goToAlarm,
       goToLogin,
       goToMypage,
-      logout
+      Logout
     }
   }
 })
