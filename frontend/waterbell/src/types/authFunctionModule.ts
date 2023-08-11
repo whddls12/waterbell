@@ -1,9 +1,8 @@
 import axios from '@/types/apiClient'
 import store from '@/store/index'
 import { computed } from 'vue'
-import { useRouter } from 'vue-router'
+import router from '@/router/index'
 import { connectWebSocket, closeWebSocket } from '@/types/webSocket_alarm'
-const router = useRouter()
 
 export async function setAxios() {
   const apiClient = await axios.apiClient(store)
@@ -15,6 +14,7 @@ export async function memberLogin(loginId: string, password: string) {
     // console.log('실행되는가?')
     const apiClient = (await setAxios()).apiClient
     const api = (await setAxios()).api
+    // const router = useRouter()
     const response = await apiClient.post('/member/login', {
       loginId,
       password
@@ -61,11 +61,12 @@ export async function memberLogin(loginId: string, password: string) {
     // 여기에서 auth state에 있는 loginUser를 getter로 가져오고 싶어.
     // 어떻게 해야해?
     const isLogin = computed(() => store.getters['auth/isLogin'])
+    console.log(isLogin)
     if (isLogin.value) {
       router.push('/park/dash')
     }
   } catch (error: any) {
-    // console.log(error)
+    console.log(error)
     // const { data, status, statusText } = error.response
     if (error.message === 'NOT_MEMBER') {
       alert('존재하지 않는 회원입니다.')
