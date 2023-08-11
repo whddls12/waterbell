@@ -1,10 +1,14 @@
-<template>
+<template lang="">
   <div class="home">
     <!-- 진입화면 v-if="isMainpage"로 처음화면에 온 걸 구분? -->
     <div v-if="isMainPage" class="page-start">
       <!-- 서비스 로고 -->
       <div class="service-logo">
-        <img src="@/assets/images/waterbell-logo.png" alt="waterbell-logo" />
+        <img
+          class="logo"
+          src="@/assets/images/waterbell-logo.png"
+          alt="waterbell-logo"
+        />
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
@@ -16,9 +20,15 @@
         <!-- </router-link> -->
       </div>
       <!-- 관리자 로그인 버튼 -->
-      <div class="manager-login">
-        <button @click="moveToLogin">관리자 로그인</button>
-      </div>
+      <!-- <div class="manager-login">
+        <button class="login-btn" @click="moveToLogin">관리자 로그인</button>
+      </div> -->
+      <button class="button-managerLogin" @click="moveToLogin">
+        <img class="icon" src="@/assets/images/icon.png" />
+        <div class="labelWrap">
+          <div class="label">관리자 로그인</div>
+        </div>
+      </button>
     </div>
 
     <!-- 서비스 화면 -->
@@ -149,6 +159,13 @@ export default defineComponent({
 .service-logo {
   display: flex;
   justify-content: center;
+  width: 907px;
+  height: 215px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  margin-top: 150px;
 }
 
 /* 서비스 선택 메뉴 */
@@ -199,5 +216,42 @@ export default defineComponent({
 
 router-view {
   flex-flow: 1;
+}
+
+.button-managerLogin {
+  width: 200px;
+  height: 50px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  background: #ffa132;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  display: inline-flex;
+}
+
+.icon {
+  width: 26px;
+  height: 26px;
+  position: relative;
+}
+
+.labelWrap {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.label {
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  font-family: Roboto;
+  font-weight: 600;
+  line-height: 32px;
+  word-wrap: break-word;
 }
 </style>

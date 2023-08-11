@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/index'
 // import { useStore } from 'vuex'
@@ -134,13 +134,21 @@ export default defineComponent({
     // const loginUser = computed(() => store.getters['auth/loginUser'])
 
     const checkRole = async () => {
-      if (role.value == 'PUBLIC_MANAGER') return true
-      else return false
+      if (role.value == 'PUBLIC_MANAGER') isManager.value = true
+      else isManager.value = false
     }
 
     onMounted(async () => {
-      isManager.value = await checkRole()
+      await checkRole()
     })
+
+    watch(
+      () => role.value, // role.value를 반환하는 함수
+      async (newRole) => {
+        console.log('Role changed:', newRole) // Debugging
+        await checkRole()
+      }
+    )
 
     return {
       isMainPage,
