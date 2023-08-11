@@ -519,5 +519,41 @@ public class MemberController {
 
     }
 
+    @PostMapping("/verificationPW")
+    public ResponseEntity<Map<String, Object>> verificationPassword(@RequestBody Map<String,String> request) throws Exception {
+
+        String password = request.get("password");
+        System.out.println("password = " + password);
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        try {
+            Integer loginId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+            Member loginUser = memberService.findById(loginId);
+
+            if(!loginUser.isState()) {
+                throw new Exception("비활성 이용자, 변경 불가");
+            }
+
+            if (loginUser.getRole() == Role.APART_MEMBER) {
+                ApartMember apartMember = (ApartMember) loginUser;
+                if(!apartMember.isSystem()) throw new Exception("소셜 로그인 사용자입니다");
+            }
+
+            if (!passwordEncoder.matches(password, loginUser.getPassword())) {
+                throw new Exception("비밀번호가 일치하지 않습니다.");
+            }
+
+            status = HttpStatus.ACCEPTED;
+            resultMap.put("message", "success");
+        }catch (Exception e){
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
 
 }
