@@ -4,7 +4,7 @@
     <div class="datepicker-row">
       <div>
         <label>시작일시</label>
-        <span class="VueDatePicker">
+        <span class="Picker">
           <VueDatePicker
             v-model="startDate"
             placeholder="Select date"
@@ -186,7 +186,10 @@ export default defineComponent({
     const setList = () => {
       //   const facilityId = computed(() => store.getters['auth/facilityId']).value
       http
-        .get(`/system/facilities/${facilityId}/sensors/HEIGHT/logs`, {})
+        .get(
+          `/system/manager/facilities/${facilityId}/sensors/HEIGHT/logs/1`,
+          {}
+        )
         .then((res) => {
           logList.value = res.data
         })
@@ -242,7 +245,7 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="css">
+<style scoped>
 .thead-dark th {
   background-color: #343a40 !important;
   color: white !important;
@@ -318,23 +321,20 @@ export default defineComponent({
   text-decoration: underline;
 }
 
-.VueDatePicker {
-  height: 50px;
-  width: 50px;
-}
-
 .datepicker-row {
   display: flex;
   justify-content: space-between; /* 두 요소 사이에 공간을 동일하게 분배 */
+  margin-top: 30px;
 }
 
 .datepicker-row > div {
   flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
 }
 
-.VueDatePicker {
-  height: 50px;
-  width: 100%; /* 또는 적당한 %값 */
+.Picker {
+  /* height: 50px; */
+  /* width: 100%; 또는 적당한 %값 */
+  margin-top: 500px;
 }
 
 .title {
@@ -352,7 +352,7 @@ export default defineComponent({
 }
 
 #category-select {
-  margin-bottom: 20px;
+  margin-bottom: 50px;
   margin-top: 20px;
 }
 </style>
