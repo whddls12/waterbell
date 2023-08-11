@@ -17,14 +17,14 @@
         <span id="hello-msg">김동현님 어서오세요!</span>
         <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
-        <button @click="logout">로그아웃</button>
+        <button @click="Logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
 
-      <div class="header-btn" v-else>
+      <!-- <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
         <button @click="goToJoin">회원가입</button>
-      </div>
+      </div> -->
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
@@ -60,6 +60,8 @@ import { computed, defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
+import { logout } from '@/types/authFunctionModule'
+
 // import apiModule from '@/types/apiClient'
 
 // import roadControlView from '../underroad/views/roadControlView.vue'
@@ -103,9 +105,9 @@ export default defineComponent({
       router.push({ path: '/park/join' })
     }
 
-    function logout() {
-      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/park/login' }) // 로그아웃 후 리디렉션될 경로
+    async function Logout() {
+      await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+      router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {
@@ -122,7 +124,7 @@ export default defineComponent({
       goToMain,
       goToAlarm,
       goToLogin,
-      logout,
+      Logout,
       goToJoin
     }
   },

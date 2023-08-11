@@ -1,107 +1,145 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">경고등 제어</div>
-    <div class="warning1">작동 중</div>
-    <div class="buttons">
-      <button class="button1" @click="onAction">동작</button>
-      <button class="button2" @click="onRelease">해제</button>
+    <img class="siren" :src="sirenImage" />
+    <div class="height">
+      <img class="water" src="@/assets/images/Megaphone.png" />
+      <div class="state">{{ currentState }}</div>
+    </div>
+    <div class="height">
+      <img class="water" src="@/assets/images/Vector.png" />
+      <div class="heigth-value">{{ currentHeight }}</div>
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script lang="ts">
+import { defineComponent, computed, ref, onMounted, watch } from 'vue'
+import { useStore } from 'vuex'
+import { mapGetters } from 'vuex'
+import apiModule from '@/types/apiClient'
+import SirenGreenImage from '@/assets/images/Siren_green.png'
+import SirenOrange from '@/assets/images/Siren_orange.png'
+import SirenRed from '@/assets/images/Siren_red.png'
+
+// import http from '@/types/http'
 
 export default defineComponent({
-  name: 'roadControlLedVue',
-  methods: {
-    onAction() {
-      // 동작 버튼을 눌렀을 때 실행할 코드
-      console.log('동작 버튼 클릭')
-    },
-    onRelease() {
-      // 해제 버튼을 눌렀을 때 실행할 코드
-      console.log('해제 버튼 클릭')
+  name: 'ParkSirenControl',
+  computed: {
+    ...mapGetters('auth', [
+      'loginUser',
+      'isLogin',
+      'role',
+      'accessToken',
+      'refreshToken'
+    ])
+  },
+  setup() {
+    const store = useStore()
+    const apiClient = apiModule.apiClient(store)
+    const api = apiModule.api
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const sirenImage = ref(SirenGreenImage)
+    const currentState = ref('윤영이가 넣어줄 문구')
+    const currentHeight = ref('')
+    const actionTriggered = computed(() => store.state.actionTriggered)
+    const fetchHeightData = async () => {
+      try {
+        const response = await apiClient.get(
+          `/system/manager/facilities/${facility_id}/sensors/HEIGHT/latest`
+        )
+        currentHeight.value = '현재수위 : ' + response.data + 'mm'
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
+    }
+
+    const fetchStatusData = async () => {
+      try {
+        const response = await api.get(`/facilities/${facility_id}/status`)
+        if (response.data == 'DEFAULT') {
+          sirenImage.value = SirenGreenImage
+        } else if (response.data == 'FIRST' || response.data == 'SECOND') {
+          sirenImage.value = SirenOrange
+        } else {
+          sirenImage.value = SirenRed
+        }
+      } catch (error) {
+        console.error('Error fetching status data:', error)
+      }
+    }
+
+    watch(
+      () => actionTriggered.value,
+      (newValue: any) => {
+        console.log('변경감지')
+        fetchHeightData()
+        fetchStatusData()
+      }
+    )
+
+    onMounted(async () => {
+      await fetchHeightData()
+      await fetchStatusData()
+    })
+
+    return {
+      sirenImage,
+      currentState,
+      currentHeight,
+      store
     }
   }
 })
 </script>
+
 <style scoped>
 .main {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 400px; /* 이전 크기의 절반 */
-  height: 180.5px; /* 이전 크기의 절반 */
+  width: 400px;
+  height: 180.5px;
   background: #f2f7ff;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.17); /* 크기가 줄어드므로 그림자도 조절 */
   border-radius: 6px; /* 반경도 절반으로 줄임 */
-  margin-right: 200px;
 }
 
-.controll1 {
-  width: 368px;
-  height: 59px;
-  text-align: center;
-  color: black;
-  font-size: 15px;
-  font-family: Roboto;
-  font-weight: 500;
-  line-height: 28px;
-  letter-spacing: 0.25px;
-  word-wrap: break-word;
+.siren {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 20px;
 }
 
-.warning1 {
-  width: 300px;
-  height: 80px;
-  text-align: center;
-  color: black;
-  font-size: 25px;
+.state {
+  color: #114cb1;
+  font-size: 20px;
   font-family: Roboto;
   font-weight: 600;
-  line-height: 48px;
-  letter-spacing: 0.25px;
+  line-height: 70px;
   word-wrap: break-word;
 }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  padding: 0 10px; /* 이전 패딩의 절반 */
+.height {
+  width: 345px;
+  height: 35px;
+  align-items: center;
+  gap: 10px;
+  display: flex; /* 가로 정렬을 위한 추가 */
 }
 
-.button1 {
-  display: flex;
-  width: 120px;
-  height: 40px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: var(--unnamed, #f86262);
-  margin-right: 10px;
-  color: #fff;
-  margin-bottom: 20px;
+.heigth-value {
+  color: #114cb1;
+  font-size: 20px;
+  font-family: Roboto;
+  font-weight: 600;
+  line-height: 24px;
+  word-wrap: break-word;
 }
 
-.button2 {
-  display: flex;
-  width: 120px;
-  height: 40px;
-  padding: 11px 16px;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: var(--1, #10316b);
-  margin-left: 10px;
-  color: #fff;
-  margin-bottom: 20px;
+.water {
+  width: 30px;
+  height: 30px;
 }
 </style>
