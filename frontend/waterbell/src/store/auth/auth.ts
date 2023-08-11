@@ -50,8 +50,8 @@ const auth: Module<any, any> = {
     underroadListByGugun(state) {
       return state.underroadListByGugun
     },
-    isFirst(state) {
-      return state.isFirst
+    firstEnter(state) {
+      return state.firstEnter
     }
   },
   mutations: {
@@ -102,8 +102,8 @@ const auth: Module<any, any> = {
       state.underroadList = []
       state.underroadListByGugun = []
     },
-    switchIsFirst(state) {
-      state.isFirst = !state.isFirst
+    switchFirstEnter(state, payload) {
+      state.firstEnter = payload
     }
   },
   actions: {
