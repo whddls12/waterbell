@@ -8,8 +8,8 @@
     <div class="password-check-content">
       <!-- 비밀번호 -->
       <div class="password-check-content-box password">
-        <label for="password">비밀번호</label>
-        <input type="password" id="password" v-model="currentPassword" />
+        <label for="currentPW">비밀번호</label>
+        <input type="password" id="currentPW" v-model="currentPW" />
       </div>
       <!-- 버튼 -->
       <div class="password-check-btn">
@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, defineComponent } from 'vue'
 import router from '@/router'
 import axios from '@/types/apiClient'
@@ -30,24 +30,23 @@ export default defineComponent({
   setup() {
     const apiClient = axios.apiClient(store)
     // const api = axios.api
-    const currentPassword = ref('')
+    const currentPW = ref('')
 
     function isEqual() {
-      console.log(currentPassword.value)
+      console.log(currentPW.value)
       apiClient
         .post(`/member/verificationPW`, {
-          params: {
-            password: currentPassword.value
-          }
+          password: currentPW.value
         })
         .then((res) => {
-          console.log(res)
+          router.push({ path: '/park/mypage/update' })
         })
-        .catch((err) => console.log(err))
-
-      // router.push({ path: '/park/mypage/update' })
+        .catch((err) => {
+          console.log(err)
+          alert('비밀번호가 일치하지 않습니다.')
+        })
     }
-    return { isEqual }
+    return { currentPW, isEqual }
   }
 })
 </script>
