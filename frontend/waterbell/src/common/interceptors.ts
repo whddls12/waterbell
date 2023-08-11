@@ -52,8 +52,6 @@ export function setInterceptors(instance: any, store: any) {
         error.response.data.error == '유효하지 않은 토큰입니다.'
       ) {
         await logout()
-        // await store.commit('auth/logout')
-        // localStorage.removeItem('auth')
         console.log('로그아웃함')
         router.push('/park/login')
       }
