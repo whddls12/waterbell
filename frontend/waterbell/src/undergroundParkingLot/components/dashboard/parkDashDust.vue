@@ -3,6 +3,7 @@
     <div class="dash-box">
       <div class="dash-box-title">
         <h3>미세먼지</h3>
+        <p>{{ current_dust }}</p>
       </div>
       <div class="dash-box-content">
         <canvas
@@ -29,16 +30,19 @@ export default defineComponent({
 
     const chartRef = ref(null)
     const current_dust = ref<number | null>() // 미세먼지 측정 값
-    const left_dust = ref<number | null>() // (미세먼지 측정 최대치) - (현재 측정값)
+    const left_dust = ref(250) // (미세먼지 측정 최대치) - (현재 측정값)
 
     async function getDustData() {
       try {
         const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
-        current_dust.value = 42
-        if (current_dust.value >= 250) {
-          left_dust.value = 0
-        } else {
-          left_dust.value = 250 - current_dust.value
+        console.log(response.data)
+        current_dust.value = response.data.Dust
+        if (current_dust.value) {
+          if (current_dust.value >= 250) {
+            left_dust.value = 0
+          } else {
+            left_dust.value = 250 - Number(current_dust.value)
+          }
         }
 
         return { current_dust }

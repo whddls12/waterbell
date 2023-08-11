@@ -61,6 +61,8 @@ import { useRouter } from 'vue-router'
 import store from '@/store/index'
 import { mapGetters } from 'vuex'
 import { logout } from '@/types/authFunctionModule'
+import router from '@/router/index'
+
 export default defineComponent({
   name: 'ParkHeader',
   components: {},
