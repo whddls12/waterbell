@@ -63,8 +63,6 @@ export default defineComponent({
     async function goToOther1() {
       await setParkFacilityId()
       await moveToMemberLogin()
-      store.commit('setIsMainpage', false)
-      store.commit('setIspark', true)
     }
 
     //로그인 유저의 역할을 파악하고, 아파트주민 또는 관리자인 경우만
@@ -73,15 +71,13 @@ export default defineComponent({
     function moveToMemberLogin() {
       //비로그인 상태이면
       if (!isLogin.value) {
-        const needLogin = confirm(
-          '로그인이 필요합니다. 로그인 창으로 이동합니다.'
-        )
-        //확인 버튼을 누르면
-        if (needLogin) {
-          router.push('/park/login')
-        }
+        router.push('/park/login')
+      } else {
+        store.commit('setIsMainpage', false)
+        store.commit('setIspark', true)
       }
     }
+
     async function setParkFacilityId() {
       if (
         isLogin.value &&
