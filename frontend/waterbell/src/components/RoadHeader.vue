@@ -34,13 +34,22 @@
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/controll">제어</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/systemlog">시스템 로그</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/manage">관리</router-link>
       </div>
     </div>
@@ -56,11 +65,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import store from '@/store/index'
+// import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
 import { logout } from '@/types/authFunctionModule'
+// import { getUserInfo } from '@/types/getUserInfo'
 
 // import apiModule from '@/types/apiClient'
 
@@ -83,9 +94,11 @@ export default defineComponent({
     ])
   },
   setup() {
-    const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
+    const role = computed(() => store.getters['auth/role'])
+    const isManager = ref(false)
+
     // const apiClient = apiModule.apiClient
 
     function goToMain() {
@@ -119,16 +132,26 @@ export default defineComponent({
     // const name = loginUser()
     // console.log(name)
     // const loginUser = computed(() => store.getters['auth/loginUser'])
+
+    const checkRole = async () => {
+      if (role.value == 'PUBLIC_MANAGER') return true
+      else return false
+    }
+
+    onMounted(async () => {
+      isManager.value = await checkRole()
+    })
+
     return {
       isMainPage,
       goToMain,
       goToAlarm,
       goToLogin,
       Logout,
-      goToJoin
+      goToJoin,
+      isManager
     }
-  },
-  methods: {}
+  }
 })
 </script>
 
