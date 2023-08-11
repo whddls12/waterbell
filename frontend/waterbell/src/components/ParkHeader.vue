@@ -47,10 +47,12 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
 import { logout } from '@/types/authFunctionModule'
+import router from '@/router/index'
+
 export default defineComponent({
   name: 'ParkHeader',
   components: {},
@@ -66,7 +68,7 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
-    const router = useRouter()
+    // const router = useRouter()
 
     function goToMain() {
       store.commit('setIsMainpage', true)

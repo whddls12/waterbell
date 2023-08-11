@@ -3,43 +3,57 @@
   <!-- 수정하기 버튼을 누르기 전에는 입력도 수정도 되지 않도록 readonly 설정 사용 -->
   <div class="myPage">
     <div class="myPage-title">
-      <h1>회원정보</h1>
+      <h1>회원정보 수정</h1>
     </div>
     <div class="myPage-content">
       <!-- 이름 -->
       <div class="myPage-content-box name">
         <label for="name">이름</label>
-        <input type="text" id="name" disabled :placeholder="memberInfo?.name" />
+        <input type="text" id="name" :value="memberInfo?.name" />
       </div>
-      <!-- 아이디 -->
+      <!-- 아이디
       <div class="myPage-content-box loginId">
         <label for="id">아이디</label>
-        <input
-          type="text"
-          id="loginId"
-          disabled
-          :placeholder="memberInfo?.loginId"
+        <input type="text" id="loginId" disabled :value="memberInfo?.loginId" />
+      </div> -->
+      <!-- 비밀번호 -->
+      <div class="myPage-content-box phone">
+        <label for="password">현재 비밀번호</label>
+        <div class="inputbtn">
+          <input type="password" id="password" disabled value="********" />
+          <button id="changebtn" @click="changePopState_PW">변경</button>
+        </div>
+        <parkPasswordModal
+          v-if="popState_pw"
+          @close="changePopState_PW"
+          v-bind="modalData"
         />
       </div>
       <!-- 휴대폰번호 -->
       <div class="myPage-content-box phone">
         <label for="phone">휴대폰 번호</label>
-        <input
-          type="text"
-          id="phone"
-          disabled
-          :placeholder="memberInfo?.phone"
+        <div class="inputbtn">
+          <input type="text" id="phone" readonly :value="memberInfo?.phone" />
+          <button id="changebtn" @click="changePopState_Phone">변경</button>
+        </div>
+        <parkPhoneModal
+          v-if="popState_phone"
+          @close="changePopState_Phone"
+          v-bind="modalData"
         />
       </div>
       <!-- 아파트 인증코드 -->
       <div class="myPage-content-box apartCode">
-        <label for="apart-code">아파트 인증코드</label>
-        <input
-          type="text"
-          id="apartCode"
-          disabled
-          :placeholder="memberInfo?.apartCode"
-        />
+        <label for="apartCode">아파트 인증코드</label>
+        <div class="inputbtn">
+          <input
+            type="text"
+            id="apartCode"
+            readonly
+            :placeholder="memberInfo?.apartCode"
+          />
+          <button id="changebtn">수정</button>
+        </div>
       </div>
       <!-- 주소 -->
       <div class="myPage-content-box address">
@@ -47,7 +61,7 @@
         <input
           type="text"
           id="address"
-          disabled
+          readonly
           :placeholder="memberInfo?.address"
         />
       </div>
@@ -58,18 +72,15 @@
           <input
             type="text"
             id="addressNumber"
-            disabled
-            :placeholder="memberInfo?.addressNumber"
+            :value="memberInfo?.addressNumber"
           />
           <p>호</p>
         </div>
       </div>
       <!-- 버튼 -->
       <div class="myPage-btn">
-        <button id="update" @click="passwordCheck">회원정보 수정하기</button>
-        <div class="withdrawal">
-          <i class="fas fa-arrow-right"> 회원탈퇴하기</i>
-        </div>
+        <button id="goBack">취소</button>
+        <button id="saveChange">저장</button>
       </div>
     </div>
   </div>
@@ -80,14 +91,23 @@ import { ref, onMounted, defineComponent } from 'vue'
 import router from '@/router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
+import parkPasswordModal from './parkPasswordModal.vue'
+import parkPhoneModal from './parkPhoneModal.vue'
 
 export default defineComponent({
-  name: 'parkMypage',
+  name: 'parkMypageUpdate',
+  components: {
+    parkPasswordModal,
+    parkPhoneModal
+  },
   setup() {
     const apiClient = axios.apiClient(store)
-    // const api = axios.api
     const memberInfo = ref(null)
 
+    const popState_pw = ref(false)
+    const popState_phone = ref(false)
+
+    // 회원정보 가져오기
     function getMemberData() {
       apiClient
         .get(`/member/apartMember/mypage`)
@@ -97,14 +117,26 @@ export default defineComponent({
         })
         .catch((error) => console.log(error))
     }
-    function passwordCheck() {
-      router.push({ path: '/park/mypage/passwordCheck' })
+
+    function changePopState_PW() {
+      popState_pw.value = !popState_pw.value
     }
+    function changePopState_Phone() {
+      popState_phone.value = !popState_phone.value
+    }
+
     // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
     onMounted(() => {
       getMemberData()
     })
-    return { memberInfo, getMemberData, passwordCheck }
+    return {
+      memberInfo,
+      popState_pw,
+      popState_phone,
+      getMemberData,
+      changePopState_PW,
+      changePopState_Phone
+    }
   }
 })
 </script>
@@ -120,6 +152,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 660px;
   margin: 20px 0px;
   font-size: 1.5rem;
   gap: 5px;
@@ -127,8 +160,8 @@ export default defineComponent({
 
 input {
   border-radius: 8px;
-
-  width: 660px;
+  box-sizing: border-box;
+  width: inherit;
   height: 60px;
   font-size: 1.5rem;
   padding-left: 10px;
@@ -146,40 +179,64 @@ input {
 
 .myPage-btn {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 40px;
 }
 
-#update {
-  display: flex;
-  width: 644px;
+.myPage-btn > button {
+  width: 288px;
   height: 60px;
-  padding: 11px 16px;
-  gap: 8px;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-
   border: none;
   border-radius: 40px;
+
   color: white;
-  background-color: #114cb1;
+  font-family: Roboto;
+  font-size: 24px;
+  font-style: normal;
   font-weight: 600;
-  font-size: 1.5rem;
+  line-height: 32px; /* 133.333% */
   letter-spacing: 7px;
 }
 
-#update:hover {
+.myPage-btn > button:hover {
+  cursor: pointer;
+}
+
+#goBack {
+  background-color: #7b7979;
+}
+
+#saveChange {
+  background-color: #ff8901;
+}
+
+#password,
+#phone,
+#apartCode {
+  width: 530px;
+}
+
+#changebtn {
+  border: none;
+  border-radius: 10px;
+  height: 60px;
+  width: 114px;
+
+  background-color: #ffa132;
+  color: white;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+#changebtn:hover {
   cursor: pointer;
   background-color: #ff8901;
 }
 
-.withdrawal {
-  color: #666666;
-  align-self: end;
-}
-
-.withdrawal:hover {
-  cursor: pointer;
+.inputbtn {
+  display: flex;
+  width: 660px;
+  gap: 20px;
 }
 </style>

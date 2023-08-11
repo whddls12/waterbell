@@ -25,7 +25,9 @@ import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureL
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
 import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
 import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
-import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
+import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue' // 마이페이지
+import parkPasswordCheck from '../undergroundParkingLot/views/member/parkPasswordCheck.vue' // 비밀번호 확인
+import parkMypageUpdate from '../undergroundParkingLot/views/member/parkMypageUpdate.vue'
 import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
 
 //지하주차장 페이지
@@ -133,12 +135,24 @@ const router = createRouter({
       ]
     },
 
+    // 회원정보 조회(마이페이지)
     {
       path: '/park/mypage',
       name: 'parkMypage',
       component: parkMypage
     },
-
+    // 회원정보 수정 시 비밀번호 확인 창
+    {
+      path: '/park/mypage/passwordCheck',
+      name: 'parkPasswordCheck',
+      component: parkPasswordCheck
+    },
+    // 회원정보 수정
+    {
+      path: '/park/mypage/update',
+      name: 'parkMypageUpdate',
+      component: parkMypageUpdate
+    },
     {
       path: '/park/dash',
       name: 'ParkDash',
