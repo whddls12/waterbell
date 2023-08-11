@@ -51,7 +51,7 @@ export default defineComponent({
 </script>
 <style scoped lang="css">
 #message {
-  color: blue;
+  color: #114cb1;
   /* 경고문구 */
   font-family: Roboto;
   font-size: 24px;

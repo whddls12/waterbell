@@ -3,7 +3,7 @@
     <img class="siren" :src="sirenImage" />
     <div class="height">
       <img class="water" src="@/assets/images/Megaphone.png" />
-      <div class="state">{{ currentState }}</div>
+      <div class="state" :id="notDefault">{{ currentState }}</div>
     </div>
     <div class="height">
       <img class="water" src="@/assets/images/Vector.png" />
@@ -41,9 +41,15 @@ export default defineComponent({
 
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const sirenImage = ref(SirenGreenImage)
+    const status = ref('')
     const currentState = ref('윤영이가 넣어줄 문구')
     const currentHeight = ref('')
     const UactionTriggered = computed(() => store.state.UactionTriggered)
+    const notDefault = computed(() => {
+      return {
+        'red-text': status.value != 'DEFAULT'
+      }
+    })
     const fetchHeightData = async () => {
       try {
         const response = await apiClient.get(
@@ -58,12 +64,16 @@ export default defineComponent({
     const fetchStatusData = async () => {
       try {
         const response = await api.get(`/facilities/${facility_id}/status`)
-        if (response.data == 'DEFAULT') {
+        status.value = response.data
+        if (status.value == 'DEFAULT') {
           sirenImage.value = SirenGreenImage
-        } else if (response.data == 'FIRST' || response.data == 'SECOND') {
+          currentState.value = '정상 상태'
+        } else if (status.value == 'FIRST' || status.value == 'SECOND') {
           sirenImage.value = SirenOrange
+          currentState.value = '경고 발령'
         } else {
           sirenImage.value = SirenRed
+          currentState.value = 'LED & 경고등 작동 중'
         }
       } catch (error) {
         console.error('Error fetching status data:', error)
@@ -141,5 +151,9 @@ export default defineComponent({
 .water {
   width: 30px;
   height: 30px;
+}
+
+#notDefault {
+  color: red;
 }
 </style>
