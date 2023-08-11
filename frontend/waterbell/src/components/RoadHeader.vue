@@ -21,10 +21,10 @@
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
 
-      <!-- <div class="header-btn" v-else>
+      <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
         <button @click="goToJoin">회원가입</button>
-      </div> -->
+      </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
