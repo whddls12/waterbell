@@ -34,20 +34,36 @@
         </tr>
       </tbody>
     </table>
-
     <!-- 페이지네이션 컨트롤 -->
     <div class="pagination-container">
       <div class="pagination">
-        <!-- Page number links -->
+        <!-- 이전 페이지 그룹으로 이동 -->
         <span
-          class="page-item"
-          v-for="page in pageCount"
-          :key="page"
-          :class="{ active: page - 1 === currentPage }"
+          v-if="pageNavigation.startPage > 1"
+          @click.prevent="goToPage(pageNavigation.pre)"
         >
-          <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">{{
-            page
-          }}</a>
+          &laquo;
+        </span>
+
+        <!-- 현재 페이지 그룹의 페이지 숫자들 -->
+        <span
+          v-for="page in range(
+            pageNavigation.startPage,
+            pageNavigation.endPage
+          )"
+          :key="page"
+          :class="{ active: page === pageNavigation.pgno }"
+          @click.prevent="goToPage(page)"
+        >
+          {{ page }}
+        </span>
+
+        <!-- 다음 페이지 그룹으로 이동 -->
+        <span
+          v-if="pageNavigation.endPage < pageNavigation.totalPageCnt"
+          @click.prevent="goToPage(pageNavigation.next)"
+        >
+          &raquo;
         </span>
       </div>
     </div>
@@ -56,66 +72,18 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
-import http from '@/types/http'
-import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { mapGetters } from 'vuex'
+import store from '@/store/index'
+import axios from '@/types/apiClient'
 
 export default defineComponent({
   name: 'roadDashReportVue',
-  computed: {
-    ...mapGetters('auth', [
-      'loginUser',
-      'isLogin',
-      'role',
-      'accessToken',
-      'refreshToken'
-    ])
-  },
-  created() {
-    console.log('로그인한 사용자:', this.loginUser)
-    console.log('로그인 상태:', this.isLogin)
-    console.log('역할:', this.role)
-    console.log('접근 토큰:', this.accessToken)
-    console.log('갱신 토큰:', this.refreshToken)
-  },
 
   setup() {
-    const ITEMS_PER_PAGE = 10
-    const currentPage = ref(0)
-
-    const paginatedData = computed(() => {
-      const start = currentPage.value * ITEMS_PER_PAGE
-      const end = start + ITEMS_PER_PAGE
-      return AlarmList.value.slice(start, end)
-    })
-
-    const pageCount = computed(() => {
-      return Math.ceil(AlarmList.value.length / ITEMS_PER_PAGE)
-    })
-
-    const nextPage = () => {
-      if (currentPage.value < pageCount.value - 1) {
-        currentPage.value++
-      }
-    }
-
-    const prevPage = () => {
-      if (currentPage.value > 0) {
-        currentPage.value--
-      }
-    }
-
-    const goToPage = (page: number) => {
-      currentPage.value = page
-    }
-    const store = useStore()
-
-    // getters에서 nowUnderroad 가져오기
-    const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
-    const facility_id = nowUnderroad.id
-
+    const currentPage = ref(1)
+    const apiClient = axios.apiClient(store)
+    const role = computed(() => store.getters['auth/role']).value
+    const router = useRouter()
     let AlarmList = ref<
       {
         id: string
@@ -126,23 +94,59 @@ export default defineComponent({
         status: string
       }[]
     >([])
+    let pageNavigation = ref<{
+      pgno: number
+      totalCnt: number
+      totalPageCnt: number
+      startRange: boolean
+      endRange: boolean
+      naviSize: number
+      startPage: number
+      endPage: number
+      pre: number
+      next: number
+      start: number
+    }>({
+      pgno: 1,
+      totalCnt: 0,
+      totalPageCnt: 0,
+      startRange: false,
+      endRange: false,
+      naviSize: 0,
+      startPage: 1,
+      endPage: 1,
+      pre: 0,
+      next: 0,
+      start: 0
+    })
 
-    const setList = () => {
-      const role = computed(() => store.getters['auth/role']).value
-      const token = computed(() => store.getters['auth/accessToken']).value
-      http
-        .get(`/alarm/${role}`, {
-          headers: {
-            Authorization: `${token}`
-          }
-        })
-        .then((res) => {
-          AlarmList.value = res.data
-        })
-      console.log('ㅇㅇ')
-      console.log(AlarmList)
+    const range = (start: number, end: number) => {
+      return [...Array(end - start + 1).keys()].map((val) => val + start)
     }
-    const router = useRouter()
+
+    const goToPage = (page: number) => {
+      currentPage.value = page
+      try {
+        apiClient.get(`/alarm/${role}/${currentPage.value}`).then((res) => {
+          AlarmList.value = res.data.list
+          pageNavigation.value = res.data.pageNavigation
+        })
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
+    }
+
+    const setList = async () => {
+      try {
+        const res = await apiClient.get(`/alarm/${role}/${currentPage.value}`)
+        AlarmList.value = res.data.list
+        pageNavigation.value = res.data.pageNavigation
+        console.log(pageNavigation.value)
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
+    }
+
     const movePage = (alarm_id: any) => {
       console.log('Clicked on alarm_id:', alarm_id)
       router.push(`/alarm/detail/${alarm_id}`)
@@ -152,13 +156,12 @@ export default defineComponent({
       setList()
     })
     return {
-      AlarmList: paginatedData,
+      AlarmList,
       currentPage,
       movePage,
-      nextPage,
-      prevPage,
+      range,
       goToPage,
-      pageCount
+      pageNavigation
     }
   }
 })
@@ -214,28 +217,5 @@ export default defineComponent({
 .table-bordered th,
 .table-bordered td {
   border: 1px solid #dee2e6; /* 원하는 색상과 크기로 조정 가능 */
-}
-
-/* 페이지네이션 컨테이너를 아래쪽으로 배치 */
-.pagination-container {
-  text-align: center;
-}
-
-/* 페이지네이션 버튼들을 세로로 배치 */
-.pagination {
-  display: block;
-  margin: 10px auto;
-  width: 200px; /* Adjust the width as needed */
-}
-
-/* 페이지네이션 버튼 스타일 */
-.pagination span {
-  margin: 8px;
-  cursor: pointer;
-}
-
-/* Active page style */
-.pagination .active {
-  text-decoration: underline;
 }
 </style>
