@@ -16,13 +16,16 @@ export default defineComponent({
     let message = ref('')
     // let warningMsg = ref()
     let facilityId = computed(() => store.getters['auth/facilityId'])
+    let nowUnderroad = ref(store.getters['auth/nowUnderroad'])
 
+    let name = ref(nowUnderroad.value.undergroundRoadName)
+    // console.log(nowUnderroad.value)
     const status = ref('')
     const messageClass = computed(() => {
-      return {
-        'blue-text': status.value === 'DEFAULT'
-      }
+      return status.value == 'DEFAULT' ? 'blue-text' : 'red-text'
     })
+
+    console.log(messageClass)
     const getStatus = () => {
       api.get(`/facilities/${facilityId.value}/status`).then((res) => {
         // console.log('status')
@@ -31,13 +34,13 @@ export default defineComponent({
 
         console.log(status.value)
         if (status.value === 'FIRST') {
-          message.value = '1차 경고 : 주차장 진입 자제 및 출차 권고'
+          message.value = name.value + ' :  침수 위기 1차 경고 발령 '
         } else if (status.value === 'SECOND') {
-          message.value = '2차 경고 : 주차장 진출입 금지'
+          message.value = name.value + ' :  2차 경고 도로 진입에 주의하세요'
         } else if (status.value === 'DEFAULT') {
-          message.value = '정상 상태'
+          message.value = name.value + ' :  정상 상태'
         } else {
-          message.value = '차수판 동작 중 : 주차장 진출입 금지'
+          message.value = name.value + ' :  진입 금지'
         }
       })
     }
@@ -45,13 +48,20 @@ export default defineComponent({
       getStatus()
     })
 
-    return { facilityId, getStatus, message, status, messageClass }
+    return {
+      facilityId,
+      getStatus,
+      message,
+      status,
+      messageClass,
+      nowUnderroad,
+      name
+    }
   }
 })
 </script>
 <style scoped lang="css">
 #message {
-  color: #114cb1;
   /* 경고문구 */
   font-family: Roboto;
   font-size: 24px;
@@ -61,6 +71,10 @@ export default defineComponent({
   letter-spacing: 7px;
 }
 .blue-text {
-  color: var(red, #f02f2f);
+  color: #114cb1;
+}
+
+.red-text {
+  color: red;
 }
 </style>

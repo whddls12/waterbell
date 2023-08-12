@@ -20,11 +20,12 @@ export default defineComponent({
     let facilityId = computed(() => store.getters['auth/facilityId'])
 
     const status = ref('')
+
     const messageClass = computed(() => {
-      return {
-        'blue-text': status.value === 'DEFAULT'
-      }
+      return status.value == 'DEFAULT' ? 'blue-text' : 'red-text'
     })
+
+    console.log(messageClass.value)
     const getStatus = () => {
       api.get(`/facilities/${facilityId.value}/status`).then((res) => {
         // console.log('status')
@@ -53,7 +54,7 @@ export default defineComponent({
 </script>
 <style scoped lang="css">
 #message {
-  color: blue;
+  color: red;
   /* 경고문구 */
   font-family: Roboto;
   font-size: 24px;
@@ -63,6 +64,9 @@ export default defineComponent({
   letter-spacing: 7px;
 }
 .blue-text {
-  color: var(red, #f02f2f);
+  color: var(blue, #f02f2f);
+}
+.red-text {
+  color: red;
 }
 </style>

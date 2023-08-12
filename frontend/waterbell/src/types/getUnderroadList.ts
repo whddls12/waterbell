@@ -74,13 +74,13 @@ export async function fetchUnderroads() {
             //     ]
             // }
             //element의 sido.id와 member의 sidoId가 일치하는 경우만
-            console.log(element.sido.id)
-            console.log(member.sidoId)
+            // console.log(element.sido.id)
+            // console.log(member.sidoId)
             if (element.sido.id == member.sidoId) {
               // console.log('여기 들어오냐')
               store.commit('auth/setUnderroadbygugun', element)
               for (const underroad of element.underroads) {
-                console.log(underroad)
+                // console.log(underroad)
                 store.commit('auth/setUnderroadList', underroad) //지하차도 세팅하는거 로그인 때도 넣기
               }
             }
@@ -95,6 +95,7 @@ export async function fetchUnderroads() {
           store.commit('auth/setUnderroadbygugun', element)
           for (const e of element.underroads) {
             store.commit('auth/setUnderroadList', e)
+            // console.log(e)
           }
         }
       })

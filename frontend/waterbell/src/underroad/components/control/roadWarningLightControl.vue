@@ -3,7 +3,7 @@
     <img class="siren" :src="sirenImage" />
     <div class="height">
       <img class="water" src="@/assets/images/Megaphone.png" />
-      <div id="state" :class="notDefault">{{ currentState }}</div>
+      <div id="state" :class="messageClass">{{ currentState }}</div>
     </div>
     <div class="height">
       <img class="water" src="@/assets/images/Vector.png" />
@@ -46,7 +46,7 @@ export default defineComponent({
     const currentHeight = ref('')
     const UactionTriggered = computed(() => store.state.UactionTriggered)
 
-    const notDefault = computed(() => {
+    const messageClass = computed(() => {
       if (status.value == 'DEFAULT') {
         return 'blue-text'
       } else if (status.value == 'FIRST' || status.value == 'SECOND') {
@@ -102,7 +102,8 @@ export default defineComponent({
       sirenImage,
       currentState,
       currentHeight,
-      store
+      store,
+      messageClass
     }
   }
 })
