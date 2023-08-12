@@ -30,6 +30,20 @@ public class BoardRepository {
         return image.getId();
     }
 
+    public Image findImageById(Integer id) {
+        return em.find(Image.class, id);
+    }
+
+
+    public void deleteImage(Image image) {
+        em.remove(image);
+    }
+
+    public void deleteUndergroundRoadBoard(UndergroundRoadBoard undergroundRoadBoard) {
+        em.remove(undergroundRoadBoard);
+    }
+
+
     public Integer saveUndergroundRoadBoard(UndergroundRoadBoard undergroundRoadBoard){
         em.persist(undergroundRoadBoard);
         return undergroundRoadBoard.getId();
@@ -80,5 +94,13 @@ public class BoardRepository {
 
     public UndergroundRoadBoard getUndergoundBoardById(int boardId) {
         return em.find(UndergroundRoadBoard.class,boardId);
+    }
+
+    public List<Image> getImageByUndergoundRoadBoardId(int boardId) {
+        String latestQuery = "SELECT i FROM Image i WHERE  i.undergroundRoadBoard.id = :boardId ";
+        List<Image> resultList = em.createQuery(latestQuery, Image.class)
+                .setParameter("boardId", boardId)
+                .getResultList();
+        return resultList;
     }
 }

@@ -9,11 +9,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication(
-		exclude = {
-				org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration.class,
-				org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
-				org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class
-		}
+//		exclude = {
+//				org.springframework.cloud.aws.autoconfigure.context.ContextInstanceDataAutoConfiguration.class,
+//				org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration.class,
+//				org.springframework.cloud.aws.autoconfigure.context.ContextRegionProviderAutoConfiguration.class
+//		}
 )
 public class FccApplication {
 
