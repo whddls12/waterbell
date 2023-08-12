@@ -157,6 +157,18 @@ export default createStore({
     //     })
     //   }
     // }
+    triggerAction({ commit }) {
+      commit('SET_ACTION_TRIGGERED', true)
+    },
+    resetActionTrigger({ commit }) {
+      commit('SET_ACTION_TRIGGERED', false)
+    },
+    UtriggerAction({ commit }) {
+      commit('SET_ACTION_UTRIGGERED', true)
+    },
+    UresetActionTrigger({ commit }) {
+      commit('SET_ACTION_UTRIGGERED', false)
+    }
   },
 
   modules: {
