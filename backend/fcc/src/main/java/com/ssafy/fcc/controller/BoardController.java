@@ -247,7 +247,7 @@ public class BoardController {
 
 
     //지하차도 글 상태 수정 - 관리인
-    @GetMapping("/public_manager/updateStatus/{undergroundRoadBoardId}/{boardStatus}")
+    @GetMapping("/publicManager/updateStatus/{undergroundRoadBoardId}/{boardStatus}")
     public  ResponseEntity<Map<String, Object>> updateStatusUndergroundRoadBoard(
             @PathVariable("undergroundRoadBoardId") int boardId, @PathVariable("boardStatus") String boardStatus) throws IllegalStateException, IOException  {
 
@@ -280,7 +280,7 @@ public class BoardController {
 
 
     //지하차도 글 삭제 - 관리자
-    @GetMapping("/public_manager/deleteBoard/{undergroundRoadBoardId}")
+    @GetMapping("/publicManager/deleteBoard/{undergroundRoadBoardId}")
     public  ResponseEntity<Map<String, Object>> deleteUndergroundRoadBoardByManager(
             @PathVariable("undergroundRoadBoardId") int boardId) throws IllegalStateException, IOException  {
 
@@ -334,13 +334,6 @@ public class BoardController {
         }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
-
-
-
-
-
-
-
 
 
 
