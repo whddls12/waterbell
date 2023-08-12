@@ -16,7 +16,6 @@
 import { defineComponent, computed, ref, onMounted, watch } from 'vue'
 // import { useStore } from 'vuex'
 import store from '@/store/index'
-import { mapGetters } from 'vuex'
 import SirenGreenImage from '@/assets/images/Siren_green.png'
 import SirenOrange from '@/assets/images/Siren_orange.png'
 import SirenRed from '@/assets/images/Siren_red.png'
@@ -25,15 +24,6 @@ import axios from '@/types/apiClient'
 
 export default defineComponent({
   name: 'RoadSirenControl',
-  computed: {
-    ...mapGetters('auth', [
-      'loginUser',
-      'isLogin',
-      'role',
-      'accessToken',
-      'refreshToken'
-    ])
-  },
   setup() {
     // const store = useStore()
     const apiClient = axios.apiClient(store)
