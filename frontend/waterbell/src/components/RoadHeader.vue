@@ -168,26 +168,32 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-}
-
-.header-top > div {
-  display: flex;
-  align-items: center;
   margin-left: 200px;
-  margin-right: 200px;
+  margin-right: 100px;
   margin-top: 30px;
   margin-bottom: 10px;
   /* padding-top: 100px; */
 }
 
-/* 헤더 상단 버튼 모아놓은 박스 */
 .header-btn {
-  display: flex;
-  align-items: center;
+  margin-top: 20px;
 }
 
-.header-btn > button {
-  align-self: auto;
+/* 헤더 상단 버튼 모아놓은 박스 */
+.header-btn button {
+  border: 1px solid #10316b;
+  border-radius: 5px;
+  width: 90px;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #10316b;
+  color: white;
+  transition: 0.3s;
+}
+
+.header-btn button:hover {
+  background-color: #31558c;
 }
 
 /* 메뉴 내비게이션 바 */
