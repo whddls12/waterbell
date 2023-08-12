@@ -98,6 +98,11 @@ export default defineComponent({
       ) {
         const member = await getUserInfo()
         store.commit('auth/setFacilityId', member.facilityId)
+        //--------------------------------------------------------------------------------
+        //여기에 nowUnderroad null 만들고 현재 보고 있는 아파트 정보 넣기.
+        // 혹은 nowUnderroad를 nowFacility의 의미로 사용?
+        //----------------------------------------------------------------------------------------
+
         //만약 firstEnter가 false로 바뀌어있다면, 다시 지하차도로 접근했을 때, 최근 위치로 잡도록
         //firstEnter 값 바꿔주기
         if (!firstEnter.value) {
