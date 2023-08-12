@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="home">
     <!-- 진입화면 v-if="isMainpage"로 처음화면에 온 걸 구분? -->
     <div v-if="isMainPage" class="page-start">
