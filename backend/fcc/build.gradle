@@ -66,12 +66,14 @@ dependencies {
 //	implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.1'
 
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	implementation'com.google.code.gson:gson:2.8.7'
 
-	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation "com.amazonaws:aws-java-sdk-s3:1.12.281"
 
 	//JSON 파싱
 	implementation group: 'org.json', name: 'json', version: '20160810'
