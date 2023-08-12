@@ -1,6 +1,8 @@
 package com.ssafy.fcc.controller;
 
-import com.ssafy.fcc.domain.log.SensorType;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -313,11 +315,114 @@ public class DashController {
         if (resultList.size() > 0) return new ResponseEntity<>(resultList, HttpStatus.OK);
         else return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
+    }
+
+
+    @GetMapping("/weather")
+    public ResponseEntity<Map<String, Object>>  getWeather(String year, String month, String day, String hour, String minute, Double lat , Double lon)throws Exception{
+
+
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        System.out.println(year+", "+ month +", "+day+", "+hour+", "+minute+", "+lon+", "+lat);
+
+        int[] location = mapConv(lon, lat, new LamcParameter());
+        String ny = String.valueOf(location[1]);
+        String nx = String.valueOf(location[0]);
+
+        int tempHour=Integer.parseInt(hour);
+        int m = Integer.parseInt(minute);
+        if(m<=45) tempHour--;
+        if(tempHour<0) tempHour=23;
+        String hourStr= tempHour<=10 ? "0"+tempHour : tempHour+"";
+
+        int baseHour = Integer.parseInt(hour);
+        if(m>45)  baseHour = Integer.parseInt(hour)+1;
+        String baseHourStr= baseHour<=10 ? "0"+baseHour : baseHour+"";
+        baseHourStr+="00";
+
+
+
+
+        StringBuilder urlBuilder = new StringBuilder("http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst"); /*URL*/
+        urlBuilder.append("?" + URLEncoder.encode("serviceKey","UTF-8") + "=k5EKhcvEVcfEXIn2mnb2nd7hZtlbvquM7M0AbKZeLZmT58550frSYtSymQCTNjpqQNDu0S7bfuYN0Q18CYRQzg%3D%3D"); /*Service Key*/
+        urlBuilder.append("&" + URLEncoder.encode("pageNo","UTF-8") + "=" + URLEncoder.encode("1", "UTF-8")); /*페이지번호*/
+        urlBuilder.append("&" + URLEncoder.encode("numOfRows","UTF-8") + "=" + URLEncoder.encode("1000", "UTF-8")); /*한 페이지 결과 수*/
+        urlBuilder.append("&" + URLEncoder.encode("dataType","UTF-8") + "=" + URLEncoder.encode("JSON", "UTF-8")); /*요청자료형식(XML/JSON) Default: XML*/
+        urlBuilder.append("&" + URLEncoder.encode("base_date","UTF-8") + "=" + URLEncoder.encode(year+month+day, "UTF-8")); /*‘21년 6월 28일 발표*/
+        urlBuilder.append("&" + URLEncoder.encode("base_time","UTF-8") + "=" + URLEncoder.encode(hourStr+"00", "UTF-8")); /*06시 발표(정시단위) */
+        urlBuilder.append("&" + URLEncoder.encode("nx","UTF-8") + "=" + URLEncoder.encode(nx, "UTF-8")); /*예보지점의 X 좌표값*/
+        urlBuilder.append("&" + URLEncoder.encode("ny","UTF-8") + "=" + URLEncoder.encode(ny, "UTF-8")); /*예보지점의 Y 좌표값*/
+
+        System.out.println(urlBuilder.toString());
+
+        URL url = new URL(urlBuilder.toString());
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Content-type", "application/json");
+
+        BufferedReader rd;
+        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+            rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        } else {
+            rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+        }
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = rd.readLine()) != null) {
+            sb.append(line);
+        }
+        rd.close();
+        conn.disconnect();
+        String data= sb.toString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> weatherData = objectMapper.readValue(data, new TypeReference<Map<String, Object>>() {});
+        Map<String, Object> relevantWeatherDataMap = new HashMap<>();
+
+
+        Map<String, Object> items = (Map<String, Object>) ((Map<String, Object>)((Map<String, Object>) weatherData.get("response")).get("body")).get("items");
+        List<Map<String, Object>> itemList = (List<Map<String, Object>>) items.get("item");
+        for (Map<String, Object> weatherObject : itemList) {
+            String category = (String) weatherObject.get("category");
+
+            // SKY, PCP, PTY 카테고리인 경우에만 처리
+            if (category.equals("SKY") || category.equals("RN1") || category.equals("PTY")) {
+
+                String fcstTime = (String) weatherObject.get("fcstTime");
+                if(fcstTime.equals(baseHourStr)){
+                    Map<String, String> dataMap = new HashMap<>();
+                    dataMap.put("category", category);
+                    dataMap.put("fcstValue", (String) weatherObject.get("fcstValue"));
+                    resultMap.put(category, dataMap);
+                }
+            }
+        }
+
+        System.out.println(resultMap);
+
+        resultMap.put("message", "success");
+        status = HttpStatus.ACCEPTED;
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @GetMapping("/facilities/{facility_id}/sensors")
+    public Map<String,Integer> dashSensor(@PathVariable("facility_id") int facilityId) {
+
+        Map<String, Integer> resultMap;
+        resultMap = systemService.getSensorData(facilityId);
+        return resultMap;
 
     }
 
-    @GetMapping("/facilities/{facility_id}/sensors/{category}")
-    public int dashSensor(@PathVariable("facility_id") int facilityId, @PathVariable String category) {
-        return systemService.getSensorData(facilityId,category);
+    @GetMapping("/facilities/{facility_id}/sensors/heightPerhour")
+    public Map<Integer,Integer> getHeightPerhour(@PathVariable("facility_id") int facilityId) {
+
+        Map<Integer,Integer> resultMap;
+        resultMap = systemService.getHeightPerhour(facilityId);
+        return resultMap;
+
     }
+
 }

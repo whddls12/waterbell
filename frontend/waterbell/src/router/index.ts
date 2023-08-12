@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '@/views/Home.vue'
+import NotFound from '@/views/NotFound.vue'
 
+//관리자 로그인
+import managerLogin from '@/views/ManagerLogin.vue'
 //지하차도 페이지
 import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
 import RoadReport from '@/underroad/views/roadReportView.vue' // 신고접수
 import RoadSystemlog from '@/underroad/views/roadSystemLogView.vue' // 시스템로그
 import RoadManage from '@/underroad/views/roadManageView.vue' // 관리
-import RoadControl from '@/underroad/views/roadControlView.vue' // 제어
+import RoadControll from '@/underroad/views/roadControlView.vue' // 제어
 
 //지하차도 신고접수
 import roadReportItemVue from '../underroad/components/report/roadReportItem.vue'
@@ -22,7 +25,9 @@ import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureL
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
 import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
 import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
-import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
+import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue' // 마이페이지
+import parkPasswordCheck from '../undergroundParkingLot/views/member/parkPasswordCheck.vue' // 비밀번호 확인
+import parkMypageUpdate from '../undergroundParkingLot/views/member/parkMypageUpdate.vue'
 import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
 
 //지하주차장 페이지
@@ -30,7 +35,7 @@ import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // �
 import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신고접수
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
-import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
+import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
 
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
@@ -53,6 +58,18 @@ const router = createRouter({
       name: 'Home',
       component: Home
     },
+    // 사용자가 의도하지 않은 URL로 접근 시 뷰 라우터에 404 오류 페이지로 리다이렉션 설정
+    {
+      path: '/notFound',
+      name: 'notFound',
+      component: NotFound
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/notFound'
+    },
+    //매니저 로그인
+    { path: '/manager/login', name: 'managerLogin', component: managerLogin },
     // 지하차도 라우터
     {
       path: '/road/dash',
@@ -73,13 +90,13 @@ const router = createRouter({
       component: roadReportUpdateVue
     },
     {
-      path: '/road/report/item',
+      path: '/road/report/:report_id/detail',
       component: roadReportItemVue
     },
     {
-      path: '/road/control',
-      name: 'RoadControl',
-      component: RoadControl
+      path: '/road/controll',
+      name: 'RoadControll',
+      component: RoadControll
     },
     {
       path: '/road/manage',
@@ -118,8 +135,24 @@ const router = createRouter({
       ]
     },
 
-    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
-
+    // 회원정보 조회(마이페이지)
+    {
+      path: '/park/mypage',
+      name: 'parkMypage',
+      component: parkMypage
+    },
+    // 회원정보 수정 시 비밀번호 확인 창
+    {
+      path: '/park/mypage/passwordCheck',
+      name: 'parkPasswordCheck',
+      component: parkPasswordCheck
+    },
+    // 회원정보 수정
+    {
+      path: '/park/mypage/update',
+      name: 'parkMypageUpdate',
+      component: parkMypageUpdate
+    },
     {
       path: '/park/dash',
       name: 'ParkDash',
@@ -146,9 +179,9 @@ const router = createRouter({
       children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
     },
     {
-      path: '/park/control',
-      name: 'ParkControl',
-      component: ParkControl
+      path: '/park/controll',
+      name: 'ParkControll',
+      component: ParkControll
     },
     //알림함
     {

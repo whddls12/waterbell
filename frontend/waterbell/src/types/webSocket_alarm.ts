@@ -63,6 +63,7 @@ export function connectWebSocket(): void {
 // }
 
 export function closeWebSocket() {
+  console.log(socket)
   socket?.close()
   console.log('웹소켓과의 연결을 끊었습니다.')
 }

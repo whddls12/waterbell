@@ -17,7 +17,7 @@
         <span id="hello-msg">김동현님 어서오세요!</span>
         <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
-        <button @click="logout">로그아웃</button>
+        <button @click="Logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
 
@@ -34,13 +34,22 @@
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
       </div>
-      <div class="each-menu">
-        <router-link to="/road/control">제어</router-link>
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
+        <router-link to="/road/controll">제어</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/systemlog">시스템 로그</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/manage">관리</router-link>
       </div>
     </div>
@@ -56,10 +65,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import store from '@/store/index'
+// import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
+import { logout } from '@/types/authFunctionModule'
+// import { getUserInfo } from '@/types/getUserInfo'
+
 // import apiModule from '@/types/apiClient'
 
 // import roadControlView from '../underroad/views/roadControlView.vue'
@@ -81,9 +94,11 @@ export default defineComponent({
     ])
   },
   setup() {
-    const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
+    const role = computed(() => store.getters['auth/role'])
+    const isManager = ref(false)
+
     // const apiClient = apiModule.apiClient
 
     function goToMain() {
@@ -103,9 +118,9 @@ export default defineComponent({
       router.push({ path: '/park/join' })
     }
 
-    function logout() {
-      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/park/login' }) // 로그아웃 후 리디렉션될 경로
+    async function Logout() {
+      await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+      router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {
@@ -117,23 +132,47 @@ export default defineComponent({
     // const name = loginUser()
     // console.log(name)
     // const loginUser = computed(() => store.getters['auth/loginUser'])
+
+    const checkRole = async () => {
+      if (role.value == 'PUBLIC_MANAGER') isManager.value = true
+      else isManager.value = false
+    }
+
+    onMounted(async () => {
+      await checkRole()
+    })
+
+    watch(
+      () => role.value, // role.value를 반환하는 함수
+      async (newRole) => {
+        console.log('Role changed:', newRole) // Debugging
+        await checkRole()
+      }
+    )
+
     return {
       isMainPage,
       goToMain,
       goToAlarm,
       goToLogin,
-      logout,
-      goToJoin
+      Logout,
+      goToJoin,
+      isManager
     }
-  },
-  methods: {}
+  }
 })
 </script>
 
 <style scoped>
+/* 헤더 상단 로고와 버튼 포함하는 박스 */
 .header-top {
   display: flex;
   justify-content: space-between;
+}
+
+.header-top > div {
+  display: flex;
+  align-items: center;
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 30px;
@@ -141,33 +180,45 @@ export default defineComponent({
   /* padding-top: 100px; */
 }
 
+/* 헤더 상단 버튼 모아놓은 박스 */
 .header-btn {
   display: flex;
+  align-items: center;
 }
 
+.header-btn > button {
+  align-self: auto;
+}
+
+/* 메뉴 내비게이션 바 */
 .menu-navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  padding-left: 200px;
+  padding-right: 200px;
   background-color: #10316b;
-  padding-right: 20px;
-  padding-left: 20px;
 }
 
+/* 각 메뉴 박스 */
 .each-menu {
   width: 100px;
   margin: 10px 10px;
 }
 
+/* 메뉴 이름 */
 a {
   color: white;
   text-decoration: none;
 }
 
+/* 지역 선택 부분 */
 .select-region {
   display: flex;
   justify-content: center;
+  margin: 10px 0px;
 }
 
+/* 지역 선택 박스 (시도, 시구군) */
 .select-region-box {
   border: 1px solid #939393;
   border-radius: 8px;
@@ -176,7 +227,7 @@ a {
   width: 100px;
   margin: 10px 10px;
 }
-
+/* 이동 버튼 */
 .go-selected-btn {
   display: block;
   border: 1px solid #10316b;
