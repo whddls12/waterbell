@@ -350,7 +350,7 @@ public class MemberController {
 
 
     //아파트 회원 마이페이지 조회
-    @GetMapping("/mypage")
+    @GetMapping("/apartMember/mypage")
     public ResponseEntity<Map<String, Object>> getMyPage() throws Exception {
 
         Map<String, Object> resultMap = new HashMap<>();

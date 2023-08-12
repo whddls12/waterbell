@@ -163,6 +163,9 @@ public class SocialLoginServide {
 
 
 
+
+
+
     public ApartMemberResponse socialLogin(String email) throws Exception{
 
         Member loginMember = memberRepository.findByLoginId(email);

@@ -1,14 +1,23 @@
-<template lang="">
-  <div>
-    지하차도 / 신고접수 / view<br />
-    <router-view></router-view>
+<template>
+  <div class="report-list">
+    <div class="report-list-header">
+      <h1>신고 접수</h1>
+      <router-link to="/road/report/create">글쓰기</router-link>
+    </div>
   </div>
+  <hr />
+  <RoadReportList />
 </template>
-<script>
+
+<script lang="ts">
 import { defineComponent } from 'vue'
+import RoadReportList from '../components/report/roadReportList.vue'
 
 export default defineComponent({
-  name: 'RoadReport'
+  name: 'RoadReport',
+  components: {
+    RoadReportList
+  }
 })
 </script>
-<style lang=""></style>
+<style scoped></style>

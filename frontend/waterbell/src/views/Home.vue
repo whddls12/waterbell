@@ -1,62 +1,205 @@
 <template>
   <div class="home">
     <!-- 진입화면 v-if="isMainpage"로 처음화면에 온 걸 구분? -->
-    <div v-if="isMainPage">
+    <div v-if="isMainPage" class="page-start">
       <!-- 서비스 로고 -->
       <div class="service-logo">
-        <img src="../assets/images/waterbell-logo.png" alt="waterbell-logo" />
+        <img src="@/assets/images/waterbell-logo.png" alt="waterbell-logo" />
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
         <router-link to="/park/dash">
-          <div class="select-box park" @click="goToOther">지하주차장</div>
+          <div class="select-box park" @click="goToOther1">지하주차장</div>
         </router-link>
         <router-link to="/road/dash">
-          <div class="select-box road" @click="goToOther">지하차도</div>
+          <div class="select-box road" @click="goToOther2">지하차도</div>
         </router-link>
       </div>
       <!-- 관리자 로그인 버튼 -->
       <div class="manager-login">
-        <button>관리자 로그인</button>
+        <button @click="moveToLogin">관리자 로그인</button>
       </div>
     </div>
 
     <!-- 서비스 화면 -->
-    <div v-if="!isMainPage">
-      <TheHeader />
-      <hr />
-      <router-view></router-view>
+    <div v-else>
+      <ParkHeader v-if="isPark" />
+      <RoadHeader v-else />
+      <div class="router-view-container">
+        <router-view></router-view>
+      </div>
       <footer></footer>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import TheHeader from '@/components/TheHeader.vue'
-import { ref, computed, defineComponent } from 'vue'
+import RoadHeader from '@/components/RoadHeader.vue'
+import ParkHeader from '@/components/ParkHeader.vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { getClosestLocation } from '@/types/getMylocation'
+import { getUserInfo } from '@/types/getUserInfo'
 // import RoadDash from '../underroad/views/roadDashboardView.vue'
-function isInMain() {
-  const store = useStore()
-  let isMainPage = computed(() => store.state.isMainpage)
 
-  return { isMainPage }
-}
 export default defineComponent({
   name: 'Home',
   components: {
-    TheHeader
+    RoadHeader,
+    ParkHeader
   },
   setup() {
-    return {
-      ...isInMain()
+    const router = useRouter()
+    const store = useStore()
+    const isMainPage = computed(() => store.state.isMainpage)
+    const isPark = computed(() => store.state.isPark)
+    const underroadList = computed(() => store.getters['auth/underroadList'])
+    // const facilityId = computed(() => store.getters['auth/facilityId'])
+    const isLogin = computed(() => store.getters['auth/isLogin'])
+    const role = computed(() => store.getters['auth/role'])
+    let firstEnter = computed(() => store.getters['auth/firsEnter']) //한번이라도 지하차도에 들어간 적이 있는가.
+    //지하주차장
+    async function goToOther1() {
+      await setParkFacilityId()
+      await moveToMemberLogin()
     }
-    // function goToOther() {
-    //   isMainPage = !isMainPage
-    // }
-    // function goToMain() {
-    //   isMainPage = true
-    // }
+
+    //로그인 유저의 역할을 파악하고, 아파트주민 또는 관리자인 경우만
+    //facilityId 설정하기
+
+    function moveToMemberLogin() {
+      //비로그인 상태이면
+      if (!isLogin.value) {
+        router.push('/park/login')
+      } else {
+        store.commit('setIsMainpage', false)
+        store.commit('setIspark', true)
+      }
+    }
+
+    async function setParkFacilityId() {
+      if (
+        isLogin.value &&
+        (role.value == 'APART_MEMBER' || role.value == 'APART_MANAGER')
+      ) {
+        const member = getUserInfo()
+        store.commit('auth/setFacilityId', member.facilityId)
+        //만약 firstEnter가 false로 바뀌어있다면, 다시 지하차도로 접근했을 때, 최근 위치로 잡도록
+        //firstEnter 값 바꿔주기
+        if (!firstEnter.value) {
+          store.commit('auth/firstEnter')
+        }
+      }
+    }
+
+    //지하차도 페이지로 이동.
+    //접속자의 현재 위치를 파악하고, 가장 가까운 facilityId를 잡기.
+    async function goToOther2() {
+      //vuex에 firstEnter를 boolean 으로 잡아
+      //true이면 현재위치 파악, 가까운 위치 잡으면서 firstEnter를 false로 바꾸기
+      //false이면 기존 facilityId 설정하기
+      await setRoadFacilityId()
+
+      store.commit('setIsMainpage', false)
+      store.commit('setIspark', false)
+    }
+
+    async function setRoadFacilityId() {
+      //지하차도 첫 진입여부 확인 후, 첫진입이면 가장 근처 지하차도 위치로 세팅하기
+
+      if (firstEnter.value) {
+        const result = await getClosestLocation(underroadList.value)
+
+        store.commit('auth/setFacilityId', result.id)
+        // console.log(result)
+        store.commit('auth/setNowUnderroad', result)
+        store.commit('auth/firstEnter')
+      }
+    }
+
+    function moveToLogin() {
+      router.push('/manager/login')
+    }
+
+    return {
+      isMainPage,
+      isPark,
+      goToOther1,
+      goToOther2,
+      moveToLogin,
+      moveToMemberLogin,
+      setParkFacilityId,
+      setRoadFacilityId
+    }
   }
 })
 </script>
+
+<style>
+.home {
+  width: 100%;
+}
+
+/* 진입화면 워터벨 로고 가운데 정렬 */
+.service-logo {
+  display: flex;
+  justify-content: center;
+}
+
+/* 서비스 선택 메뉴 */
+.service-select {
+  display: flex;
+  /* 가운데 정렬 */
+  align-content: center;
+  justify-content: center;
+}
+
+/* 지하주차장, 지하차도 박스 */
+.select-box {
+  border: 1px solid #939393;
+  border-radius: 8px;
+  background-color: white;
+
+  width: 500px;
+  height: 300px;
+  margin: 20px;
+}
+
+/* 메뉴 화면 (대시보드, 신고접수, 제어, 시스템로그, 관리) */
+.header {
+  display: flex;
+  width: 100%;
+}
+
+.router-view-container {
+  box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  overflow: auto; /* prevent components from going out of bounds */
+  background-color: white;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 50px;
+
+  display: flex;
+  width: 1000px;
+  padding: 80px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 139px;
+  border-radius: 10px;
+  background: var(--unnamed, #fff);
+}
+
+router-view {
+  flex-flow: 1;
+}
+</style>
+
+function getClosestLocation(value: any) { throw new Error('Function not
+implemented.') } function getClosestLocation(value: any) { throw new
+Error('Function not implemented.') } function getClosestLocation(value: any) {
+throw new Error('Function not implemented.') } function setParkFacilityId() {
+throw new Error('Function not implemented.') }

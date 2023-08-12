@@ -1,27 +1,27 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
+// import { computed } from 'vue'
+import store from '@/store/index'
+import { setInterceptors } from '@/common/interceptors'
 
-// 토큰을 가져오는 함수
-// 여기서는 localStorage를 예로 들었지만, 다른 곳에 토큰을 저장했다면 그에 맞게 수정하세요.
+// 토큰을 가져오는 함수 //로그인되어 있는 경우 토큰을, 없는 경우 그냥 axios 요청을 보내는 axios 함수
 // state에 저장할 예정. 가져와야 함.
-function getToken() {
-  return localStorage.getItem('token')
+// const isLogin = computed(() => store.getters['auth/isLogin'])
+// const accessToken = function getToken() {
+//   return computed(() => store.getters['auth/accessToken'])
+// }
+
+//accessToken 넣지 않은 일반 axios
+const api = axios.create({
+  baseURL: process.env.VUE_APP_API,
+  timeout: 2000,
+  headers: { 'X-Custom-Header': 'waterbell' }
+})
+
+export function apiClient(store: any): AxiosInstance {
+  return setInterceptors(api, store)
 }
 
-// axios 인스턴스 생성
-const apiClient = axios.create()
+// //accessToken을 헤더에 담은 axios
+// const apiClient = setInterceptors(api, store) as AxiosInstance
 
-// request interceptor 설정
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = getToken()
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
-    }
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
-
-export default apiClient
+export default { api, apiClient }
