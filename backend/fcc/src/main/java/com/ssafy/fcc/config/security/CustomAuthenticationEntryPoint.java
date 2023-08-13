@@ -19,11 +19,19 @@ public class CustomAuthenticationEntryPoint extends Throwable implements Authent
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         String exception = (String)request.getAttribute("exception");
 
+
+        ErrorCode errorCode;
+        if((request.getHeader("Authorization") == null) ){
+            errorCode = ErrorCode.NON_LOGIN;
+            setResponse(response, errorCode);
+            return;
+        }
+
+
         System.out.println("==========================================");
         System.out.println(request.getHeader("Authorization").toString());
         System.out.println(exception);
 
-        ErrorCode errorCode;
 
         log.debug("log: exception: {} ", exception);
 
