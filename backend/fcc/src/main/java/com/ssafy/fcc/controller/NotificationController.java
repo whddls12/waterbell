@@ -1,6 +1,6 @@
 package com.ssafy.fcc.controller;
 
-import com.ssafy.fcc.MQTT.MqttPublisher;
+//import com.ssafy.fcc.MQTT.MqttPublisher;
 import com.ssafy.fcc.domain.alarm.Step;
 import com.ssafy.fcc.domain.log.ControlType;
 import com.ssafy.fcc.domain.member.ApartMember;

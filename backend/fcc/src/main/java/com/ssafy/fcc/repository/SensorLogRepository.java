@@ -35,7 +35,7 @@ public class SensorLogRepository {
     public List<SensorLog> getLogList(Facility facility, SensorType category, int start, int size, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
 
         return em.createQuery("select a from SensorLog a " +
-                        "where a.facility = :facility and a.category = :category and a.sensorTime >= :searchStartDate and a.sensorTime <= :searchEndDate", SensorLog.class)
+                        "where a.facility = :facility and a.category = :category and a.sensorTime >= :searchStartDate and a.sensorTime <= :searchEndDate order by a.sensorTime DESC", SensorLog.class)
                 .setParameter("facility", facility)
                 .setParameter("category", category)
                 .setParameter("searchStartDate",searchStartDate)
@@ -45,26 +45,27 @@ public class SensorLogRepository {
                 .getResultList();
     }
 
-    public Long getSensorLogCnt(Facility facility, SensorType category) {
-        return em.createQuery("select count(s.id) from SensorLog s where s.facility = :facility and s.category = :category", Long.class)
+    public Long getSensorLogCnt(Facility facility, SensorType category, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        return em.createQuery("select count(s.id) from SensorLog s " +
+                        "where s.facility = :facility and s.category = :category and s.sensorTime >= :searchStartDate and s.sensorTime <= :searchEndDate", Long.class)
                 .setParameter("facility", facility)
                 .setParameter("category", category)
+                .setParameter("searchStartDate",searchStartDate)
+                .setParameter("searchEndDate",searchEndDate)
                 .getSingleResult();
     }
 
-    public int getHeightPerhour(Facility facility, SensorType sensorType, LocalDateTime time) {
+    public List<SensorLog> getHeightPerhour(Facility facility, SensorType sensorType, LocalDateTime time) {
         try {
             return em.createQuery("select s from SensorLog s" +
-                            " where s.facility = :facility and s.category = :sensorType and s.sensorTime <= :time1 and s.sensorTime > :time2 ORDER BY s.sensorTime DESC ", SensorLog.class)
-                    .setParameter("time1", time)
-                    .setParameter("time2", time.minusHours(1))
+                            " where s.facility = :facility and s.category = :sensorType and s.sensorTime <= :time ORDER BY s.sensorTime DESC ", SensorLog.class)
+                    .setParameter("time", time)
                     .setParameter("facility", facility)
                     .setParameter("sensorType",sensorType)
-                    .setMaxResults(1)
-                    .getSingleResult()
-                    .getSensorData();
+                    .setMaxResults(6)
+                    .getResultList();
         } catch (NoResultException e) {
-            return 0;
+            return null;
         }
     }
 }
