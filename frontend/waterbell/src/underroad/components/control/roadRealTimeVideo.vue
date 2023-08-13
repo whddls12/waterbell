@@ -15,6 +15,7 @@ export default defineComponent({
       // webSocket1.connectWebSocket()
       // webSocket2.connectWebSocket()
     })
+
     onBeforeUnmount(() => {
       // webSocket1.closeWebSocket()
       // webSocket2.closeWebSocket()
