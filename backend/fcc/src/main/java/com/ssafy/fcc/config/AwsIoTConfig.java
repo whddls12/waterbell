@@ -19,7 +19,7 @@ public class AwsIoTConfig {
     String awsAccessKeyId = "AKIARGSGEM3WP7225YPG";
     String awsSecretAccessKey = "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";
 
-    AWSIotMqttClient client = null;
+    AWSIotMqttClient client;
 
 
     private final SystemService systemService;

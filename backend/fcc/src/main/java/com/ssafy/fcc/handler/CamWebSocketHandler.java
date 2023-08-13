@@ -81,10 +81,10 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
             facilityNum.put(topic, 1);
         }
         // subscriber, publisher 생성
-
+        String subtopic = "Arduino/"+topic;
         System.out.println("받아온 토픽" + topic);
         AWSIotMqttClient client = mqttClient;
-        client.subscribe(new MqttTopic(topic){
+        client.subscribe(new MqttTopic(subtopic){
             @Override
             public void onMessage(AWSIotMessage message) {
                 String topic = message.getTopic();
@@ -95,14 +95,15 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
                 encodeByte = encode.encode(message.getPayload());
                 System.out.println("인코딩 후 : " + new String(encodeByte));
                 try {
-                    sendVideoImg(Integer.parseInt(topicList[0]), topicList[1], new String(encodeByte));
+                    sendVideoImg(Integer.parseInt(topicList[1]), topicList[2], new String(encodeByte));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 System.out.println("보냄");
             }
         });
-        client.publish(topic, "ON");
+        String pubtopic = "Server/"+topic;
+        client.publish(pubtopic, "ON");
     }
 
 
@@ -141,12 +142,12 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
 
         String facilityId = (String) session.getAttributes().get("facilityId");
         String clientId = clients.get(facilityId);
-        String topic = facilityId + "/picture";
-
+        String topic = "Server/"+facilityId;
         facilityNum.put(facilityId, facilityNum.get(facilityId)-1);
 
         if(facilityNum.get(facilityId)==0){
-//            (topic, "OFF");
+            AWSIotMqttClient client = mqttClient;
+            client.publish(topic, "OFF");
             facilityNum.remove(facilityId);
         }
 
