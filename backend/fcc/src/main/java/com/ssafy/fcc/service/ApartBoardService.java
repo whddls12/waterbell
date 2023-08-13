@@ -8,11 +8,15 @@ import com.ssafy.fcc.domain.alarm.BoardAlarmLog;
 import com.ssafy.fcc.domain.alarm.ReceiveAlarmMember;
 import com.ssafy.fcc.domain.board.ApartBoard;
 import com.ssafy.fcc.domain.board.Image;
+import com.ssafy.fcc.domain.board.UndergroundRoadBoard;
 import com.ssafy.fcc.domain.member.ApartManager;
 import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.dto.AlarmLogDto;
+import com.ssafy.fcc.dto.DashApartBoardResponseDto;
+import com.ssafy.fcc.dto.DashUndergroundRoadBoardResponseDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
+import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -24,9 +28,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -129,4 +131,41 @@ public class ApartBoardService {
         }
     }
 
+    public List<DashApartBoardResponseDto> getBoadListLatest(int facilityId) {
+         List<ApartBoard> apartBoards = boardRepository.dashApartList(facilityId);
+
+        List<DashApartBoardResponseDto> list = new ArrayList<>();
+
+        if (apartBoards != null && apartBoards.size() > 0) {
+
+            for (ApartBoard b : apartBoards) {
+                DashApartBoardResponseDto boardResponseDto = new DashApartBoardResponseDto();
+                boardResponseDto.setId(b.getId());
+                boardResponseDto.setStatus(b.getStatus());
+                boardResponseDto.setTitle(b.getTitle());
+                boardResponseDto.setCreateDate(b.getCreateDate());
+
+                list.add(boardResponseDto);
+            }
+            System.out.println(list);
+        } else {
+            throw new RuntimeException("데이터가 없습니다.");
+        }
+        return list;
+    }
+
+    @Transactional
+    public Map<String, Object> getBoadListByPage(int facilityId, int page) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        Long totalCount = boardRepository.getApartBoardCnt(facilityId);
+        PageNavigation pageNavigation = new PageNavigation(page, totalCount);
+        List<ApartBoard> boardList = boardRepository.getApartBoardList(facilityId, pageNavigation.getStart(), pageNavigation.getSizePerPage());
+
+        if (boardList == null || boardList.size() == 0)
+            throw new RuntimeException("데이터가 없습니다.");
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", boardList);
+        System.out.println(boardList);
+        return resultMap;
+    }
 }

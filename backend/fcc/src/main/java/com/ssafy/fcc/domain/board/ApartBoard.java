@@ -1,5 +1,6 @@
 package com.ssafy.fcc.domain.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.member.ApartMember;
 import lombok.Getter;
@@ -20,10 +21,12 @@ public class ApartBoard {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id")
+    @JsonIgnore
     private Apart apart;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonIgnore
     private ApartMember apartMember;
 
     private String title;
