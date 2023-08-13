@@ -41,7 +41,7 @@ public class ControlController {
 
                     break;
                 case "OFF":
-                    // 차수판 해제 명령, cotrolLog 저장, 시설 상태 SECOND
+                    // 차수판 해제 명령, cotrolLog 저장, 시설 상태 SECOND, 사이렌/LED 동작
                     topic = String.format("Server/%d/%s", facilityId, sensorType);
                     mqttPubSubService.publishMessage(topic, "SECOND");
                     systemService.insertControlLog(facilityId, "OFF");
