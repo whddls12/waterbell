@@ -145,4 +145,22 @@ public class BoardRepository {
                 .getResultList();
         return resultList;
     }
+
+    public ApartBoard getapartBoardById(int boardId) {
+        return em.find(ApartBoard.class,boardId);
+    }
+
+    public List<Image> getImageByApartBoardId(int boardId) {
+        String latestQuery = "SELECT i FROM Image i WHERE  i.apartBoard.id = :boardId ";
+        List<Image> resultList = em.createQuery(latestQuery, Image.class)
+                .setParameter("boardId", boardId)
+                .getResultList();
+        return resultList;
+    }
+
+    public void deleteApartBoard(ApartBoard apartBoard) {
+        em.remove(apartBoard);
+    }
+
+
 }
