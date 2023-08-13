@@ -1,6 +1,6 @@
 <template lang="">
   <div class="container mt-4">
-    <div><h5>최근 신고접수 내역</h5></div>
+    <div><h1>알림함</h1></div>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
