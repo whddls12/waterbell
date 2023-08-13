@@ -1,6 +1,5 @@
 package com.ssafy.fcc.controller;
 
-
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.location.Gugun;
 import com.ssafy.fcc.service.FacilityService;
