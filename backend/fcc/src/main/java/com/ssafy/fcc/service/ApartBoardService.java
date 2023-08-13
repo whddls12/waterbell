@@ -1,5 +1,6 @@
 package com.ssafy.fcc.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -7,6 +8,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.fcc.domain.alarm.BoardAlarmLog;
 import com.ssafy.fcc.domain.alarm.ReceiveAlarmMember;
 import com.ssafy.fcc.domain.board.ApartBoard;
+import com.ssafy.fcc.domain.board.BoardStatus;
 import com.ssafy.fcc.domain.board.Image;
 import com.ssafy.fcc.domain.board.UndergroundRoadBoard;
 import com.ssafy.fcc.domain.member.ApartManager;
@@ -14,6 +16,7 @@ import com.ssafy.fcc.domain.member.ApartMember;
 import com.ssafy.fcc.dto.AlarmLogDto;
 import com.ssafy.fcc.dto.DashApartBoardResponseDto;
 import com.ssafy.fcc.dto.DashUndergroundRoadBoardResponseDto;
+import com.ssafy.fcc.dto.UpdateApartBoardRequestDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.PageNavigation;
@@ -168,4 +171,105 @@ public class ApartBoardService {
         System.out.println(boardList);
         return resultMap;
     }
+
+    @Transactional
+    public ApartBoard getBoardById(int boardId) throws Exception {
+        ApartBoard board = boardRepository.getapartBoardById(boardId);
+        if (board == null) throw new RuntimeException("데이터가 없습니다.");
+        return board;
+    }
+
+
+    public List<Image> getImageByBoardId(int boardId) {
+
+        List<Image> imageList = boardRepository.getImageByApartBoardId(boardId);
+        System.out.println(imageList);
+        for (Image image : imageList) {
+            image.setUrl(amazonS3.getUrl(bucket, image.getImagePath()).toString());
+        }
+        return imageList;
+    }
+
+    @Transactional
+    public void updateBoard(int boardId, UpdateApartBoardRequestDto boardDto) throws Exception {
+
+         ApartBoard apartBoard = boardRepository.getapartBoardById(boardId);
+        apartBoard.setTitle(boardDto.getTitle());
+        apartBoard.setContent(boardDto.getContent());
+
+
+        if(boardDto.getRemovefiles() !=null && boardDto.getRemovefiles().size()>0){
+            for(Integer imageId : boardDto.getRemovefiles()){
+                //이미지 테이블에서 조회해와서 S3에서 이미지 지우고,  이미지 테이블에서 지운다.
+                final Image image = boardRepository.findImageById(imageId);
+                deleteImage(image.getImagePath());
+                boardRepository.deleteImage(image);
+            }}
+
+        //추가하는 이미지 추가
+        List<MultipartFile> uploadedfiles = boardDto.getAddUploadedfiles();
+        if (uploadedfiles != null && uploadedfiles.size() > 0) {
+
+            uploadedfiles.forEach(file -> {
+                String temp = null;
+                try {
+                    String fileName = createFileName(file.getOriginalFilename());
+                    temp = uploadImg(file, fileName);
+                    System.out.println("=================img==============================");
+                    System.out.println("파일 URL=" + temp);
+                    Image image = new Image();
+                    image.setApartBoard(apartBoard);
+                    image.setImageName(file.getOriginalFilename());
+                    image.setImagePath(fileName);
+                    System.out.println(image);
+                    Integer imageId = boardRepository.saveIamge(image);
+
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                    throw new RuntimeException(e);
+                }
+                System.out.println(temp);
+            });
+        }
+    }
+
+    public void deleteImage( String fileName) throws IOException {
+
+        try {
+            amazonS3.deleteObject(bucket, fileName);
+        }catch (SdkClientException e){
+            throw  new IOException("error deleting file from s3",e);
+        }
+    }
+
+
+    @Transactional
+    public void updateBoardStatus(int boardId, String boardStatus) throws Exception {
+
+        ApartBoard apartBoard = boardRepository.getapartBoardById(boardId);
+
+        if(boardStatus.equals("BEFORE"))
+            apartBoard.setStatus(BoardStatus.BEFORE);
+        else  if(boardStatus.equals("PROCESSING"))
+            apartBoard.setStatus(BoardStatus.PROCESSING);
+        else  if(boardStatus.equals("COMPLETE"))
+            apartBoard.setStatus(BoardStatus.COMPLETE);
+        else throw new Exception("존재하지 않은 상태 요청입니다.");
+    }
+
+    @Transactional
+    public void deleteBoard(int boardId) throws Exception{
+
+        //이미지 다 지우고, 게시글 삭제
+        List<Image> imageList = boardRepository.getImageByApartBoardId(boardId);
+        System.out.println(imageList);
+        for (Image image : imageList) {
+            deleteImage(image.getImagePath());
+            boardRepository.deleteImage(image);
+        }
+         ApartBoard apartBoard = boardRepository.getapartBoardById(boardId);
+
+        boardRepository.deleteApartBoard(apartBoard);
+    }
+
 }
