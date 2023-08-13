@@ -21,8 +21,6 @@ import java.util.Map;
 @RequestMapping("/system")
 public class SystemController {
 
-    // /system/facilities/{facility_id}/sensors/{category}/logs?period=
-
     private final SystemService systemService;
 
     @GetMapping("/manager/facilities/{facility_id}/sensors/{category}/logs/{page}")
