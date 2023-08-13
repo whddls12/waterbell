@@ -45,10 +45,13 @@ public class SensorLogRepository {
                 .getResultList();
     }
 
-    public Long getSensorLogCnt(Facility facility, SensorType category) {
-        return em.createQuery("select count(s.id) from SensorLog s where s.facility = :facility and s.category = :category", Long.class)
+    public Long getSensorLogCnt(Facility facility, SensorType category, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        return em.createQuery("select count(s.id) from SensorLog s " +
+                        "where s.facility = :facility and s.category = :category and s.sensorTime >= :searchStartDate and s.sensorTime <= :searchEndDate", Long.class)
                 .setParameter("facility", facility)
                 .setParameter("category", category)
+                .setParameter("searchStartDate",searchStartDate)
+                .setParameter("searchEndDate",searchEndDate)
                 .getSingleResult();
     }
 

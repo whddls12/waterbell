@@ -25,7 +25,7 @@ public class SystemController {
 
     private final SystemService systemService;
 
-    @GetMapping("/manager/facilities/{facility_id}/sensors/{category}/logs/{page}")
+    @GetMapping("/facilities/{facility_id}/sensors/{category}/logs/{page}")
     public ResponseEntity<Map<String, Object>> SensorLogList(@PathVariable("facility_id") int facilityId,
                                                              @PathVariable String category,
                                                              @PathVariable int page,

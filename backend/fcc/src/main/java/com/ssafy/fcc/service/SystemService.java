@@ -67,11 +67,12 @@ public class SystemService {
         boolean isApart = facility.isApart();
         SensorType category = SensorType.valueOf(category_str.toUpperCase());
 
-        Long totalCount = sensorLogRepository.getSensorLogCnt(facility, category);
+        Long totalCount = sensorLogRepository.getSensorLogCnt(facility, category, searchStartDate, searchEndDate);
         PageNavigation pageNavigation = new PageNavigation(page, totalCount);
 
 
         List<SensorLog> sensorLogList = sensorLogRepository.getLogList(facility, category, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+
 
         String name;
         if (isApart) {
