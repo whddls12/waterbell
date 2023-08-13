@@ -67,11 +67,12 @@ public class SystemService {
         boolean isApart = facility.isApart();
         SensorType category = SensorType.valueOf(category_str.toUpperCase());
 
-        Long totalCount = sensorLogRepository.getSensorLogCnt(facility, category);
+        Long totalCount = sensorLogRepository.getSensorLogCnt(facility, category, searchStartDate, searchEndDate);
         PageNavigation pageNavigation = new PageNavigation(page, totalCount);
 
 
         List<SensorLog> sensorLogList = sensorLogRepository.getLogList(facility, category, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+
 
         String name;
         if (isApart) {
@@ -144,16 +145,22 @@ public class SystemService {
         return 1;
     }
 
-    public Map<Integer, Integer> getHeightPerhour(int facilityId) {
+    public Map<String, Integer> getHeightPerhour(int facilityId) {
 
-        Map<Integer, Integer> resultMap = new HashMap<>();
+        Map<String, Integer> resultMap = new TreeMap<>();
 
         Facility facility = facilityRepository.findById(facilityId);
 
-        for (int i = 5; i >= 0; i--) {
-            LocalDateTime time = LocalDateTime.now().minusHours(i);
-            int height = sensorLogRepository.getHeightPerhour(facility, SensorType.HEIGHT, time);
-            resultMap.put(LocalDateTime.now().minusHours(i).getHour(), height);
+//        for (int i = 5; i >= 0; i--) {
+//            LocalDateTime time = LocalDateTime.now().minusHours(i);
+//            int height = sensorLogRepository.getHeightPerhour(facility, SensorType.HEIGHT, time);
+//            resultMap.put(LocalDateTime.now().minusHours(i).getHour(), height);
+//        }
+
+        LocalDateTime time = LocalDateTime.now();
+        List<SensorLog> sensorLogList = sensorLogRepository.getHeightPerhour(facility,SensorType.HEIGHT,time);
+        for(SensorLog log : sensorLogList) {
+            resultMap.put(log.getSensorTime().toString().substring(11,16), log.getSensorData());
         }
         return resultMap;
     }

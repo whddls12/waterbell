@@ -417,9 +417,9 @@ public class DashController {
     }
 
     @GetMapping("/facilities/{facility_id}/sensors/heightPerhour")
-    public Map<Integer,Integer> getHeightPerhour(@PathVariable("facility_id") int facilityId) {
+    public Map<String,Integer> getHeightPerhour(@PathVariable("facility_id") int facilityId) {
 
-        Map<Integer,Integer> resultMap;
+        Map<String,Integer> resultMap;
         resultMap = systemService.getHeightPerhour(facilityId);
         return resultMap;
 
