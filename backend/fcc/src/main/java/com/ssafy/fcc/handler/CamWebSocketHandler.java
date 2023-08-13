@@ -1,11 +1,13 @@
 package com.ssafy.fcc.handler;
 
+import com.amazonaws.services.iot.client.AWSIotException;
+import com.amazonaws.services.iot.client.AWSIotMessage;
+import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.fcc.MQTT.MqttPublisher;
-import com.ssafy.fcc.MQTT.MqttSubscriber;
-import com.ssafy.fcc.repository.FacilityRepository;
+import com.ssafy.fcc.dto.MqttTopic;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.CloseStatus;
@@ -15,6 +17,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -26,35 +29,27 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
     private final Map<String, WebSocketSession> sessions =  new HashMap<>();
     // clientId : facilityId
     private final Map<String, String> clients = new HashMap<>();
-    private final Map<String, MqttSubscriber> subscribers =  new HashMap<>();
     //facilityId : 개수
     private final Map<String, Integer> facilityNum = new HashMap<>();
-    MqttSubscriber subscriber;
-    MqttPublisher publisher;
 
     ObjectMapper objectMapper;
-    private final FacilityRepository facilityRepository;
-
     // 연결을 맺고 나서 실행되는 메소드
     private String generateClientId() {
         return UUID.randomUUID().toString();
+    }
+
+    AWSIotMqttClient mqttClient;
+    Base64.Encoder encode = Base64.getEncoder();
+    byte[] encodeByte;
+    @Autowired
+    public CamWebSocketHandler(AWSIotMqttClient mqttClient){
+        this.mqttClient = mqttClient;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         // 클라이언트 식별자 생성
         String clientId = generateClientId();
-
-        // 세션에 식별자 저장
-        session.getAttributes().put("camClient", clientId);
-        sessions.put(clientId, session);
-
-        //
-        objectMapper = new ObjectMapper();
-        Message msg = new Message("camClient", clientId);
-        session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
-//        session.sendMessage(new TextMessage(clientId));
-
         // 클라이언트 연결 후
         // 쿼리에서 값 가져옴.
         String query = session.getUri().getQuery();
@@ -62,11 +57,22 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
         String facilityId = queryParams.getFirst("facilityId");
         String camNum = queryParams.getFirst("camNum");
 
-        String topic = facilityId + "/cam" + camNum + "/picture";
+        // 세션에 식별자 저장
+        session.getAttributes().put("camClient"+camNum, clientId);
+        sessions.put(clientId, session);
+
+        //
+        JSONObject msg = new JSONObject();
+        msg.put("camClient"+camNum, clientId);
+        objectMapper = new ObjectMapper();
+        session.sendMessage(new TextMessage(msg.toString()));
+
+
+        String topic = facilityId + "/CAM" + camNum ;
         session.getAttributes().put("facilityId", topic);
 
         // 연결된 건물 id
-        clients.put(clientId, topic);
+        clients.put(topic, clientId);
 
         // 연결된 건물 개수
         if(facilityNum.containsKey(topic)){
@@ -75,26 +81,47 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
             facilityNum.put(topic, 1);
         }
         // subscriber, publisher 생성
-        String hubIp = facilityRepository.findById(Integer.parseInt(facilityId)).getHubIp();
 
-        // subscriber 등록
-        subscriber.init(hubIp,topic);
+        System.out.println("받아온 토픽" + topic);
+        AWSIotMqttClient client = mqttClient;
+        client.subscribe(new MqttTopic(topic){
+            @Override
+            public void onMessage(AWSIotMessage message) {
+                String topic = message.getTopic();
+                String[] topicList = topic.split("/");
+                String payload = message.getStringPayload();
+                System.out.println(payload);
 
-        // topic 생성
-        subscriber.subscribe(topic);
-        subscribers.put(clientId, subscriber);
-        publisher.send(topic, "ON");
+                encodeByte = encode.encode(message.getPayload());
+                System.out.println("인코딩 후 : " + new String(encodeByte));
+                try {
+                    sendVideoImg(Integer.parseInt(topicList[0]), topicList[1], new String(encodeByte));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("보냄");
+            }
+        });
+        client.publish(topic, "ON");
     }
 
 
     // 클라이언트에게 프레임 전달
-    public void sendVideoImg(int facilityId, String temp_img) throws IOException {
-        for(String id : clients.values()){
-            if(Integer.parseInt(id) == facilityId){
-                WebSocketSession session = sessions.get(id);
+    public void sendVideoImg(int facilityId, String camNum, String temp_img) throws IOException {
+        System.out.println("사진 받은 시설"+facilityId);
+
+        String str = facilityId+camNum;
+
+        for(String id : clients.keySet()){
+            if(id.equals(str)){
+                System.out.println(clients.get(id));
+                WebSocketSession session = sessions.get(clients.get(id));
+
                 objectMapper = new ObjectMapper();
-                Message msg = new Message("temp_img", temp_img);
-                session.sendMessage(new TextMessage(objectMapper.writeValueAsString(msg)));
+                JSONObject msg = new JSONObject();
+                msg.put("temp_img", temp_img);
+                session.sendMessage(new TextMessage(msg.toString()));
+
             }
         }
     }
@@ -107,7 +134,7 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
 
     // 연결이 종료되면 실행됨
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status){
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws AWSIotException {
         // cam mqtt 종료
         // 기존 토픽의 subscribe 요청 제한
         // 세션 제거
@@ -119,14 +146,13 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
         facilityNum.put(facilityId, facilityNum.get(facilityId)-1);
 
         if(facilityNum.get(facilityId)==0){
-            publisher.send(topic, "OFF");
+//            (topic, "OFF");
             facilityNum.remove(facilityId);
         }
 
-        publisher.close();
-        subscribers.remove(clientId);
         sessions.remove(clientId);
         clients.remove(clientId);
     }
+
 
 }
