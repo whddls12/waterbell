@@ -90,7 +90,7 @@ export default defineComponent({
 
     function getMemberData() {
       apiClient
-        .get(`/member/apartMember/mypage`)
+        .get(`/member/mypage`)
         .then((res) => {
           memberInfo.value = res.data.memberInfo
           console.log(memberInfo.value)
