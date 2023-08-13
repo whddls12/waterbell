@@ -120,6 +120,17 @@ export default defineComponent({
       start: 0
     })
 
+    const setList = async () => {
+      try {
+        const res = await apiClient.get(`/alarm/${role}/${currentPage.value}`)
+        AlarmList.value = res.data.list
+        pageNavigation.value = res.data.pageNavigation
+        console.log(pageNavigation.value)
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
+    }
+
     const range = (start: number, end: number) => {
       return [...Array(end - start + 1).keys()].map((val) => val + start)
     }
@@ -131,17 +142,6 @@ export default defineComponent({
           AlarmList.value = res.data.list
           pageNavigation.value = res.data.pageNavigation
         })
-      } catch (error) {
-        console.error('Error fetching height data:', error)
-      }
-    }
-
-    const setList = async () => {
-      try {
-        const res = await apiClient.get(`/alarm/${role}/${currentPage.value}`)
-        AlarmList.value = res.data.list
-        pageNavigation.value = res.data.pageNavigation
-        console.log(pageNavigation.value)
       } catch (error) {
         console.error('Error fetching height data:', error)
       }
