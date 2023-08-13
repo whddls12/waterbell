@@ -60,8 +60,12 @@ div
 <script>
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter, useRoute } from 'vue-router'
-import http from '@/types/http'
+
+// import { useRouter, useRoute } from 'vue-router'
+// import http from '@/types/http'
+
+import { memberLogin } from '@/types/authFunctionModule'
+
 export default defineComponent({
   name: 'parkLogin',
   setup() {
@@ -73,11 +77,9 @@ export default defineComponent({
     // const route = useRoute()
 
     const login = () => {
-      store.dispatch('auth/memberLogin', {
-        loginId: id.value,
-        password: password.value
-      })
+      memberLogin(id.value, password.value)
     }
+
     const naverLogin = () => {
       //로컬 서버 연결용
       const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:8081/#/auth/naver&state=WaterBell`

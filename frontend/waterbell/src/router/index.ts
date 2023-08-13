@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 // import apiModule from '@/types/apiClient'
 import http from '@/types/http'
 import Home from '@/views/Home.vue'
+import NotFound from '@/views/NotFound.vue'
 
 //관리자 로그인
 import managerLogin from '@/views/ManagerLogin.vue'
@@ -19,14 +20,18 @@ import roadReportCreateVue from '../underroad/components/report/roadReportCreate
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
 //지하차도 시스템 로그
-import roadAlarmlog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
+import roadAlarmLog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
 import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
+import roadDeviceStatusLog from '../underroad/components/systemLog/roadDeviceStatusLog.vue'
+import roadDeviceControlLog from '../underroad/components/systemLog/roadDeviceControlLog.vue'
 
 //지하주차장 회원관련(로그인, 회원가입, 마이페이지)
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
 import parkJoin from '../undergroundParkingLot/views/member/parkSignupView.vue'
 import parkJoinAgree from '../undergroundParkingLot/views/member/parkJoinAgree.vue'
-import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue'
+import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue' // 마이페이지
+import parkPasswordCheck from '../undergroundParkingLot/views/member/parkPasswordCheck.vue' // 비밀번호 확인
+import parkMypageUpdate from '../undergroundParkingLot/views/member/parkMypageUpdate.vue'
 import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
 import kakaoRedirectPage from '@/undergroundParkingLot/views/member/kakaoSocialRedirect.vue'
 import socialJoinExtra from '@/undergroundParkingLot/views/member/socialLoginExtraInfo.vue'
@@ -41,6 +46,8 @@ import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
 import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDeviceAlarmLog.vue'
+import parkDeviceStatusLog from '../undergroundParkingLot/components/systemLog/parkDeviceStatusLog.vue'
+import parkDeviceControlLog from '../undergroundParkingLot/components/systemLog/parkDeviceControlLog.vue'
 
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
@@ -58,6 +65,16 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    // 사용자가 의도하지 않은 URL로 접근 시 뷰 라우터에 404 오류 페이지로 리다이렉션 설정
+    {
+      path: '/notFound',
+      name: 'notFound',
+      component: NotFound
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: '/notFound'
     },
     //매니저 로그인
     { path: '/manager/login', name: 'managerLogin', component: managerLogin },
@@ -81,7 +98,7 @@ const router = createRouter({
       component: roadReportUpdateVue
     },
     {
-      path: '/road/report/item',
+      path: '/road/report/:report_id/detail',
       component: roadReportItemVue
     },
     {
@@ -99,11 +116,21 @@ const router = createRouter({
       name: 'RoadSystemlog',
       component: RoadSystemlog,
       children: [
-        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmlog },
+        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmLog },
         {
           path: 'measureLog',
           name: 'roadMeasureLog',
           component: roadMeasureLog
+        },
+        {
+          path: 'statusLog',
+          name: 'roadDeviceStatusLog',
+          component: roadDeviceStatusLog
+        },
+        {
+          path: 'controlLog',
+          name: 'roadDeviceControlLog',
+          component: roadDeviceControlLog
         }
       ]
     },
@@ -126,6 +153,7 @@ const router = createRouter({
       ]
     },
 
+<<<<<<< HEAD
     {
       path: '/auth/naver',
       name: 'NaverAuth',
@@ -174,6 +202,26 @@ const router = createRouter({
 
     { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
 
+=======
+    // 회원정보 조회(마이페이지)
+    {
+      path: '/park/mypage',
+      name: 'parkMypage',
+      component: parkMypage
+    },
+    // 회원정보 수정 시 비밀번호 확인 창
+    {
+      path: '/park/mypage/passwordCheck',
+      name: 'parkPasswordCheck',
+      component: parkPasswordCheck
+    },
+    // 회원정보 수정
+    {
+      path: '/park/mypage/update',
+      name: 'parkMypageUpdate',
+      component: parkMypageUpdate
+    },
+>>>>>>> fe9807df4b779d3853630bf88f537f89b60a6401
     {
       path: '/park/dash',
       name: 'ParkDash',
@@ -190,7 +238,17 @@ const router = createRouter({
       component: ParkSystemlog,
       children: [
         { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
-        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog }
+        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog },
+        {
+          path: 'statusLog',
+          name: 'parkDeviceStatusLog',
+          component: parkDeviceStatusLog
+        },
+        {
+          path: 'controlLog',
+          name: 'parkDeviceControlLog',
+          component: parkDeviceControlLog
+        }
       ]
     },
     {

@@ -42,17 +42,19 @@ div
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 
+import { useRouter } from 'vue-router'
+import { managerLogin } from '@/types/authFunctionModule'
+
 export default defineComponent({
   name: 'managerLogin',
   setup() {
+    const router = useRouter()
     const id = ref('')
     const password = ref('')
     const store = useStore() // 전역 스토어를 가져옵니다.
-    const login = () => {
-      store.dispatch('auth/managerLogin', {
-        loginId: id.value,
-        password: password.value
-      })
+    const login = async () => {
+      const result = await managerLogin(id.value, password.value)
+      router.push(`/${result}/dash`)
     }
 
     return {

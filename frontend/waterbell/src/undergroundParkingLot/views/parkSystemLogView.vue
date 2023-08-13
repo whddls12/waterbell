@@ -7,19 +7,21 @@
         >
       </div>
       <div class="select-region-box">
-        <router-link to="/park/systemlog/">기기 상태 로그</router-link>
+        <router-link to="/park/systemlog/statusLog">기기 상태 로그</router-link>
       </div>
       <div class="select-region-box">
-        <router-link to="/park/systemlog/">기기 제어 로그</router-link>
+        <router-link to="/park/systemlog/controlLog"
+          >기기 제어 로그</router-link
+        >
       </div>
       <div class="select-region-box">
         <router-link to="/park/systemlog/alarmLog">알림 로그</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view class="router-view-style"></router-view>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -55,5 +57,10 @@ export default defineComponent({
 a {
   color: #10316b;
   text-decoration: none;
+}
+
+.router-view-style {
+  min-height: 500px;
+  min-width: 600px;
 }
 </style>

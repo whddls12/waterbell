@@ -1,23 +1,23 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">전광판 제어</div>
-    <div class="warning1">1차 경고 작동 중</div>
+    <div class="controll1">차수판 & 경고등 제어</div>
+    <div class="warning1">{{ warningText }}</div>
     <div class="buttons">
       <button class="button1" @click="onAction">동작</button>
       <button class="button2" @click="onRelease">해제</button>
     </div>
   </div>
 </template>
+
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref, onMounted, watch } from 'vue'
 import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
-import apiModule from '@/types/apiClient'
-
-// import http from '@/types/http'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
 
 export default defineComponent({
-  name: 'roadControlLedVue',
+  name: 'ParkControlWallCom',
   computed: {
     ...mapGetters('auth', [
       'loginUser',
@@ -28,16 +28,30 @@ export default defineComponent({
     ])
   },
   setup() {
-    const apiClient = apiModule.apiClient
     const store = useStore()
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const warningText = ref('')
+    const actionTriggered = computed(() => store.state.actionTriggered)
+
+    const fetchStatusData = async () => {
+      try {
+        const response = await api.get(`/facilities/${facility_id}/status`)
+        if (response.data == 'DEFAULT') {
+          warningText.value = '차수판 & 경고등 미작동'
+        } else if (response.data == 'FIRST' || response.data == 'SECOND') {
+          warningText.value = '1차 경고등 작동중'
+        } else {
+          warningText.value = '차수판 & 경고등 작동중'
+        }
+      } catch (error) {
+        console.error('Error fetching status data:', error)
+      }
+    }
 
     const onAction = () => {
-      // 동작 버튼을 눌렀을 때 실행할 코드
-      console.log('동작 버튼 클릭')
-      const role = computed(() => store.getters['auth/role']).value
-      const token = computed(() => store.getters['auth/accessToken']).value
-      console.log(role)
-      console.log(token)
       apiClient
         .post('/notification/apartManager/activation')
         .then((response) => {
@@ -46,18 +60,63 @@ export default defineComponent({
         .catch((error) => {
           console.error('Error sending the request:', error)
         })
+
+      apiClient
+        .post(`/control/manager/${facility_id}/ON`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      setTimeout(() => {
+        store.dispatch('triggerAction')
+      }, 1000)
     }
 
     const onRelease = () => {
-      // 해제 버튼을 눌렀을 때 실행할 코드
-      console.log('해제 버튼 클릭')
+      apiClient
+        .post('/notification/apartManager/deactivation')
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.error('Error sending the request:', error)
+        })
+
+      apiClient
+        .post(`/control/manager/${facility_id}/OFF`)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+
+      setTimeout(() => {
+        store.dispatch('resetActionTrigger')
+      }, 1000)
     }
+
+    onMounted(async () => {
+      await fetchStatusData()
+    })
+
+    watch(
+      () => actionTriggered.value,
+      (newValue: any) => {
+        fetchStatusData()
+      }
+    )
 
     return {
       apiClient,
       store,
       onAction,
-      onRelease
+      onRelease,
+      warningText,
+      fetchStatusData
     }
   },
 
@@ -76,7 +135,6 @@ export default defineComponent({
   background: #f2f7ff;
   box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.17); /* 크기가 줄어드므로 그림자도 조절 */
   border-radius: 6px; /* 반경도 절반으로 줄임 */
-  margin-left: 200px;
 }
 
 .controll1 {

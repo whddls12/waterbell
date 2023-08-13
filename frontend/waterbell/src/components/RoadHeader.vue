@@ -17,7 +17,7 @@
         <span id="hello-msg">김동현님 어서오세요!</span>
         <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
-        <button @click="logout">로그아웃</button>
+        <button @click="Logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
 
@@ -34,13 +34,22 @@
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/controll">제어</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/systemlog">시스템 로그</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/road/manage">관리</router-link>
       </div>
     </div>
@@ -56,10 +65,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import store from '@/store/index'
+// import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
+import { logout } from '@/types/authFunctionModule'
+// import { getUserInfo } from '@/types/getUserInfo'
+
 // import apiModule from '@/types/apiClient'
 
 // import roadControlView from '../underroad/views/roadControlView.vue'
@@ -81,9 +94,11 @@ export default defineComponent({
     ])
   },
   setup() {
-    const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
+    const role = computed(() => store.getters['auth/role'])
+    const isManager = ref(false)
+
     // const apiClient = apiModule.apiClient
 
     function goToMain() {
@@ -103,9 +118,15 @@ export default defineComponent({
       router.push({ path: '/park/join' })
     }
 
+<<<<<<< HEAD
     function logout() {
       store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
       router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
+=======
+    async function Logout() {
+      await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
+      router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
+>>>>>>> fe9807df4b779d3853630bf88f537f89b60a6401
     }
 
     // const loginUser = () => {
@@ -117,16 +138,34 @@ export default defineComponent({
     // const name = loginUser()
     // console.log(name)
     // const loginUser = computed(() => store.getters['auth/loginUser'])
+
+    const checkRole = async () => {
+      if (role.value == 'PUBLIC_MANAGER') isManager.value = true
+      else isManager.value = false
+    }
+
+    onMounted(async () => {
+      await checkRole()
+    })
+
+    watch(
+      () => role.value, // role.value를 반환하는 함수
+      async (newRole) => {
+        console.log('Role changed:', newRole) // Debugging
+        await checkRole()
+      }
+    )
+
     return {
       isMainPage,
       goToMain,
       goToAlarm,
       goToLogin,
-      logout,
-      goToJoin
+      Logout,
+      goToJoin,
+      isManager
     }
-  },
-  methods: {}
+  }
 })
 </script>
 
@@ -135,26 +174,32 @@ export default defineComponent({
 .header-top {
   display: flex;
   justify-content: space-between;
-}
-
-.header-top > div {
-  display: flex;
-  align-items: center;
   margin-left: 200px;
-  margin-right: 200px;
+  margin-right: 100px;
   margin-top: 30px;
   margin-bottom: 10px;
   /* padding-top: 100px; */
 }
 
-/* 헤더 상단 버튼 모아놓은 박스 */
 .header-btn {
-  display: flex;
-  align-items: center;
+  margin-top: 20px;
 }
 
-.header-btn > button {
-  align-self: auto;
+/* 헤더 상단 버튼 모아놓은 박스 */
+.header-btn button {
+  border: 1px solid #10316b;
+  border-radius: 5px;
+  width: 90px;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #10316b;
+  color: white;
+  transition: 0.3s;
+}
+
+.header-btn button:hover {
+  background-color: #31558c;
 }
 
 /* 메뉴 내비게이션 바 */

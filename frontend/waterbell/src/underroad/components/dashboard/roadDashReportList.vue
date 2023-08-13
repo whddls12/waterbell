@@ -27,7 +27,7 @@
           </tr>
         </tbody>
 
-        <tbody v-if="reportList.length == 0">
+        <tbody v-else>
           <td colspan="4" class="text-center">등록된 신고접수가 없습니다.</td>
         </tbody>
       </div>
@@ -37,6 +37,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import http from '@/types/http'
+// import apiModule from '@/types/apiClient'
 import store from '@/store/index'
 import { useRouter } from 'vue-router'
 
@@ -44,6 +45,7 @@ export default defineComponent({
   name: 'roadDashReportVue',
 
   setup() {
+    // const apiClient = apiModule.apiClient
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     let reportList = ref<
@@ -59,12 +61,11 @@ export default defineComponent({
       try {
         http.get(`/reports/dash/${facility_id}`).then((res) => {
           //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
-          console.log(res.data.list)
+          // console.log(res.data.list)
           reportList.value = res.data.list
         })
       } catch (error) {
-        // hasReport.value = false
-        console.log(error.response)
+        return
       }
     }
     const router = useRouter()
