@@ -17,8 +17,9 @@ import getMylocation, { getClosestLocation } from './types/getMylocation'
 // import { formatDate } from './util/filters'
 // Vue.filter('formatDate', formatDate)
 
+// import 'bootstrap'
 // import 'bootstrap/dist/css/bootstrap.min.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 // import Geolocation from 'vue-geolocation-api'
 
 // axios.defaults.baseURL = 'http://localhost:8080'
