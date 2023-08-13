@@ -77,10 +77,12 @@ export function connectWebSocket(): void {
       console.log(
         'WebSocket 연결이 종료되었습니다. 1초 후 재연결을 시도합니다.'
       )
-      try {
-        setTimeout(() => connectWebSocket(), 1000)
-      } catch (error) {
-        console.log('WebSocket 연결이 더 이상 불가합니다.')
+      if (jwtToken.value != null) {
+        try {
+          setTimeout(() => connectWebSocket(), 1000)
+        } catch (error) {
+          console.log('WebSocket 연결이 더 이상 불가합니다.')
+        }
       }
     }
   }
