@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // import apiModule from '@/types/apiClient'
 import http from '@/types/http'
 import Home from '@/views/Home.vue'
@@ -55,7 +55,7 @@ import alarmDetail from '@/alarm/AlarmDetail.vue'
 import store from '@/store'
 // const api = apiModule.api
 const router = createRouter({
-  history: createWebHashHistory(process.env.BASE_URL),
+  history: createWebHistory(process.env.BASE_URL),
   routes: [
     {
       path: '',
@@ -153,7 +153,6 @@ const router = createRouter({
       ]
     },
 
-<<<<<<< HEAD
     {
       path: '/auth/naver',
       name: 'NaverAuth',
@@ -200,9 +199,6 @@ const router = createRouter({
       component: socialJoinExtra
     },
 
-    { path: '/park/mypage', name: 'parkMypage', component: parkMypage },
-
-=======
     // 회원정보 조회(마이페이지)
     {
       path: '/park/mypage',
@@ -221,7 +217,7 @@ const router = createRouter({
       name: 'parkMypageUpdate',
       component: parkMypageUpdate
     },
->>>>>>> fe9807df4b779d3853630bf88f537f89b60a6401
+
     {
       path: '/park/dash',
       name: 'ParkDash',

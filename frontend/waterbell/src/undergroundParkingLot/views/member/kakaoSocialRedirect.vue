@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { defineComponent, onCreated } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 
 import { useRouter, useRoute } from 'vue-router'
 import http from '@/types/http'
@@ -19,16 +19,18 @@ export default defineComponent({
 
     const kvalidateMember = async (code) => {
       const response = await http.get(
-        `/oauth2/kakao?code=${code}`,
+        `login/oauth2/code/kakao?code=${code}`,
         {},
         { withCredentials: true }
       )
-
+      console.log(response)
       if (response.data.type == 'join') {
         //vuex 임시에 이메일 주소 넣어둬야할까?
-        router.push('/social-join/extra')
-      } else {
-        store.dispatch('auth/socialLogin', response.member)
+        const key = response.data.key
+        router.push(`/social-join/extra?key=${key}`)
+      } else if (response.data.type == 'login') {
+        store.dispatch('auth/socialLogin', response)
+        router.push('/park/dash')
       }
 
       // console.log(response.data)
@@ -41,16 +43,15 @@ export default defineComponent({
     const kLogin = async (code) => {
       try {
         await kvalidateMember(code)
-        alert('카카오 로그인 성공')
         router.push({ name: 'Home' })
       } catch (err) {
         alert('카카오 로그인 실패')
         console.error(err)
       }
     }
-    onCreated(() => {
+    onMounted(() => {
       if (route.query.code) {
-        console.log(route.query.code)
+        // console.log(route.query.code)
         kLogin(route.query.code)
       }
     })

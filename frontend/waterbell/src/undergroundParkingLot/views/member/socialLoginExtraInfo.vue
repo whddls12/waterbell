@@ -1,113 +1,98 @@
 <template lang="">
   <div>
-    <div>
+    <div class="big-box">
       <h3>추가 정보 입력</h3>
-      <form>
-        <!-- <div>
-          <label for="name">이름</label><br />
-          <input type="text" label="name" id="name" v-model="name" />
-          <p :class="{ 'p-msg': true, success: validate.name }">
-            {{ nameMsg }}
-          </p>
-        </div> -->
-        <!-- <div>
-          <label for="id">아이디</label><br />
-          <input type="text" label="id" id="id" v-model="id" />
-          <button @click.prevent="checkId">중복확인</button>
-          <p :class="{ 'p-msg': true, success: validate.isDuplicated }">
-            {{ idMsg }}
-          </p>
-        </div> -->
-        <!-- <div>
-          <label for="password">비밀번호</label><br />
-          <input
-            type="password"
-            label="password"
-            id="password"
-            v-model="password"
-          />
-          <p :class="{ 'p-msg': true, success: validate.password }">
-            {{ passMsg }}
-          </p>
-        </div> -->
+      <div class="formBox">
+        <form>
+          <div class="labelBox">
+            <label for="phoneNum">휴대폰번호</label><br />
+            <div class="btnInput">
+              <input
+                type="text"
+                label="phoneNum"
+                id="phoneNum"
+                v-model="phoneNum"
+              />
+              <button class="text" @click.prevent="requestVerification">
+                인증 요청
+              </button>
+            </div>
+            <p
+              :class="{
+                'p-msg': true,
+                success: validate.phoneNum && offerPhone
+              }"
+            >
+              {{ phoneMsg }}
+            </p>
+          </div>
+          <div class="labelBox">
+            <label for="verification" v-if="verificationVisible"
+              >인증번호 입력</label
+            ><br />
+            <div class="btnInput" v-if="verificationVisible">
+              <input
+                type="text"
+                label="verification"
+                placeholder="인증번호를 입력해주세요."
+                id="verification"
+                v-model="verification"
+              />
+              <button class="text" @click.prevent="onConfirmClick">
+                인증번호 확인
+              </button>
+              <p>{{ formattedCountdown }}</p>
+            </div>
+          </div>
+          <div class="labelBox">
+            <label for="apartCode">아파트 코드</label><br />
+            <div class="btnInput">
+              <input
+                type="text"
+                label="apartCode"
+                id="apartCode"
+                v-model="apartCode"
+              />
+              <button class="text" @click.prevent="findAddressByCode">
+                주소 찾기
+              </button>
+              <p :class="{ 'p-msg': true }">
+                {{ codeMsg }}
+              </p>
+            </div>
+          </div>
 
-        <!-- <div>
-          <label for="confirmPass">비밀번호 확인</label><br />
-          <input
-            type="password"
-            label="confirmPass"
-            id="confirmPass"
-            v-model="confirmPass"
-          />
-          <p :class="{ 'p-msg': true, success: validate.confirmPass }">
-            {{ confirmPassMsg }}
-          </p>
-        </div> -->
-        <div>
-          <label for="phoneNum">휴대폰번호</label><br />
-          <input
-            type="text"
-            label="phoneNum"
-            id="phoneNum"
-            v-model="phoneNum"
-          />
-          <button @click.prevent="requestVerification">인증번호 요청</button>
-          <p :class="{ 'p-msg': true, success: validate.phoneVerification }">
-            {{ phoneMsg }}
-          </p>
-          <label for="verification" v-if="verificationVisible"
-            >인증번호 입력</label
-          ><br />
-          <div v-if="verificationVisible">
+          <div class="labelBox">
+            <label for="address">아파트 주소</label><br />
             <input
               type="text"
-              label="verification"
-              placeholder="인증번호를 입력해주세요."
-              id="verification"
-              v-model="verification"
+              required
+              label="address"
+              id="address"
+              v-model="address"
+              readonly
             />
-            <button @click.prevent="onConfirmClick">인증번호 확인</button>
-            <p>{{ formattedCountdown }}</p>
           </div>
-        </div>
-        <div>
-          <label for="apartCode">아파트 코드</label><br />
-          <input
-            type="text"
-            label="apartCode"
-            id="apartCode"
-            v-model="apartCode"
-          />
-          <button @click.prevent="findAddressByCode">주소 찾기</button>
-          <p :class="{ 'p-msg': true, success: validate.name }">
-            {{ codeMsg }}
-          </p>
-        </div>
 
-        <div>
-          <label for="address">아파트 주소</label><br />
-          <input
-            type="text"
-            required
-            label="address"
-            id="address"
-            v-model="address"
-            readonly
-          />
+          <div class="labelBox">
+            <label for="detailAddress">아파트 호수</label><br />
+            <input
+              type="text"
+              label="detailAddress"
+              id="detailAddress"
+              v-model="detailAddress"
+            />
+          </div>
+        </form>
+        <div class="btnBox">
+          <button
+            class="main-primary joinBtn joinBtn-text"
+            @click.prevent="join"
+          >
+            회원가입
+          </button>
         </div>
-
-        <div>
-          <label for="detailAddress">아파트 호수</label><br />
-          <input
-            type="text"
-            label="detailAddress"
-            id="detailAddress"
-            v-model="detailAddress"
-          />
-        </div>
-        <button @click.prevent="join">회원가입</button>
-        <button>취소</button>
-      </form>
+      </div>
     </div>
   </div>
 </template>
@@ -133,12 +118,8 @@ export default defineComponent({
     const detailAddress = ref('')
 
     //입력창 아래 띄워질 메시지
-    const nameMsg = ref('')
-    const idMsg = ref('')
-    const passMsg = ref('')
-    const confirmPassMsg = ref('')
     const phoneMsg = ref('')
-
+    const codeMsg = ref('')
     //휴대폰번호 인증 확인 여부
     const offerPhone = ref(false)
 
@@ -278,15 +259,16 @@ export default defineComponent({
             if (res.data.message == 'success') {
               address.value = res.data.address
               validate.value.apartCodeCheck = true
+              codeMsg.value = '' // Clear any error messages
             } else {
-              alert('일치하는 아파트가 없습니다.')
+              codeMsg.value = '아파트 코드가 유효하지 않습니다.'
             }
             // console.log(apartCode.value)
             // console.log(res)
             // console.log(res.data)
           })
       } catch (error) {
-        alert('일치하는 아파트가 없습니다.')
+        codeMsg.value = '아파트 코드가 유효하지 않습니다.'
       }
     }
 
@@ -294,6 +276,7 @@ export default defineComponent({
     const join = () => {
       try {
         const key = route.query.key
+        console.log(key)
         if (Object.values(validate.value).every((v) => v === true)) {
           api
             .post(`/social/join/${key}`, {
@@ -322,6 +305,7 @@ export default defineComponent({
     watch(phoneNum, (newValue, oldValue) => {
       if (newValue != oldValue) {
         validatePhone()
+        console.log(phoneMsg.value)
       }
     })
 
@@ -335,22 +319,20 @@ export default defineComponent({
       phoneNum,
       validate,
       address,
-
       verificationVisible,
-
+      phoneMsg,
+      codeMsg,
       detailAddress,
       confirmPass,
       apartCode,
       verification,
       countdown,
       offerPhone,
-      idMsg,
-      passMsg,
-      confirmPassMsg,
       validatePhone,
       validateDetailAddress,
       confirmVerification,
       findAddressByCode,
+      requestVerification,
       onConfirmClick,
       join
     }
@@ -358,6 +340,24 @@ export default defineComponent({
 })
 </script>
 <style scoped lang="css">
+h3 {
+  color: #000;
+  /* 회원가입상자_제목 */
+  font-family: Roboto;
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+}
+
+.big-box {
+  display: flex;
+  padding: 80px 0px;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+}
 .p-msg {
   color: red;
   margin-top: 5px;
@@ -365,6 +365,94 @@ export default defineComponent({
 .p-msg.success {
   color: blue;
 }
-</style>
+.formBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  align-self: stretch;
+}
 
-function async() { throw new Error('Function not implemented.') }
+label,
+.text {
+  color: #666;
+  /* Body2 */
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 20px; /* 100% */
+  letter-spacing: 0.25px;
+}
+button {
+  display: flex;
+  padding: 11px 16px;
+  width: 120px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  justify-self: stretch;
+  align-self: stretch;
+  border-radius: 10px;
+  border: 0;
+  background: #aaa9a9;
+}
+.labelBox {
+  display: flex;
+  width: 665px;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 10px;
+  /* border: 1px solid red; */
+}
+.btnInput {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: stretch;
+  /* border: 1px solid blue; */
+}
+.btnInput input {
+  margin-right: 10px; /* 오른쪽 마진을 추가하여 button과의 간격을 조절합니다. */
+}
+
+input {
+  display: flex;
+  height: 56px;
+  padding: 16px 17px;
+  justify-content: flex-end;
+  align-items: center;
+  align-self: stretch;
+  gap: 10px;
+  flex: 1 0 0;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 102, 102, 0.35);
+}
+
+.joinBtn {
+  display: flex;
+  width: 644px;
+  height: 60px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-primary {
+  border-radius: 40px;
+  background: var(--2, #114cb1);
+}
+
+.joinBtn-text {
+  color: #fff;
+  text-align: center;
+  /* 로그인_btn */
+  font-family: Roboto;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px; /* 133.333% */
+  letter-spacing: 7px;
+}
+</style>

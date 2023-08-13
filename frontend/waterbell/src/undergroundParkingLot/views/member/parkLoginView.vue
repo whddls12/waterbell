@@ -82,15 +82,15 @@ export default defineComponent({
 
     const naverLogin = () => {
       //로컬 서버 연결용
-      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:8081/#/auth/naver&state=WaterBell`
+      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:3000/auth/naver&state=WaterBell`
 
       //운영용
       // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
-      console.log('가고 있냐 ')
+
       window.location.href = url
     }
     const client_id_kakao = '333ed4acdf908937b3480366ff4b1d75'
-    const redirect_uri = 'http://localhost:8081/#/auth/kakao'
+    const redirect_uri = 'http://localhost:3000/auth/kakao'
     const kakaoLogin = () => {
       const url = `https://kauth.kakao.com/oauth/authorize?client_id=${client_id_kakao}&redirect_uri=${redirect_uri}&response_type=code`
       window.location.href = url

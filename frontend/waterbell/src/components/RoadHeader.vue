@@ -118,15 +118,9 @@ export default defineComponent({
       router.push({ path: '/park/join' })
     }
 
-<<<<<<< HEAD
-    function logout() {
-      store.dispatch('auth/logout') // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/' }) // 로그아웃 후 리디렉션될 경로
-=======
     async function Logout() {
       await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
       router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
->>>>>>> fe9807df4b779d3853630bf88f537f89b60a6401
     }
 
     // const loginUser = () => {

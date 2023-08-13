@@ -107,184 +107,13 @@ const auth: Module<any, any> = {
     }
   },
   actions: {
-<<<<<<< HEAD
-    async memberLogin({ commit }, { loginId, password }) {
-      try {
-        // console.log('실행되는가?')
-        const response = await apiClient.post('/member/login', {
-          loginId,
-          password
-        })
-
-        let user
-        const member = response.data.member
-        const accessToken = member.accessToken
-        const refreshToken = member.refreshToken
-        console.log(member.role)
-        switch (member.role) {
-          case 'APART_MANAGER':
-          case 'PUBLIC_MANAGER': {
-            // user = {
-            //   id: member.id,
-            //   loginId: member.loginId,
-            //   role: member.role,
-            //   phone: member.phone,
-            //   facilityId: member.facilityId
-            // }
-            const error = new Error(`NOT_MEMBER`)
-            // alert(error.message)
-            throw error
-          }
-          case 'APART_MEMBER':
-            user = {
-              id: member.id,
-              loginId: member.loginId,
-              role: member.role,
-              phone: member.phone,
-              facilityId: member.facilityId,
-              name: member.name,
-              addressNumber: member.addressNumber
-            }
-            break
-          // case 'PUBLIC_MANAGER':
-          // user = {
-          //   id: member.id,
-          //   loginId: member.loginId,
-          //   role: member.role,
-          //   phone: member.phone,
-          //   sidoId: member.sidoId,
-          //   facilityId: member.facilityId || []
-          // }
-          // break
-        }
-
-        //웹소켓 연결
-
-        // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
-        // commit('setLoginUser', user)
-        // commit('setIslogin', true); // Typo here: setIsLogin
-        await commit('setTokens', { accessToken, refreshToken })
-        await commit('setIsLogin', true)
-        await commit('setRole', member.role)
-        console.log(response.data)
-        connectWebSocket()
-        // 여기에서 auth state에 있는 loginUser를 getter로 가져오고 싶어.
-        // 어떻게 해야해?
-        const isLogin = store.getters['auth/isLogin']
-        if (isLogin) {
-          router.push('/park/dash')
-        }
-      } catch (error: any) {
-        // console.log(error)
-        // const { data, status, statusText } = error.response
-        if (error.message === 'NOT_MEMBER') {
-          alert('존재하지 않는 회원입니다.')
-        } else if (error.response.data.message === 'fail') {
-          switch (error.response.data.exception) {
-            case '일치하는 회원이 없습니다.':
-              alert('존재하지 않는 회원입니다.2')
-              break
-            case '비밀번호가 일치하지 않습니다.':
-              alert('비밀번호가 일치하지 않습니다.')
-              break
-          }
-        }
-        return
-      }
-    },
-
-    async managerLogin({ commit }, { loginId, password }) {
-      try {
-        // console.log('실행되는가?')
-        const response = await apiClient.post('/member/login', {
-          loginId,
-          password
-        })
-
-        let user
-        const member = response.data.member
-        const accessToken = member.accessToken
-        const refreshToken = member.refreshToken
-        console.log(member.role)
-
-        switch (member.role) {
-          case 'APART_MANAGER': {
-            user = {
-              id: member.id,
-              loginId: member.loginId,
-              role: member.role,
-              phone: member.phone,
-              facilityId: member.facilityId
-            }
-            break
-          }
-
-          case 'APART_MEMBER': {
-            const error = new Error(`NOT_MEMBER`)
-            throw error
-          }
-
-          case 'PUBLIC_MANAGER': {
-            user = {
-              id: member.id,
-              loginId: member.loginId,
-              role: member.role,
-              phone: member.phone,
-              sidoId: member.sidoId,
-              facilityId: member.facilityId || []
-            }
-            break
-          }
-        }
-        //웹소켓 연결
-
-        // 여기서 user 객체를 store에 저장하거나 다른 처리를 할 수 있습니다.
-        // commit('setLoginUser', user)
-        // commit('setIslogin', true); // Typo here: setIsLogin
-        await commit('setTokens', { accessToken, refreshToken })
-        await commit('setIsLogin', true)
-        await commit('setRole', member.role)
-        console.log(response.data)
-        connectWebSocket()
-        // 여기에서 auth state에 있는 loginUser를 getter로 가져오고 싶어.
-        // 어떻게 해야해?
-        const isLogin = store.getters['auth/isLogin']
-        if (isLogin) {
-          router.push('/park/dash')
-        }
-      } catch (error: any) {
-        // console.log(error)
-        // const { data, status, statusText } = error.response
-        if (error.message === 'NOT_MEMBER') {
-          alert('존재하지 않는 회원입니다.')
-        } else if (error.response.data.message === 'fail') {
-          switch (error.response.data.exception) {
-            case '일치하는 회원이 없습니다.':
-              alert('존재하지 않는 회원입니다.2')
-              break
-            case '비밀번호가 일치하지 않습니다.':
-              alert('비밀번호가 일치하지 않습니다.')
-              break
-          }
-        }
-      }
-      return
-    },
-
-    async logout({ commit }) {
-      try {
-        // const accessToken = this.getters['accessToken']
-        await apiClient.post('/member/logout').then((res) => {
-          // console.log(this.getters['accessToken'])
-          // console.log(res.data)
-          commit('auth/logout')
-        })
-        await closeWebSocket()
-      } catch (error) {
-        console.log(error.response)
-      }
+    socialLogin({ commit }, payload) {
+      commit('setTokens', {
+        accessToken: payload.member.accessToken,
+        refreshToken: payload.member.refreshToken
+      })
+      commit('setFacilityId', payload.member.facilityId)
     }
-=======
     // async memberLogin({ commit }, { loginId, password }) {
     //   try {
     //     // console.log('실행되는가?')
@@ -439,7 +268,6 @@ const auth: Module<any, any> = {
     //     console.log(error.response)
     //   }
     // }
->>>>>>> fe9807df4b779d3853630bf88f537f89b60a6401
   } // actions 객체의 닫는 중괄호
 } // auth 모듈의 닫는 중괄호
 
