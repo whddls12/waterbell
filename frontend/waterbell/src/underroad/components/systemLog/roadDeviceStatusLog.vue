@@ -1,5 +1,5 @@
 <template lang="">
-  <div></div>
+  <div>미완</div>
 </template>
 <script>
 export default {}

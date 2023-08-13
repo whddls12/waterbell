@@ -18,8 +18,10 @@ import roadReportCreateVue from '../underroad/components/report/roadReportCreate
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
 //지하차도 시스템 로그
-import roadAlarmlog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
+import roadAlarmLog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
 import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
+import roadDeviceStatusLog from '../underroad/components/systemLog/roadDeviceStatusLog.vue'
+import roadDeviceControlLog from '../underroad/components/systemLog/roadDeviceControlLog.vue'
 
 //지하주차장 회원관련(로그인, 회원가입, 마이페이지)
 import parkLogin from '../undergroundParkingLot/views/member/parkLoginView.vue'
@@ -40,6 +42,8 @@ import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
 import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDeviceAlarmLog.vue'
+import parkDeviceStatusLog from '../undergroundParkingLot/components/systemLog/parkDeviceStatusLog.vue'
+import parkDeviceControlLog from '../undergroundParkingLot/components/systemLog/parkDeviceControlLog.vue'
 
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
@@ -108,11 +112,21 @@ const router = createRouter({
       name: 'RoadSystemlog',
       component: RoadSystemlog,
       children: [
-        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmlog },
+        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmLog },
         {
           path: 'measureLog',
           name: 'roadMeasureLog',
           component: roadMeasureLog
+        },
+        {
+          path: 'statusLog',
+          name: 'roadDeviceStatusLog',
+          component: roadDeviceStatusLog
+        },
+        {
+          path: 'controlLog',
+          name: 'roadDeviceControlLog',
+          component: roadDeviceControlLog
         }
       ]
     },
@@ -169,7 +183,17 @@ const router = createRouter({
       component: ParkSystemlog,
       children: [
         { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
-        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog }
+        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog },
+        {
+          path: 'statusLog',
+          name: 'parkDeviceStatusLog',
+          component: parkDeviceStatusLog
+        },
+        {
+          path: 'controlLog',
+          name: 'parkDeviceControlLog',
+          component: parkDeviceControlLog
+        }
       ]
     },
     {
