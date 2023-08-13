@@ -7,14 +7,8 @@ import com.ssafy.fcc.domain.board.UndergroundRoadBoard;
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.UndergroundRoad;
-import com.ssafy.fcc.domain.member.ApartMember;
-import com.ssafy.fcc.domain.member.Member;
-import com.ssafy.fcc.domain.member.PublicManager;
-import com.ssafy.fcc.domain.member.Role;
-import com.ssafy.fcc.dto.ApartBoardRequestDto;
-import com.ssafy.fcc.dto.DashUndergroundRoadBoardResponseDto;
-import com.ssafy.fcc.dto.UndergroundRoadBoardRequestDto;
-import com.ssafy.fcc.dto.UpdateUndergroundRoadBoardRequestDto;
+import com.ssafy.fcc.domain.member.*;
+import com.ssafy.fcc.dto.*;
 import com.ssafy.fcc.service.ApartBoardService;
 import com.ssafy.fcc.service.FacilityService;
 import com.ssafy.fcc.service.MemberService;
@@ -341,19 +335,49 @@ public class BoardController {
     //################################여기부터 아파트##################################
     //////////////////////////////////////////////////////////////////////////////////////
 
+    //아파트 대쉬 화면
+    @GetMapping("/dash/apart/{facilityId}")
+    public ResponseEntity<Map<String, Object>> dashApartList(
+            @PathVariable("facilityId") int facilityId
+    ) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+
+        Integer loginId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        Member loginUser = memberService.findById(loginId);
+
+
+        try {
+            if (loginUser.getRole() == Role.APART_MANAGER) {
+                if (((ApartManager) loginUser).getApart().getId() != facilityId) throw new Exception("권한이 없습니다");
+            } else if (loginUser.getRole() == Role.APART_MEMBER) {
+                if (((ApartMember) loginUser).getApart().getId() != facilityId) throw new Exception("권한이 없습니다");
+            } else {
+                throw new Exception("권한이 없습니다");
+            }
+
+            List<DashApartBoardResponseDto> boadListLatest = apartBoardService.getBoadListLatest(facilityId);
+            resultMap.put("message", "success");
+            resultMap.put("list", boadListLatest);
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+
 
     //아파트 글쓰기
     @PostMapping(path  = "/write/apartMember/{facilityId}", consumes = {"multipart/form-data"})
     public ResponseEntity<String> writeApartBoard(
-            @PathVariable("facilityId") int facilityId,
-//            @ModelAttribute(value = "board") ApartBoardRequestDto boardDto,
-//            @RequestPart(value = "uploadedfiles", required = false) List<MultipartFile> uploadedfiles
-             ApartBoardRequestDto boardDto
-    )
-            throws IllegalStateException, IOException  {
+            @PathVariable("facilityId") int facilityId, ApartBoardRequestDto boardDto) throws IllegalStateException, IOException  {
 
 
-        final int memberId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
+        int memberId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         Apart apart = (Apart) facilityService.findById(facilityId);
         ApartMember apartMember = (ApartMember) memberService.findById(memberId);
 
@@ -367,7 +391,7 @@ public class BoardController {
         apartBoard.setCreateDate(LocalDateTime.now());
         apartBoard.setViewCount(0);
 
-        System.out.println("댓글쓰기: " + apartBoard);
+        System.out.println("글쓰기: " + apartBoard);
         try {
             final Integer apartBoardId = apartBoardService.writeApartBoard(apartBoard, boardDto.getUploadedfiles());
             apartBoardService.sendWebNotification(memberId,apartBoardId);
@@ -376,5 +400,40 @@ public class BoardController {
             return new ResponseEntity<String>("fail", HttpStatus.NO_CONTENT);
         }
     }
+
+    @GetMapping("/apartBoard/apart/{facilityId}/{page}")
+    public ResponseEntity<Map<String, Object>>  aparatBoardList( @PathVariable("facilityId") int facilityId, @PathVariable("page") int page){
+
+        Map<String, Object> resultMap= new HashMap<>();
+        HttpStatus status = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String id = authentication.getName();
+
+
+        try {
+            if (id == null || id.equals("") || id.equals("anonymousUser")) {
+                throw new Exception("토큰 필요");
+            }
+
+            Member loginUser = memberService.findById(Integer.parseInt(id));
+            if (loginUser.getRole() == Role.APART_MANAGER) {
+                if (((ApartManager) loginUser).getApart().getId() != facilityId) throw new Exception("권한이 없습니다");
+            } else if (loginUser.getRole() == Role.APART_MEMBER) {
+                if (((ApartMember) loginUser).getApart().getId() != facilityId) throw new Exception("권한이 없습니다");
+            } else {
+                throw new Exception("권한이 없습니다");
+            }
+            resultMap = apartBoardService.getBoadListByPage(facilityId,page);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        }catch (Exception e){
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
 
 }
