@@ -32,12 +32,12 @@
 <script>
 import { ref, watch, computed, defineComponent } from 'vue'
 import axios from '@/types/apiClient'
-// import store from '@/store/index'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'parkPhoneModal',
   setup() {
-    // const apiClient = axios.apiClient(store)
+    const apiClient = axios.apiClient(store)
     const api = axios.api
 
     // 각 input에 입력된 값
