@@ -2,24 +2,15 @@ package com.ssafy.fcc.controller;
 
 
 import com.ssafy.fcc.domain.alarm.Step;
-import com.ssafy.fcc.domain.log.ControlType;
-import com.ssafy.fcc.domain.member.ApartMember;
-import com.ssafy.fcc.dto.BoardAlarmDto;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
-import com.ssafy.fcc.service.AlarmService;
 import com.ssafy.fcc.service.ApartManagerService;
-import com.ssafy.fcc.service.SystemService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
