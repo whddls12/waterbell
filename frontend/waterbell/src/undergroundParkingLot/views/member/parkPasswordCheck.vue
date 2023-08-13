@@ -32,18 +32,18 @@ export default defineComponent({
     // const api = axios.api
     const currentPW = ref('')
 
+    // 현재 비밀번호를 잘 입력했는지 검증
     function isEqual() {
-      console.log(currentPW.value)
       apiClient
         .post(`/member/verificationPW`, {
           password: currentPW.value
         })
         .then((res) => {
-          router.push({ path: '/park/mypage/update' })
+          router.push({ path: '/park/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
         })
         .catch((err) => {
           console.log(err)
-          alert('비밀번호가 일치하지 않습니다.')
+          alert('비밀번호가 일치하지 않습니다.') // alert 창보다는 밑에 메시지를 띄워주는게 낫나..?
         })
     }
     return { currentPW, isEqual }
