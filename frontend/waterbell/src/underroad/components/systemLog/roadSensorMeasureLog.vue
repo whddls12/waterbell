@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="container mt-4">
+  <div class="container">
     <div class="title">센서 측정 로그</div>
     <div class="datepicker-row">
       <div>
@@ -51,7 +51,7 @@
           align="center"
         >
           <td>{{ index + 1 }}</td>
-          <td>{{ log.sensorTime }}</td>
+          <td>{{ formattedSensorTime(log.sensorTime) }}</td>
           <td>{{ log.facilityName }}</td>
           <td>{{ categoryLabel(log.category) }}</td>
           <td>{{ log.value }}</td>
@@ -59,7 +59,7 @@
       </tbody>
       <tbody v-else>
         <tr>
-          <td colspan="6" class="text-center">등록된 신고접수가 없습니다.</td>
+          <td colspan="6" class="text-center">해당하는 데이터가 없습니다.</td>
         </tr>
       </tbody>
     </table>
@@ -111,13 +111,12 @@ export default defineComponent({
   components: { VueDatePicker },
   setup() {
     const now = new Date()
-    const startDate = ref(new Date(now.getFullYear(), now.getMonth(), 1)) // 오늘 날짜를 초기값으로 설정
+    const startDate = ref(new Date(now.getFullYear(), now.getMonth(), 1))
     const endDate = ref(now)
     const apiClient = axios.apiClient(store)
     const category = ref('HEIGHT')
-    const facilityId = 10
     const currentPage = ref(1)
-    //   const facilityId = computed(() => store.getters['auth/facilityId']).value
+    const facilityId = computed(() => store.getters['auth/facilityId']).value
 
     let logList = ref<
       {
@@ -156,9 +155,17 @@ export default defineComponent({
     })
 
     const setList = () => {
+      let formattedStartDate = toLocalDateTime(startDate.value)
+      let formattedEndDate = toLocalDateTime(endDate.value)
       apiClient
         .get(
-          `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`
+          `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+          {
+            params: {
+              searchStartDate: formattedStartDate,
+              searchEndDate: formattedEndDate
+            }
+          }
         )
         .then((res) => {
           logList.value = res.data.list
@@ -173,31 +180,25 @@ export default defineComponent({
       return [...Array(end - start + 1).keys()].map((val) => val + start)
     }
 
-    function toLocalDateTime(date: any) {
-      const year = date.getFullYear()
-      const month = date.getMonth() + 1
-      const day = date.getDate()
-      const hours = date.getHours()
-      const minutes = date.getMinutes()
-      const seconds = date.getSeconds()
-
-      return `${year}-${month.toString().padStart(2, '0')}-${day
-        .toString()
-        .padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes
-        .toString()
-        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
-    }
-
     const movePage = (alarm_id: any) => {
       console.log('Clicked on alarm_id:', alarm_id)
     }
 
     const goToPage = (page: number) => {
       currentPage.value = page
+      let formattedStartDate = toLocalDateTime(startDate.value)
+      let formattedEndDate = toLocalDateTime(endDate.value)
+
       try {
         apiClient
           .get(
-            `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`
+            `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+            {
+              params: {
+                searchStartDate: formattedStartDate,
+                searchEndDate: formattedEndDate
+              }
+            }
           )
           .then((res) => {
             logList.value = res.data.list
@@ -212,24 +213,33 @@ export default defineComponent({
     }
 
     watch(category, (newCategory: any) => {
-      if (newCategory) {
-        apiClient
-          .get(
-            `/system/manager/facilities/${facilityId}/sensors/${newCategory}/logs/${currentPage.value}`
-          )
-          .then((res) => {
-            logList.value = res.data.list
-            pageNavigation.value = res.data.pageNavigation
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
+      category.value = newCategory
+      currentPage.value = 1
+      let formattedStartDate = toLocalDateTime(startDate.value)
+      let formattedEndDate = toLocalDateTime(endDate.value)
+      apiClient
+        .get(
+          `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+          {
+            params: {
+              searchStartDate: formattedStartDate,
+              searchEndDate: formattedEndDate
+            }
+          }
+        )
+        .then((res) => {
+          logList.value = res.data.list
+          pageNavigation.value = res.data.pageNavigation
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     })
 
     const fetchLogList = (start: any, end: any) => {
       let formattedStartDate = toLocalDateTime(start)
       let formattedEndDate = toLocalDateTime(end)
+      currentPage.value = 1
 
       apiClient
         .get(
@@ -269,6 +279,32 @@ export default defineComponent({
       }
     }
 
+    function toLocalDateTime(date: any) {
+      const year = date.getFullYear()
+      const month = date.getMonth() + 1
+      const day = date.getDate()
+      const hours = date.getHours()
+      const minutes = date.getMinutes()
+      const seconds = date.getSeconds()
+
+      return `${year}-${month.toString().padStart(2, '0')}-${day
+        .toString()
+        .padStart(2, '0')}T${hours.toString().padStart(2, '0')}:${minutes
+        .toString()
+        .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+
+    const formattedSensorTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
+
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
+    }
+
     onMounted(() => {
       setList()
     })
@@ -283,7 +319,8 @@ export default defineComponent({
       pageNavigation,
       range,
       goToPage,
-      categoryLabel
+      categoryLabel,
+      formattedSensorTime
     }
   }
 })
