@@ -8,7 +8,12 @@
       <!-- 이름 -->
       <div class="myPage-content-box name">
         <label for="name">이름</label>
-        <input type="text" id="name" :value="memberInfo?.name" />
+        <input
+          type="text"
+          id="name"
+          :placeholder="memberInfo?.name"
+          v-model="newName"
+        />
       </div>
       <!-- 아이디 -->
       <div class="myPage-content-box loginId">
@@ -44,10 +49,12 @@
           <input
             type="text"
             id="apartCode"
-            readonly
             :placeholder="memberInfo?.apartCode"
+            v-model="newApartCode"
           />
-          <button id="changebtn">수정</button>
+          <button id="changebtn" @click.prevent="findAddressByCode">
+            변경
+          </button>
         </div>
       </div>
       <!-- 주소 -->
@@ -67,15 +74,16 @@
           <input
             type="text"
             id="addressNumber"
-            :value="memberInfo?.addressNumber"
+            :placeholder="memberInfo?.addressNumber"
+            v-model="newApartAddressNumber"
           />
           <p>호</p>
         </div>
       </div>
       <!-- 버튼 -->
       <div class="myPage-btn">
-        <button id="goBack">취소</button>
-        <button id="saveChange">저장</button>
+        <button id="goBack" @click="goBack">취소</button>
+        <button id="saveChange" @click="saveChange">저장</button>
       </div>
     </div>
   </div>
@@ -96,6 +104,7 @@ export default defineComponent({
     parkPhoneModal
   },
   setup() {
+    const api = axios.api
     const apiClient = axios.apiClient(store)
     const memberInfo = ref(null)
 
@@ -103,7 +112,10 @@ export default defineComponent({
     const popState_phone = ref(false)
 
     // 수정할 회원정보
+    const newName = ref(null)
     const newPhoneNum = ref(null)
+    const newApartCode = ref(null)
+    const newApartAddressNumber = ref(null)
 
     // 회원정보 가져오기
     function getMemberData() {
@@ -112,6 +124,11 @@ export default defineComponent({
         .then((res) => {
           memberInfo.value = res.data.memberInfo
           console.log(memberInfo.value)
+          // 수정 시 넘겨줄 데이터에 기존값 저장
+          newName.value = res.data.memberInfo.name
+          newPhoneNum.value = res.data.memberInfo.phone
+          newApartCode.value = res.data.memberInfo.apartCode
+          newApartAddressNumber.value = res.data.memberInfo.addressNumber
         })
         .catch((error) => console.log(error))
     }
@@ -130,6 +147,47 @@ export default defineComponent({
       memberInfo.value.phone = tempNum
       newPhoneNum.value = tempNum
     }
+    //아파트 코드로 주소 조회
+    const findAddressByCode = () => {
+      try {
+        api
+          .post('/member/join/validationApartCode', {
+            apartCode: newApartCode.value
+          })
+          .then((res) => {
+            if (res.data.message == 'success') {
+              memberInfo.value.address = res.data.address // 수정할 아파트 코드에 맞추어 주소를 바꿔 보여주기
+            } else {
+              alert('일치하는 아파트가 없습니다.')
+            }
+            // console.log(apartCode.value)
+            console.log(res)
+            console.log(res.data)
+          })
+      } catch (error) {
+        alert('일치하는 아파트가 없습니다.')
+      }
+    }
+
+    function goBack() {
+      router.push({ path: '/park/mypage' })
+    }
+
+    function saveChange() {
+      apiClient
+        .post(`/member/apartMember/modify`, {
+          id: memberInfo.value.id,
+          phone: newPhoneNum.value,
+          name: newName.value,
+          apartCode: newApartCode.value,
+          addressNumber: newApartAddressNumber.value
+        })
+        .then((res) => {
+          console.log(res)
+          router.push({ path: '/park/mypage' })
+        })
+        .catch((err) => console.log(err))
+    }
 
     // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
     onMounted(() => {
@@ -137,12 +195,17 @@ export default defineComponent({
     })
     return {
       memberInfo,
+      newPhoneNum,
+      newApartCode,
       popState_pw,
       popState_phone,
       getMemberData,
       changePopState_PW,
       changePopState_Phone,
-      tempPhoneNumber
+      tempPhoneNumber,
+      findAddressByCode,
+      goBack,
+      saveChange
     }
   }
 })
