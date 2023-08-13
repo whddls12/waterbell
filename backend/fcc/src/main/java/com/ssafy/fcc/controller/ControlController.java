@@ -1,6 +1,5 @@
 package com.ssafy.fcc.controller;
 
-import com.ssafy.fcc.MQTT.MqttPublisher;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.ControlType;
