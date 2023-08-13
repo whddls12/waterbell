@@ -98,7 +98,7 @@ public class SystemService {
             Facility facility = facilityRepository.findById(facilityId);
             boolean isApart = facility.isApart();
 
-            Long totalCount = controlLogRepository.getControlLogCnt(facility);
+            Long totalCount = controlLogRepository.getControlLogCnt(facility, searchStartDate, searchEndDate);
             PageNavigation pageNavigation = new PageNavigation(page, totalCount);
 
             List<ControlLog> logList = controlLogRepository.getLogList(facility, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);

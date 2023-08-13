@@ -224,6 +224,7 @@ router-view {
 }
 
 .button-managerLogin {
+  border: 0;
   width: 200px;
   height: 50px;
   padding-left: 16px;
