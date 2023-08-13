@@ -150,15 +150,32 @@ export default defineComponent({
 }
 
 .header-btn {
-  display: flex;
+  margin-top: 20px;
+}
+
+/* 헤더 상단 버튼 모아놓은 박스 */
+.header-btn button {
+  border: 1px solid #10316b;
+  border-radius: 5px;
+  width: 90px;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #10316b;
+  color: white;
+  transition: 0.3s;
+}
+
+.header-btn button:hover {
+  background-color: #31558c;
 }
 
 .menu-navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  padding-left: 200px;
+  padding-right: 200px;
   background-color: #10316b;
-  padding-right: 20px;
-  padding-left: 20px;
 }
 
 .each-menu {
