@@ -26,7 +26,8 @@
       <button @click.prevent="onConfirmClick">확인</button>
       <p>{{ formattedCountdown }}</p>
     </div>
-    <p @click="$emit('close', false)">닫기</p>
+    <p @click="$emit('close', false)">취소</p>
+    <p @click="changePhoneNumber">변경</p>
   </div>
 </template>
 <script>
@@ -155,6 +156,18 @@ export default defineComponent({
     const onConfirmClick = () => {
       confirmVerification()
     }
+
+    // 인증되었을 때 회원의 휴대폰 번호 변경
+    function changePhoneNumber() {
+      if (validate.value.phoneVerification) {
+        console.log('changePhoneNumber 실행')
+        // 인증이 완료된 휴대폰 번호를 회원정보 수정 페이지의 input창의 값으로 바꿔준다.
+        // 변경은 수정페이지에서 한번에 들어가야함.
+        this.$emit('verify-success', phoneNum.value)
+        this.$emit('close')
+      }
+    }
+
     // 휴대폰번호 검증을 위한 watch 함수
     watch(phoneNum, (newValue, oldValue) => {
       if (newValue != oldValue) {
@@ -173,7 +186,8 @@ export default defineComponent({
       validatePhone,
       requestVerification,
       confirmVerification,
-      onConfirmClick
+      onConfirmClick,
+      changePhoneNumber
     }
   }
 })

@@ -1,6 +1,5 @@
 <template>
-  <!-- 회원정보 조회 창 -->
-  <!-- 수정하기 버튼을 누르기 전에는 입력도 수정도 되지 않도록 readonly 설정 사용 -->
+  <!-- 회원정보 수정 페이지 -->
   <div class="myPage">
     <div class="myPage-title">
       <h1>회원정보 수정</h1>
@@ -11,11 +10,11 @@
         <label for="name">이름</label>
         <input type="text" id="name" :value="memberInfo?.name" />
       </div>
-      <!-- 아이디
+      <!-- 아이디 -->
       <div class="myPage-content-box loginId">
         <label for="id">아이디</label>
         <input type="text" id="loginId" disabled :value="memberInfo?.loginId" />
-      </div> -->
+      </div>
       <!-- 비밀번호 -->
       <div class="myPage-content-box phone">
         <label for="password">현재 비밀번호</label>
@@ -29,10 +28,14 @@
       <div class="myPage-content-box phone">
         <label for="phone">휴대폰 번호</label>
         <div class="inputbtn">
-          <input type="text" id="phone" readonly :value="memberInfo?.phone" />
+          <input type="text" id="phone" disabled :value="memberInfo?.phone" />
           <button id="changebtn" @click="changePopState_Phone">변경</button>
         </div>
-        <parkPhoneModal v-if="popState_phone" @close="changePopState_Phone" />
+        <parkPhoneModal
+          v-if="popState_phone"
+          @close="changePopState_Phone"
+          @verify-success="tempPhoneNumber"
+        />
       </div>
       <!-- 아파트 인증코드 -->
       <div class="myPage-content-box apartCode">
@@ -99,10 +102,13 @@ export default defineComponent({
     const popState_pw = ref(false)
     const popState_phone = ref(false)
 
+    // 수정할 회원정보
+    const newPhoneNum = ref(null)
+
     // 회원정보 가져오기
     function getMemberData() {
       apiClient
-        .get(`/member/apartMember/mypage`)
+        .get(`/member/mypage`)
         .then((res) => {
           memberInfo.value = res.data.memberInfo
           console.log(memberInfo.value)
@@ -117,6 +123,14 @@ export default defineComponent({
       popState_phone.value = !popState_phone.value
     }
 
+    // 바꿀 휴대폰 번호로 인증을 완료했을 때 수정 페이지에서 임시로 휴대폰 번호 변경
+    function tempPhoneNumber(tempNum) {
+      // console.log('tempPhoneNumber 실행')
+      // console.log(tempNum)
+      memberInfo.value.phone = tempNum
+      newPhoneNum.value = tempNum
+    }
+
     // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
     onMounted(() => {
       getMemberData()
@@ -127,7 +141,8 @@ export default defineComponent({
       popState_phone,
       getMemberData,
       changePopState_PW,
-      changePopState_Phone
+      changePopState_Phone,
+      tempPhoneNumber
     }
   }
 })
