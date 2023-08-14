@@ -126,6 +126,7 @@ export default defineComponent({
           console.log(memberInfo.value)
           // 수정 시 넘겨줄 데이터에 기존값 저장
           newName.value = res.data.memberInfo.name
+          console.log(newName.value)
           newPhoneNum.value = res.data.memberInfo.phone
           newApartCode.value = res.data.memberInfo.apartCode
           newApartAddressNumber.value = res.data.memberInfo.addressNumber
@@ -174,6 +175,8 @@ export default defineComponent({
     }
 
     function saveChange() {
+      console.log('newName: ', newName.value)
+      console.log('newApartAddressNumber: ', newApartAddressNumber.value)
       apiClient
         .post(`/member/apartMember/modify`, {
           id: memberInfo.value.id,
@@ -195,6 +198,8 @@ export default defineComponent({
     })
     return {
       memberInfo,
+      newName,
+      newApartAddressNumber,
       newPhoneNum,
       newApartCode,
       popState_pw,
