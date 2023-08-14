@@ -145,7 +145,6 @@ export default defineComponent({
       id,
       password,
       login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
-      naverLoginURL,
       naverLogin,
       kakaoLogin
     }

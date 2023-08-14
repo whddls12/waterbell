@@ -21,16 +21,16 @@ function connectWebSocket(): void {
   // socket.onopen = function () {
   //   socket?.send(`token:${jwtToken.value}`)
   // }
+
   if (socket != null) {
     socket.onmessage = function (event) {
       const data = event.data
-      console.log(data)
-      if (data.camClient1) {
+      // console.log(data)
+      if (JSON.parse(data).camClient1 == 'camClient1') {
         store.commit('setCamClient1', data.camClient1)
-        console.log('client 1을 입력받아 vuex에 저장했습니다.')
       } else {
-        const base64Image = data.temp_img1 // 받아온 이미지 데이터. Base64로 인코딩되어 있다고 가정.
-        console.log('cam1 서버로부터 이미지string을 받았습니다: ' + base64Image)
+        const base64Image = JSON.parse(data).temp_img
+        console.log('서버로부터 이미지string을 받았습니다: ' + base64Image)
         //이미지 처리 어떻게 할거야
 
         // 이미지를 화면에 표시할 요소 생성

@@ -19,23 +19,24 @@ function connectWebSocket(): void {
     )
     console.log('cam2 웹소켓과 연결이 되었습니다.')
   }
-  // socket.onopen = function () {
-  //   socket?.send(`token:${jwtToken.value}`)
-  // }
+
   if (socket != null) {
     socket.onmessage = function (event) {
       const data = event.data
-      if (data.camClient1) {
-        store.commit('setCamClient2', data.camClient2)
+      // console.log(data)
+      if (JSON.parse(data).camClient2 == 'camClient2') {
+        store.commit('setCamClient2', data.camClient1)
       } else {
-        const base64Image = data.temp_img2 // 받아온 이미지 데이터. Base64로 인코딩되어 있다고 가정.
-        console.log('cam2 서버로부터 이미지string을 받았습니다: ' + base64Image)
+        const base64Image = JSON.parse(data).temp_img
+        console.log('서버로부터 이미지string을 받았습니다: ' + base64Image)
+        //이미지 처리 어떻게 할거야
 
         // 이미지를 화면에 표시할 요소 생성
         const imgTag = document.getElementById('cctv2') as HTMLImageElement
         imgTag.src = 'data:image/jpeg;base64,' + base64Image
       }
     }
+
     // 알림이 도착하면 알림 아이콘을 표시합니다.
 
     socket.onclose = function () {
