@@ -21,10 +21,12 @@ public class VerificationController {
     private final SmsCertificationService smsCertificationService;
 
     @PostMapping("/verification/code")
-    public ResponseEntity<Map<String, String>> send_code(@RequestParam String phoneNumber) {
+    public ResponseEntity<Map<String, String>> send_code(@RequestBody Map<String, String> request) {
         Map<String, String> resultMap = new HashMap<>();
         HttpStatus status = null;
 
+        System.out.println("phoneNumber" +request.get("phoneNumber"));
+        String phoneNumber = request.get("phoneNumber");
         try {
             smsCertificationService.sendSms(phoneNumber);
             resultMap.put("message", "전송완료");
