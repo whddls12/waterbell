@@ -107,6 +107,13 @@ const auth: Module<any, any> = {
     }
   },
   actions: {
+    socialLogin({ commit }, payload) {
+      commit('setTokens', {
+        accessToken: payload.member.accessToken,
+        refreshToken: payload.member.refreshToken
+      })
+      commit('setFacilityId', payload.member.facilityId)
+    }
     // async memberLogin({ commit }, { loginId, password }) {
     //   try {
     //     // console.log('실행되는가?')
