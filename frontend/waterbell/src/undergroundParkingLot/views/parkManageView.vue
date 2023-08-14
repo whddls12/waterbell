@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <div class="select-region">
       <div class="select-region-box">
         <router-link to="/park/manage/custom">메시지/기준치 설정</router-link>
@@ -17,6 +17,9 @@ export default {}
 </script>
 
 <style scoped>
+.main {
+  width: 100%;
+}
 .select-region {
   display: flex;
   justify-content: center;

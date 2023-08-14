@@ -63,13 +63,11 @@ export default defineComponent({
     //  로 바꿔보기
     const setList = () => {
       try {
-        apiClient
-          .get(`/dash/members/apartManager/facilities/${facility_id}/reports`)
-          .then((res) => {
-            //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
-            console.log(res.data.list)
-            reportList.value = res.data.list
-          })
+        apiClient.get(`reports/dash/apart/${facility_id}`).then((res) => {
+          //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
+          console.log(res.data.list)
+          reportList.value = res.data.list
+        })
       } catch (error) {
         // hasReport.value = false
         console.log(error.response)

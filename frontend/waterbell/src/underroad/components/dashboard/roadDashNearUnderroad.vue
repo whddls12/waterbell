@@ -25,7 +25,7 @@ import store from '@/store/index'
 import http from '@/types/http'
 import { useRoute, useRouter } from 'vue-router'
 import { changeFacility } from '@/types/changeFacility'
-
+import { fetchUnderroads } from '@/types/getUnderroadList'
 import Geolocation from 'vue-geolocation-api'
 
 export default defineComponent({
@@ -35,13 +35,16 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     //지도에 찍을 지하차도 list
-    const underroadList = computed(() => store.getters['auth/underroadList'])
+    const underroadList = ref(store.getters['auth/underroadList'])
 
-    const nowUnderroad = computed(() => store.getters['auth/nowUnderroad'])
+    const nowUnderroad = ref(store.getters['auth/nowUnderroad'])
 
     //임시 선택된 위치가 저장된 state
-    const tmpUnderroad = computed(() => store.getters.tmpUnderroad).value
+    const tmpUnderroad = ref(store.getters.tmpUnderroad)
 
+    const fetchList = () => {
+      fetchUnderroads()
+    }
     //임시 선택 위치에 원하는 값을 넣는 store의 mutation(click 이벤트 발생 시, 실행할 함수)
     const moveFacility = (id: any) => {
       // const nowRouter = route.
@@ -126,10 +129,10 @@ export default defineComponent({
         nowUnderroad.value.longitude
       )
 
-      console.log('lat')
-      console.log(nowUnderroad.value)
-      console.log(nowUnderroad.value.latitude)
-      console.log(nowUnderroad.value.longitude)
+      // console.log('lat')
+      // console.log(nowUnderroad.value)
+      // console.log(nowUnderroad.value.latitude)
+      // console.log(nowUnderroad.value.longitude)
       //내가 보고있는 지하차도의 경도 위도를 가져오자.
       const options = {
         center: center, //카카오 마커 확인용
@@ -139,6 +142,10 @@ export default defineComponent({
       map.value = new window.kakao.maps.Map(container, options)
       await getWaterHeight()
       await setPositions()
+      console.log('position_warn')
+      console.log(position_warn.value)
+      console.log('position_block')
+      console.log(position_block.value)
       await makeMarker()
     }
     //마커 만들기
@@ -161,18 +168,24 @@ export default defineComponent({
 
         let infowindow = makeInfoWindowRiver(i)
         // 마커에 클릭이벤트를 등록합니다
-        window.kakao.maps.event.addListener(marker, 'mouseover', function () {
-          // 마커 위에 인포윈도우를 표시합니다
-          infowindow = makeInfoWindowRiver(i)
+        window.kakao.maps.event.addListener(marker, 'click', function () {
+          if (!infowindow) {
+            infowindow = makeInfoWindowRiver(i)
+          }
           infowindow.open(map.value, marker)
         })
+        // window.kakao.maps.event.addListener(marker, 'mouseover', function () {
+        //   // 마커 위에 인포윈도우를 표시합니다
+        //   infowindow = makeInfoWindowRiver(i)
+        //   infowindow.open(map.value, marker)
+        // })
 
-        // 마커에 마우스아웃 이벤트를 등록합니다
-        window.kakao.maps.event.addListener(marker, 'mouseout', function () {
-          // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
-          infowindow.close()
-          infowindow = makeInfoWindowRiver(i)
-        })
+        // // 마커에 마우스아웃 이벤트를 등록합니다
+        // window.kakao.maps.event.addListener(marker, 'mouseout', function () {
+        //   // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+        //   infowindow.close()
+        //   infowindow = makeInfoWindowRiver(i)
+        // })
       }
 
       //하천 경보 미발령 하천 마커 생성
@@ -189,17 +202,24 @@ export default defineComponent({
         })
         let infowindow = makeInfoWindowRiver(i)
         // 마커에 클릭이벤트를 등록합니다
-        window.kakao.maps.event.addListener(marker, 'mouseover', function () {
-          // 마커 위에 인포윈도우를 표시합니다
-          infowindow = makeInfoWindowRiver(i)
-          infowindow.open(map.value, marker)
-        })
+        // window.kakao.maps.event.addListener(marker, 'mouseover', function () {
+        //   // 마커 위에 인포윈도우를 표시합니다
+        //   infowindow = makeInfoWindowRiver(i)
+        //   infowindow.open(map.value, marker)
+        // })
 
-        // 마커에 마우스아웃 이벤트를 등록합니다
-        window.kakao.maps.event.addListener(marker, 'mouseout', function () {
-          // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
-          infowindow.close()
-          infowindow = makeInfoWindowRiver(i)
+        // // 마커에 마우스아웃 이벤트를 등록합니다
+        // window.kakao.maps.event.addListener(marker, 'mouseout', function () {
+        //   // 마커에 마우스아웃 이벤트가 발생하면 인포윈도우를 제거합니다
+        //   infowindow.close()
+        //   infowindow = makeInfoWindowRiver(i)
+        // })
+
+        window.kakao.maps.event.addListener(marker, 'click', function () {
+          if (!infowindow) {
+            infowindow = makeInfoWindowRiver(i)
+          }
+          infowindow.open(map.value, marker)
         })
       }
 
@@ -241,9 +261,8 @@ export default defineComponent({
         })
 
         window.kakao.maps.event.addListener(marker, 'click', function () {
-          infowindow = makeInfoWindowRoad(i)
+          // infowindow = makeInfoWindowRoad(i)
           moveFacility(i.road.id)
-          infowindow.open(map.value, marker)
         })
       }
       // console.log(position_warn)
@@ -255,11 +274,14 @@ export default defineComponent({
         )
         // console.log('경고지하차도')
         // console.log(i)
-
+        let latlng = new window.kakao.maps.LatLng(
+          i.road.latitude,
+          i.road.longitude
+        )
         let marker = new window.kakao.maps.Marker({
           map: map.value,
-          position: i.latlng,
-          title: i.title,
+          position: latlng,
+          title: i.road.title,
           image: markerImage,
           clickable: true
         })
@@ -284,7 +306,7 @@ export default defineComponent({
           //   infowindow = makeInfoWindowRoad(i)
           // }
           // infowindow.open(map.value, marker)
-          moveFacility(i.road.value.id)
+          moveFacility(i.road.id)
         })
       }
       // console.log('진입금지 지하차도 목록')
@@ -298,11 +320,17 @@ export default defineComponent({
           roadImgSrc2,
           imgSize
         )
+        // console.log('position block 마커 찍기')
+        // console.log(i)
 
+        let latlng = new window.kakao.maps.LatLng(
+          i.road.latitude,
+          i.road.longitude
+        )
         let marker = new window.kakao.maps.Marker({
           map: map.value,
-          position: i.latlng,
-          title: i.title,
+          position: latlng,
+          title: i.road.title,
           image: markerImage,
           clickable: true
         })
@@ -323,9 +351,10 @@ export default defineComponent({
         })
 
         window.kakao.maps.event.addListener(marker, 'click', function () {
-          infowindow = makeInfoWindowRoad(i)
+          // infowindow = makeInfoWindowRoad(i)
           // setTmplotation(i.road.latlng)
-          infowindow.open(map.value, marker)
+          // infowindow.open(map.value, marker)
+          moveFacility(i.road.id)
         })
       }
     }
@@ -403,7 +432,10 @@ export default defineComponent({
       }
     } //getWaterHeight 함수 닫는 괄호
 
-    onMounted(() => {
+    onMounted(async () => {
+      await fetchList()
+      // console.log('fetchList 완료')
+      // console.log(store.getters['auth/underroadList'])
       if (window.kakao && window.kakao.maps) {
         initMap()
       } else {
