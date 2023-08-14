@@ -163,6 +163,7 @@ public class BoardController {
         try {
             //신고접수 게시글 내용
             UndergroundRoadBoard board = undergroundRoadBoardService.getBoardById(boardId);
+            undergroundRoadBoardService.updateViewCount(boardId);
             resultMap.put("board", board);
             //이미지 전달
             List<Image> imageList = undergroundRoadBoardService.getImageByBoardId(boardId);
@@ -459,6 +460,9 @@ public class BoardController {
             } else {
                 throw new Exception("권한이 없습니다");
             }
+            //여기서 조회수 수정 필요!;
+            apartBoardService.updateViewCount(boardId);
+
             //신고접수 게시글 내용
             resultMap.put("board", board);
             //이미지 전달
