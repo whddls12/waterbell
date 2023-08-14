@@ -45,13 +45,22 @@
     </div>
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
-      <button @click="goToUpdate">수정</button>
-      <button>삭제</button>
+      <button @click="goToUpdate(reportInfo?.id)">수정</button>
+      <button v-if="role == 'PUBLIC_MANAGER'" @click="deleteReportManager">
+        삭제
+      </button>
+      <button v-else @click="openCheckModal">삭제</button>
+    </div>
+    <!-- 삭제 전 비밀번호 확인 -->
+    <div class="password-check-modal" v-if="pwCheckVisible">
+      <label for="password-check">삭제하시려면 비밀번호를 입력해주세요</label>
+      <input type="password" id="password-check" v-model="inputPassword" />
+      <button @click="deleteReport">확인</button>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { ref, defineComponent, onMounted } from 'vue'
+import { ref, defineComponent, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -62,11 +71,23 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const report_id = route.params.report_id
-    const reportInfo = ref(null)
-    const imageList = ref(null)
+
+    const role = computed(() => store.getters['auth/role']).value
+    console.log(role)
+
+    const reportInfo = ref(null) // 신고접수 글 데이터
+    const imageList = ref(null) // 첨부파일 데이터
 
     const apiClient = axios.apiClient(store)
     const api = axios.api
+
+    // 글 삭제 전 비밀번호 체크를 위한 변수
+    const pwCheckVisible = ref(false) // 비밀번호 체크창이 보이는지 여부
+    const inputPassword = ref(null) // 사용자가 입력한 비밀번호
+
+    function openCheckModal() {
+      pwCheckVisible.value = true
+    }
 
     function getReportData() {
       api
@@ -83,11 +104,67 @@ export default defineComponent({
       router.push({ path: '/road/report' })
     }
 
+    function goToUpdate(report_id: any) {
+      router.push({ path: `/road/report/update/${report_id}` })
+    }
+
+    // 글 삭제 (작성자)
+    function deleteReport() {
+      console.log('deleteReport')
+      console.log('입력한 비밀번호: ', inputPassword.value)
+      api
+        .post(
+          `/reports/undergroundRoad/board/password/validation/${report_id}`,
+          {
+            boardPassword: inputPassword.value
+          }
+        )
+        .then((res) => {
+          api
+            .get(`/reports/deleteBoard/${report_id}`)
+            .then((res) => {
+              console.log(res)
+              alert('글이 삭제되었습니다.')
+              router.push({ path: '/road/report' })
+            })
+            .catch((err) => console.log(err))
+        })
+        .catch((err) => {
+          alert('비밀번호가 일치하지 않습니다.')
+          console.log(err)
+        })
+    }
+
+    // 글 삭제 (관리자)
+    function deleteReportManager() {
+      apiClient
+        .get(`/reports/publicManager/deleteBoard/${report_id}`)
+        .then((res) => {
+          console.log(res)
+          alert('글이 삭제되었습니다.')
+          router.push({ path: '/road/report' })
+        })
+        .catch((err) => console.log(err))
+    }
+
     onMounted(() => {
       getReportData()
     })
 
-    return { report_id, reportInfo, imageList, getReportData, goReportList }
+    return {
+      role,
+      report_id,
+      reportInfo,
+      imageList,
+      inputPassword,
+      pwCheckVisible,
+      openCheckModal,
+      getReportData,
+      goReportList,
+      goToUpdate,
+      deleteReport,
+      deleteReportManager
+    }
   }
 })
 </script>
