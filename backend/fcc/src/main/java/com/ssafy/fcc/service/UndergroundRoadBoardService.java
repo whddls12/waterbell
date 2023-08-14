@@ -253,7 +253,7 @@ public class UndergroundRoadBoardService {
     @Transactional
     public void updateBoard(int boardId, UpdateUndergroundRoadBoardRequestDto boardDto) throws Exception{
 
-        final UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
+         UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
         undergroundRoadBoard.setTitle(boardDto.getTitle());
         undergroundRoadBoard.setContent(boardDto.getContent());
         undergroundRoadBoard.setName(boardDto.getName());
@@ -300,7 +300,7 @@ public class UndergroundRoadBoardService {
     @Transactional
     public void updateBoardStatus(int boardId, String boardStatus) throws Exception {
 
-        final UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
+         UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
 
         if(boardStatus.equals("BEFORE"))
          undergroundRoadBoard.setStatus(BoardStatus.BEFORE);
@@ -321,8 +321,14 @@ public class UndergroundRoadBoardService {
             deleteImage(image.getImagePath());
             boardRepository.deleteImage(image);
         }
-        final UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
+         UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
 
         boardRepository.deleteUndergroundRoadBoard(undergroundRoadBoard);
+    }
+
+    @Transactional
+    public void updateViewCount(int boardId) {
+        UndergroundRoadBoard undergroundRoadBoard = boardRepository.getUndergoundBoardById(boardId);
+        undergroundRoadBoard.setViewCount(undergroundRoadBoard.getViewCount() + 1);
     }
 }
