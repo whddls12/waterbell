@@ -45,7 +45,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .bigbox {
   width: 100%;
   max-width: 1400px;

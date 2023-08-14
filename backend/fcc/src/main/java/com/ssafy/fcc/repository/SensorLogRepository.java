@@ -35,7 +35,7 @@ public class SensorLogRepository {
     public List<SensorLog> getLogList(Facility facility, SensorType category, int start, int size, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
 
         return em.createQuery("select a from SensorLog a " +
-                        "where a.facility = :facility and a.category = :category and a.sensorTime >= :searchStartDate and a.sensorTime <= :searchEndDate", SensorLog.class)
+                        "where a.facility = :facility and a.category = :category and a.sensorTime >= :searchStartDate and a.sensorTime <= :searchEndDate order by a.sensorTime DESC", SensorLog.class)
                 .setParameter("facility", facility)
                 .setParameter("category", category)
                 .setParameter("searchStartDate",searchStartDate)

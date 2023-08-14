@@ -3,7 +3,7 @@
     <img class="siren" :src="sirenImage" />
     <div class="height">
       <img class="water" src="@/assets/images/Megaphone.png" />
-      <div class="state">{{ currentState }}</div>
+      <div id="state" :class="messageClass">{{ currentState }}</div>
     </div>
     <div class="height">
       <img class="water" src="@/assets/images/Vector.png" />
@@ -16,7 +16,6 @@
 import { defineComponent, computed, ref, onMounted, watch } from 'vue'
 // import { useStore } from 'vuex'
 import store from '@/store/index'
-import { mapGetters } from 'vuex'
 import SirenGreenImage from '@/assets/images/Siren_green.png'
 import SirenOrange from '@/assets/images/Siren_orange.png'
 import SirenRed from '@/assets/images/Siren_red.png'
@@ -25,15 +24,6 @@ import axios from '@/types/apiClient'
 
 export default defineComponent({
   name: 'RoadSirenControl',
-  computed: {
-    ...mapGetters('auth', [
-      'loginUser',
-      'isLogin',
-      'role',
-      'accessToken',
-      'refreshToken'
-    ])
-  },
   setup() {
     // const store = useStore()
     const apiClient = axios.apiClient(store)
@@ -41,9 +31,20 @@ export default defineComponent({
 
     const facility_id = computed(() => store.getters['auth/facilityId']).value
     const sirenImage = ref(SirenGreenImage)
-    const currentState = ref('윤영이가 넣어줄 문구')
+    const status = ref('')
+    const currentState = ref('')
     const currentHeight = ref('')
     const UactionTriggered = computed(() => store.state.UactionTriggered)
+
+    const messageClass = computed(() => {
+      if (status.value == 'DEFAULT') {
+        return 'blue-text'
+      } else if (status.value == 'FIRST' || status.value == 'SECOND') {
+        return 'orange-text'
+      } else {
+        return 'red-text'
+      }
+    })
     const fetchHeightData = async () => {
       try {
         const response = await apiClient.get(
@@ -58,12 +59,16 @@ export default defineComponent({
     const fetchStatusData = async () => {
       try {
         const response = await api.get(`/facilities/${facility_id}/status`)
-        if (response.data == 'DEFAULT') {
+        status.value = response.data
+        if (status.value == 'DEFAULT') {
           sirenImage.value = SirenGreenImage
-        } else if (response.data == 'FIRST' || response.data == 'SECOND') {
+          currentState.value = '정상 상태'
+        } else if (status.value == 'FIRST' || status.value == 'SECOND') {
           sirenImage.value = SirenOrange
+          currentState.value = '경고 발령'
         } else {
           sirenImage.value = SirenRed
+          currentState.value = 'LED & 경고등 작동 중'
         }
       } catch (error) {
         console.error('Error fetching status data:', error)
@@ -87,7 +92,8 @@ export default defineComponent({
       sirenImage,
       currentState,
       currentHeight,
-      store
+      store,
+      messageClass
     }
   }
 })
@@ -112,8 +118,7 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 
-.state {
-  color: #114cb1;
+#state {
   font-size: 20px;
   font-family: Roboto;
   font-weight: 600;
@@ -141,5 +146,16 @@ export default defineComponent({
 .water {
   width: 30px;
   height: 30px;
+}
+
+.blue-text {
+  color: #114cb1;
+}
+
+.orange-text {
+  color: orange;
+}
+.red-text {
+  color: red;
 }
 </style>
