@@ -14,7 +14,7 @@ export function connectWebSocket(websocket) {
     return
   }
   // WebSocket 연결
-  socket = new WebSocket(`ws://${process.env.VUE_APP_API}/ws`)
+  socket = new WebSocket(`${process.env.VUE_APP_WSAPI}/ws`)
   socket.onopen = function () {
     socket?.send(`token:${jwtToken.value}`)
   }
