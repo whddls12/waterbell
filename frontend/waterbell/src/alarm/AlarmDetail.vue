@@ -45,13 +45,16 @@
         </div>
       </div>
     </div>
+    <div class="mt-4">
+      <button @click="goBackToList" class="btn btn-primary">목록</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed } from 'vue'
 import http from '@/types/http'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { mapGetters, useStore } from 'vuex'
 
 export default defineComponent({
@@ -66,6 +69,9 @@ export default defineComponent({
     ])
   },
   setup() {
+    const route = useRoute()
+    const router = useRouter()
+    const alarm_id = route.params.alarm_id
     const store = useStore()
     const alarm = ref({
       id: '',
@@ -76,8 +82,9 @@ export default defineComponent({
       status: ''
     })
 
-    const route = useRoute()
-    const alarm_id = route.params.alarm_id
+    const goBackToList = () => {
+      router.push('/alarm')
+    }
 
     onMounted(() => {
       const role = computed(() => store.getters['auth/role']).value
@@ -93,7 +100,8 @@ export default defineComponent({
         })
     })
     return {
-      alarm
+      alarm,
+      goBackToList
     }
   }
 })

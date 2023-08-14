@@ -3,13 +3,13 @@
   <!-- 수정하기 버튼을 누르기 전에는 입력도 수정도 되지 않도록 readonly 설정 사용 -->
   <div class="myPage">
     <div class="myPage-title">
-      <h2>회원정보</h2>
+      <h1>회원정보</h1>
     </div>
     <div class="myPage-content">
       <!-- 이름 -->
       <div class="myPage-content-box name">
         <label for="name">이름</label>
-        <input type="text" id="name" readonly :placeholder="memberInfo?.name" />
+        <input type="text" id="name" disabled :placeholder="memberInfo?.name" />
       </div>
       <!-- 아이디 -->
       <div class="myPage-content-box loginId">
@@ -53,64 +53,133 @@
       </div>
       <!-- 호수 -->
       <div class="myPage-content-box addressNumber">
-        <label for="unit">호수</label>
-        <input
-          type="text"
-          id="unit"
-          disabled
-          :placeholder="memberInfo?.addressNumber"
-        />호
+        <label for="addressNumber">호수</label>
+        <div class="addressNumber-box">
+          <input
+            type="text"
+            id="addressNumber"
+            disabled
+            :placeholder="memberInfo?.addressNumber"
+          />
+          <p>호</p>
+        </div>
       </div>
-      <button>회원정보 수정하기</button>
-      <button>회원탈퇴하기</button>
+      <!-- 버튼 -->
+      <div class="myPage-btn">
+        <button id="update" @click="passwordCheck">회원정보 수정하기</button>
+        <div class="withdrawal">
+          <i class="fas fa-arrow-right"> 회원탈퇴하기</i>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import apiModule from '@/types/apiClient'
 import { ref, onMounted, defineComponent } from 'vue'
+import router from '@/router'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'parkMypage',
   setup() {
-    // const api = apiModule.api
-    const apiClient = apiModule.apiClient
+    const apiClient = axios.apiClient(store)
+    // const api = axios.api
     const memberInfo = ref(null)
 
     function getMemberData() {
       apiClient
-        .get(`/member/apartMember/mypage`)
+        .get(`/member/mypage`)
         .then((res) => {
           memberInfo.value = res.data.memberInfo
           console.log(memberInfo.value)
         })
         .catch((error) => console.log(error))
     }
+    function passwordCheck() {
+      router.push({ path: '/park/mypage/passwordCheck' })
+    }
     // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
     onMounted(() => {
       getMemberData()
     })
-    return { memberInfo, getMemberData }
+    return { memberInfo, getMemberData, passwordCheck }
   }
 })
 </script>
-<style>
+<style scoped>
 .myPage {
   display: flex;
-  width: 1440px;
-  padding: 80px 40px;
+  width: inherit;
   flex-direction: column;
   align-items: center;
-}
-
-.myPage-content {
-  gap: 50px;
 }
 
 .myPage-content-box {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  margin: 20px 0px;
+  font-size: 1.5rem;
+  gap: 5px;
+}
+
+input {
+  border-radius: 8px;
+
+  width: 660px;
+  height: 60px;
+  font-size: 1.5rem;
+  padding-left: 10px;
+}
+
+#addressNumber {
+  width: 214px;
+}
+
+.addressNumber-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.myPage-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+#update {
+  display: flex;
+  width: 644px;
+  height: 60px;
+  padding: 11px 16px;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+
+  border: none;
+  border-radius: 40px;
+  color: white;
+  background-color: #114cb1;
+  font-weight: 600;
+  font-size: 1.5rem;
+  letter-spacing: 7px;
+}
+
+#update:hover {
+  cursor: pointer;
+  background-color: #ff8901;
+}
+
+.withdrawal {
+  color: #666666;
+  align-self: end;
+}
+
+.withdrawal:hover {
+  cursor: pointer;
 }
 </style>

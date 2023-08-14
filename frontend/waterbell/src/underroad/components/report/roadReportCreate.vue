@@ -36,7 +36,9 @@
         <div class="report-subtitle">파일첨부</div>
         <div class="report-filebox">
           <div class="report-file-list">
-            <div class="report-file-list-name">첨부된 파일 목록</div>
+            <div class="report-file-list-name">
+              첨부된 파일 목록 {{ getSelectedFileNames }}
+            </div>
           </div>
           <div class="report-file-attach">
             <div class="search-btn">
@@ -70,10 +72,9 @@
 
 <script lang="ts">
 import { ref, computed, defineComponent } from 'vue'
-import store from '@/store/index'
-import http from '@/types/http'
 import router from '@/router/index'
-import axios from 'axios'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'roadReportCreateVue',
@@ -81,6 +82,9 @@ export default defineComponent({
     const facility_id = computed(() => store.getters['auth/facilityId'])
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
+
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
 
     let report = ref({
       name: '',
@@ -135,7 +139,7 @@ export default defineComponent({
       }
 
       // 신고접수 등록하는 요청보내기
-      await http
+      await api
         .post(`/reports/write/${facility_id.value}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'

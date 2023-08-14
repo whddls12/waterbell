@@ -22,6 +22,7 @@
       <!-- 지하차도는 로그인 버튼 불필요 -->
       <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
+        <button @click="goToJoin">회원가입</button>
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
@@ -32,13 +33,22 @@
       <div class="each-menu">
         <router-link to="/park/report">신고접수</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/park/controll">제어</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/park/systemlog">시스템 로그</router-link>
       </div>
-      <div class="each-menu">
+      <div
+        class="each-menu"
+        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
+      >
         <router-link to="/park/manage">관리</router-link>
       </div>
     </div>
@@ -46,11 +56,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import store from '@/store/index'
 import { mapGetters } from 'vuex'
 import { logout } from '@/types/authFunctionModule'
+import router from '@/router/index'
+
 export default defineComponent({
   name: 'ParkHeader',
   components: {},
@@ -64,9 +76,10 @@ export default defineComponent({
     ])
   },
   setup() {
-    const store = useStore()
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
+    const role = computed(() => store.getters['auth/role'])
+    const isManager = ref(false)
 
     function goToMain() {
       store.commit('setIsMainpage', true)
@@ -90,13 +103,36 @@ export default defineComponent({
       router.push({ path: '/park/login' })
     }
 
+    function goToJoin() {
+      router.push({ path: '/park/join' })
+    }
+
+    const checkRole = async () => {
+      if (role.value == 'APART_MANAGER') isManager.value = true
+      else isManager.value = false
+    }
+
+    onMounted(async () => {
+      await checkRole()
+    })
+
+    watch(
+      () => role.value, // role.value를 반환하는 함수
+      async (newRole) => {
+        console.log('Role changed:', newRole) // Debugging
+        await checkRole()
+      }
+    )
+
     return {
       isMainPage,
       goToMain,
       goToAlarm,
       goToLogin,
       goToMypage,
-      Logout
+      Logout,
+      goToJoin,
+      isManager
     }
   }
 })
@@ -114,15 +150,32 @@ export default defineComponent({
 }
 
 .header-btn {
-  display: flex;
+  margin-top: 20px;
+}
+
+/* 헤더 상단 버튼 모아놓은 박스 */
+.header-btn button {
+  border: 1px solid #10316b;
+  border-radius: 5px;
+  width: 90px;
+  font-size: 12px;
+  padding: 5px 10px;
+  margin-right: 5px;
+  background-color: #10316b;
+  color: white;
+  transition: 0.3s;
+}
+
+.header-btn button:hover {
+  background-color: #31558c;
 }
 
 .menu-navbar {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
+  padding-left: 200px;
+  padding-right: 200px;
   background-color: #10316b;
-  padding-right: 20px;
-  padding-left: 20px;
 }
 
 .each-menu {
