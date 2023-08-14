@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+// import apiModule from '@/types/apiClient'
+import http from '@/types/http'
 import Home from '@/views/Home.vue'
 import NotFound from '@/views/NotFound.vue'
 
@@ -31,6 +33,8 @@ import parkMypage from '../undergroundParkingLot/views/member/parkMypageView.vue
 import parkPasswordCheck from '../undergroundParkingLot/views/member/parkPasswordCheck.vue' // 비밀번호 확인
 import parkMypageUpdate from '../undergroundParkingLot/views/member/parkMypageUpdate.vue'
 import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
+import kakaoRedirectPage from '@/undergroundParkingLot/views/member/kakaoSocialRedirect.vue'
+import socialJoinExtra from '@/undergroundParkingLot/views/member/socialLoginExtraInfo.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -49,7 +53,7 @@ import parkDeviceControlLog from '../undergroundParkingLot/components/systemLog/
 import alarmBox from '@/alarm/alarmBox.vue'
 import alarmDetail from '@/alarm/AlarmDetail.vue'
 import store from '@/store'
-
+// const api = apiModule.api
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes: [
@@ -149,6 +153,52 @@ const router = createRouter({
       ]
     },
 
+    {
+      path: '/auth/naver',
+      name: 'NaverAuth',
+      component: () =>
+        import('@/undergroundParkingLot/views/member/naverSocialRedirect.vue') // 여기서 '@/views/NaverAuth.vue'는 실제 리다이렉트 후 렌더링할 컴포넌트 경로입니다.
+      // beforeEnter: async (to, from, next) => {
+      //   const code = to.query.code as string
+      //   const state = to.query.state as string
+      //   console.log(code)
+      //   if (code && state) {
+      //     try {
+      //       const response = await http.post(`/login/oauth2/code/naver`, {
+      //         code,
+      //         state
+      //       })
+      //       console.log(code)
+      //       console.log(response.data)
+      //       if (response.data.type == 'join') {
+      //         console.log('join')
+      //         next('/social-join/extra')
+      //       } else if (response.data.type == 'login') {
+      //         next('/park/dash')
+      //소셜로그인 dispatch 만들어서 쓰기. 혹은 소셜로그인 코드 여기에 쓰기 .
+
+      // 이 부분에서 서버로부터 받은 토큰을 저장하거나 필요한 작업을 수행할 수 있습니다.
+      // 그 후에 원하는 라우트로 리다이렉션합니다.
+      // next('/success') // 성공 페이지로 이동
+      //   } catch (err) {
+      //     console.error(err)
+      //     next('/error') // 에러 페이지로 이동
+      //   }
+      // } else {
+      //   next('/error') // 에러 페이지로 이동
+      // }
+    },
+    {
+      path: '/auth/kakao',
+      name: 'kakaoRediretPage',
+      component: kakaoRedirectPage
+    },
+    {
+      path: '/social-join/extra',
+      name: 'socialJoinExtraInfo',
+      component: socialJoinExtra
+    },
+
     // 회원정보 조회(마이페이지)
     {
       path: '/park/mypage',
@@ -167,6 +217,7 @@ const router = createRouter({
       name: 'parkMypageUpdate',
       component: parkMypageUpdate
     },
+
     {
       path: '/park/dash',
       name: 'ParkDash',

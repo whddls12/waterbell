@@ -159,7 +159,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 /* 날씨 기온 습도를 합치기 위함 */
 .weather-dash-box {
   display: flex;

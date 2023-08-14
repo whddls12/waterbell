@@ -1,11 +1,7 @@
 <template>
   <div class="container">
     <h3>휴대폰 인증</h3>
-    <!-- <div class="name">
-      <label for="name">이름</label><br />
-      <input type="text" label="name" id="name" v-model="name" />
-    </div> -->
-    <div class="phoneNumber">
+    <div>
       <label for="phoneNumber">휴대폰 번호</label><br />
       <input
         type="text"
@@ -18,7 +14,7 @@
         {{ phoneMsg }}
       </p>
     </div>
-    <div class="verification">
+    <div class="verification" v-if="verificationVisible">
       <label for="verification">인증번호 입력</label><br />
       <input
         type="text"
@@ -30,22 +26,22 @@
       <button @click.prevent="onConfirmClick">확인</button>
       <p>{{ formattedCountdown }}</p>
     </div>
-    <p @click="$emit('close', false)">닫기</p>
+    <p @click="$emit('close', false)">취소</p>
+    <p @click="changePhoneNumber">변경</p>
   </div>
 </template>
 <script>
-import { ref, computed, defineComponent } from 'vue'
+import { ref, watch, computed, defineComponent } from 'vue'
 import axios from '@/types/apiClient'
-// import store from '@/store/index'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'parkPhoneModal',
   setup() {
-    // const apiClient = axios.apiClient(store)
+    const apiClient = axios.apiClient(store)
     const api = axios.api
 
     // 각 input에 입력된 값
-    // const name = ref('')
     const phoneNum = ref('')
     const verification = ref('')
 
@@ -55,7 +51,8 @@ export default defineComponent({
     // 휴대폰번호 인증 확인 여부
     const offerPhone = ref(false)
 
-    // 인증번호 확인 유효 시간
+    // 인증번호 요청 및 확인 관련 변수
+    const verificationVisible = ref(false)
     const countdown = ref(180)
 
     const validateRule = {
@@ -64,7 +61,6 @@ export default defineComponent({
     }
 
     const validate = ref({
-      name: false,
       phoneNum: false,
       phoneVerification: false
     })
@@ -84,10 +80,11 @@ export default defineComponent({
         phoneMsg.value = '휴대폰 인증이 완료되었습니다.'
       }
     }
-
+    //인증번호 요청 이후 카운트 다운
     const requestVerification = async () => {
       if (validate.value.phoneNum) {
         await postVerification()
+        verificationVisible.value = true
         // 2. 3분 카운트다운 시작
         setInterval(() => {
           countdown.value -= 1
@@ -96,6 +93,7 @@ export default defineComponent({
             phoneMsg.value = '인증시간이 만료되었습니다. 인증을 재요청해주세요.'
             countdown.value = 180
             verification.value = ''
+            verificationVisible.value = false
           }
         }, 1000)
       }
@@ -114,6 +112,7 @@ export default defineComponent({
               //요청 보냈음을 확인하는 변수
               // offerPhone.value = true
               //시간 카운트 다운
+              verificationVisible.value = true
             }
           })
       } catch (error) {
@@ -153,7 +152,52 @@ export default defineComponent({
         phoneMsg.value = '인증번호가 틀렸습니다. 시간 내에 다시 입력하세요.'
       }
     }
+    //인증번호 확인 클릭
+    const onConfirmClick = () => {
+      confirmVerification()
+    }
+
+    // 인증되었을 때 회원의 휴대폰 번호 변경
+    function changePhoneNumber() {
+      if (validate.value.phoneVerification) {
+        console.log('changePhoneNumber 실행')
+        // 인증이 완료된 휴대폰 번호를 회원정보 수정 페이지의 input창의 값으로 바꿔준다.
+        // 변경은 수정페이지에서 한번에 들어가야함.
+        this.$emit('verify-success', phoneNum.value)
+        this.$emit('close')
+      }
+    }
+
+    // 휴대폰번호 검증을 위한 watch 함수
+    watch(phoneNum, (newValue, oldValue) => {
+      if (newValue != oldValue) {
+        validatePhone()
+      }
+    })
+    return {
+      phoneNum,
+      verification,
+      phoneMsg,
+      offerPhone,
+      verificationVisible,
+      validateRule,
+      validate,
+      formattedCountdown,
+      validatePhone,
+      requestVerification,
+      confirmVerification,
+      onConfirmClick,
+      changePhoneNumber
+    }
   }
 })
 </script>
-<style></style>
+<style scoped>
+.p-msg {
+  color: red;
+  margin-top: 5px;
+}
+.p-msg.success {
+  color: blue;
+}
+</style>

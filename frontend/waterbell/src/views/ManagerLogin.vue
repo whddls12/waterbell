@@ -41,8 +41,10 @@ div
 <script>
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
+
 import { useRouter } from 'vue-router'
 import { managerLogin } from '@/types/authFunctionModule'
+
 export default defineComponent({
   name: 'managerLogin',
   setup() {

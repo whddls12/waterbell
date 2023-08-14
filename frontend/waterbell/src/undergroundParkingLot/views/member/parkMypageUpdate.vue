@@ -1,6 +1,5 @@
 <template>
-  <!-- 회원정보 조회 창 -->
-  <!-- 수정하기 버튼을 누르기 전에는 입력도 수정도 되지 않도록 readonly 설정 사용 -->
+  <!-- 회원정보 수정 페이지 -->
   <div class="myPage">
     <div class="myPage-title">
       <h1>회원정보 수정</h1>
@@ -9,13 +8,18 @@
       <!-- 이름 -->
       <div class="myPage-content-box name">
         <label for="name">이름</label>
-        <input type="text" id="name" :value="memberInfo?.name" />
+        <input
+          type="text"
+          id="name"
+          :placeholder="memberInfo?.name"
+          v-model="newName"
+        />
       </div>
-      <!-- 아이디
+      <!-- 아이디 -->
       <div class="myPage-content-box loginId">
         <label for="id">아이디</label>
         <input type="text" id="loginId" disabled :value="memberInfo?.loginId" />
-      </div> -->
+      </div>
       <!-- 비밀번호 -->
       <div class="myPage-content-box phone">
         <label for="password">현재 비밀번호</label>
@@ -23,23 +27,19 @@
           <input type="password" id="password" disabled value="********" />
           <button id="changebtn" @click="changePopState_PW">변경</button>
         </div>
-        <parkPasswordModal
-          v-if="popState_pw"
-          @close="changePopState_PW"
-          v-bind="modalData"
-        />
+        <parkPasswordModal v-if="popState_pw" @close="changePopState_PW" />
       </div>
       <!-- 휴대폰번호 -->
       <div class="myPage-content-box phone">
         <label for="phone">휴대폰 번호</label>
         <div class="inputbtn">
-          <input type="text" id="phone" readonly :value="memberInfo?.phone" />
+          <input type="text" id="phone" disabled :value="memberInfo?.phone" />
           <button id="changebtn" @click="changePopState_Phone">변경</button>
         </div>
         <parkPhoneModal
           v-if="popState_phone"
           @close="changePopState_Phone"
-          v-bind="modalData"
+          @verify-success="tempPhoneNumber"
         />
       </div>
       <!-- 아파트 인증코드 -->
@@ -49,10 +49,12 @@
           <input
             type="text"
             id="apartCode"
-            readonly
             :placeholder="memberInfo?.apartCode"
+            v-model="newApartCode"
           />
-          <button id="changebtn">수정</button>
+          <button id="changebtn" @click.prevent="findAddressByCode">
+            변경
+          </button>
         </div>
       </div>
       <!-- 주소 -->
@@ -72,15 +74,16 @@
           <input
             type="text"
             id="addressNumber"
-            :value="memberInfo?.addressNumber"
+            :placeholder="memberInfo?.addressNumber"
+            v-model="newApartAddressNumber"
           />
           <p>호</p>
         </div>
       </div>
       <!-- 버튼 -->
       <div class="myPage-btn">
-        <button id="goBack">취소</button>
-        <button id="saveChange">저장</button>
+        <button id="goBack" @click="goBack">취소</button>
+        <button id="saveChange" @click="saveChange">저장</button>
       </div>
     </div>
   </div>
@@ -101,19 +104,31 @@ export default defineComponent({
     parkPhoneModal
   },
   setup() {
+    const api = axios.api
     const apiClient = axios.apiClient(store)
     const memberInfo = ref(null)
 
     const popState_pw = ref(false)
     const popState_phone = ref(false)
 
+    // 수정할 회원정보
+    const newName = ref(null)
+    const newPhoneNum = ref(null)
+    const newApartCode = ref(null)
+    const newApartAddressNumber = ref(null)
+
     // 회원정보 가져오기
     function getMemberData() {
       apiClient
-        .get(`/member/apartMember/mypage`)
+        .get(`/member/mypage`)
         .then((res) => {
           memberInfo.value = res.data.memberInfo
           console.log(memberInfo.value)
+          // 수정 시 넘겨줄 데이터에 기존값 저장
+          newName.value = res.data.memberInfo.name
+          newPhoneNum.value = res.data.memberInfo.phone
+          newApartCode.value = res.data.memberInfo.apartCode
+          newApartAddressNumber.value = res.data.memberInfo.addressNumber
         })
         .catch((error) => console.log(error))
     }
@@ -125,17 +140,72 @@ export default defineComponent({
       popState_phone.value = !popState_phone.value
     }
 
+    // 바꿀 휴대폰 번호로 인증을 완료했을 때 수정 페이지에서 임시로 휴대폰 번호 변경
+    function tempPhoneNumber(tempNum) {
+      // console.log('tempPhoneNumber 실행')
+      // console.log(tempNum)
+      memberInfo.value.phone = tempNum
+      newPhoneNum.value = tempNum
+    }
+    //아파트 코드로 주소 조회
+    const findAddressByCode = () => {
+      try {
+        api
+          .post('/member/join/validationApartCode', {
+            apartCode: newApartCode.value
+          })
+          .then((res) => {
+            if (res.data.message == 'success') {
+              memberInfo.value.address = res.data.address // 수정할 아파트 코드에 맞추어 주소를 바꿔 보여주기
+            } else {
+              alert('일치하는 아파트가 없습니다.')
+            }
+            // console.log(apartCode.value)
+            console.log(res)
+            console.log(res.data)
+          })
+      } catch (error) {
+        alert('일치하는 아파트가 없습니다.')
+      }
+    }
+
+    function goBack() {
+      router.push({ path: '/park/mypage' })
+    }
+
+    function saveChange() {
+      apiClient
+        .post(`/member/apartMember/modify`, {
+          id: memberInfo.value.id,
+          phone: newPhoneNum.value,
+          name: newName.value,
+          apartCode: newApartCode.value,
+          addressNumber: newApartAddressNumber.value
+        })
+        .then((res) => {
+          console.log(res)
+          router.push({ path: '/park/mypage' })
+        })
+        .catch((err) => console.log(err))
+    }
+
     // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
     onMounted(() => {
       getMemberData()
     })
     return {
       memberInfo,
+      newPhoneNum,
+      newApartCode,
       popState_pw,
       popState_phone,
       getMemberData,
       changePopState_PW,
-      changePopState_Phone
+      changePopState_Phone,
+      tempPhoneNumber,
+      findAddressByCode,
+      goBack,
+      saveChange
     }
   }
 })
