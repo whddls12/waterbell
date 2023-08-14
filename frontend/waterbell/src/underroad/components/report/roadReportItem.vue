@@ -6,9 +6,9 @@
         <h2>신고접수</h2>
       </div>
       <div class="list-btn">
-        <button>목록</button>
-        <button>윗글</button>
-        <button>아랫글</button>
+        <button @click="goReportList">목록</button>
+        <!-- <button>윗글</button>
+        <button>아랫글</button> -->
       </div>
     </div>
     <!-- 신고접수 글 -->
@@ -34,6 +34,7 @@
         </div>
         <div class="content-image">
           <img
+            class="report-image"
             v-for="(image, index) in imageList"
             :key="index"
             :src="image.url"
@@ -44,7 +45,7 @@
     </div>
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
-      <button>수정</button>
+      <button @click="goToUpdate">수정</button>
       <button>삭제</button>
     </div>
   </div>
@@ -54,6 +55,7 @@ import { ref, defineComponent, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
+import router from '@/router'
 
 export default defineComponent({
   name: 'roadReportItemVue',
@@ -76,11 +78,16 @@ export default defineComponent({
         })
         .catch((err) => console.log(err))
     }
+
+    function goReportList() {
+      router.push({ path: '/road/report' })
+    }
+
     onMounted(() => {
       getReportData()
     })
 
-    return { report_id, reportInfo, imageList, getReportData }
+    return { report_id, reportInfo, imageList, getReportData, goReportList }
   }
 })
 </script>
@@ -125,6 +132,11 @@ export default defineComponent({
 
 .info-box {
   gap: 10px;
+}
+
+.report-image {
+  width: 300px;
+  height: 200px;
 }
 
 .report-footer {
