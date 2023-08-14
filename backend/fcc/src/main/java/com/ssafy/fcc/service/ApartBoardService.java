@@ -272,4 +272,11 @@ public class ApartBoardService {
         boardRepository.deleteApartBoard(apartBoard);
     }
 
+
+    @Transactional
+    public void updateViewCount(int boardId) {
+        ApartBoard apartBoard = boardRepository.getapartBoardById(boardId);
+        apartBoard.setViewCount(apartBoard.getViewCount()+1);
+    }
+
 }
