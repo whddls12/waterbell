@@ -1,74 +1,131 @@
 <template>
   <div class="main">
     <div class="input-field">
-      <label for="firstMessage">1차 경고 메시지 설정</label>
+      <label for="firstMessage">1차 경고 LED 메시지 설정</label>
       <div class="input-box">
-        <input id="firstMessage" type="text" v-model="firstMessage" />
+        <input
+          id="firstMessage"
+          type="text"
+          v-model="custom.firstFloodMessage"
+        />
       </div>
     </div>
     <div class="input-field">
-      <label for="activation">2차 경고 메시지 설정</label>
+      <label for="activation">2차 경고 LED 메시지 설정</label>
       <div>
-        <input id="activation" type="text" v-model="activation" />
+        <input
+          id="activation"
+          type="text"
+          v-model="custom.activation_message"
+        />
       </div>
     </div>
     <div class="input-field">
-      <label for="deactivation">경고 해제 메시지 설정</label>
+      <label for="deactivation">경고 해제시 LED 메시지 설정</label>
       <div>
-        <input id="deactivation" type="text" v-model="deactivation" />
+        <input
+          id="deactivation"
+          type="text"
+          v-model="custom.deactivation_message"
+        />
       </div>
     </div>
     <div class="input-field2">
-      <label for="threshold1">1차 기준치 설정</label>
+      <label for="threshold1">1차 경고 기준치 설정</label>
       <div>
-        <input id="threshold1" type="number" v-model="threshold1" />
+        <input id="threshold1" type="number" v-model="custom.firstAlarmValue" />
       </div>
     </div>
     <div class="input-field2">
-      <label for="threshold2">2차 기준치 설정</label>
+      <label for="threshold2">2차 경고 기준치 설정</label>
       <div>
-        <input id="threshold2" type="number" v-model="threshold2" />
+        <input
+          id="threshold2"
+          type="number"
+          v-model="custom.secondAlarmValue"
+        />
       </div>
     </div>
     <div class="btn-container">
-      <button @click="setMessage">수정</button>
+      <button @click="customMessage">수정</button>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      firstMessage: '',
-      activation: '',
-      deactivation: '',
-      threshold1: 0,
-      threshold2: 0
+<script lang="ts">
+import { defineComponent, onMounted, computed, ref } from 'vue'
+import store from '@/store/index'
+import axios from '@/types/apiClient'
+
+export default defineComponent({
+  name: 'parkCustom',
+
+  setup() {
+    const apiClient = axios.apiClient(store)
+    const facilityId = computed(() => store.getters['auth/facilityId']).value
+    let custom = ref<{
+      firstFloodMessage: string
+      activation_message: string
+      deactivation_message: string
+      firstAlarmValue: number
+      secondAlarmValue: number
+    }>({
+      firstFloodMessage: '',
+      activation_message: '',
+      deactivation_message: '',
+      firstAlarmValue: 0,
+      secondAlarmValue: 0
+    })
+
+    const setMessage = async () => {
+      try {
+        const res = await apiClient.get(
+          `/management/manager/view/controlInfo/${facilityId}`
+        )
+        console.log(res.data)
+        custom.value = res.data.facility
+        console.log(custom.value)
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
     }
-  },
-  methods: {
-    setMessage() {
-      // 메시지 설정하는 로직이 들어갑니다.
-      console.log(`1차 메시지: ${this.firstMessage}`)
-      console.log(`2차 메시지: ${this.activation}`)
-      console.log(`2차 메시지: ${this.deactivation}`)
-      console.log(`기준치: ${this.threshold1}`)
-      console.log(`기준치: ${this.threshold2}`)
+
+    const customMessage = async () => {
+      try {
+        const res = await apiClient.post(
+          `/management/manager/modify/controlInfo/${facilityId}`,
+          custom.value
+        )
+        if (res.status === 202) {
+          alert('수정 완료')
+          window.location.reload()
+        }
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
+    }
+
+    onMounted(() => {
+      setMessage()
+    })
+    return {
+      custom,
+      setMessage,
+      customMessage
     }
   }
-}
+})
 </script>
 
 <style scoped>
 .main {
-  width: 90%;
+  width: 100%;
 }
 
 .input-field {
   margin-top: 5px;
   margin-bottom: 20px;
-  width: 100%;
+  width: 90%;
 }
 
 .input-field2 {
@@ -85,7 +142,7 @@ export default {
 
 label {
   display: inline-block;
-  width: 200px;
+  width: 250px;
   text-align: left;
 }
 
@@ -120,5 +177,17 @@ input:focus {
   display: flex;
   justify-content: center; /* 가운데 정렬 */
   margin-top: 50px; /* 버튼과 다른 입력 필드 간의 간격을 주기 위해 추가 */
+}
+
+.main .input-field {
+  margin-left: 50px;
+}
+
+.main .input-field2 {
+  margin-left: 50px;
+}
+
+.main .input-field label {
+  margin-left: 50px;
 }
 </style>

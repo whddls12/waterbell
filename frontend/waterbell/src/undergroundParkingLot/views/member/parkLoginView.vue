@@ -147,9 +147,6 @@ export default defineComponent({
       login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
       naverLogin,
       kakaoLogin
-      // nvalidateMember,
-      // nLogin,
-      // invalidateMember
     }
   }
 })
