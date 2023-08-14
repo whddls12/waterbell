@@ -15,7 +15,7 @@ function connectWebSocket(): void {
   if (facilityId.value != null) {
     // WebSocket 연결
     socket = new WebSocket(
-      `ws://localhost:8080/cam?facilityId=${facilityId.value}&camNum=2`
+      `${process.env.VUE_APP_API}/cam?facilityId=${facilityId.value}&camNum=2`
     )
     console.log('cam2 웹소켓과 연결이 되었습니다.')
   }
