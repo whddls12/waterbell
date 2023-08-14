@@ -37,7 +37,7 @@
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
-              첨부된 파일 목록 {{ getSelectedFileNames }}
+              {{ getSelectedFileNames }}
             </div>
           </div>
           <div class="report-file-attach">
@@ -106,23 +106,26 @@ export default defineComponent({
       const files = event.target.files
       if (files && files.length > 0) {
         for (const file of files) {
+          selectedFiles.value.push(file)
           formData.append('uploadedfiles', file)
         }
+        console.log(selectedFiles.value)
 
-        const selectedFileNames = Array.from(files)
-          .map((file: any) => file.name)
-          .join(', ')
-        console.log('Selected files:', selectedFileNames)
-        for (const values of formData.values()) {
-          console.log(values)
-        }
+        // formData에 데이터 잘 들어가는지 확인
+        // for (const values of formData.values()) {
+        //   console.log(values)
+        // }
       }
     }
 
     // 담긴 첨부파일들의 이름을 반환
-    function getSelectedFileNames() {
-      return selectedFiles.value.map((file) => file.name).join(', ')
-    }
+    const getSelectedFileNames = computed(() => {
+      const selectedFileNames = Array.from(selectedFiles.value)
+        .map((file: any) => file.name)
+        .join(', ')
+
+      return selectedFileNames
+    })
 
     // 신고접수 등록
     async function writeReport() {
