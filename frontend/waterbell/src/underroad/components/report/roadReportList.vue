@@ -3,7 +3,7 @@
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th scope="col" class="text-center" style="width: 50px">No.</th>
+          <!-- <th scope="col" class="text-center" style="width: 50px">No.</th> -->
           <th scope="col" class="text-center" style="width: 400px">제목</th>
           <th scope="col" class="text-center" style="width: 150px">작성자</th>
           <th scope="col" class="text-center" style="width: 150px">처리상태</th>
@@ -15,12 +15,12 @@
       <tbody v-if="reportList && reportList.length">
         <tr
           v-for="(report, index) in reportList"
-          :key="report.id"
+          :key="index"
           class="tr"
           @click="movePage(report.id)"
           align="center"
         >
-          <td>{{ index + 1 }}</td>
+          <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
           <td>{{ report.name }}</td>
           <td>{{ report.status }}</td>

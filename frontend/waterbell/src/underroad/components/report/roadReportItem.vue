@@ -46,7 +46,10 @@
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
       <button @click="goToUpdate(reportInfo?.id)">수정</button>
-      <button @click="openCheckModal">삭제</button>
+      <button v-if="role == 'PUBLIC_MANAGER'" @click="deleteReportManager">
+        삭제
+      </button>
+      <button v-else @click="openCheckModal">삭제</button>
     </div>
     <!-- 삭제 전 비밀번호 확인 -->
     <div class="password-check-modal" v-if="pwCheckVisible">
@@ -57,7 +60,7 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, defineComponent, onMounted } from 'vue'
+import { ref, defineComponent, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -68,8 +71,12 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const report_id = route.params.report_id
-    const reportInfo = ref(null)
-    const imageList = ref(null)
+
+    const role = computed(() => store.getters['auth/role']).value
+    console.log(role)
+
+    const reportInfo = ref(null) // 신고접수 글 데이터
+    const imageList = ref(null) // 첨부파일 데이터
 
     const apiClient = axios.apiClient(store)
     const api = axios.api
@@ -101,6 +108,7 @@ export default defineComponent({
       router.push({ path: `/road/report/update/${report_id}` })
     }
 
+    // 글 삭제 (작성자)
     function deleteReport() {
       console.log('deleteReport')
       console.log('입력한 비밀번호: ', inputPassword.value)
@@ -127,11 +135,24 @@ export default defineComponent({
         })
     }
 
+    // 글 삭제 (관리자)
+    function deleteReportManager() {
+      apiClient
+        .get(`/reports/publicManager/deleteBoard/${report_id}`)
+        .then((res) => {
+          console.log(res)
+          alert('글이 삭제되었습니다.')
+          router.push({ path: '/road/report' })
+        })
+        .catch((err) => console.log(err))
+    }
+
     onMounted(() => {
       getReportData()
     })
 
     return {
+      role,
       report_id,
       reportInfo,
       imageList,
@@ -141,7 +162,8 @@ export default defineComponent({
       getReportData,
       goReportList,
       goToUpdate,
-      deleteReport
+      deleteReport,
+      deleteReportManager
     }
   }
 })
