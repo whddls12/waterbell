@@ -93,7 +93,7 @@ export default defineComponent({
     const route = useRoute()
     const report_id = route.params.report_id
     const imageList = ref(null)
-    const removeFilesList = ref([])
+    const removeFilesList = ref<string[]>([])
 
     const facility_id = computed(() => store.getters['auth/facilityId'])
 
@@ -165,7 +165,8 @@ export default defineComponent({
     function unselectFile(file_name: any) {
       for (let file of selectedFiles.value) {
         if (file.name === file_name) {
-          selectedFiles.value.delete(file)
+          selectedFiles.value.splice(selectedFiles.value.indexOf(file), 1)
+          break
         }
       }
       console.log(selectedFiles.value)
@@ -184,7 +185,10 @@ export default defineComponent({
       formData.append('boardPassword', report.value.boardPassword)
 
       // FormData에 삭제할 첨부파일의 id 담아주기
-      formData.append('removefiles', removeFilesList.value)
+      for (let value of removeFilesList.value) {
+        console.log(value)
+        formData.append('removefiles', value)
+      }
 
       // formData 의 밸류값을 확인하는 방법
       for (let values of formData.entries()) {
