@@ -111,7 +111,7 @@ public class CamWebSocketHandler extends TextWebSocketHandler {
     public void sendVideoImg(int facilityId, String camNum, String temp_img) throws IOException {
         System.out.println("사진 받은 시설"+facilityId);
 
-        String str = facilityId+camNum;
+        String str = facilityId+"/"+camNum;
 
         for(String id : clients.keySet()){
             if(id.equals(str)){

@@ -3,10 +3,7 @@ package com.ssafy.fcc.controller;
 
 import com.ssafy.fcc.domain.alarm.Step;
 import com.ssafy.fcc.handler.MyWebSocketHandler;
-import com.ssafy.fcc.service.AlarmService;
 import com.ssafy.fcc.service.ApartManagerService;
-import com.ssafy.fcc.service.SystemService;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
