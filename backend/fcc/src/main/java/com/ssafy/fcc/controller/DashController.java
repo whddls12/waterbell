@@ -2,8 +2,7 @@ package com.ssafy.fcc.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.shaded.json.parser.JSONParser;
-import com.ssafy.fcc.domain.log.SensorType;
+
 import com.ssafy.fcc.service.SystemService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONArray;
@@ -21,7 +20,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.lang.Math;
 
@@ -402,8 +400,6 @@ public class DashController {
             }
         }
 
-
-
         System.out.println(resultMap);
 
         resultMap.put("message", "success");
@@ -413,11 +409,20 @@ public class DashController {
 
     @GetMapping("/facilities/{facility_id}/sensors")
     public Map<String,Integer> dashSensor(@PathVariable("facility_id") int facilityId) {
-        Map<String, Integer> resultMap = new HashMap<>();
+
+        Map<String, Integer> resultMap;
         resultMap = systemService.getSensorData(facilityId);
         return resultMap;
+
     }
 
+    @GetMapping("/facilities/{facility_id}/sensors/heightPerhour")
+    public Map<String,Integer> getHeightPerhour(@PathVariable("facility_id") int facilityId) {
 
+        Map<String,Integer> resultMap;
+        resultMap = systemService.getHeightPerhour(facilityId);
+        return resultMap;
+
+    }
 
 }

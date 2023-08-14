@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="container mt-4">
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
@@ -9,14 +9,15 @@
           <th scope="col" class="text-center" style="width: 150px">처리상태</th>
           <th scope="col" class="text-center" style="width: 150px">작성일시</th>
           <th scope="col" class="text-center" style="width: 150px">조회수</th>
+          <th scope="col" class="text-center" style="width: 150px">파일</th>
         </tr>
       </thead>
       <tbody v-if="reportList && reportList.length">
         <tr
           v-for="(report, index) in reportList"
-          :key="report.report_id"
+          :key="report.id"
           class="tr"
-          @click="movePage(report.report_id)"
+          @click="movePage(report.id)"
           align="center"
         >
           <td>{{ index + 1 }}</td>
@@ -25,6 +26,7 @@
           <td>{{ report.status }}</td>
           <td>{{ report.createDate }}</td>
           <td>{{ report.viewCount }}</td>
+          <td>{{ report.uploadedfiles }}</td>
         </tr>
       </tbody>
       <tbody v-else>
@@ -52,13 +54,12 @@ export default defineComponent({
     // console.log(facility_id.value)
     let reportList = ref<
       {
-        report_id: string
+        id: string
         title: string
         author: string
         status: string
         createDate: string
         viewCount: string
-        // 얘 이름달라도 가져와서 그냥 써지네 왜지
       }[]
     >([])
 
@@ -77,7 +78,11 @@ export default defineComponent({
     }
     const router = useRouter()
     const movePage = (report_id: any) => {
-      router.push(`reports/${report_id}/road`)
+      console.log(report_id)
+      router.push({
+        path: `/road/report/${report_id}/detail`,
+        params: { report_id: report_id }
+      })
     }
     onMounted(() => {
       setList()
@@ -90,4 +95,4 @@ export default defineComponent({
   }
 })
 </script>
-<style lang=""></style>
+<style></style>

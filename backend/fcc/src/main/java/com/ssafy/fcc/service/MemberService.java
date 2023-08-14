@@ -1,17 +1,17 @@
 package com.ssafy.fcc.service;
 
+import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.member.*;
-import com.ssafy.fcc.dto.ApartManagerResponse;
-import com.ssafy.fcc.dto.ApartMemberResponse;
-import com.ssafy.fcc.dto.PublicManagerResponse;
-import com.ssafy.fcc.dto.TokenDto;
+import com.ssafy.fcc.dto.*;
+import com.ssafy.fcc.repository.FacilityRepository;
 import com.ssafy.fcc.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final FacilityRepository facilityRepository;
 //    private final JwtTokenProvider jwtTokenProvider;
 
     public Member login(String loginId, String password) {
@@ -117,4 +118,43 @@ public class MemberService {
         member.setPhone(null);
         member.setRole(Role.USER);
     }
+
+    @Transactional
+    public void reviseRoleAndPhone(Integer id, String phone) throws Exception{
+        ApartMember member = (ApartMember) memberRepository.findById(id);
+        member.setRole(Role.USER);
+        member.setPhone(phone);
+    }
+
+    @Transactional
+    public Integer reviseMemberInfo(Integer id, String phone, String name, String apartCode, int addressNumber) throws Exception {
+
+        ApartMember member = (ApartMember) memberRepository.findById(id);
+        member.setPhone(phone);
+        member.setName(name);
+        member.setAddressNumber(addressNumber);
+
+        if(!member.getApart().getApartCode().equals(apartCode)){
+            final Apart apart = facilityRepository.findApartByCode(apartCode);
+            if(apart==null) throw new Exception("일치하는 아파트가 없습니다.");
+            member.setApart(apart);
+            return apart.getId();
+        }
+        return null;
+    }
+
+    @Transactional
+    public void modifyMemberPhone(int id, String phone) {
+        System.out.println("service= "+ id +", "+phone);
+        Member member =  memberRepository.findById(id);
+        member.setPhone(phone);
+    }
+
+    public Map<String, Object> findMembers(MemberSearch memberSearch) {
+
+        return memberRepository.findAllByCriteria(memberSearch);
+
+    }
+
+
 }

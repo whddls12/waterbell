@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 // types/websocket.ts 파일
 import { computed } from 'vue'
 import store from '@/store/index'
@@ -53,16 +54,6 @@ function connectWebSocket(): void {
     }
   }
 }
-
-// export function showAlarmModal(modalState): void {
-//   modalState.value = true
-//   // 알림 모달을 표시하는 로직
-// }
-
-// export function closeAlarmModal(modalState): void {
-//   // 알림 모달을 닫는 로직
-//   modalState.value = false
-// }
 
 function closeWebSocket() {
   socket?.close()

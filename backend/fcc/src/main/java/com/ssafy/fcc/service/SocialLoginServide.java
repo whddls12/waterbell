@@ -72,7 +72,8 @@ public class SocialLoginServide {
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             String sb = "grant_type=authorization_code" +
                     "&client_id="+kakaoClientId+ // REST_API_KEY
-                    "&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/kakao" + // REDIRECT_URI
+//                    "&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/kakao" + // REDIRECT_URI
+                    "&redirect_uri=https://i9b101.p.ssafy.io/auth/kakao" + // REDIRECT_URI
                     "&code=" + code;
             System.out.println("========================================");
             bufferedWriter.write(sb);
@@ -138,7 +139,6 @@ public class SocialLoginServide {
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
             String email = kakaoAccount.getAsJsonObject().get("email").getAsString();
 
-
             System.out.println("=========가져온 kakao user 정보=============");
             System.out.println(email);
             System.out.println(nickname);
@@ -149,10 +149,8 @@ public class SocialLoginServide {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-
         return userInfo;
     }
-
 
     @Transactional
     public SocialTempDto socialTempSave(SocialTempDto m) throws Exception{
@@ -162,6 +160,8 @@ public class SocialLoginServide {
         System.out.println("저장 완료");
         return socialRedisRepository.get(m.getEmail());
     }
+
+
 
 
 

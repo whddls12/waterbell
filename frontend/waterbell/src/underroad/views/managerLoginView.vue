@@ -28,7 +28,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-
+import { managerLogin } from '@/types/authFunctionModule'
 export default defineComponent({
   name: 'parkLogin',
   setup() {
@@ -36,10 +36,7 @@ export default defineComponent({
     const password = ref('')
     const store = useStore() // 전역 스토어를 가져옵니다.
     const login = () => {
-      store.dispatch('auth/memberLogin', {
-        loginId: id.value,
-        password: password.value
-      })
+      managerLogin(id.value, password.value)
     }
 
     return {

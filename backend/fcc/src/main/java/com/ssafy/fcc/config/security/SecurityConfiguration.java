@@ -60,6 +60,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**/apartMember/**").hasRole("APART_MEMBER")
                 .antMatchers("/**/apartManager/**").hasRole("APART_MANAGER")
                 .antMatchers("/**/publicManager/**").hasRole("PUBLIC_MANAGER")
+                .antMatchers("/**/manager/**").hasAnyRole("PUBLIC_MANAGER","APART_MANAGER")
+                .antMatchers("/**/apart/**").hasAnyRole("APART_MANAGER","APART_MEMBER")
+
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, redisTemplate),

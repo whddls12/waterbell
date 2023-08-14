@@ -45,7 +45,7 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="css">
+<style scoped>
 .bigbox {
   width: 100%;
   max-width: 1400px;
@@ -61,13 +61,14 @@ export default defineComponent({
 .container {
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
+  width: 480px;
+  border-radius: 8px;
   padding: 10px;
   background-color: #f2f7ff;
 }
 #rowflex {
   display: flex;
-  border-radius: 8;
+  border-radius: 8px;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: stretch; /* stretch child components to have equal heights */
