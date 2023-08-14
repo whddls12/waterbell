@@ -1,6 +1,6 @@
 package com.ssafy.fcc.service;
 
-import com.ssafy.fcc.controller.DashController;
+import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.*;
@@ -10,14 +10,13 @@ import com.ssafy.fcc.handler.CamWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Entity;
+
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -34,7 +33,6 @@ public class SystemService {
     public final FacilityService facilityService;
     public final UndergroundRoadService undergroundRoadService;
     public final ApartService apartService;
-    public CamWebSocketHandler camWebSocketHandler;
 
     public void insertLog(int facilityId, SensorType category, int value) {
 
@@ -165,7 +163,7 @@ public class SystemService {
         return resultMap;
     }
 
-    public void fromSensor(String message) throws Exception {
+    public WaterStatus fromSensor(String message) throws Exception {
         String[] result = message.toString().split("/");
 
         int facilityId = Integer.parseInt(result[0]);
@@ -173,21 +171,23 @@ public class SystemService {
         int value = Integer.parseInt(result[2]);
 
         Facility facility = facilityRepository.findById(facilityId);
-
+        
+        WaterStatus status = null;
         if (sensorType.equals(SensorType.HEIGHT)) {
-            checkSituation(facility, value);
+            status = checkSituation(facility, value);
         }
 
         insertLog(facilityId, sensorType, value);
-
+        
+        return status;
     }
 
     @Transactional
-    public void checkSituation(Facility facility, int value) throws Exception {
-
+    public WaterStatus checkSituation(Facility facility, int value) throws Exception {
         if (value > facility.getSecondAlarmValue()) {
             if (facility.getStatus() == WaterStatus.FIRST || facility.getStatus() == WaterStatus.DEFAULT) {
                 facilityService.updateStatus(facility, WaterStatus.SECOND);
+
                 if (facility.isApart()) { // 아파트
                     apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
                 } else { // 지하차도
@@ -207,11 +207,11 @@ public class SystemService {
             } else if (facility.getStatus() == WaterStatus.SECOND) {
                 facilityService.updateStatus(facility, WaterStatus.FIRST);
             }
-
         } else {
             facilityService.updateStatus(facility, WaterStatus.DEFAULT);
         }
 
+        return facility.getStatus();
     }
 
     public int getLatestHeightSensor(int facilityId){

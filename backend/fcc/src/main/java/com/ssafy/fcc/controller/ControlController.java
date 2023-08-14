@@ -34,7 +34,8 @@ public class ControlController {
                     mqttPubSubService.publishMessage(topic, "WORKING");
                     systemService.insertControlLog(facilityId, "ON");
                     facilityService.updateStatus(facility, WaterStatus.WORKING);
-
+                    topic = String.format("Server/%d/STATUS",facilityId);
+                    mqttPubSubService.publishMessage(topic,"WORKING");
                     // 동작 알림
 
 
@@ -45,6 +46,8 @@ public class ControlController {
                     mqttPubSubService.publishMessage(topic, "SECOND");
                     systemService.insertControlLog(facilityId, "OFF");
                     facilityService.updateStatus(facility, WaterStatus.SECOND);
+                    topic = String.format("Server/%d/STATUS",facilityId);
+                    mqttPubSubService.publishMessage(topic,"SECOND");
 
                     // 해제 알림
 
