@@ -49,7 +49,7 @@ export default defineComponent({
     // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
       try {
-        const response = await http.get('http://localhost:8080/dash/map/rain', {
+        const response = await http.get('/dash/map/rain', {
           params: {
             year: year,
             month: month,
