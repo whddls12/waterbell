@@ -94,7 +94,7 @@ const router = createRouter({
       component: roadReportCreateVue
     },
     {
-      path: '/road/report/update',
+      path: '/road/report/update/:report_id',
       component: roadReportUpdateVue
     },
     {
