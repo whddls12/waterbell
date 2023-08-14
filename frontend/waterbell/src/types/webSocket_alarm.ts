@@ -18,7 +18,7 @@ export function connectWebSocket(): void {
   if (jwtToken.value != null) {
     // WebSocket 연결
     socket = new WebSocket(
-      `${process.env.VUE_APP_API}/ws?token=${jwtToken.value}`
+      `${process.env.VUE_APP_WSAPI}/ws?token=${jwtToken.value}`
     )
     console.log('웹소켓과 연결이 되었습니다.')
   }
