@@ -46,7 +46,13 @@
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
       <button @click="goToUpdate(reportInfo?.id)">수정</button>
-      <button>삭제</button>
+      <button @click="openCheckModal">삭제</button>
+    </div>
+    <!-- 삭제 전 비밀번호 확인 -->
+    <div class="password-check-modal" v-if="pwCheckVisible">
+      <label for="password-check">삭제하시려면 비밀번호를 입력해주세요</label>
+      <input type="password" id="password-check" v-model="inputPassword" />
+      <button @click="deleteReport">확인</button>
     </div>
   </div>
 </template>
@@ -68,6 +74,14 @@ export default defineComponent({
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
+    // 글 삭제 전 비밀번호 체크를 위한 변수
+    const pwCheckVisible = ref(false) // 비밀번호 체크창이 보이는지 여부
+    const inputPassword = ref(null) // 사용자가 입력한 비밀번호
+
+    function openCheckModal() {
+      pwCheckVisible.value = true
+    }
+
     function getReportData() {
       api
         .get(`/reports/undergroundRoad/detail/${report_id}`)
@@ -87,6 +101,32 @@ export default defineComponent({
       router.push({ path: `/road/report/update/${report_id}` })
     }
 
+    function deleteReport() {
+      console.log('deleteReport')
+      console.log('입력한 비밀번호: ', inputPassword.value)
+      api
+        .post(
+          `/reports/undergroundRoad/board/password/validation/${report_id}`,
+          {
+            boardPassword: inputPassword.value
+          }
+        )
+        .then((res) => {
+          api
+            .get(`/reports/deleteBoard/${report_id}`)
+            .then((res) => {
+              console.log(res)
+              alert('글이 삭제되었습니다.')
+              router.push({ path: '/road/report' })
+            })
+            .catch((err) => console.log(err))
+        })
+        .catch((err) => {
+          alert('비밀번호가 일치하지 않습니다.')
+          console.log(err)
+        })
+    }
+
     onMounted(() => {
       getReportData()
     })
@@ -95,9 +135,13 @@ export default defineComponent({
       report_id,
       reportInfo,
       imageList,
+      inputPassword,
+      pwCheckVisible,
+      openCheckModal,
       getReportData,
       goReportList,
-      goToUpdate
+      goToUpdate,
+      deleteReport
     }
   }
 })
