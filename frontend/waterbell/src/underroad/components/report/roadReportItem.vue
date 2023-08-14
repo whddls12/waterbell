@@ -45,7 +45,7 @@
     </div>
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
-      <button @click="goToUpdate">수정</button>
+      <button @click="goToUpdate(reportInfo?.id)">수정</button>
       <button>삭제</button>
     </div>
   </div>
@@ -83,11 +83,22 @@ export default defineComponent({
       router.push({ path: '/road/report' })
     }
 
+    function goToUpdate(report_id: any) {
+      router.push({ path: `/road/report/update/${report_id}` })
+    }
+
     onMounted(() => {
       getReportData()
     })
 
-    return { report_id, reportInfo, imageList, getReportData, goReportList }
+    return {
+      report_id,
+      reportInfo,
+      imageList,
+      getReportData,
+      goReportList,
+      goToUpdate
+    }
   }
 })
 </script>
