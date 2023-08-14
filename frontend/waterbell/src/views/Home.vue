@@ -214,7 +214,7 @@ export default defineComponent({
   padding: 80px 0px;
   flex-direction: column;
   align-items: center;
-  gap: 139px;
+  gap: 13px;
   border-radius: 10px;
   background: var(--unnamed, #fff);
 }
