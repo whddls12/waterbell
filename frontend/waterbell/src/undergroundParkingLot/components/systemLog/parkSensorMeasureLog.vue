@@ -45,10 +45,10 @@
       <thead class="thead-dark">
         <tr>
           <!-- <th scope="col" class="text-center" style="width: 50px">번호</th> -->
-          <th scope="col" class="text-center" style="width: 60%">시간</th>
+          <th scope="col" class="text-center" style="width: 600px">시간</th>
           <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
-          <th scope="col" class="text-center" style="width: 20%">구분</th>
-          <th scope="col" class="text-center" style="width: 20%">센서값</th>
+          <th scope="col" class="text-center" style="width: 200px">구분</th>
+          <th scope="col" class="text-center" style="width: 200px">센서값</th>
         </tr>
       </thead>
       <tbody v-if="logList && logList.length">

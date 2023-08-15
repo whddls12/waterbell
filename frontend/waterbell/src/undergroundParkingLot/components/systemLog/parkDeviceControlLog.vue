@@ -1,6 +1,7 @@
 <template lang="">
   <div class="table-box">
     <div class="title">기기 제어 로그</div>
+    <h6>{{ LogFacilityName }}</h6>
     <div class="datepicker-row">
       <div>
         <label>시작일시</label>
@@ -25,25 +26,25 @@
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th scope="col" class="text-center" style="width: 50px">번호</th>
-          <th scope="col" class="text-center" style="width: 400px">시간</th>
-          <th scope="col" class="text-center" style="width: 150px">시설이름</th>
-          <th scope="col" class="text-center" style="width: 150px">구분</th>
+          <!-- <th scope="col" class="text-center" style="width: 50px">번호</th> -->
+          <th scope="col" class="text-center" style="width: 500px">시간</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
+          <th scope="col" class="text-center" style="width: 200px">구분</th>
           <th scope="col" class="text-center" style="width: 150px">수위</th>
           <th scope="col" class="text-center" style="width: 150px">제어</th>
         </tr>
       </thead>
       <tbody v-if="logList && logList.length">
         <tr
-          v-for="(log, index) in logList"
+          v-for="log in logList"
           :key="log.id"
           class="tr"
           @click="movePage(log.id)"
           align="center"
         >
-          <td>{{ index + 1 }}</td>
+          <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ formattedSensorTime(log.time) }}</td>
-          <td>{{ log.name }}</td>
+          <!-- <td>{{ log.name }}</td> -->
           <td>{{ categoryLabel(log.category) }}</td>
           <td>{{ log.height }}cm</td>
           <td>{{ controlLabel(log.command) }}</td>
@@ -281,6 +282,10 @@ export default defineComponent({
       return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
     }
 
+    const LogFacilityName = computed(() => {
+      return logList.value.length ? logList.value[0].name : ''
+    })
+
     onMounted(() => {
       setList()
     })
@@ -297,7 +302,8 @@ export default defineComponent({
       goToPage,
       categoryLabel,
       formattedSensorTime,
-      controlLabel
+      controlLabel,
+      LogFacilityName
     }
   }
 })
