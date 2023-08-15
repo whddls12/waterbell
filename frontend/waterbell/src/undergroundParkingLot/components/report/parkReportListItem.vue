@@ -15,12 +15,12 @@
     <div class="report-body">
       <div class="report-title-box">
         <div class="report-title">
-          <p>{{ reportInfo?.title }}</p>
+          <div>{{ reportInfo?.title }}</div>
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <p>{{ reportInfo?.apartMember.name }}</p>
-            <p>{{ formattedTime(reportInfo?.createDate) }}</p>
+            <div>{{ reportInfo?.apartMember.name }}</div>
+            <div>{{ formattedTime(reportInfo?.createDate) }}</div>
           </div>
           <div class="report-info info-box">
             <select
@@ -36,9 +36,9 @@
                 {{ status.text }}
               </option>
             </select>
-            <p v-else>{{ statusEngToKr(reportInfo?.status) }}</p>
+            <div v-else>{{ statusEngToKr(reportInfo?.status) }}</div>
 
-            <p><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</p>
+            <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
           </div>
         </div>
       </div>
@@ -271,7 +271,7 @@ export default defineComponent({
 
 .report-title-box {
   border-bottom: 1px solid black;
-  text-align: flex-start;
+  text-align: start;
 }
 
 .report-info {

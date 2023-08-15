@@ -11,8 +11,8 @@
       Launch demo modal
     </button> -->
 
-    <button @click="toggleWaterModal">모달 열기</button>
-    <button @click="toggleBoardModal">신고접수 모달 열기</button>
+    <!-- <button @click="toggleWaterModal">모달 열기</button>
+    <button @click="toggleBoardModal">신고접수 모달 열기</button> -->
 
     <!-- Modal -->
     <!-- -------------------------------침수관련 모달 ------------------------------------ -->
