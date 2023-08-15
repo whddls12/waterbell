@@ -461,3 +461,4 @@ table td:last-child {
   flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
 }
 </style>
+>>>>>>> 7007a8c22d38b764e658c0f6d19d93b9245ee3db
