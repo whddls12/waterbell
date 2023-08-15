@@ -20,7 +20,6 @@ import roadReportCreateVue from '../underroad/components/report/roadReportCreate
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
 
 //지하차도 시스템 로그
-import roadAlarmLog from '../underroad/components/systemLog/roadDeviceAlarmLog.vue'
 import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
 import roadDeviceStatusLog from '../underroad/components/systemLog/roadDeviceStatusLog.vue'
 import roadDeviceControlLog from '../underroad/components/systemLog/roadDeviceControlLog.vue'
@@ -116,7 +115,6 @@ const router = createRouter({
       name: 'RoadSystemlog',
       component: RoadSystemlog,
       children: [
-        { path: 'alarmLog', name: 'roadAlarmlog', component: roadAlarmLog },
         {
           path: 'measureLog',
           name: 'roadMeasureLog',

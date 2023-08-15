@@ -314,7 +314,7 @@ export default defineComponent({
 
 .container {
   width: 90%;
-  margin: 10px auto;
+  margin: auto;
 }
 
 /* 테이블 셀 내용 가운데 정렬 */

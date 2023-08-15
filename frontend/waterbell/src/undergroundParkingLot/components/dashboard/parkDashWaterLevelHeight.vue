@@ -19,12 +19,14 @@
 <script lang="ts">
 import Chart from 'chart.js/auto'
 import { ref, onMounted, computed, nextTick, defineComponent } from 'vue'
-import http from '@/types/http'
+import axios from '@/types/apiClient'
 import store from '@/store/index'
 
 export default defineComponent({
   name: 'roadDashWaterLevelVue',
   setup() {
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
     const chartRef = ref(null)
     const timeArr = ref<string[]>([])
     const amountArr = ref<string[]>([])
@@ -45,8 +47,8 @@ export default defineComponent({
     // 수위 센서 데이터 가져오기
     async function getSensorData() {
       try {
-        const response = await http.get(
-          `/dash/facilities/10/sensors/heightPerhour`
+        const response = await api.get(
+          `/dash/facilities/${facility_id}/sensors/heightPerhour`
         )
 
         const apiData = response.data
@@ -88,12 +90,20 @@ export default defineComponent({
             x: {
               grid: {
                 display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시:분)'
               }
             },
             y: {
               beginAtZero: true,
               grid: {
                 display: false
+              },
+              title: {
+                display: true,
+                text: '지하주차장 수위(cm)'
               }
             }
           },

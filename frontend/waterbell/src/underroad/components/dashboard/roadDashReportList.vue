@@ -36,16 +36,17 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
-import http from '@/types/http'
-// import apiModule from '@/types/apiClient'
 import store from '@/store/index'
+import axios from '@/types/apiClient'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'roadDashReportVue',
 
   setup() {
-    // const apiClient = apiModule.apiClient
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     let reportList = ref<
@@ -59,7 +60,7 @@ export default defineComponent({
     //  로 바꿔보기
     const setList = () => {
       try {
-        http.get(`/reports/dash/${facility_id}`).then((res) => {
+        api.get(`/reports/dash/${facility_id}`).then((res) => {
           //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
           // console.log(res.data.list)
           reportList.value = res.data.list

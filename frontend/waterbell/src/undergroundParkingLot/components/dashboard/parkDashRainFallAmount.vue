@@ -21,11 +21,15 @@ import Chart from 'chart.js/auto'
 import { ref, onMounted, nextTick } from 'vue'
 import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
-import http from '@/types/http'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'parkDashRainAmountVue',
   setup() {
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const chartRef = ref(null)
     const store = useStore()
     const timeArr = ref<string[]>([]) // 시간 데이터
@@ -52,7 +56,7 @@ export default defineComponent({
     // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
       try {
-        const response = await http.get('/dash/map/rain', {
+        const response = await api.get('/dash/map/rain', {
           params: {
             year: year,
             month: month,
@@ -98,13 +102,14 @@ export default defineComponent({
         options: {
           elements: {
             line: {
-              fill: true
+              fill: false
             }
           },
           scales: {
             y: {
               grid: {
-                display: false
+                // 가로축 격자선
+                display: true
               },
               title: {
                 display: true,
