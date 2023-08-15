@@ -125,7 +125,7 @@ export default defineComponent({
 .input-field {
   margin-top: 5px;
   margin-bottom: 20px;
-  width: 90%;
+  width: 100%;
 }
 
 .input-field2 {

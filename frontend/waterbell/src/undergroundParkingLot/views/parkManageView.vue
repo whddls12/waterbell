@@ -40,9 +40,9 @@ a {
 }
 
 .router-view-style {
+  padding: 0 30px;
   min-height: 500px;
   min-width: 600px;
-  max-width: 1060px;
   overflow: hidden;
 }
 </style>

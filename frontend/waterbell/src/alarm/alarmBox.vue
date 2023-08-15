@@ -1,6 +1,6 @@
 <template lang="">
   <div class="table-box mt-4">
-    <div class="title"><h1>알림함</h1></div>
+    <div class="title">알림함</div>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
