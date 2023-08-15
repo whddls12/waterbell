@@ -4,21 +4,31 @@
     <div v-if="isMainPage" class="page-start">
       <!-- 서비스 로고 -->
       <div class="service-logo">
-        <img src="@/assets/images/waterbell-logo.png" alt="waterbell-logo" />
+        <img
+          class="logo"
+          src="@/assets/images/waterbell-logo.png"
+          alt="waterbell-logo"
+        />
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
-        <router-link to="/park/dash">
-          <div class="select-box park" @click="goToOther1">지하주차장</div>
-        </router-link>
-        <router-link to="/road/dash">
-          <div class="select-box road" @click="goToOther2">지하차도</div>
-        </router-link>
+        <!-- <router-link to="/park/dash"> -->
+        <div class="select-box park" @click="goToOther1">지하주차장</div>
+        <!-- </router-link> -->
+        <!-- <router-link to="/road/dash"> -->
+        <div class="select-box road" @click="goToOther2">지하차도</div>
+        <!-- </router-link> -->
       </div>
       <!-- 관리자 로그인 버튼 -->
-      <div class="manager-login">
-        <button @click="moveToLogin">관리자 로그인</button>
-      </div>
+      <!-- <div class="manager-login">
+        <button class="login-btn" @click="moveToLogin">관리자 로그인</button>
+      </div> -->
+      <button class="button-managerLogin" @click="moveToLogin">
+        <img class="icon" src="@/assets/images/icon.png" />
+        <div class="labelWrap">
+          <div class="label">관리자 로그인</div>
+        </div>
+      </button>
     </div>
 
     <!-- 서비스 화면 -->
@@ -58,23 +68,26 @@ export default defineComponent({
     // const facilityId = computed(() => store.getters['auth/facilityId'])
     const isLogin = computed(() => store.getters['auth/isLogin'])
     const role = computed(() => store.getters['auth/role'])
-    let firstEnter = computed(() => store.getters['auth/firsEnter']) //한번이라도 지하차도에 들어간 적이 있는가.
+    let firstEnter = computed(() => store.getters['auth/firstEnter']) //한번이라도 지하차도에 들어간 적이 있는가.
     //지하주차장
     async function goToOther1() {
-      await setParkFacilityId()
-      await moveToMemberLogin()
+      const shouldNavigateToDashboard = await moveToMemberLogin()
+      store.commit('setIspark', true)
+      if (shouldNavigateToDashboard) {
+        await setParkFacilityId()
+        router.push('/park/dash')
+      }
     }
 
     //로그인 유저의 역할을 파악하고, 아파트주민 또는 관리자인 경우만
     //facilityId 설정하기
 
     function moveToMemberLogin() {
-      //비로그인 상태이면
       if (!isLogin.value) {
         router.push('/park/login')
+        return false
       } else {
-        store.commit('setIsMainpage', false)
-        store.commit('setIspark', true)
+        return true
       }
     }
 
@@ -83,12 +96,17 @@ export default defineComponent({
         isLogin.value &&
         (role.value == 'APART_MEMBER' || role.value == 'APART_MANAGER')
       ) {
-        const member = getUserInfo()
+        const member = await getUserInfo()
         store.commit('auth/setFacilityId', member.facilityId)
+        //--------------------------------------------------------------------------------
+        //여기에 nowUnderroad null 만들고 현재 보고 있는 아파트 정보 넣기.
+        // 혹은 nowUnderroad를 nowFacility의 의미로 사용?
+        //----------------------------------------------------------------------------------------
+
         //만약 firstEnter가 false로 바뀌어있다면, 다시 지하차도로 접근했을 때, 최근 위치로 잡도록
         //firstEnter 값 바꿔주기
         if (!firstEnter.value) {
-          store.commit('auth/firstEnter')
+          store.commit('auth/switchFirstEnter', true)
         }
       }
     }
@@ -103,18 +121,19 @@ export default defineComponent({
 
       store.commit('setIsMainpage', false)
       store.commit('setIspark', false)
+      router.push('/road/dash')
     }
 
     async function setRoadFacilityId() {
       //지하차도 첫 진입여부 확인 후, 첫진입이면 가장 근처 지하차도 위치로 세팅하기
-
+      console.log(firstEnter.value)
       if (firstEnter.value) {
         const result = await getClosestLocation(underroadList.value)
-
+        console.log(result)
         store.commit('auth/setFacilityId', result.id)
         // console.log(result)
         store.commit('auth/setNowUnderroad', result)
-        store.commit('auth/firstEnter')
+        store.commit('auth/switchFirstEnter', false)
       }
     }
 
@@ -145,6 +164,13 @@ export default defineComponent({
 .service-logo {
   display: flex;
   justify-content: center;
+  width: 907px;
+  height: 215px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+  margin-top: 150px;
 }
 
 /* 서비스 선택 메뉴 */
@@ -185,10 +211,10 @@ export default defineComponent({
 
   display: flex;
   width: 1000px;
-  padding: 80px 0px;
+  padding: 10px 0px;
   flex-direction: column;
   align-items: center;
-  gap: 139px;
+  gap: 13px;
   border-radius: 10px;
   background: var(--unnamed, #fff);
 }
@@ -196,10 +222,42 @@ export default defineComponent({
 router-view {
   flex-flow: 1;
 }
-</style>
 
-function getClosestLocation(value: any) { throw new Error('Function not
-implemented.') } function getClosestLocation(value: any) { throw new
-Error('Function not implemented.') } function getClosestLocation(value: any) {
-throw new Error('Function not implemented.') } function setParkFacilityId() {
-throw new Error('Function not implemented.') }
+.button-managerLogin {
+  border: 0;
+  width: 200px;
+  height: 50px;
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 11px;
+  padding-bottom: 11px;
+  background: #ffa132;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  display: inline-flex;
+}
+
+.icon {
+  width: 26px;
+  height: 26px;
+  position: relative;
+}
+
+.labelWrap {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.label {
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  font-family: Roboto;
+  font-weight: 600;
+  line-height: 32px;
+  word-wrap: break-word;
+}
+</style>

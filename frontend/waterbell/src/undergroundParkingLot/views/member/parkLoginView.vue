@@ -33,20 +33,18 @@ div
             <div class="socialBox">
               <img src="@/assets/Login&Signup/OR.png" />
               <div>
-                <button class="imgBtn" type="button">
+                <button class="imgBtn" type="button" @click="naverLogin">
                   <img
                     src="@/assets/Login&Signup/naver_login.png"
-                    @click="naverLogin"
                     class="socialLoginBtn"
                   />
                 </button>
               </div>
               <div>
-                <button class="imgBtn" type="button">
+                <button class="imgBtn" type="button" @click="kakaoLogin">
                   <img
                     src="@/assets/Login&Signup/kakao_login.png"
                     class="socialLoginBtn"
-                    @click="kakaoLogin"
                   />
                 </button>
               </div>
@@ -54,7 +52,7 @@ div
           </form>
         </div>
 
-        <a href="#none">비밀번호를 잊어버리셨나요?</a>
+        <a href="#none">비밀번호 찾기?</a>
       </div>
     </div>
   </div>
@@ -62,32 +60,52 @@ div
 <script>
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
+
+// import { useRouter, useRoute } from 'vue-router'
+// import http from '@/types/http'
+
 import { memberLogin } from '@/types/authFunctionModule'
 
 export default defineComponent({
   name: 'parkLogin',
   setup() {
+    // const api = apiModule.api
     const id = ref('')
     const password = ref('')
     const store = useStore() // 전역 스토어를 가져옵니다.
+    // const router = useRouter()
+    // const route = useRoute()
+
     const login = () => {
       memberLogin(id.value, password.value)
     }
 
     const naverLogin = () => {
       //로컬 서버 연결용
-      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:8080/login/oauth2/code/naver&state=WaterBell`
+      // const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http:/localhost:3000/auth/naver&state=WaterBell`
 
-      //운영용
-      // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
+      //서버배포용
+      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=https://i9b101.p.ssafy.io/auth/naver&state=WaterBell`
 
       window.location.href = url
     }
+    const client_id_kakao = '333ed4acdf908937b3480366ff4b1d75'
+
+    //로컬용
+    // const redirect_uri = 'http//localhost:3000/auth/kakao'
+    //서버 배포용
+    const redirect_uri = 'https://i9b101.p.ssafy.io/auth/kakao'
+    const kakaoLogin = () => {
+      const url = `https://kauth.kakao.com/oauth/authorize?client_id=${client_id_kakao}&redirect_uri=${redirect_uri}&response_type=code`
+      window.location.href = url
+    }
+
     return {
       id,
       password,
       login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
-      naverLogin
+      naverLogin,
+      kakaoLogin
     }
   }
 })

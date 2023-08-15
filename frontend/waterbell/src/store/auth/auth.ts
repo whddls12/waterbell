@@ -50,8 +50,8 @@ const auth: Module<any, any> = {
     underroadListByGugun(state) {
       return state.underroadListByGugun
     },
-    isFirst(state) {
-      return state.isFirst
+    firstEnter(state) {
+      return state.firstEnter
     }
   },
   mutations: {
@@ -102,11 +102,18 @@ const auth: Module<any, any> = {
       state.underroadList = []
       state.underroadListByGugun = []
     },
-    switchIsFirst(state) {
-      state.isFirst = !state.isFirst
+    switchFirstEnter(state, payload) {
+      state.firstEnter = payload
     }
   },
   actions: {
+    socialLogin({ commit }, payload) {
+      commit('setTokens', {
+        accessToken: payload.member.accessToken,
+        refreshToken: payload.member.refreshToken
+      })
+      commit('setFacilityId', payload.member.facilityId)
+    }
     // async memberLogin({ commit }, { loginId, password }) {
     //   try {
     //     // console.log('실행되는가?')

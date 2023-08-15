@@ -60,7 +60,6 @@ public class AlarmService {
     public BoardAlarmDto getAlarm(Long receive_alarm_id){
         BoardAlarmDto boardAlarm = new BoardAlarmDto();
         ReceiveAlarmMember receive = receiveAlarmMemberRepository.findById(receive_alarm_id);
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+receive.isRead());
         if(!receive.isRead()){
             receive.setRead(true);
             receive.setReadDate(LocalDateTime.now());
