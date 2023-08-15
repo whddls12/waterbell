@@ -27,6 +27,7 @@
               v-if="role == 'PUBLIC_MANAGER'"
               name="report-status"
               v-model="selectedStatus"
+              class="custom-select"
             >
               <option
                 v-for="(status, index) in statusList"
@@ -37,7 +38,7 @@
               </option>
             </select>
             <p class="info-status" v-else>{{ reportInfo?.status }}</p>
-            <p>{{ reportInfo?.viewCount }}</p>
+            <p style="margin: 5px">{{ reportInfo?.viewCount }}</p>
           </div>
         </div>
       </div>
@@ -283,7 +284,7 @@ export default defineComponent({
   font-weight: 500;
   line-height: 10px; /* 128.571% */
   letter-spacing: 0.1px;
-  background-color: white;
+  background-color: #f2f7ff;
 }
 
 .report-header {
@@ -416,5 +417,86 @@ export default defineComponent({
   line-height: 10px; /* 128.571% */
   letter-spacing: 0.1px;
   background-color: white;
+}
+
+.manager-btn-modify {
+  width: 101px;
+  margin: 10px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  /* background: #ffa132; */
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  border: 1px solid var(--unnamed, #ffa132);
+  background-color: #ffa132;
+  color: #fff;
+  text-align: center;
+}
+
+.custom-select {
+  height: 30px;
+  width: 100%;
+  padding: px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  appearance: none;
+  cursor: pointer;
+  color: var(--ing, #0d7e83);
+  text-align: center;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+}
+
+.custom-select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.custom-select:after {
+  content: '\25BC';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #888;
+  color: var(--ing, #0d7e83);
+  text-align: center;
+}
+
+/* Hover effect */
+.custom-select:hover {
+  border-color: #999;
+}
+
+/* Disabled state */
+.custom-select:disabled {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+}
+
+/* Styling for options */
+option {
+  background-color: #fff;
+  color: #333;
+  color: var(--ing, #0d7e83);
+  text-align: center;
+}
+
+/* Hover effect for options */
+option:hover {
+  background-color: #007bff;
+  color: #fff;
 }
 </style>
