@@ -132,7 +132,6 @@ public class MemberRepository {
             criteria.add(apartPredicate);
         }
 
-        //상태가 활성
         Predicate statePredicate = cb.isTrue(a.get("state"));
         criteria.add(statePredicate);
 
