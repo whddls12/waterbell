@@ -41,7 +41,7 @@ public class AwsIoTConfig {
 
     private void subscribeToTopics() throws AWSIotException {
 
-        String[] topics = {"Arduino/SENSOR", "Arduino/CAM"};
+        String[] topics = {"Arduino/SENSOR", "Arduino/CAM", "Arduino/CONTROL"};
 
         for (String topicName : topics) {
             subscribeToTopic(topicName);
@@ -55,21 +55,35 @@ public class AwsIoTConfig {
                 @Override
                 public void onMessage(AWSIotMessage message) {
                     try {
-                        handleReceivedMessage(message.getStringPayload());
+                        handleSensorMessage(message.getStringPayload());
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 }
             });
-        } else {
+        } else if (topicName.equals("Arduino/CAM")) {
             client.subscribe(new MqttTopic(topicName));
+        } else if (topicName.equals("Arduino/CONTROL")) {
+            client.subscribe(new MqttTopic(topicName) {
+                @Override
+                public void onMessage(AWSIotMessage message) {
+                    try {
+                        handleControlMessage(message.getStringPayload());
+                    } catch (Exception e) {
+
+                    }
+                }
+            });
         }
     }
 
-    private void handleReceivedMessage(String message) throws Exception {
+    private void handleControlMessage(String message) throws Exception {
+        systemService.checkControl(message);
+    }
+    private void handleSensorMessage(String message) throws Exception {
         WaterStatus status = systemService.fromSensor(message);
 
-        String topic = String.format("Server/%d/STATUS", message.split("/")[0]);
+        String topic = String.format("Server/%d/status", message.split("/")[0]);
         client.publish(topic, status.toString());
     }
 
