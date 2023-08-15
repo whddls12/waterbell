@@ -2,7 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>최근 신고접수 내역</h3>
+        <h4>최근 신고접수 내역</h4>
       </div>
       <div class="dash-box-content">
         <thead>
@@ -14,10 +14,10 @@
         </thead>
         <tbody v-if="reportList.length != 0">
           <tr
-            v-for="report in reportList"
-            :key="report.report_id"
+            v-for="(report, index) in reportList"
+            :key="index"
             class="tr"
-            @click="movePage(report.board_id)"
+            @click="movePage(report.id)"
             align="center"
           >
             <!-- <th scope="row">{{ no }}</th> -->
@@ -75,7 +75,7 @@ export default defineComponent({
     }
     const router = useRouter()
     const movePage = (board_id: any) => {
-      router.push(`/road/report/item?board_id=${board_id}`)
+      router.push(`/park/report/${board_id}/detail`)
     }
     onMounted(() => {
       setList()

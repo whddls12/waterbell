@@ -32,11 +32,11 @@
     </div>
 
     <!-- 서비스 화면 -->
-    <div v-else>
+    <div class="service" v-else>
       <ParkHeader v-if="isPark" />
       <RoadHeader v-else />
       <div class="router-view-container">
-        <router-view></router-view>
+        <router-view class="router-view"></router-view>
       </div>
       <footer></footer>
     </div>
@@ -156,6 +156,10 @@ export default defineComponent({
 </script>
 
 <style>
+.service {
+  width: 100%;
+}
+
 .home {
   width: 100%;
 }
@@ -199,11 +203,11 @@ export default defineComponent({
 }
 
 .router-view-container {
-  box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
+  box-sizing: border-box;
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  overflow: auto; /* prevent components from going out of bounds */
+  overflow: auto;
   background-color: white;
   margin-left: 200px;
   margin-right: 200px;
@@ -211,7 +215,8 @@ export default defineComponent({
 
   display: flex;
   width: 1100px;
-  padding: 80px 0px;
+
+  padding: 10px 0px;
   flex-direction: column;
   align-items: center;
   gap: 13px;
@@ -259,5 +264,14 @@ router-view {
   font-weight: 600;
   line-height: 32px;
   word-wrap: break-word;
+}
+
+.router-view {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.page-start {
+  height: 900px;
 }
 </style>

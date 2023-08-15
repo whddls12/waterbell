@@ -2,7 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>수위센서 그래프</h3>
+        <h4>수위센서 그래프</h4>
       </div>
       <div class="dash-box-content">
         <canvas

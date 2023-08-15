@@ -2,7 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>미세먼지</h3>
+        <h4>미세먼지</h4>
         <p>{{ current_dust }}</p>
       </div>
       <div class="dash-box-content">
@@ -10,7 +10,7 @@
           ref="dustChartCanvas"
           id="dustChartCanvas"
           width="400"
-          height="200"
+          height="180"
         ></canvas>
       </div>
     </div>
@@ -115,6 +115,8 @@ export default defineComponent({
           ]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           // plugin이 있어야 적용될거같음.
           elements: {
             center: {

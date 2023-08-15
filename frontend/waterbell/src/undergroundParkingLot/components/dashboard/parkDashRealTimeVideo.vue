@@ -3,7 +3,7 @@
     <div class="dash-box">
       <div class="dash-box-title">
         <i class="fas fa-video"></i>
-        <h3>CCTV</h3>
+        <h4>CCTV</h4>
       </div>
       <div class="dash-box-content">
         <div class="dash-box-content" id="cctv-box-content">
