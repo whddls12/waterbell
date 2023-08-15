@@ -289,7 +289,6 @@ export default defineComponent({
   box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
   display: flex;
   justify-content: center;
-  /* overflow: auto; */
   background-color: white;
   margin-left: 208px;
   margin-right: 210px;
