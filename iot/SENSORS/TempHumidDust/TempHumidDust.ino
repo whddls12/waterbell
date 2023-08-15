@@ -1,45 +1,55 @@
-
 #include <PubSubClient.h>
 #include <WiFiEsp.h>
 #include <SoftwareSerial.h>
+#include <DHT.h>
+#include <pm2008_i2c.h>
 
-// IR Distance Sensor Pin
-#define DISPIN A0;
 
-// Message format
+// #define DISPIN A0
+PM2008_I2C pm2008_i2c;
+
+#define DHTPIN 6
+float hum; //Stores humidity value
+float temp; //Stores temperature value
+// int distance = 0; // initial Distance
+
+
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE  (10)
 char msg[MSG_BUFFER_SIZE];
 
-int distance = 0; // initial Distance
-int intevalTime = 5000;
 
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
 
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "";             // network SSID (name)
-char pass[] = "";        // network password
+char ssid[] = "jjhjjh";             // your network SSID (name)
+char pass[] = "123456700";        // your network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "";    // IP address of the MQTT server(Raspberry Pi)
-char topic[] = "Arduino/HEIGHT";            // Default topic string
-char clientId[] = "Arduino waterHeight";      // Cliwent id: Must be unique on the broker
+char server[] = "172.20.10.8";    // IP address of the MQTT server
+char topic[] = "test";            // Default topic string
+char clientId[] = "Arduino weather";      // Cliwent id: Must be unique on the broker
 
 WiFiEspClient wifi;               // Initialize the Ethernet client object
 PubSubClient mqttClient(wifi);    // Initialize the MQTT client
 
 void setup() {
-  Serial.begin(115200); // serial baud rate
-
+  pm2008_i2c.begin();
+  pm2008_i2c.command();
+  Serial.begin(115200);
+  dht.begin();
   // Set baud rate of ESP8266 to 9600 regardless of original setting
   set_esp8266_baud_rate(baudRate);
 
-  // Set baud rate of ESP 8266  
+  
   espSerial.begin(baudRate);
   espSerial.print("AT+UART_CUR=");
   espSerial.print(baudRate);
   espSerial.print(",8,1,0,0\r\n");
   WiFi.init(&espSerial);
+
 
   // check for the presence of the shield
   if (WiFi.status() == WL_NO_SHIELD) {
@@ -61,15 +71,12 @@ void setup() {
 
   printWifiStatus();
 
-  // mqtt server port : 1883 (general)
   mqttClient.setServer(server, 1883);
-  // set of subscriber
   mqttClient.setCallback(onReceive);
 }
 
 void loop() {
 
-  // if not connected mqtt -> try reconnect mqtt server
   if (!mqttClient.connected()) {
     reconnect();
   }
@@ -77,23 +84,35 @@ void loop() {
 
   unsigned long now = millis();
 
-  // publish interval is 2sec 
-  if(now-lastMsg>intevalTime){
+  if(now-lastMsg>10000){
     lastMsg=now;
+    uint8_t ret = pm2008_i2c.read();
+      if (ret == 0) {
+        Serial.print("PM 10 (GRIMM) : ");
+        Serial.println(pm2008_i2c.pm10_grimm);
+        snprintf (msg, MSG_BUFFER_SIZE, "DUST/%d", (int)pm2008_i2c.pm10_grimm);
+        mqttClient.publish("Arduino/SENSOR", msg);
+      }
+    hum = dht.readHumidity();
+    temp = dht.readTemperature();
 
-    // sensing distances
-    int volt = map(analogRead(DISPIN), 0, 1023, 0, 5000);
+    Serial.print("Humid : ");
+    Serial.println(hum);
+    Serial.print("Temp:");
+    Serial.println(temp);
+    
+    snprintf (msg, MSG_BUFFER_SIZE, "HUMID/%d", (int)hum);
+    mqttClient.publish("Arduino/SENSOR", msg);/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // calcurate distance (cm)
-    distance = (27.61 / (volt - 0.1696)) * 1000;
+    snprintf (msg, MSG_BUFFER_SIZE, "TEMP/%d", (int)temp);
+    mqttClient.publish("Arduino/SENSOR", msg);
 
-
-    Serial.print("Distance : ");
-    Serial.print(distance);
-
-    snprintf (msg, MSG_BUFFER_SIZE, "%d", distance);
-    mqttClient.publish(topic, msg);
   }
+
+
+
+ 
+
 
 }
 
