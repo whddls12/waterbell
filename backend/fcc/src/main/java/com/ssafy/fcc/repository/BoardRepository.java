@@ -3,6 +3,7 @@ package com.ssafy.fcc.repository;
 import com.ssafy.fcc.domain.board.ApartBoard;
 import com.ssafy.fcc.domain.board.Image;
 import com.ssafy.fcc.domain.board.UndergroundRoadBoard;
+import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.member.Member;
 import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,20 @@ public class BoardRepository {
         em.persist(image);
         return image.getId();
     }
+
+    public Image findImageById(Integer id) {
+        return em.find(Image.class, id);
+    }
+
+
+    public void deleteImage(Image image) {
+        em.remove(image);
+    }
+
+    public void deleteUndergroundRoadBoard(UndergroundRoadBoard undergroundRoadBoard) {
+        em.remove(undergroundRoadBoard);
+    }
+
 
     public Integer saveUndergroundRoadBoard(UndergroundRoadBoard undergroundRoadBoard){
         em.persist(undergroundRoadBoard);
@@ -81,4 +96,71 @@ public class BoardRepository {
     public UndergroundRoadBoard getUndergoundBoardById(int boardId) {
         return em.find(UndergroundRoadBoard.class,boardId);
     }
+
+    public List<Image> getImageByUndergoundRoadBoardId(int boardId) {
+        String latestQuery = "SELECT i FROM Image i WHERE  i.undergroundRoadBoard.id = :boardId ";
+        List<Image> resultList = em.createQuery(latestQuery, Image.class)
+                .setParameter("boardId", boardId)
+                .getResultList();
+        return resultList;
+    }
+
+    public List<ApartBoard> dashApartList(int facilityId) {
+
+//        String jpqlQuery = "SELECT COUNT(b) FROM UndergroundRoadBoard b WHERE b.undergroundRoad.id = :undergroundRoadId";
+//        TypedQuery<Long> countQuery = em.createQuery(jpqlQuery, Long.class)
+//                .setParameter("undergroundRoadId", facilityId);
+//        Long count = countQuery.getSingleResult();
+
+        String latestQuery = "SELECT b FROM ApartBoard b WHERE b.apart.id = :facilityId ORDER BY b.createDate DESC";
+        List<ApartBoard> resultList =null;
+//        if(count>5){
+            resultList = em.createQuery(latestQuery, ApartBoard.class)
+                    .setParameter("facilityId", facilityId)
+                    .setMaxResults(5)
+                    .getResultList();
+//        }else {
+//            resultList = em.createQuery(latestQuery, UndergroundRoadBoard.class)
+//                    .setParameter("undergroundRoadId", facilityId)
+//                    .getResultList();
+//        }
+
+        return resultList;
+    }
+
+    public Long getApartBoardCnt(int facilityId) {
+        String jpqlQuery = "SELECT COUNT(b) FROM ApartBoard b WHERE b.apart.id = :facilityId";
+        TypedQuery<Long> countQuery = em.createQuery(jpqlQuery, Long.class)
+                .setParameter("facilityId", facilityId);
+        return countQuery.getSingleResult();
+    }
+
+    public List<ApartBoard> getApartBoardList(int facilityId, int start, int size) {
+
+        String latestQuery = "SELECT b FROM ApartBoard b WHERE b.apart.id = :facilityId ORDER BY b.createDate DESC, b.id DESC ";
+        List<ApartBoard> resultList = em.createQuery(latestQuery, ApartBoard.class)
+                .setParameter("facilityId", facilityId)
+                .setFirstResult(start) // 시작 위치
+                .setMaxResults(size) // 가져올 개수
+                .getResultList();
+        return resultList;
+    }
+
+    public ApartBoard getapartBoardById(int boardId) {
+        return em.find(ApartBoard.class,boardId);
+    }
+
+    public List<Image> getImageByApartBoardId(int boardId) {
+        String latestQuery = "SELECT i FROM Image i WHERE  i.apartBoard.id = :boardId ";
+        List<Image> resultList = em.createQuery(latestQuery, Image.class)
+                .setParameter("boardId", boardId)
+                .getResultList();
+        return resultList;
+    }
+
+    public void deleteApartBoard(ApartBoard apartBoard) {
+        em.remove(apartBoard);
+    }
+
+
 }

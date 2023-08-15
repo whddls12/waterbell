@@ -1,6 +1,5 @@
 package com.ssafy.fcc.controller;
 
-import com.ssafy.fcc.MQTT.MqttPublisher;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.ControlType;
@@ -21,7 +20,7 @@ public class ControlController {
     private final MqttPubSubService mqttPubSubService;
     private final FacilityService facilityService;
 
-    @PostMapping("/{facility_id}/{command}")
+    @PostMapping("/manager/{facility_id}/{command}")
     public ResponseEntity<Integer> command(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
 
         Facility facility = facilityService.findById(facilityId);
@@ -41,7 +40,7 @@ public class ControlController {
 
                     break;
                 case "OFF":
-                    // 차수판 해제 명령, cotrolLog 저장, 시설 상태 SECOND
+                    // 차수판 해제 명령, cotrolLog 저장, 시설 상태 SECOND, 사이렌/LED 동작
                     topic = String.format("Server/%d/%s", facilityId, sensorType);
                     mqttPubSubService.publishMessage(topic, "SECOND");
                     systemService.insertControlLog(facilityId, "OFF");

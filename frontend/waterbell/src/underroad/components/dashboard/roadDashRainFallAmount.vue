@@ -94,8 +94,8 @@ export default defineComponent({
             {
               label: '강수량 데이터',
               data: amountArr.value,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(151, 143, 237, 0.2)',
+              borderColor: 'rgba(151, 143, 237, 1)',
               borderWidth: 1
             }
           ]

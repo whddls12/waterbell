@@ -2,16 +2,19 @@ import time,json,ssl
 import paho.mqtt.client as mqtt
 import threading
 
-THING_NAME = ''
-ENDPOINT = ""
-CERTPATH =  "" # cert파일 경로
-KEYPATH = "" # key 파일 경로
-CAROOTPATH = "" # RootCaPem 파일 경로
+#AWS IoT 관련 설정
+THING_NAME = 'IoT'
+ENDPOINT = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com"
+CERTPATH =  "/home/jjhjjh/Desktop/IoT.cert.pem" # cert파일 경로
+KEYPATH = "/home/jjhjjh/Desktop/IoT.private.key" # key 파일 경로
+CAROOTPATH = "/home/jjhjjh/Desktop/root-CA.crt" # RootCaPem 파일 경로
 
-FACILITY = "10"
+
+ArduinoList = ["SENSOR", "CAM1", "CAM2"]
+IoTCoreList = ["PLATE", "BOARD", "CAM1", "CAM2","STATUS"]
+
+FacilityId = "10"
 QOS = 0
-# PLATE or BOARD
-ACTUATOR ="PLATE"
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -19,119 +22,141 @@ def on_connect(client, userdata, flags, rc):
     else:
         print("Connection to MQTT broker failed")
 
-# arduino -> iotcore
+#Arduino
 def connect_mqtt1():
     arduino = mqtt.Client()
     arduino.connect("localhost", 1883, 60)
     arduino.on_connect = on_connect
+
     return arduino
 
-# iotcore -> arduino
+#IoTCore
 def connect_mqtt2():
     IoTCore = mqtt.Client()
+    IoTCore.on_connect = on_connect
     IoTCore.tls_set(CAROOTPATH, certfile= CERTPATH, keyfile=KEYPATH, tls_version=ssl.PROTOCOL_TLSv1_2, ciphers=None)
     IoTCore.connect(ENDPOINT, 8883, 60)
-    IoTCore.on_connect = on_connect
+
     return IoTCore
 
 
-def subscribe1(arduino, IoTCore):
-    arduino.subscribe("Arduino/SENSOR")
-    arduino.on_message = lambda client, userdata, msg: on_message1(arduino, userdata, msg, IoTCore)
+# 각 메시지가 들어왔을 때 실행할 코드
+def on_message_sensor(client, userdata, msg):
+    # TEMP 
+    global IoTCore
+    topic = "Arduino/SENSOR"
+    print("send")
+    payload = FacilityId + "/" + msg.payload.decode()
+    publisher(IoTCore, topic, payload)
+    pass
+
+def on_message_cam1(client, userdata, msg):
+    # CAM 
+    global IoTCore
+    topic = "Arduino/CAM1"
+    # payload = FacilityId + msg.payload.decode()
+    publisher(IoTCore, topic, msg.payload)
+    pass
+
+def on_message_cam2(client, userdata, msg):
+    # CAM 
+    global IoTCore
+    topic = "Arduino/CAM2"
+    # payload = FacilityId + msg.payload.decode()
+    publisher(IoTCore, topic, msg.payload)
+    pass
 
 
-def subscribe2(IoTCore, arduino):
-    IoTCore.subscribe("Server/"+FACILITY)
-    IoTCore.on_message = lambda client, userdata, msg: on_message2(IoTCore, userdata, msg, arduino)
 
-def subscribe3(IoTCore, arduino):
-    IoTCore.subscribe("Server/CAM1")
-    IoTCore.on_message = lambda client, userdata, msg: on_message3(IoTCore, userdata, msg, arduino)
+
+def on_message_plate(client, userdata, msg):
+    # PLATE
+    global arduino
+    topic = "Server/PLATE"
+
+    payload = msg.payload.decode()
+    publisher(arduino, topic, payload)
+
+    pass
+
+def on_message_board(client, userdata, msg):
+    # BOARD
+    global arduino
+    topic = "Server/BOARD"
+    payload = msg.payload.decode()
+    publisher(arduino, topic, payload)
+
+    pass
+
+
+
+def on_message_cam3(client, userdata, msg):
+    # BOARD
+    global arduino
+    topic = "Server/CAM1"
+    # payload = FacilityId + msg.payload.decode()
+    publisher(arduino, topic, msg)
+
+    pass
+
     
-    IoTCore.subscribe("Server/CAM2")
-    IoTCore.on_message = lambda client, userdata, msg: on_message4(IoTCore, userdata, msg, arduino)
+def on_message_cam4(client, userdata, msg):
+    # BOARD
+    global arduino
+    topic = "Server/CAM2"
+    # payload = FacilityId + msg.payload.decode()
+    publisher(arduino, topic, msg)
 
+    pass
 
-def subscribe4(arduino, IoTCore):
-    arduino.subscribe("Arduino/CAM1")
-    arduino.on_message = lambda client, userdata, msg: on_message5(arduino, userdata, msg, IoTCore)
-    arduino.subscribe("Arduino/CAM2")
-    arduino.on_message = lambda client, userdata, msg: on_message6(arduino, userdata, msg, IoTCore)
-
-
-
-
-def on_message1(client, userdata, msg, IoTCore):
-
+def on_message_status(client, userdata, msg):
+    print("receive")
+    topic = "Server/STATUS"
     payload = msg.payload.decode()
+    publisher(arduino, topic, payload)
 
-    # print(f"Received message: {payload}")
+def subscribe(arduino, IoTCore):
 
-    result = IoTCore.publish("Arduino/SENSOR", FACILITY+payload, QOS)
-    status = result.rc
+    for sensor in ArduinoList:
+        topic = "Arduino/"+sensor
 
-    if status == mqtt.MQTT_ERR_SUCCESS:
-        print(f"Send `{payload}` to topic `Arduino/SENSOR`")
-    else:
-        print(f"Failed to send message to topic `Arduino/SENSOR`")
+        arduino.subscribe(topic)
 
+        if sensor == "SENSOR":
+            arduino.message_callback_add(topic, on_message_sensor)
+        elif sensor == "CAM1":
+            arduino.message_callback_add(topic, on_message_cam1)
+        elif sensor == "CAM2":
+            arduino.message_callback_add(topic, on_message_cam2)
 
-def on_message2(client, userdata, msg, arduino):
+    for Actuator in IoTCoreList:
+        topic = "Server/"+FacilityId+"/"+Actuator
 
-    payload = msg.payload.decode()
+        IoTCore.subscribe(topic)
+        if Actuator == "PLATE":
+            IoTCore.message_callback_add(topic, on_message_plate)
+        elif Actuator == "BOARD":
+            IoTCore.message_callback_add(topic, on_message_board)
+        elif Actuator == "CAM3":
+            IoTCore.message_callback_add(topic, on_message_cam3)
+        elif Actuator == "CAM4":
+            IoTCore.message_callback_add(topic, on_message_cam4)
+        elif Actuator == "STATUS":
+           IoTCore.message_callback_add(topic, on_message_status)
 
-    # print(f"Received message : {payload}")
-    # print(f"{userdata}")
-    
-    result = arduino.publish(ACTUATOR, payload, QOS)
-    status = result.rc
-
-    if status == mqtt.MQTT_ERR_SUCCESS:
-        print(f"Send `{payload}` to topic `Server/PLATE`")
-
-
-        
-def on_message3(client, userdata, msg, arduino):
-
-    payload = msg.payload.decode()
-
-    result = arduino.publish("CAM1", payload, QOS)
-    status = result.rc
-
-    if status == mqtt.MQTT_ERR_SUCCESS:
-        print(f"Send `{payload}` to topic `Server/PLATE`")
-
-        
-def on_message4(client, userdata, msg, arduino):
-
-    payload = msg.payload.decode()
-
-    result = arduino.publish("CAM2", payload, QOS)
-    status = result.rc
-
-    if status == mqtt.MQTT_ERR_SUCCESS:
-        print(f"Send `{payload}` to topic `Server/PLATE`")
+def publisher(client, topic, message):
+    client.publish(topic, message, QOS)
+    print("yes")
 
 
-def on_message5(client, userdata, msg, arduino):
-
-    result = IoTCore.publish("CAM1", msg.payload, QOS)
-    status = result.rc
-
-
-def on_message6(client, userdata, msg, arduino):
-
-    result = IoTCore.publish("CAM2", msg.payload, QOS)
-    status = result.rc
 
 def run():
+    global arduino
+    global IoTCore
     arduino = connect_mqtt1()
     IoTCore = connect_mqtt2()
-    subscribe1(arduino, IoTCore)
-    subscribe2(IoTCore, arduino)
-    subscribe3(IoTCore, arduino)
-    subscribe4(arduino, iotcore)
-
+    subscribe(arduino, IoTCore)
+    
     arduino_thread = threading.Thread(target=arduino.loop_forever)
     IoTCore_thread = threading.Thread(target=IoTCore.loop_forever)
 
@@ -142,4 +167,9 @@ def run():
     IoTCore_thread.join()
 
 if __name__ == '__main__':
-    run()
+    try:
+        run()
+    except KeyboardInterrupt:
+        print("\nProgram interrupted. Performing cleanup...")
+        # Add cleanup actions here if needed
+        sys.exit(0)     # Exit the program gracefully
