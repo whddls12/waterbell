@@ -290,6 +290,7 @@ export default defineComponent({
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 50px;
+  margin-bottom: 80px;
 
   width: 1100px;
   padding: 10px 0px;
