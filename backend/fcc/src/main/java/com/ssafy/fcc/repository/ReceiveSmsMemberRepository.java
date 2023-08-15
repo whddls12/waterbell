@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -21,5 +22,12 @@ public class ReceiveSmsMemberRepository {
         return em.createQuery("select R from ReceiveSmsMember R where R.member.id = :member_id", ReceiveSmsMember.class)
                 .setParameter("member_id", member_id)
                 .getResultList();
+    }
+
+    public Long getReceiveAlarmMemberCnt(Long alarm_id){
+        String jpqlQuery = "SELECT COUNT(R) FROM ReceiveSmsMember R WHERE R.smslog.id = :alarm_id";
+        TypedQuery<Long> countQuery = em.createQuery(jpqlQuery, Long.class)
+                .setParameter("alarm_id", alarm_id);
+        return countQuery.getSingleResult();
     }
 }

@@ -1,11 +1,17 @@
 package com.ssafy.fcc.service;
 
 import com.ssafy.fcc.controller.DashController;
+import com.ssafy.fcc.domain.alarm.Alarm;
+import com.ssafy.fcc.domain.alarm.BoardAlarmLog;
+import com.ssafy.fcc.domain.alarm.FloodAlarmLog;
+import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.*;
+import com.ssafy.fcc.domain.sms.SmsLog;
 import com.ssafy.fcc.dto.ControlLogDto;
 import com.ssafy.fcc.dto.SensorLogDto;
+import com.ssafy.fcc.dto.TotalAlarmLogDto;
 import com.ssafy.fcc.handler.CamWebSocketHandler;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.PageNavigation;
@@ -30,6 +36,11 @@ public class SystemService {
     private final ApartRepository apartRepository;
     private final UndergroundRoadRepository undergroundRoadRepository;
     private final ControlLogRepository controlLogRepository;
+    private final FloodAlarmLogRepository floodAlarmLogRepository;
+    private final BoardAlarmLogRepository boardAlarmLogRepository;
+    private final ReceiveAlarmMemberRepository receiveAlarmMemberRepository;
+    private final SmsLogRepository smsLogRepository;
+    private final ReceiveSmsMemberRepository receiveSmsMemberRepository;
 
     public final FacilityService facilityService;
     public final UndergroundRoadService undergroundRoadService;
@@ -217,5 +228,60 @@ public class SystemService {
     public int getLatestHeightSensor(int facilityId){
         Facility facility = facilityRepository.findById(facilityId);
         return sensorLogRepository.getRecentData(facility, SensorType.HEIGHT);
+    }
+
+    public Map<String, Object> getAlarmSendWebLogList(int facilityId, int member_id, String category, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<TotalAlarmLogDto> logDtoList = new ArrayList<>();
+        Facility facility = facilityRepository.findById(facilityId);
+        Apart apart = apartRepository.findById(facilityId);
+        PageNavigation pageNavigation;
+        boolean is_flood = false;
+        if(category.equals("flood")) is_flood = true;
+        if(is_flood) {
+            Long totalCount = floodAlarmLogRepository.getSendWebLogCnt(facility, member_id, searchStartDate, searchEndDate);
+            pageNavigation = new PageNavigation(page, totalCount);
+            List<FloodAlarmLog> logList = floodAlarmLogRepository.getSendWebLogList(facility, member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+            for(FloodAlarmLog l : logList){
+                TotalAlarmLogDto dto = new TotalAlarmLogDto(l);
+                dto.setCnt(receiveAlarmMemberRepository.getReceiveAlarmMemberCnt(l.getId()));
+                dto.setFacility_name(apart.getApartName());
+                logDtoList.add(dto);
+            }
+        }
+        else {
+            Long totalCount = boardAlarmLogRepository.getSendWebLogCnt(facility, member_id, searchStartDate, searchEndDate);
+            pageNavigation = new PageNavigation(page, totalCount);
+            List<BoardAlarmLog> logList = boardAlarmLogRepository.getSendWebLogList(facility, member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+            for(BoardAlarmLog l : logList){
+                TotalAlarmLogDto dto = new TotalAlarmLogDto(l);
+                dto.setCnt(receiveAlarmMemberRepository.getReceiveAlarmMemberCnt(l.getId()));
+                dto.setFacility_name(apart.getApartName());
+                logDtoList.add(dto);
+            }
+        }
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", logDtoList);
+        return resultMap;
+    }
+
+    public Map<String, Object> getAlarmSendSmsLogList(int facilityId, int member_id, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<TotalAlarmLogDto> logDtoList = new ArrayList<>();
+        Apart apart = apartRepository.findById(facilityId);
+        PageNavigation pageNavigation;
+        Long totalCount = smsLogRepository.getSendSmsLogCnt(member_id, searchStartDate, searchEndDate);
+        pageNavigation = new PageNavigation(page, totalCount);
+        List<SmsLog> logList = smsLogRepository.getSendSmsLogList(member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+        for(SmsLog l : logList){
+            TotalAlarmLogDto dto = new TotalAlarmLogDto(l);
+            dto.setFacility_id(facilityId);
+            dto.setFacility_name(apart.getApartName());
+            dto.setCnt(receiveSmsMemberRepository.getReceiveAlarmMemberCnt(l.getId()));
+            logDtoList.add(dto);
+        }
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", logDtoList);
+        return resultMap;
     }
 }
