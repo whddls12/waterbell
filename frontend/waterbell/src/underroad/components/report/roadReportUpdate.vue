@@ -135,6 +135,7 @@ export default defineComponent({
           imageList.value = res.data.imageList
           report.value.name = res.data.board.name
           report.value.phone = res.data.board.phone
+          report.value.boardPassword = res.data.board.boardPassword
           report.value.title = res.data.board.title
           report.value.content = res.data.board.content
         })

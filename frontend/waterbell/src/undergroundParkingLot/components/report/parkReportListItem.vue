@@ -15,12 +15,12 @@
     <div class="report-body">
       <div class="report-title-box">
         <div class="report-title">
-          <p>{{ reportInfo?.title }}</p>
+          <div>{{ reportInfo?.title }}</div>
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <p>{{ reportInfo?.apartMember.name }}</p>
-            <p>{{ reportInfo?.createDate }}</p>
+            <div>{{ reportInfo?.apartMember.name }}</div>
+            <div>{{ formattedTime(reportInfo?.createDate) }}</div>
           </div>
           <div class="report-info info-box">
             <select
@@ -36,8 +36,9 @@
                 {{ status.text }}
               </option>
             </select>
-            <p v-else>{{ reportInfo?.status }}</p>
-            <p>{{ reportInfo?.viewCount }}</p>
+            <div v-else>{{ statusEngToKr(reportInfo?.status) }}</div>
+
+            <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
           </div>
         </div>
       </div>
@@ -109,6 +110,29 @@ export default defineComponent({
       }
     ]
     const selectedStatus = ref('0')
+
+    // 작성일 포맷팅
+    const formattedTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
+      let seconds = date.getSeconds().toString().padStart(2, '0')
+
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}:${seconds}`
+    }
+
+    function statusEngToKr(status: string) {
+      if (status === 'BEFORE') {
+        return '처리전'
+      } else if (status === 'PROCESSING') {
+        return '처리중'
+      } else if (status === 'COMPLETE') {
+        return '처리완료'
+      }
+    }
 
     function getReportData() {
       apiClient
@@ -215,7 +239,9 @@ export default defineComponent({
       goReportList,
       goToUpdate,
       statusUpdate,
-      statusNumToStr
+      statusNumToStr,
+      statusEngToKr,
+      formattedTime
     }
   }
 })
@@ -232,7 +258,7 @@ export default defineComponent({
 
 .list-btn {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .report-header {
@@ -251,6 +277,7 @@ export default defineComponent({
 .report-info {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .report-content {
@@ -270,6 +297,6 @@ export default defineComponent({
 
 .report-footer {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 </style>
