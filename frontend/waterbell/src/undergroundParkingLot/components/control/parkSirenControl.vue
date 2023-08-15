@@ -3,11 +3,13 @@
     <img class="siren" :src="sirenImage" />
     <div class="height">
       <img class="water" src="@/assets/images/Megaphone.png" />
-      <div id="state" :class="messageClass">{{ currentState }}</div>
+      <div id="state" :class="messageClass">
+        {{ currentState }}
+      </div>
     </div>
     <div class="height">
       <img class="water" src="@/assets/images/Vector.png" />
-      <div class="heigth-value">{{ currentHeight }}</div>
+      <div class="heigth-value warn-text">{{ currentHeight }}</div>
     </div>
   </div>
 </template>
@@ -131,7 +133,7 @@ export default defineComponent({
 
 #state {
   font-size: 20px;
-  font-family: Roboto;
+  font-family: score;
   font-weight: 600;
   line-height: 70px;
   word-wrap: break-word;
@@ -148,7 +150,7 @@ export default defineComponent({
 .heigth-value {
   color: #114cb1;
   font-size: 20px;
-  font-family: Roboto;
+  font-family: score;
   font-weight: 600;
   line-height: 24px;
   word-wrap: break-word;
@@ -168,5 +170,9 @@ export default defineComponent({
 .red-text {
   color: red;
 }
+
+.warn-text {
+  font-size: 20px;
+  font-family: score;
+}
 </style>
->>>>>>> c8bf90cfab35e601c02dd2b68905663423cd6729
