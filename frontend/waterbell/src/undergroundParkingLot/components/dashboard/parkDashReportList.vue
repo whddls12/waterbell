@@ -2,7 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>최근 신고접수 내역</h3>
+        <h4>최근 신고접수 내역</h4>
       </div>
       <div class="dash-box-content">
         <thead>
