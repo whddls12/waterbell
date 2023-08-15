@@ -114,7 +114,7 @@ const router = createRouter({
     },
     {
       path: '/road/control',
-      name: 'RoadControll',
+      name: 'RoadControl',
       component: RoadControl
     },
     {
