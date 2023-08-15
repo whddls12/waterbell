@@ -15,12 +15,13 @@
     <div class="report-body">
       <div class="report-title-box">
         <div class="report-title">
-          <p>{{ reportInfo?.title }}</p>
+          <div>{{ reportInfo?.title }}</div>
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <p>{{ reportInfo?.name }}</p>
-            <p>{{ reportInfo?.createDate }}</p>
+            <div>{{ reportInfo?.name }}</div>
+            <div>|</div>
+            <div>{{ formattedTime(reportInfo?.createDate) }}</div>
           </div>
           <div class="report-info info-box">
             <select
@@ -36,8 +37,8 @@
                 {{ status.text }}
               </option>
             </select>
-            <p v-else>{{ reportInfo?.status }}</p>
-            <p>{{ reportInfo?.viewCount }}</p>
+            <div v-else>{{ statusEngToKr(reportInfo?.status) }}</div>
+            <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
           </div>
         </div>
       </div>
@@ -65,15 +66,31 @@
       </div>
       <!-- 작성자 -->
       <div v-else>
-        <button @click="goToUpdate(reportInfo?.id)">수정</button>
-        <button @click="openCheckModal">삭제</button>
+        <button @click="openCheckModalUpdate">수정</button>
+        <button @click="openCheckModalDelete">삭제</button>
       </div>
     </div>
+    <!-- 수정 전 비밀번호 확인 -->
+    <div class="password-check-modal" v-if="pwCheckUpdate">
+      <label for="password-check">수정하려면 비밀번호를 입력해주세요</label>
+      <input
+        type="password"
+        id="password-check"
+        v-model="inputPasswordUpdate"
+      />
+      <button @click="goToUpdate(reportInfo?.id)">확인</button>
+      <button @click="pwCheckUpdate = false">취소</button>
+    </div>
     <!-- 삭제 전 비밀번호 확인 -->
-    <div class="password-check-modal" v-if="pwCheckVisible">
-      <label for="password-check">삭제하시려면 비밀번호를 입력해주세요</label>
-      <input type="password" id="password-check" v-model="inputPassword" />
+    <div class="password-check-modal" v-if="pwCheckDelete">
+      <label for="password-check">삭제하려면 비밀번호를 입력해주세요</label>
+      <input
+        type="password"
+        id="password-check"
+        v-model="inputPasswordDelete"
+      />
       <button @click="deleteReport">확인</button>
+      <button @click="pwCheckDelete = false">취소</button>
     </div>
   </div>
 </template>
@@ -98,30 +115,53 @@ export default defineComponent({
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
+    // 글 수정 전 비밀번호 체크를 위한 변수
+    const pwCheckUpdate = ref(false)
+    const inputPasswordUpdate = ref(null)
+
     // 글 삭제 전 비밀번호 체크를 위한 변수
-    const pwCheckVisible = ref(false) // 비밀번호 체크창이 보이는지 여부
-    const inputPassword = ref(null) // 사용자가 입력한 비밀번호
+    const pwCheckDelete = ref(false) // 비밀번호 체크창이 보이는지 여부
+    const inputPasswordDelete = ref(null) // 사용자가 입력한 비밀번호
 
     const reportStatus = ref<string | null>()
     // 신고접수 글 처리상태 리스트
     const statusList = [
       {
-        text: 'BEFORE',
+        text: '처리전',
         value: '0'
       },
       {
-        text: 'PROCESSING',
+        text: '처리중',
         value: '1'
       },
       {
-        text: 'COMPLETE',
+        text: '처리완료',
         value: '2'
       }
     ]
     const selectedStatus = ref('0')
 
-    function openCheckModal() {
-      pwCheckVisible.value = true
+    // 작성일 포맷팅
+    const formattedTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
+      let seconds = date.getSeconds().toString().padStart(2, '0')
+
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}:${seconds}`
+    }
+
+    function openCheckModalDelete() {
+      pwCheckDelete.value = true
+      pwCheckUpdate.value = false
+    }
+
+    function openCheckModalUpdate() {
+      pwCheckUpdate.value = true
+      pwCheckDelete.value = false
     }
 
     function getReportData() {
@@ -147,7 +187,30 @@ export default defineComponent({
     }
 
     function goToUpdate(report_id: any) {
-      router.push({ path: `/road/report/update/${report_id}` })
+      api
+        .post(
+          // 글 비밀번호 검증
+          `/reports/undergroundRoad/board/password/validation/${report_id}`,
+          {
+            boardPassword: inputPasswordUpdate.value
+          }
+        )
+        .then(() => {
+          router.push({ path: `/road/report/update/${report_id}` })
+        })
+        .catch((err) => {
+          alert('비밀번호가 일치하지 않습니다.')
+          console.log(err)
+        })
+    }
+    function statusEngToKr(status: string) {
+      if (status === 'BEFORE') {
+        return '처리전'
+      } else if (status === 'PROCESSING') {
+        return '처리중'
+      } else if (status === 'COMPLETE') {
+        return '처리완료'
+      }
     }
 
     function statusNumToStr() {
@@ -176,16 +239,15 @@ export default defineComponent({
 
     // 글 삭제 (작성자)
     function deleteReport() {
-      console.log('deleteReport')
-      console.log('입력한 비밀번호: ', inputPassword.value)
       api
         .post(
+          // 글 비밀번호 검증
           `/reports/undergroundRoad/board/password/validation/${report_id}`,
           {
-            boardPassword: inputPassword.value
+            boardPassword: inputPasswordDelete.value
           }
         )
-        .then((res) => {
+        .then(() => {
           api
             .get(`/reports/deleteBoard/${report_id}`)
             .then((res) => {
@@ -225,16 +287,21 @@ export default defineComponent({
       reportInfo,
       reportStatus,
       imageList,
-      inputPassword,
-      pwCheckVisible,
-      openCheckModal,
+      inputPasswordUpdate,
+      inputPasswordDelete,
+      pwCheckUpdate,
+      pwCheckDelete,
+      openCheckModalUpdate,
+      openCheckModalDelete,
       getReportData,
       goReportList,
       goToUpdate,
       deleteReport,
       deleteReportManager,
       statusUpdate,
-      statusNumToStr
+      statusNumToStr,
+      statusEngToKr,
+      formattedTime
     }
   }
 })
@@ -251,7 +318,7 @@ export default defineComponent({
 
 .list-btn {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .report-header {
@@ -264,12 +331,13 @@ export default defineComponent({
 
 .report-title-box {
   border-bottom: 1px solid black;
-  text-align: start;
+  text-align: flex-start;
 }
 
 .report-info {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .report-content {
@@ -280,6 +348,7 @@ export default defineComponent({
 
 .info-box {
   gap: 10px;
+  margin: 10px 0px;
 }
 
 .report-image {
@@ -289,6 +358,6 @@ export default defineComponent({
 
 .report-footer {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 </style>
