@@ -1,10 +1,10 @@
 <template lang="">
   <div class="main-container">
-    <div class="header">지하차도 CCTV</div>
+    <div class="title">지하차도 CCTV</div>
     <div class="road-control-cctv-com">
       <RoadControlCctvCom />
     </div>
-    <div class="controll-container">
+    <div class="control-container">
       <RoadControlWarningLightCom />
       <RoadControlLedCom />
     </div>
@@ -43,28 +43,27 @@ export default defineComponent({
   width: 1000px;
 }
 
-.controll-container {
+.control-container {
   width: 1000px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 100px;
   align-self: stretch;
+  margin-bottom: 50px;
 }
 
-.header {
-  display: flex;
-  width: 314px;
-  height: 64.877px;
-  flex-direction: column;
-  justify-content: center;
-  flex-shrink: 0;
-  color: #000;
+.title {
+  color: var(--typography-1, #1c2a53);
   text-align: center;
-  font-family: Roboto;
-  font-size: 24px;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
   font-style: normal;
-  font-weight: 600;
-  line-height: 32px; /* 133.333% */
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 60px;
+  margin-top: 40px;
 }
 </style>
