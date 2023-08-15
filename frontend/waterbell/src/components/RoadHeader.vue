@@ -14,7 +14,9 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
-        <span id="hello-msg">김동현님 어서오세요!</span>
+        <p id="hello-msg" v-if="role === 'PUBLIC_MANAGER'">
+          관리자님 어서오세요!
+        </p>
         <button @click="goToAlarm">알림함</button>
         <button>마이페이지</button>
         <button @click="Logout">로그아웃</button>
@@ -27,25 +29,25 @@
       </div> -->
     </div>
     <!-- 메뉴 내비게이션바 -->
-    <div class="menu-navbar" :key="isManager.toString()">
+    <div class="menu-navbar">
       <div class="each-menu">
         <router-link to="/road/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
       </div>
-      <div class="each-menu" v-show="isManager">
+      <div class="each-menu" v-if="isManager">
         <router-link to="/road/controll">기기제어</router-link>
       </div>
-      <div class="each-menu" v-show="!isManager"></div>
-      <div class="each-menu" v-show="isManager">
+      <div class="each-menu" v-if="!isManager"></div>
+      <div class="each-menu" v-if="isManager">
         <router-link to="/road/systemlog">센서내역</router-link>
       </div>
-      <div class="each-menu" v-show="!isManager"></div>
-      <div class="each-menu" v-show="isManager">
+      <div class="each-menu" v-if="!isManager"></div>
+      <div class="each-menu" v-if="isManager">
         <router-link to="/road/manage">관리</router-link>
       </div>
-      <div class="each-menu" v-show="!isManager"></div>
+      <div class="each-menu" v-if="!isManager"></div>
     </div>
     <!-- 지역 선택 바 -->
     <div class="select-region">
@@ -91,7 +93,7 @@ export default defineComponent({
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
     const role = computed(() => store.getters['auth/role'])
-    const isManager = ref(false)
+    const isManager = ref(role.value === 'PUBLIC_MANAGER')
 
     // const apiClient = apiModule.apiClient
 
@@ -114,7 +116,9 @@ export default defineComponent({
 
     async function Logout() {
       await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
+      router.push({ path: '/' })
+      // window.location.href = '/'
+      // router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {
@@ -238,5 +242,9 @@ a {
 
   width: 50px;
   margin: 10px 10px;
+}
+
+#hello-msg {
+  margin-right: 10px;
 }
 </style>

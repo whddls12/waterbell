@@ -12,7 +12,11 @@
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
-        <div class="select-box park" @click="goToOther1">
+        <div
+          class="select-box park"
+          @click="goToOther1"
+          :class="{ 'orange-border': role == 'APART_MANAGER' }"
+        >
           <div class="select-box-text">
             <div class="service-title">지하주차장</div>
             <div class="service-feature">
@@ -41,7 +45,11 @@
             />
           </div>
         </div>
-        <div class="select-box road" @click="goToOther2">
+        <div
+          class="select-box road"
+          @click="goToOther2"
+          :class="{ 'orange-border': role == 'PUBLIC_MANAGER' }"
+        >
           <div class="select-box-text">
             <div class="service-title">지하차도</div>
             <div class="service-feature">
@@ -60,7 +68,7 @@
           </div>
         </div>
       </div>
-      <button class="button-managerLogin" @click="moveToLogin">
+      <button class="button-managerLogin" @click="moveToLogin" v-show="!role">
         <img class="icon" src="@/assets/images/icon.png" />
         <div class="labelWrap">
           <div class="label">관리자 로그인</div>
@@ -112,6 +120,7 @@ export default defineComponent({
       store.commit('setIspark', true)
       if (shouldNavigateToDashboard) {
         await setParkFacilityId()
+        // window.location.href = '/park/dash'
         router.push('/park/dash')
       }
     }
@@ -120,7 +129,14 @@ export default defineComponent({
     //facilityId 설정하기
 
     function moveToMemberLogin() {
-      if (!isLogin.value) {
+      if (role.value == 'PUBLIC_MANAGER') {
+        alert('지하차도 관리인은 로그아웃 후 다시 시도해주세요.')
+        // router.push('/road/dash')
+        // window.location.href = '/road/dash'
+        return false
+      } else if (
+        !(role.value == 'APART_MEMBER' || role.value == 'APART_MANAGER')
+      ) {
         router.push('/park/login')
         return false
       } else {
@@ -159,6 +175,7 @@ export default defineComponent({
       store.commit('setIsMainpage', false)
       store.commit('setIspark', false)
       router.push('/road/dash')
+      // window.location.href = '/road/dash'
     }
 
     async function setRoadFacilityId() {
@@ -186,7 +203,8 @@ export default defineComponent({
       moveToLogin,
       moveToMemberLogin,
       setParkFacilityId,
-      setRoadFacilityId
+      setRoadFacilityId,
+      role
     }
   }
 })
@@ -354,5 +372,10 @@ router-view {
 
 .page-start {
   height: 900px;
+}
+
+.orange-border {
+  /* border: 10px solid #ffa132; */
+  box-shadow: 0px 0px 10px 0px #ffa132;
 }
 </style>
