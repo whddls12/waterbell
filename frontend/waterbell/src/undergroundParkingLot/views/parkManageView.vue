@@ -8,7 +8,7 @@
         <router-link to="/park/manage/member">입주민관리</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view class="router-view-style"></router-view>
   </div>
 </template>
 
@@ -37,5 +37,12 @@ export default {}
 a {
   color: #10316b;
   text-decoration: none;
+}
+
+.router-view-style {
+  min-height: 500px;
+  min-width: 600px;
+  max-width: 1060px;
+  overflow: hidden;
 }
 </style>

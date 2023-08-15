@@ -1,24 +1,29 @@
 <template lang="">
-  <div class="container">
+  <div class="table-box">
     <div class="title">입주민 관리</div>
     <div class="searchBox">
-      <div>
-        <label>호수</label>
-        <input />
-      </div>
-      <div>
-        <label>이름</label>
-        <input />
-      </div>
+      <form>
+        <div id="inputBox">
+          <label>호수</label>
+          <input id="searchInput" v-model="address" />
+        </div>
+        <div>
+          <label>이름</label>
+          <input id="searchInput" v-model="name" />
+        </div>
+        <button id="searchBtn" @click.prevent="searchMember">
+          <img src="@/assets/images/searchIcon.png" />
+        </button>
+      </form>
     </div>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
           <th scope="col" class="text-center" style="width: 50px">번호</th>
-          <th scope="col" class="text-center" style="width: 400px">호수</th>
+          <th scope="col" class="text-center" style="width: 100px">호수</th>
           <th scope="col" class="text-center" style="width: 150px">이름</th>
-          <th scope="col" class="text-center" style="width: 150px">전화번호</th>
-          <th scope="col" class="text-center" style="width: 150px">가입일자</th>
+          <th scope="col" class="text-center" style="width: 200px">전화번호</th>
+          <th scope="col" class="text-center" style="width: 200px">가입일자</th>
           <th scope="col" class="text-center" style="width: 150px">관리</th>
         </tr>
       </thead>
@@ -101,7 +106,8 @@ export default defineComponent({
     let serachName = ref('') //검색이름
     let searchAddress = ref('') //검색호수
     let apartCode = ref('')
-
+    let name = ref<null | string>(null)
+    let address = ref<null | string>(null)
     let memberList = ref<
       {
         id: number
@@ -157,14 +163,25 @@ export default defineComponent({
     }
 
     const setList = () => {
+      let payload = {
+        apartCode: apartCode.value,
+        page: 1
+      } as any
+
+      // name이 null이 아니면 payload에 추가
+      if (name.value !== null) {
+        payload.name = name.value
+      }
+
+      // address가 null이 아니면 payload에 추가
+      if (address.value !== null) {
+        payload.addressNumber = address.value
+      }
       apiClient
         .post(
           `/management/apartManager/memberList`,
 
-          {
-            apartCode: apartCode.value,
-            page: 1
-          }
+          payload
         )
         .then((res) => {
           console.log(res.data)
@@ -178,7 +195,7 @@ export default defineComponent({
         })
     }
 
-    const setCreatedAt = (dateString) => {
+    const setCreatedAt = (dateString: any) => {
       const date = new Date(dateString)
       const year = date.getFullYear()
       const month = String(date.getMonth() + 1).padStart(2, '0') // +1 이유: getMonth()는 0-11의 값을 반환하기 때문입니다.
@@ -186,12 +203,12 @@ export default defineComponent({
 
       return `${year}-${month}-${day}`
     }
-    const deleteMember = (id) => {
+    const deleteMember = (id: any) => {
       if (confirm('입주민 목록에서 삭제하시겠습니까?')) {
         apiClient.get(`/member/disable/apart_member/${id}`).then((res) => {
           console.log(Request)
           if (res.data.notification == '관리인 해제 완료') {
-            console.log(res.data)
+            setList()
             alert('입주민 삭제가 완료되었습니다.')
           }
         })
@@ -210,7 +227,7 @@ export default defineComponent({
 
       try {
         apiClient
-          .get(`/management/apartManager/memberList`, {
+          .post(`/management/apartManager/memberList`, {
             apartCode: apartCode.value,
             page: currentPage.value
           })
@@ -226,14 +243,34 @@ export default defineComponent({
       }
     }
 
-    const categoryLabel = (cat: string) => {
-      switch (cat) {
-        case 'PLATE':
-          return '차수판'
-        case 'BOARD':
-          return '전광판'
-        default:
-          return ''
+    const searchMember = () => {
+      try {
+        let payload = {
+          apartCode: apartCode.value,
+          page: currentPage.value
+        } as any
+
+        // name이 null이 아니면 payload에 추가
+        if (name.value !== null) {
+          payload.name = name.value
+        }
+
+        // address가 null이 아니면 payload에 추가
+        if (address.value !== null) {
+          payload.addressNumber = address.value
+        }
+        apiClient
+          .post(`/management/apartManager/memberList`, payload)
+          .then((res) => {
+            memberList.value = res.data.list
+            pageNavigation.value = res.data.pageNavigation
+            console.log(memberList.value)
+          })
+          .catch((error) => {
+            memberList.value = []
+          })
+      } catch (error) {
+        memberList.value = []
       }
     }
 
@@ -243,40 +280,80 @@ export default defineComponent({
     })
 
     return {
+      name,
+      address,
       currentPage,
       movePage,
       memberList,
       pageNavigation,
       range,
       goToPage,
-      categoryLabel,
       setCreatedAt,
-      deleteMember
+      deleteMember,
+      searchMember
     }
   }
 })
 </script>
-<style lang="css">
+<style scoped lang="css">
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 10px;
+}
+
+.searchBox {
+  align-self: flex-end;
+}
+
 .thead-dark th {
-  background-color: #343a40 !important;
-  color: white !important;
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
 }
 
 .tr {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  margin: 0 auto;
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
 }
 
 /* 테이블 셀 내용 가운데 정렬 */
 .table th,
 .table td {
   text-align: center;
+  vertical-align: middle;
 }
 
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
 /* 테이블 헤더 글자 크기 및 굵게 */
 .table th {
   font-size: 14px;
@@ -347,28 +424,9 @@ export default defineComponent({
   width: 100%; /* 또는 적당한 %값 */
 }
 
-.title {
-  color: var(--typography-1, #1c2a53);
-  text-align: center;
-  /* 회원가입상자_제목 */
-  font-family: Roboto;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 16px; /* 53.333% */
-  letter-spacing: 3px;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
-
 #category-select {
   margin-bottom: 20px;
   margin-top: 20px;
-}
-
-.searchBox {
-  display: flex;
-  flex-direction: row;
 }
 
 /* 페이지네이션 컨테이너를 아래쪽으로 배치 */
@@ -401,18 +459,5 @@ export default defineComponent({
 
 .datepicker-row > div {
   flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
-}
-.title {
-  color: var(--typography-1, #1c2a53);
-  text-align: center;
-  /* 회원가입상자_제목 */
-  font-family: Roboto;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 16px; /* 53.333% */
-  letter-spacing: 3px;
-  margin-bottom: 20px;
-  margin-top: 20px;
 }
 </style>

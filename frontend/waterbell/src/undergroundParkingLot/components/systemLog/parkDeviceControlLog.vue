@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="container">
+  <div class="table-box">
     <div class="title">기기 제어 로그</div>
     <div class="datepicker-row">
       <div>
@@ -302,27 +302,54 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="css">
+<style scoped lang="css">
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
+}
+
 .thead-dark th {
-  background-color: #343a40 !important;
-  color: white !important;
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
 }
 
 .tr {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  margin: auto;
-}
-
 /* 테이블 셀 내용 가운데 정렬 */
 .table th,
 .table td {
   text-align: center;
+  vertical-align: middle;
 }
 
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
 /* 테이블 헤더 글자 크기 및 굵게 */
 .table th {
   font-size: 14px;
@@ -393,20 +420,42 @@ export default defineComponent({
   width: 100%; /* 또는 적당한 %값 */
 }
 
-.title {
-  color: var(--typography-1, #1c2a53);
-  text-align: center;
-  /* 회원가입상자_제목 */
-  font-family: Roboto;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 16px; /* 53.333% */
-  letter-spacing: 3px;
+#category-select {
   margin-bottom: 20px;
   margin-top: 20px;
 }
 
+/* 페이지네이션 컨테이너를 아래쪽으로 배치 */
+.pagination-container {
+  text-align: center;
+}
+/* 페이지네이션 버튼들을 세로로 배치 */
+.pagination {
+  display: block;
+  margin: 10px auto;
+  width: 200px; /* Adjust the width as needed */
+}
+
+/* 페이지네이션 버튼 스타일 */
+.pagination span {
+  margin: 8px;
+  cursor: pointer;
+}
+
+/* Active page style */
+.pagination .active {
+  text-decoration: underline;
+}
+
+.datepicker-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.datepicker-row > div {
+  flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
+}
 #category-select {
   margin-bottom: 20px;
   margin-top: 20px;
