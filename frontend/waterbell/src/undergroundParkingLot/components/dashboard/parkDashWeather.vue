@@ -48,13 +48,14 @@ declare global {
 }
 import { ref, onMounted, computed, defineComponent } from 'vue'
 import store from '@/store/index'
-import http from '@/types/http'
-import apiModule from '@/types/apiClient'
+import axios from '@/types/apiClient'
 
 export default defineComponent({
   name: 'parkDashWeather',
   setup() {
-    const apiClient = apiModule.apiClient(store)
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -152,7 +153,7 @@ export default defineComponent({
       try {
         // console.log(lon)
         // console.log(lat)
-        const response = await http.get(`/dash/weather`, {
+        const response = await api.get(`/dash/weather`, {
           params: {
             year: year,
             month: month,
@@ -212,7 +213,7 @@ export default defineComponent({
 
     async function getTempAndHumidData() {
       try {
-        const response = await http.get(
+        const response = await api.get(
           `/dash/facilities/${facility_id}/sensors`
         )
 

@@ -19,12 +19,14 @@
 <script lang="ts">
 import Chart from 'chart.js/auto'
 import { ref, onMounted, computed, defineComponent, nextTick } from 'vue'
+import axios from '@/types/apiClient'
 import store from '@/store/index'
-import http from '@/types/http'
 
 export default defineComponent({
   name: 'parkDashDust',
   setup() {
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -34,7 +36,9 @@ export default defineComponent({
 
     async function getDustData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
+        const response = await api.get(
+          `/dash/facilities/${facility_id}/sensors`
+        ) // 10 -> 시설 아이디로 교체해야함.
         console.log(response.data)
         current_dust.value = response.data.Dust
         if (current_dust.value) {
