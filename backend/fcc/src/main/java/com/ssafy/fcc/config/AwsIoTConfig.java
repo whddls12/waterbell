@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 public class AwsIoTConfig {
 
     String clientEndpoint = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com";
-    String clientId = "IoT222123123";
+    String clientId = "IoT222123";
     String awsAccessKeyId = "AKIASBP5HSYQ5IDP7QNO";
     String awsSecretAccessKey = "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";
 
