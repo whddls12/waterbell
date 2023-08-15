@@ -212,6 +212,7 @@ export default defineComponent({
   margin-left: 200px;
   margin-right: 200px;
   margin-top: 50px;
+  margin-bottom: 80px;
 
   display: flex;
   width: 1100px;
