@@ -135,6 +135,11 @@ public class MemberRepository {
         Predicate statePredicate = cb.isTrue(a.get("state"));
         criteria.add(statePredicate);
 
+        //권한이 아파트
+        Predicate apartRole = cb.equal(a.get("role"), Role.APART_MEMBER);
+        criteria.add(apartRole);
+
+
         cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
         final TypedQuery<ApartMember> query = em.createQuery(cq);
 
