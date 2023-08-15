@@ -1,7 +1,8 @@
 <template>
-  <div class="container" id="dash-cctv">
+  <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
+        <i class="fas fa-chart-line"></i>
         <h3>강수량 그래프</h3>
       </div>
       <div class="dash-box-content">
@@ -87,17 +88,43 @@ export default defineComponent({
             {
               label: '강수량 데이터',
               data: amountArr.value,
-              backgroundColor: 'rgba(75, 192, 192, 0.2)',
-              borderColor: 'rgba(75, 192, 192, 1)',
+              backgroundColor: 'rgba(151, 143, 237, 0.2)',
+              borderColor: 'rgba(151, 143, 237, 1)',
               borderWidth: 1
             }
           ]
         },
         // 차트 옵션 설정 (생략 가능)
         options: {
+          elements: {
+            line: {
+              fill: true
+            }
+          },
           scales: {
             y: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시간당 강수량(mm)'
+              },
               beginAtZero: true
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // 범례 제거
             }
           }
         }
@@ -118,7 +145,7 @@ export default defineComponent({
 })
 </script>
 <style>
-#dash-cctv {
+/* #dash-cctv {
   height: 500px;
-}
+} */
 </style>

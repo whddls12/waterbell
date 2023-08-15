@@ -1,6 +1,5 @@
 package com.ssafy.fcc.controller;
 
-import com.ssafy.fcc.MQTT.MqttSubscriber;
 import com.ssafy.fcc.domain.log.CommandType;
 import com.ssafy.fcc.dto.ControlLogDto;
 import com.ssafy.fcc.dto.SensorLogDto;
@@ -20,8 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/system")
 public class SystemController {
-
-    // /system/facilities/{facility_id}/sensors/{category}/logs?period=
 
     private final SystemService systemService;
 
@@ -74,5 +71,10 @@ public class SystemController {
         return result;
     }
 
+    @GetMapping("/manager/facilities/{facilityId}/sensors/HEIGHT/latest")
+    public int getLatestHeightSensor(@PathVariable Integer facilityId){
+        System.out.println("facilityId = " + facilityId);
+        return systemService.getLatestHeightSensor(facilityId);
+    }
 
 }
