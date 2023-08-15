@@ -1,5 +1,6 @@
 <template>
-  <div class="container mt-4">
+  <div class="table-box">
+    <button id="create" @click="createReport">글작성</button>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
@@ -173,6 +174,16 @@ export default defineComponent({
         return '처리완료'
       }
     }
+    const role = computed(() => store.getters['auth/role']).value
+
+    function createReport() {
+      // 권한이 있는 경우 글쓰기 페이지로 이동
+      if (role == 'APART_MANAGER' || role == 'APART_MEMBER') {
+        router.push(`/park/report/create`)
+      } else {
+        alert('글작성 권한이 없습니다.')
+      }
+    }
 
     // 작성일 포맷팅
     const formattedTime = (dateTime: string) => {
@@ -199,9 +210,133 @@ export default defineComponent({
       goToPage,
       setList,
       statusEngToKr,
-      formattedTime
+      formattedTime,
+      createReport
     }
   }
 })
 </script>
-<style></style>
+<style scoped lang="css">
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px; /* 좌우에 20px의 패딩을 추가 */
+  margin: 0px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 10px;
+}
+
+.searchBox {
+  align-self: flex-end;
+}
+
+.thead-dark th {
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
+}
+
+.tr {
+  cursor: pointer;
+}
+
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
+}
+
+/* 테이블 셀 내용 가운데 정렬 */
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
+/* 테이블 헤더 글자 크기 및 굵게 */
+.table th {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 테이블 내용 글자 크기 */
+.table td {
+  font-size: 14px;
+}
+
+/* 테이블 행 높이 조정 */
+.table tbody tr {
+  height: 50px;
+}
+
+/* "등록된 신고접수가 없습니다." 메시지 스타일 */
+.no-data-message {
+  font-size: 16px;
+  font-weight: bold;
+  color: #999;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6; /* 원하는 색상과 크기로 조정 가능 */
+}
+
+/* 페이지네이션 컨테이너를 아래쪽으로 배치 */
+.pagination-container {
+  text-align: center;
+}
+
+/* 페이지네이션 버튼들을 세로로 배치 */
+.pagination {
+  display: block;
+  margin: 10px auto;
+  width: 200px; /* Adjust the width as needed */
+}
+
+/* 페이지네이션 버튼 스타일 */
+.pagination span {
+  margin: 8px;
+  cursor: pointer;
+}
+
+/* Active page style */
+.pagination .active {
+  text-decoration: underline;
+}
+
+#create {
+  gap: 10px;
+  margin: 10px;
+  align-self: flex-end;
+  color: white;
+  border-radius: 10px;
+  background: var(--1, #10316b);
+  display: flex;
+  width: 100px;
+  padding: 5px 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+</style>
