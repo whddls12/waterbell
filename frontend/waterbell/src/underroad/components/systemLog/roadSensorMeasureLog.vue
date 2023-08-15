@@ -1,6 +1,7 @@
 <template lang="">
-  <div class="container mt-4">
+  <div class="container">
     <div class="title">센서 측정 로그</div>
+    <h6>{{ LogFacilityName }}</h6>
     <div class="datepicker-row">
       <div>
         <label>시작일시</label>
@@ -25,14 +26,9 @@
     <div id="category-select">
       <input type="radio" id="height" value="HEIGHT" v-model="category" />
       <label for="height">수위</label>
-      <input
-        type="radio"
-        id="temperature"
-        value="TEMPERATURE"
-        v-model="category"
-      />
-      <label for="temperature">온도</label>
-      <input type="radio" id="humidity" value="HUMIDITY" v-model="category" />
+      <input type="radio" id="TEMP" value="TEMP" v-model="category" />
+      <label for="TEMP">온도</label>
+      <input type="radio" id="humidity" value="HUMID" v-model="category" />
       <label for="humidity">습도</label>
       <input type="radio" id="dust" value="DUST" v-model="category" />
       <label for="dust">미세먼지</label>
@@ -40,48 +36,64 @@
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th scope="col" class="text-center" style="width: 50px">번호</th>
-          <th scope="col" class="text-center" style="width: 400px">시간</th>
-          <th scope="col" class="text-center" style="width: 150px">시설이름</th>
-          <th scope="col" class="text-center" style="width: 150px">구분</th>
-          <th scope="col" class="text-center" style="width: 150px">센서값</th>
+          <!-- <th scope="col" class="text-center" style="width: 50px">번호</th> -->
+          <th scope="col" class="text-center" style="width: 500px">시간</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
+          <th scope="col" class="text-center" style="width: 200px">구분</th>
+          <th scope="col" class="text-center" style="width: 200px">센서값</th>
         </tr>
       </thead>
       <tbody v-if="logList && logList.length">
         <tr
-          v-for="(log, index) in logList"
+          v-for="log in logList"
           :key="log.id"
           class="tr"
           @click="movePage(log.id)"
           align="center"
         >
-          <td>{{ index + 1 }}</td>
-          <td>{{ log.sensorTime }}</td>
-          <td>{{ log.facilityName }}</td>
-          <td>{{ log.category }}</td>
+          <!-- <td>{{ index + 1 }}</td> -->
+          <td>{{ formattedSensorTime(log.sensorTime) }}</td>
+          <!-- <td>{{ log.facilityName }}</td> -->
+          <td>{{ categoryLabel(log.category) }}</td>
           <td>{{ log.value }}</td>
         </tr>
       </tbody>
       <tbody v-else>
         <tr>
-          <td colspan="6" class="text-center">등록된 신고접수가 없습니다.</td>
+          <td colspan="6" class="text-center">해당하는 데이터가 없습니다.</td>
         </tr>
       </tbody>
     </table>
-
     <!-- 페이지네이션 컨트롤 -->
     <div class="pagination-container">
       <div class="pagination">
-        <!-- Page number links -->
+        <!-- 이전 페이지 그룹으로 이동 -->
         <span
-          class="page-item"
-          v-for="page in pageCount"
-          :key="page"
-          :class="{ active: page - 1 === currentPage }"
+          v-if="pageNavigation.startPage > 1"
+          @click.prevent="goToPage(pageNavigation.pre)"
         >
-          <a class="page-link" href="#" @click.prevent="goToPage(page - 1)">{{
-            page
-          }}</a>
+          &laquo;
+        </span>
+
+        <!-- 현재 페이지 그룹의 페이지 숫자들 -->
+        <span
+          v-for="page in range(
+            pageNavigation.startPage,
+            pageNavigation.endPage
+          )"
+          :key="page"
+          :class="{ active: page === pageNavigation.pgno }"
+          @click.prevent="goToPage(page)"
+        >
+          {{ page }}
+        </span>
+
+        <!-- 다음 페이지 그룹으로 이동 -->
+        <span
+          v-if="pageNavigation.endPage < pageNavigation.totalPageCnt"
+          @click.prevent="goToPage(pageNavigation.next)"
+        >
+          &raquo;
         </span>
       </div>
     </div>
@@ -90,65 +102,182 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref, watch } from 'vue'
-import http from '@/types/http'
-import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
-import { mapGetters } from 'vuex'
+import store from '@/store/index'
 import VueDatePicker from '@vuepic/vue-datepicker'
+import axios from '@/types/apiClient'
 import '@vuepic/vue-datepicker/dist/main.css'
 
 export default defineComponent({
   name: 'roadDashReportVue',
-  computed: {
-    ...mapGetters('auth', [
-      'loginUser',
-      'isLogin',
-      'role',
-      'accessToken',
-      'refreshToken'
-    ])
-  },
   components: { VueDatePicker },
-  created() {
-    console.log('로그인한 사용자:', this.loginUser)
-    console.log('로그인 상태:', this.isLogin)
-    console.log('역할:', this.role)
-    console.log('접근 토큰:', this.accessToken)
-    console.log('갱신 토큰:', this.refreshToken)
-  },
-
   setup() {
-    const startDate = ref(new Date()) // 오늘 날짜를 초기값으로 설정
-    const endDate = ref(new Date()) // 오늘 날짜를 초기값으로 설정
-    const ITEMS_PER_PAGE = 10
-    const currentPage = ref(0)
-    const category = ref('')
-    const facilityId = 10
+    const now = new Date()
+    const startDate = ref(new Date(now.getFullYear(), now.getMonth(), 1))
+    const endDate = ref(now)
+    const apiClient = axios.apiClient(store)
+    const category = ref('HEIGHT')
+    const currentPage = ref(1)
+    const facilityId = computed(() => store.getters['auth/facilityId']).value
 
-    const paginatedData = computed(() => {
-      const start = currentPage.value * ITEMS_PER_PAGE
-      const end = start + ITEMS_PER_PAGE
-      return logList.value.slice(start, end)
+    let logList = ref<
+      {
+        id: number
+        sensorTime: string
+        facilityName: string
+        category: string
+        value: number
+      }[]
+    >([])
+
+    let pageNavigation = ref<{
+      pgno: number
+      totalCnt: number
+      totalPageCnt: number
+      startRange: boolean
+      endRange: boolean
+      naviSize: number
+      startPage: number
+      endPage: number
+      pre: number
+      next: number
+      start: number
+    }>({
+      pgno: 1,
+      totalCnt: 0,
+      totalPageCnt: 0,
+      startRange: false,
+      endRange: false,
+      naviSize: 0,
+      startPage: 1,
+      endPage: 1,
+      pre: 0,
+      next: 0,
+      start: 0
     })
 
-    const pageCount = computed(() => {
-      return Math.ceil(logList.value.length / ITEMS_PER_PAGE)
-    })
-
-    const nextPage = () => {
-      if (currentPage.value < pageCount.value - 1) {
-        currentPage.value++
-      }
+    const setList = () => {
+      let formattedStartDate = toLocalDateTime(startDate.value)
+      let formattedEndDate = toLocalDateTime(endDate.value)
+      apiClient
+        .get(
+          `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+          {
+            params: {
+              searchStartDate: formattedStartDate,
+              searchEndDate: formattedEndDate
+            }
+          }
+        )
+        .then((res) => {
+          logList.value = res.data.list
+          pageNavigation.value = res.data.pageNavigation
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
 
-    const prevPage = () => {
-      if (currentPage.value > 0) {
-        currentPage.value--
-      }
+    const range = (start: number, end: number) => {
+      return [...Array(end - start + 1).keys()].map((val) => val + start)
+    }
+
+    const movePage = (alarm_id: any) => {
+      console.log('Clicked on alarm_id:', alarm_id)
     }
 
     const goToPage = (page: number) => {
       currentPage.value = page
+      let formattedStartDate = toLocalDateTime(startDate.value)
+      let formattedEndDate = toLocalDateTime(endDate.value)
+
+      try {
+        apiClient
+          .get(
+            `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+            {
+              params: {
+                searchStartDate: formattedStartDate,
+                searchEndDate: formattedEndDate
+              }
+            }
+          )
+          .then((res) => {
+            logList.value = res.data.list
+            pageNavigation.value = res.data.pageNavigation
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } catch (error) {
+        console.error('Error fetching height data:', error)
+      }
+    }
+
+    watch(category, (newCategory: any) => {
+      category.value = newCategory
+      currentPage.value = 1
+      let formattedStartDate = toLocalDateTime(startDate.value)
+      let formattedEndDate = toLocalDateTime(endDate.value)
+      apiClient
+        .get(
+          `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+          {
+            params: {
+              searchStartDate: formattedStartDate,
+              searchEndDate: formattedEndDate
+            }
+          }
+        )
+        .then((res) => {
+          logList.value = res.data.list
+          pageNavigation.value = res.data.pageNavigation
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    })
+
+    const fetchLogList = (start: any, end: any) => {
+      let formattedStartDate = toLocalDateTime(start)
+      let formattedEndDate = toLocalDateTime(end)
+      currentPage.value = 1
+
+      apiClient
+        .get(
+          `/system/manager/facilities/${facilityId}/sensors/${category.value}/logs/${currentPage.value}`,
+          {
+            params: {
+              searchStartDate: formattedStartDate,
+              searchEndDate: formattedEndDate
+            }
+          }
+        )
+        .then((res) => {
+          logList.value = res.data.list
+          pageNavigation.value = res.data.pageNavigation
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    }
+
+    watch([startDate, endDate], ([newStartDate, newEndDate]) => {
+      fetchLogList(newStartDate, newEndDate)
+    })
+
+    const categoryLabel = (cat: string) => {
+      switch (cat) {
+        case 'HEIGHT':
+          return '수위'
+        case 'TEMP':
+          return '온도'
+        case 'HUMID':
+          return '습도'
+        case 'DUST':
+          return '미세먼지'
+        default:
+          return ''
+      }
     }
 
     function toLocalDateTime(date: any) {
@@ -166,78 +295,38 @@ export default defineComponent({
         .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
     }
 
-    const store = useStore()
+    const formattedSensorTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
 
-    // getters에서 nowUnderroad 가져오기
-    // const nowUnderroad = computed(() => store.getters.nowUnderroad).value
-
-    // const facility_id = computed(() => store.getters['auth/facilityId']).value
-
-    let logList = ref<
-      {
-        id: number
-        sensorTime: string
-        facilityName: string
-        category: string
-        value: number
-      }[]
-    >([])
-
-    const setList = () => {
-      //   const facilityId = computed(() => store.getters['auth/facilityId']).value
-      http
-        .get(`/system/facilities/${facilityId}/sensors/HEIGHT/logs`, {})
-        .then((res) => {
-          logList.value = res.data
-        })
-        .catch((error) => {
-          console.log(error)
-        })
-      console.log(setList)
-    }
-    const movePage = (alarm_id: any) => {
-      console.log('Clicked on alarm_id:', alarm_id)
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
     }
 
-    watch(category, (newCategory: any) => {
-      //   const facilityId = computed(() => store.getters['auth/facilityId']).value
-      if (newCategory) {
-        http
-          .get(
-            `/system/facilities/${facilityId}/sensors/${newCategory}/logs`,
-            {}
-          )
-          .then((res) => {
-            console.log(res)
-            logList.value = res.data
-          })
-          .catch((error) => {
-            console.log(error)
-          })
-      }
-    })
-
-    watch([startDate, endDate], ([newStartDate, newEndDate]) => {
-      let startDate = toLocalDateTime(newStartDate)
-      let endDate = toLocalDateTime(newEndDate)
-      console.log('Start Date:', startDate)
-      console.log('End Date:', endDate)
+    const LogFacilityName = computed(() => {
+      return logList.value.length ? logList.value[0].facilityName : ''
     })
 
     onMounted(() => {
       setList()
     })
+
     return {
-      logList: paginatedData,
+      logList,
       currentPage,
       movePage,
-      nextPage,
-      prevPage,
-      goToPage,
-      pageCount,
       category,
       startDate,
-      endDate
+      endDate,
+      pageNavigation,
+      range,
+      goToPage,
+      categoryLabel,
+      formattedSensorTime,
+      LogFacilityName
     }
   }
 })
@@ -318,14 +407,11 @@ export default defineComponent({
   text-decoration: underline;
 }
 
-.VueDatePicker {
-  height: 50px;
-  width: 50px;
-}
-
 .datepicker-row {
   display: flex;
-  justify-content: space-between; /* 두 요소 사이에 공간을 동일하게 분배 */
+  justify-content: space-between;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
 .datepicker-row > div {
@@ -342,13 +428,13 @@ export default defineComponent({
   text-align: center;
   /* 회원가입상자_제목 */
   font-family: Roboto;
-  font-size: 30px;
+  font-size: 40px;
   font-style: normal;
   font-weight: 500;
   line-height: 16px; /* 53.333% */
   letter-spacing: 3px;
   margin-bottom: 20px;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 #category-select {

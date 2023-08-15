@@ -1,7 +1,11 @@
 package com.ssafy.fcc.controller;
 
+//import com.ssafy.fcc.MQTT.MqttPublisher;
+import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.location.Gugun;
+import com.ssafy.fcc.dto.ApartDto;
+import com.ssafy.fcc.repository.ApartRepository;
 import com.ssafy.fcc.service.FacilityService;
 import com.ssafy.fcc.service.GugunService;
 import lombok.RequiredArgsConstructor;
@@ -9,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +28,7 @@ public class FacilityController {
     public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
     private final FacilityService facilityService;
     private final GugunService gugunService;
+    private final ApartRepository apartRepository;
 
     @GetMapping("/roads")
     public ResponseEntity<List<Map<String, Object>>> undergroundRoadList() {
@@ -72,6 +79,24 @@ public class FacilityController {
 
     }
 
+    @GetMapping("{facility_id}/apart")
+    public ResponseEntity<Map<String, Object>> getApart(@PathVariable("facility_id") int facility_id){
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        Apart apart = apartRepository.findById(facility_id);
+        if(apart==null){
+            status = HttpStatus.NO_CONTENT;
+            resultMap.put("message", "유효하지 않은 facility_id입니다.");
+        }
+        else {
+            status = HttpStatus.ACCEPTED;
+            ApartDto dto = new ApartDto(apart);
+            resultMap.put("apart", dto);
+            resultMap.put("message", "조회 성공");
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
 
 
 }
+

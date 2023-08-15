@@ -14,10 +14,10 @@
         </thead>
         <tbody v-if="reportList.length != 0">
           <tr
-            v-for="report in reportList"
-            :key="report.report_id"
+            v-for="(report, index) in reportList"
+            :key="index"
             class="tr"
-            @click="movePage(report.board_id)"
+            @click="movePage(report.id)"
             align="center"
           >
             <!-- <th scope="row">{{ no }}</th> -->
@@ -27,7 +27,7 @@
           </tr>
         </tbody>
 
-        <tbody v-if="reportList.length == 0">
+        <tbody v-else>
           <td colspan="4" class="text-center">등록된 신고접수가 없습니다.</td>
         </tbody>
       </div>
@@ -61,17 +61,16 @@ export default defineComponent({
       try {
         http.get(`/reports/dash/${facility_id}`).then((res) => {
           //가져온 신고접수 리스트 데이터를 준비된 배열에 넣기.
-          console.log(res.data.list)
+          // console.log(res.data.list)
           reportList.value = res.data.list
         })
       } catch (error) {
-        // hasReport.value = false
-        console.log(error.response)
+        return
       }
     }
     const router = useRouter()
     const movePage = (board_id: any) => {
-      router.push(`/road/report/item?board_id=${board_id}`)
+      router.push(`/road/report/${board_id}/detail`)
     }
     onMounted(() => {
       setList()

@@ -14,20 +14,22 @@ function connectWebSocket(): void {
   if (facilityId.value != null) {
     // WebSocket 연결
     socket = new WebSocket(
-      `ws://localhost:8080/cam?facilityId=${facilityId.value}&camNum=1`
+      `${process.env.VUE_APP_WSAPI}/cam?facilityId=${facilityId.value}&camNum=1`
     )
-    console.log('웹소켓과 연결이 되었습니다.')
+    console.log('cam1 웹소켓과 연결이 되었습니다.')
   }
   // socket.onopen = function () {
   //   socket?.send(`token:${jwtToken.value}`)
   // }
+
   if (socket != null) {
     socket.onmessage = function (event) {
       const data = event.data
-      if (data.camClient1) {
+      // console.log(data)
+      if (JSON.parse(data).camClient1 == 'camClient1') {
         store.commit('setCamClient1', data.camClient1)
       } else {
-        const base64Image = data.temp_img1 // 받아온 이미지 데이터. Base64로 인코딩되어 있다고 가정.
+        const base64Image = JSON.parse(data).temp_img
         console.log('서버로부터 이미지string을 받았습니다: ' + base64Image)
         //이미지 처리 어떻게 할거야
 
@@ -40,7 +42,7 @@ function connectWebSocket(): void {
 
     socket.onclose = function () {
       console.log(
-        'WebSocket 연결이 종료되었습니다. 1초 후 재연결을 시도합니다.'
+        'cam1 WebSocket 연결이 종료되었습니다. 1초 후 재연결을 시도합니다.'
       )
       const imgTag = document.getElementById('cctv1') as HTMLImageElement
 
@@ -49,21 +51,12 @@ function connectWebSocket(): void {
           setTimeout(() => connectWebSocket(), 1000)
         } else return
       } catch (error) {
-        console.log('WebSocket 연결이 더 이상 불가합니다.')
+        console.log('cam1 WebSocket 연결이 더 이상 불가합니다.')
       }
     }
   }
 }
 
-// export function showAlarmModal(modalState): void {
-//   modalState.value = true
-//   // 알림 모달을 표시하는 로직
-// }
-
-// export function closeAlarmModal(modalState): void {
-//   // 알림 모달을 닫는 로직
-//   modalState.value = false
-// }
 function closeWebSocket() {
   socket?.close()
   console.log('웹소켓과의 연결을 끊었습니다.')

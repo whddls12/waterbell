@@ -1,13 +1,7 @@
 <template lang="">
-    <div>
-        
-    </div>
+  <div>미완</div>
 </template>
 <script>
-export default {
-    
-}
+export default {}
 </script>
-<style lang="">
-    
-</style>
+<style lang=""></style>
