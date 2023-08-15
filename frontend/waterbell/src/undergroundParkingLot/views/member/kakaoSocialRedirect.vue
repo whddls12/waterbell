@@ -27,6 +27,7 @@ export default defineComponent({
       if (response.data.type == 'join') {
         //vuex 임시에 이메일 주소 넣어둬야할까?
         const key = response.data.key
+        console.log('회원가입입니다.')
         router.push(`/social-join/extra?key=${key}`)
       } else if (response.data.type == 'login') {
         store.dispatch('auth/socialLogin', response)
