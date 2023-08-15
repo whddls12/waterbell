@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="container">
+  <div class="table-box">
     <div class="title">SMS&웹 알림 발신 로그</div>
     <h6>{{ LogFacilityName }}</h6>
     <div class="datepicker-row">
@@ -283,26 +283,56 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
 .thead-dark th {
-  background-color: #343a40 !important;
-  color: white !important;
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
 }
 
 .tr {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  margin: 0 auto;
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px 0; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
 }
 
+.table {
+  width: 100%;
+}
 /* 테이블 셀 내용 가운데 정렬 */
 .table th,
 .table td {
   text-align: center;
+  vertical-align: middle;
 }
 
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
 /* 테이블 헤더 글자 크기 및 굵게 */
 .table th {
   font-size: 14px;
@@ -318,7 +348,6 @@ export default defineComponent({
 .table tbody tr {
   height: 50px;
 }
-
 /* "등록된 신고접수가 없습니다." 메시지 스타일 */
 .no-data-message {
   font-size: 16px;
@@ -372,20 +401,6 @@ export default defineComponent({
 .VueDatePicker {
   height: 50px;
   width: 100%; /* 또는 적당한 %값 */
-}
-
-.title {
-  color: var(--typography-1, #1c2a53);
-  text-align: center;
-  /* 회원가입상자_제목 */
-  font-family: Roboto;
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 16px; /* 53.333% */
-  letter-spacing: 3px;
-  margin-bottom: 20px;
-  margin-top: 40px;
 }
 
 #category-select {
