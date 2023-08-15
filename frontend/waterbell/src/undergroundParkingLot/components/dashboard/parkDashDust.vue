@@ -4,15 +4,19 @@
       <div class="dash-box-title">
         <i class="fas fa-wind fa-lg"></i>
         <h4>미세먼지</h4>
-        <p>{{ current_dust }}</p>
       </div>
-      <div class="dash-box-content">
+      <div class="dash-box-content dust-box">
         <canvas
           ref="dustChartCanvas"
           id="dustChartCanvas"
           width="400"
           height="180"
         ></canvas>
+        <div class="dust-value">
+          <div class="value-box">
+            {{ current_dust }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -39,7 +43,7 @@ export default defineComponent({
       try {
         const response = await api.get(
           `/dash/facilities/${facility_id}/sensors`
-        ) // 10 -> 시설 아이디로 교체해야함.
+        )
         console.log(response.data)
         current_dust.value = response.data.Dust
         if (current_dust.value) {
@@ -153,8 +157,30 @@ export default defineComponent({
       drawChart(chartRef.value)
     })
 
-    return { chartRef, getDustData }
+    return { chartRef, current_dust, getDustData }
   }
 })
 </script>
-<style></style>
+<style>
+.dust-box {
+  position: relative;
+}
+
+.dust-value {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  left: 205px;
+  top: 135px;
+  font-size: 30px;
+}
+
+.value-box {
+  width: 80px;
+  height: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

@@ -256,7 +256,7 @@ export default defineComponent({
 }
 
 .weather-dash-box > div {
-  width: 140px;
+  width: 155px;
 }
 
 .dash-box-content {

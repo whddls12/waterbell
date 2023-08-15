@@ -120,7 +120,7 @@ export default defineComponent({
 
 #state {
   font-size: 20px;
-  font-family: Roboto;
+  font-family: score;
   font-weight: 600;
   line-height: 70px;
   word-wrap: break-word;
@@ -137,7 +137,7 @@ export default defineComponent({
 .heigth-value {
   color: #114cb1;
   font-size: 20px;
-  font-family: Roboto;
+  font-family: score;
   font-weight: 600;
   line-height: 24px;
   word-wrap: break-word;
