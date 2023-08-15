@@ -6,7 +6,7 @@
         <h2>신고접수</h2>
       </div>
       <div class="list-btn">
-        <button @click="goReportList">목록</button>
+        <button class="list-btn-list" @click="goReportList">목록</button>
         <!-- <button>윗글</button>
         <button>아랫글</button> -->
       </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <p>{{ reportInfo?.name }}</p>
+            <p class="into-status">{{ reportInfo?.name }}</p>
             <p>{{ reportInfo?.createDate }}</p>
           </div>
           <div class="report-info info-box">
@@ -36,7 +36,7 @@
                 {{ status.text }}
               </option>
             </select>
-            <p v-else>{{ reportInfo?.status }}</p>
+            <p class="info-status" v-else>{{ reportInfo?.status }}</p>
             <p>{{ reportInfo?.viewCount }}</p>
           </div>
         </div>
@@ -60,20 +60,33 @@
     <div class="report-footer">
       <!-- 관리자 -->
       <div v-if="role == 'PUBLIC_MANAGER'" class="manager-btn">
-        <button @click="statusUpdate(reportInfo?.id)">수정</button>
-        <button @click="deleteReportManager">삭제</button>
+        <button
+          class="manager-btn-modify"
+          @click="statusUpdate(reportInfo?.id)"
+        >
+          수정
+        </button>
+        <button class="btn-delete" @click="deleteReportManager">삭제</button>
       </div>
       <!-- 작성자 -->
       <div v-else>
-        <button @click="goToUpdate(reportInfo?.id)">수정</button>
-        <button @click="openCheckModal">삭제</button>
+        <button class="btn-modify" @click="goToUpdate(reportInfo?.id)">
+          수정
+        </button>
+        <button class="btn-delete" @click="openCheckModal">삭제</button>
       </div>
     </div>
     <!-- 삭제 전 비밀번호 확인 -->
     <div class="password-check-modal" v-if="pwCheckVisible">
-      <label for="password-check">삭제하시려면 비밀번호를 입력해주세요</label>
-      <input type="password" id="password-check" v-model="inputPassword" />
-      <button @click="deleteReport">확인</button>
+      <label for="password-check">삭제하시려면 비밀번호를 입력해주세요</label
+      ><br />
+      <input
+        class="password-input"
+        type="password"
+        id="password-check"
+        v-model="inputPassword"
+      />
+      <button class="password-check-btn" @click="deleteReport">확인</button>
     </div>
   </div>
 </template>
@@ -254,6 +267,25 @@ export default defineComponent({
   justify-content: start;
 }
 
+.list-btn-list {
+  display: flex;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--1, #10316b);
+  color: var(--1, #10316b);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
+}
+
 .report-header {
   border-bottom: 2px solid black;
 }
@@ -263,19 +295,28 @@ export default defineComponent({
 }
 
 .report-title-box {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #939393;
   text-align: start;
 }
 
 .report-info {
   display: flex;
   justify-content: space-between;
+  color: var(--unnamed, #939393);
+  text-align: center;
+
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 140% */
+  letter-spacing: 0.25px;
 }
 
 .report-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 20px;
 }
 
 .info-box {
@@ -290,5 +331,90 @@ export default defineComponent({
 .report-footer {
   display: flex;
   justify-content: end;
+}
+
+.btn-modify {
+  width: 101px;
+  margin: 10px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  /* background: #ffa132; */
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  border: 1px solid var(--unnamed, #ffa132);
+  background-color: #ffa132;
+  color: #fff;
+  text-align: center;
+}
+
+.btn-delete {
+  margin: 10px 10px 10px 0;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--unnamed, #ffa132);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
+  color: var(--unnamed, #ffa132);
+  text-align: center;
+}
+
+.report-title {
+  color: #000;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px; /* 140% */
+  letter-spacing: 0.25px;
+  margin: 5px;
+}
+
+.info-status {
+  color: var(--ing, #0d7e83);
+}
+
+.password-check-modal {
+  gap: 10px;
+}
+
+.password-input {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(217, 217, 217, 0);
+  line-height: 10px; /* 128.571% */
+}
+
+.password-check-btn {
+  margin: 5px;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--1, #10316b);
+  color: var(--1, #10316b);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
 }
 </style>
