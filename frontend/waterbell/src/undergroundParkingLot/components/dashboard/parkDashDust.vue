@@ -115,6 +115,8 @@ export default defineComponent({
           ]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           // plugin이 있어야 적용될거같음.
           elements: {
             center: {
