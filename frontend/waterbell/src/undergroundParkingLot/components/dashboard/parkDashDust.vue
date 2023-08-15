@@ -2,6 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
+        <i class="fas fa-wind fa-lg"></i>
         <h4>미세먼지</h4>
         <p>{{ current_dust }}</p>
       </div>
