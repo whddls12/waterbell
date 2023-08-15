@@ -32,10 +32,11 @@ function connectWebSocket(): void {
         const base64Image = JSON.parse(data).temp_img
         console.log('서버로부터 이미지string을 받았습니다: ' + base64Image)
         //이미지 처리 어떻게 할거야
-
+        store.dispatch('setCctvImg1', base64Image)
+        const imgString = store.getters['auth/cctvImg1']
         // 이미지를 화면에 표시할 요소 생성
         const imgTag = document.getElementById('cctv1') as HTMLImageElement
-        imgTag.src = 'data:image/jpeg;base64,' + base64Image
+        imgTag.src = 'data:image/jpeg;base64,' + imgString.value
       }
     }
     // 알림이 도착하면 알림 아이콘을 표시합니다.
