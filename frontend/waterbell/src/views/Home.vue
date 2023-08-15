@@ -210,7 +210,7 @@ export default defineComponent({
   margin-top: 50px;
 
   display: flex;
-  width: 1150px;
+  width: 1100px;
   padding: 80px 0px;
   flex-direction: column;
   align-items: center;

@@ -25,10 +25,10 @@
           <input type="text" v-model="report.boardPassword" />
         </div>
       </div>
-      <div class="report-box title">
+      <div class="report-box titleName">
         <div class="report-subtitle"><h5 style="margin: 0px">제목</h5></div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.title" />
+          <input type="text" style="width: 800px" v-model="report.title" />
         </div>
       </div>
       <div class="report-box content">
@@ -249,7 +249,7 @@ export default defineComponent({
 .report-page-title {
   color: #000;
   text-align: center;
-  font-family: Roboto;
+  /* font-family: Roboto; */
   font-size: 30px;
   font-style: normal;
   font-weight: 600;
@@ -259,7 +259,7 @@ export default defineComponent({
 }
 
 .report-page-title h1 {
-  font-family: Roboto;
+  /* font-family: Roboto; */
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
@@ -299,15 +299,17 @@ export default defineComponent({
 } */
 
 .report-file-list > .report-file-list-name {
-  width: 850px;
+  width: 800px;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 20%);
   /* background: rgba(217, 217, 217, 0); */
   /* border: 1px solid #939393; */
   padding: 10px;
-  height: 28px;
+  /* height: 28px; */
   /* color: #939393; */
   text-align: start;
+  display: flex;
+  gap: 10px;
 }
 
 .report-filebox {
@@ -355,7 +357,7 @@ export default defineComponent({
 .report-create-container h5 {
   color: #000;
   text-align: center;
-  font-family: Roboto;
+  /* font-family: Roboto; */
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
@@ -363,16 +365,20 @@ export default defineComponent({
   letter-spacing: 0.25px;
   margin: 0px, 0px;
 }
+
 input {
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 20%);
   background: rgba(217, 217, 217, 0);
+  margin: 10px;
 }
+
 textarea {
-  width: 850px;
+  width: 800px;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 20%);
   background: rgba(217, 217, 217, 0);
+  margin: 10px;
 }
 
 /* 하단 버튼 */
@@ -399,7 +405,7 @@ textarea {
   color: #fff;
   text-align: center;
   /* Button */
-  font-family: Roboto;
+  /* font-family: Roboto; */
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
@@ -422,7 +428,7 @@ textarea {
   color: #fff;
   text-align: center;
   /* Button */
-  font-family: Roboto;
+  /* font-family: Roboto; */
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
