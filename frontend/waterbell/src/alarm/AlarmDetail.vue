@@ -1,52 +1,48 @@
 <template>
-  <div class="container mt-4">
-    <h5 class="my-4">알림 상세</h5>
+  <div class="mt-4">
+    <h5 class="title">알림 상세</h5>
+    <button @click="goBackToList" class="listBtn">목록</button>
     <div class="card">
       <div class="card-body">
         <div class="row mb-3">
-          <label class="col-2 col-form-label fw-bold">내용:</label>
+          <label class="col-2 col-form-label fw-bold">알림 종류</label>
+          <div class="col-10">
+            <p class="form-control-plaintext">{{ alarm.alarmType }}</p>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <label class="col-2 col-form-label fw-bold">발신자</label>
           <div class="col-10">
             <p class="form-control-plaintext">
-              <b>내용:</b> {{ alarm.content }}
+              {{ alarm.sender }}
             </p>
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-2 col-form-label fw-bold">알림 종류:</label>
+          <label class="col-2 col-form-label fw-bold">등록일시</label>
           <div class="col-10">
             <p class="form-control-plaintext">
-              <b>알림 종류:</b> {{ alarm.alarmType }}
+              {{ alarm.regDate }}
             </p>
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-2 col-form-label fw-bold">발신자:</label>
+          <label class="col-2 col-form-label fw-bold">수신확인</label>
           <div class="col-10">
             <p class="form-control-plaintext">
-              <b>발신자:</b> {{ alarm.sender }}
+              {{ alarm.status }}
             </p>
           </div>
         </div>
         <div class="row mb-3">
-          <label class="col-2 col-form-label fw-bold">등록일시:</label>
+          <label class="col-2 col-form-label fw-bold">내용</label>
           <div class="col-10">
             <p class="form-control-plaintext">
-              <b>등록일시:</b> {{ alarm.regDate }}
-            </p>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <label class="col-2 col-form-label fw-bold">처리상태:</label>
-          <div class="col-10">
-            <p class="form-control-plaintext">
-              <b>처리상태:</b> {{ alarm.status }}
+              {{ alarm.content }}
             </p>
           </div>
         </div>
       </div>
-    </div>
-    <div class="mt-4">
-      <button @click="goBackToList" class="btn btn-primary">목록</button>
     </div>
   </div>
 </template>
@@ -107,7 +103,20 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped lang="css">
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
 .container {
   width: 90%;
   margin: 0 auto;
@@ -117,6 +126,7 @@ export default defineComponent({
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 20px;
+  margin-bottom: 50px;
 }
 
 .label {
@@ -136,5 +146,27 @@ export default defineComponent({
 /* 문단 간 테두리 스타일 */
 .card-body > .row:not(:last-child) {
   border-bottom: 1px solid #e2e8f0;
+}
+
+.listBtn {
+  display: flex;
+  width: 99px;
+  margin: 20px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 5px;
+  border: 1px solid var(--1, #10316b);
+  background-color: #f2f7ff;
+  color: var(--1, #10316b);
+  text-align: center;
+  /* Subtitle2 */
+  font-family: score;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px; /* 128.571% */
+  letter-spacing: 0.1px;
 }
 </style>
