@@ -375,9 +375,12 @@ public class BoardController {
 
     //아파트 글쓰기
     @PostMapping(path  = "/write/apartMember/{facilityId}", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> writeApartBoard(
+    public  ResponseEntity<Map<String, Object>> writeApartBoard(
             @PathVariable("facilityId") int facilityId, ApartBoardRequestDto boardDto) throws IllegalStateException, IOException  {
 
+
+        Map<String, Object> resultMap= new HashMap<>();
+        HttpStatus status = null;
 
         int memberId = Integer.parseInt(SecurityContextHolder.getContext().getAuthentication().getName());
         Apart apart = (Apart) facilityService.findById(facilityId);
@@ -397,10 +400,15 @@ public class BoardController {
         try {
             final Integer apartBoardId = apartBoardService.writeApartBoard(apartBoard, boardDto.getUploadedfiles());
             apartBoardService.sendWebNotification(memberId,apartBoardId);
-            return new ResponseEntity<String>("success", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("fail", HttpStatus.NO_CONTENT);
+            resultMap.put("message", "success");
+            resultMap.put("id", apartBoardId);
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e){
+            resultMap.put("message", "fail");
+            resultMap.put("exception", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
     //아파트 신고접수 목록 - 페이징 처리
