@@ -1,5 +1,4 @@
-div
-<template lang="">
+<template>
   <div>
     <h2>로그인</h2>
 

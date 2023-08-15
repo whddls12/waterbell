@@ -1,6 +1,6 @@
 <template lang="">
-  <div class="container mt-4">
-    <div><h1>알림함</h1></div>
+  <div class="table-box mt-4">
+    <div class="title"><h1>알림함</h1></div>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
@@ -9,7 +9,7 @@
           <th scope="col" class="text-center" style="width: 150px">알림종류</th>
           <th scope="col" class="text-center" style="width: 150px">발신자</th>
           <th scope="col" class="text-center" style="width: 150px">등록일시</th>
-          <th scope="col" class="text-center" style="width: 150px">처리상태</th>
+          <th scope="col" class="text-center" style="width: 100px">처리상태</th>
         </tr>
       </thead>
       <tbody v-if="AlarmList && AlarmList.length">
@@ -20,7 +20,7 @@
           @click="movePage(alarm.id)"
           align="center"
         >
-          <td>{{ index + 1 }}</td>
+          <td>{{ currentIndex(index) }}</td>
           <td>{{ alarm.content }}</td>
           <td>{{ alarm.alarmType }}</td>
           <td>{{ alarm.sender }}</td>
@@ -84,6 +84,9 @@ export default defineComponent({
     const apiClient = axios.apiClient(store)
     const role = computed(() => store.getters['auth/role']).value
     const router = useRouter()
+    let currentIndex = (index: any) => {
+      return (currentPage.value - 1) * 10 + index + 1
+    }
     let AlarmList = ref<
       {
         id: string
@@ -156,6 +159,7 @@ export default defineComponent({
       setList()
     })
     return {
+      currentIndex,
       AlarmList,
       currentPage,
       movePage,
@@ -166,27 +170,65 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="css">
+<style scoped lang="css">
+.router-box {
+  display: flex;
+  min-height: 500px;
+  min-width: 600px;
+  width: 100%;
+
+  overflow: hidden;
+}
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
 .thead-dark th {
-  background-color: #343a40 !important;
-  color: white !important;
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
 }
 
 .tr {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  margin: 0 auto;
+.table-box {
+  display: flex;
+  flex-direction: column;
+  /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px 0; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px 10px; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
 }
 
+/* .table {
+  width: 100%;
+} */
 /* 테이블 셀 내용 가운데 정렬 */
 .table th,
 .table td {
   text-align: center;
+  vertical-align: middle;
 }
 
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
 /* 테이블 헤더 글자 크기 및 굵게 */
 .table th {
   font-size: 14px;
@@ -202,7 +244,6 @@ export default defineComponent({
 .table tbody tr {
   height: 50px;
 }
-
 /* "등록된 신고접수가 없습니다." 메시지 스타일 */
 .no-data-message {
   font-size: 16px;
@@ -217,5 +258,28 @@ export default defineComponent({
 .table-bordered th,
 .table-bordered td {
   border: 1px solid #dee2e6; /* 원하는 색상과 크기로 조정 가능 */
+}
+
+/* 페이지네이션 컨테이너를 아래쪽으로 배치 */
+.pagination-container {
+  text-align: center;
+}
+
+/* 페이지네이션 버튼들을 세로로 배치 */
+.pagination {
+  display: block;
+  margin: 10px auto;
+  width: 200px; /* Adjust the width as needed */
+}
+
+/* 페이지네이션 버튼 스타일 */
+.pagination span {
+  margin: 8px;
+  cursor: pointer;
+}
+
+/* Active page style */
+.pagination .active {
+  text-decoration: underline;
 }
 </style>

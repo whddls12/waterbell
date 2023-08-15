@@ -2,7 +2,8 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>미세먼지</h3>
+        <i class="fas fa-wind fa-lg"></i>
+        <h4>미세먼지</h4>
         <p>{{ current_dust }}</p>
       </div>
       <div class="dash-box-content">
@@ -10,7 +11,7 @@
           ref="dustChartCanvas"
           id="dustChartCanvas"
           width="400"
-          height="200"
+          height="180"
         ></canvas>
       </div>
     </div>
@@ -19,12 +20,14 @@
 <script lang="ts">
 import Chart from 'chart.js/auto'
 import { ref, onMounted, computed, defineComponent, nextTick } from 'vue'
+import axios from '@/types/apiClient'
 import store from '@/store/index'
-import http from '@/types/http'
 
 export default defineComponent({
   name: 'parkDashDust',
   setup() {
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -34,7 +37,9 @@ export default defineComponent({
 
     async function getDustData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
+        const response = await api.get(
+          `/dash/facilities/${facility_id}/sensors`
+        ) // 10 -> 시설 아이디로 교체해야함.
         console.log(response.data)
         current_dust.value = response.data.Dust
         if (current_dust.value) {
@@ -111,6 +116,8 @@ export default defineComponent({
           ]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           // plugin이 있어야 적용될거같음.
           elements: {
             center: {

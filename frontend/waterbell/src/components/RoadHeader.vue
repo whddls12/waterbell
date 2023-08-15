@@ -21,37 +21,31 @@
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
 
-      <div class="header-btn" v-else>
+      <!-- <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
         <button @click="goToJoin">회원가입</button>
-      </div>
+      </div> -->
     </div>
     <!-- 메뉴 내비게이션바 -->
-    <div class="menu-navbar">
+    <div class="menu-navbar" :key="isManager.toString()">
       <div class="each-menu">
-        <router-link to="/road/dash">대시보드</router-link>
+        <router-link to="/road/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/road/controll">제어</router-link>
+      <div class="each-menu" v-show="isManager">
+        <router-link to="/road/controll">기기제어</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/road/systemlog">시스템 로그</router-link>
+      <div class="each-menu" v-show="!isManager"></div>
+      <div class="each-menu" v-show="isManager">
+        <router-link to="/road/systemlog">센서내역</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
+      <div class="each-menu" v-show="!isManager"></div>
+      <div class="each-menu" v-show="isManager">
         <router-link to="/road/manage">관리</router-link>
       </div>
+      <div class="each-menu" v-show="!isManager"></div>
     </div>
     <!-- 지역 선택 바 -->
     <div class="select-region">
@@ -65,7 +59,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, watch } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/index'
 // import { useStore } from 'vuex'
@@ -136,6 +130,7 @@ export default defineComponent({
     const checkRole = async () => {
       if (role.value == 'PUBLIC_MANAGER') isManager.value = true
       else isManager.value = false
+      await nextTick()
     }
 
     onMounted(async () => {
