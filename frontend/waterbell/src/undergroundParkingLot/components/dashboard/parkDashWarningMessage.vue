@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="container">
-      <div>
+      <div id="warningmsgBox">
         <p id="message" :class="messageClass" v-text="message"></p>
       </div>
     </div>
@@ -53,6 +53,14 @@ export default defineComponent({
 })
 </script>
 <style scoped lang="css">
+#warningmsgBox {
+  display: flex;
+  justify-content: center; /* 가로 중앙 정렬 */
+  align-items: center; /* 세로 중앙 정렬 */
+  height: 50px;
+  padding-top: 10px;
+}
+
 #message {
   color: red;
   /* 경고문구 */
@@ -62,11 +70,17 @@ export default defineComponent({
   font-weight: 600;
   line-height: 10px; /* 184.615% */
   letter-spacing: 7px;
+  align-self: center;
+  padding: 5px;
 }
 .blue-text {
-  color: var(blue, #f02f2f);
+  color: var(--blue, #f02f2f);
 }
 .red-text {
   color: red;
+}
+
+#warningmsgBox {
+  display: flex;
 }
 </style>
