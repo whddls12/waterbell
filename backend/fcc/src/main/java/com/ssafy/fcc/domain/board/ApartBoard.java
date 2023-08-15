@@ -24,9 +24,8 @@ public class ApartBoard {
     @JsonIgnore
     private Apart apart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "member_id")
-    @JsonIgnore
     private ApartMember apartMember;
 
     private String title;
