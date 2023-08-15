@@ -41,7 +41,7 @@ import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
-
+import parkManageMember from '@/undergroundParkingLot/components/manage/parkResidentList.vue'
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
 import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDeviceAlarmLog.vue'
@@ -268,7 +268,10 @@ const router = createRouter({
       path: '/park/manage',
       name: 'ParkManage',
       component: ParkManage,
-      children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
+      children: [
+        { path: 'custom', name: 'parkCustom', component: parkCustom },
+        { path: 'member', name: 'manageMember', component: parkManageMember }
+      ]
     },
     {
       path: '/park/controll',

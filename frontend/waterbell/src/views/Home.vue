@@ -69,11 +69,11 @@
     </div>
 
     <!-- 서비스 화면 -->
-    <div v-else>
+    <div class="service" v-else>
       <ParkHeader v-if="isPark" />
       <RoadHeader v-else />
       <div class="router-view-container">
-        <router-view></router-view>
+        <router-view class="router-view"></router-view>
       </div>
       <footer></footer>
     </div>
@@ -193,6 +193,10 @@ export default defineComponent({
 </script>
 
 <style>
+.service {
+  width: 100%;
+}
+
 .home {
   width: 100%;
 }
@@ -336,5 +340,14 @@ router-view {
   font-weight: 600;
   line-height: 32px;
   word-wrap: break-word;
+}
+
+.router-view {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.page-start {
+  height: 900px;
 }
 </style>

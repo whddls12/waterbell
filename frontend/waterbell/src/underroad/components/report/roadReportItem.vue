@@ -6,7 +6,7 @@
         <h2>신고접수</h2>
       </div>
       <div class="list-btn">
-        <button @click="goReportList">목록</button>
+        <button class="list-btn-list" @click="goReportList">목록</button>
         <!-- <button>윗글</button>
         <button>아랫글</button> -->
       </div>
@@ -19,7 +19,7 @@
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <div>{{ reportInfo?.name }}</div>
+            <div class="into-status">{{ reportInfo?.name }}</div>
             <div>|</div>
             <div>{{ formattedTime(reportInfo?.createDate) }}</div>
           </div>
@@ -37,7 +37,10 @@
                 {{ status.text }}
               </option>
             </select>
-            <div v-else>{{ statusEngToKr(reportInfo?.status) }}</div>
+
+            <div v-else class="info-status">
+              {{ statusEngToKr(reportInfo?.status) }}
+            </div>
             <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
           </div>
         </div>
@@ -61,13 +64,18 @@
     <div class="report-footer">
       <!-- 관리자 -->
       <div v-if="role == 'PUBLIC_MANAGER'" class="manager-btn">
-        <button @click="statusUpdate(reportInfo?.id)">수정</button>
-        <button @click="deleteReportManager">삭제</button>
+        <button
+          class="manager-btn-modify"
+          @click="statusUpdate(reportInfo?.id)"
+        >
+          수정
+        </button>
+        <button class="btn-delete" @click="deleteReportManager">삭제</button>
       </div>
       <!-- 작성자 -->
       <div v-else>
-        <button @click="openCheckModalUpdate">수정</button>
-        <button @click="openCheckModalDelete">삭제</button>
+        <button class="btn-modify" @click="openCheckModalUpdate">수정</button>
+        <button class="btn-delete" @click="openCheckModalDelete">삭제</button>
       </div>
     </div>
     <!-- 수정 전 비밀번호 확인 -->
@@ -321,6 +329,25 @@ export default defineComponent({
   justify-content: flex-start;
 }
 
+.list-btn-list {
+  display: flex;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--1, #10316b);
+  color: var(--1, #10316b);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
+}
+
 .report-header {
   border-bottom: 2px solid black;
 }
@@ -330,20 +357,28 @@ export default defineComponent({
 }
 
 .report-title-box {
-  border-bottom: 1px solid black;
-  text-align: flex-start;
+  border-bottom: 1px solid #939393;
+  text-align: start;
 }
 
 .report-info {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  color: var(--unnamed, #939393);
+  text-align: center;
+
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 140% */
+  letter-spacing: 0.25px;
 }
 
 .report-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 20px;
 }
 
 .info-box {
@@ -359,5 +394,90 @@ export default defineComponent({
 .report-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+.btn-modify {
+  width: 101px;
+  margin: 10px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  /* background: #ffa132; */
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  border: 1px solid var(--unnamed, #ffa132);
+  background-color: #ffa132;
+  color: #fff;
+  text-align: center;
+}
+
+.btn-delete {
+  margin: 10px 10px 10px 0;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--unnamed, #ffa132);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
+  color: var(--unnamed, #ffa132);
+  text-align: center;
+}
+
+.report-title {
+  color: #000;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px; /* 140% */
+  letter-spacing: 0.25px;
+  margin: 5px;
+}
+
+.info-status {
+  color: var(--ing, #0d7e83);
+}
+
+.password-check-modal {
+  gap: 10px;
+}
+
+.password-input {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(217, 217, 217, 0);
+  line-height: 10px; /* 128.571% */
+}
+
+.password-check-btn {
+  margin: 5px;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--1, #10316b);
+  color: var(--1, #10316b);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
 }
 </style>

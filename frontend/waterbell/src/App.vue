@@ -11,9 +11,6 @@
       Launch demo modal
     </button> -->
 
-    <!-- <button @click="toggleWaterModal">모달 열기</button>
-    <button @click="toggleBoardModal">신고접수 모달 열기</button> -->
-
     <!-- Modal -->
     <!-- -------------------------------침수관련 모달 ------------------------------------ -->
     <div class="modal fade" id="waterModal" ref="waterModalRef">
@@ -153,21 +150,6 @@ export default defineComponent({
     let waterModalInstance: bootstrap.Modal | null = null
     let boardModalInstance: bootstrap.Modal | null = null
 
-    const toggleWaterModal = () => {
-      store.dispatch('toggleWaterModal')
-      // if (waterModalInstance) {
-      //   if (store.state.showWaterModal) {
-      //     waterModalInstance.show()
-      //   } else {
-      //     waterModalInstance.hide()
-      //   }
-      // }
-    }
-
-    const toggleBoardModal = () => {
-      store.dispatch('toggleBoardModal')
-    }
-
     const setWaterModal = () => {
       // console.log('onMounted에서 모달이 set됩니다.')
       const element = document.getElementById('waterModal')
@@ -287,11 +269,9 @@ export default defineComponent({
       waterNotification,
       closeWaterModal,
       closeBoardModal,
-      toggleWaterModal,
       setWaterModal,
       moveToControl,
       isControlBtn,
-      toggleBoardModal,
       boardNotification,
       moveToBoardDetail,
       waterModalRef,
