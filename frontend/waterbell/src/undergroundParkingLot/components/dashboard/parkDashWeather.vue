@@ -4,8 +4,8 @@
       <!-- 날씨 -->
       <div class="dash-box">
         <div class="dash-box-title">
-          <i class="fas fa-cloud dash-box-icon"></i>
-          <h3>날씨</h3>
+          <i class="fas fa-cloud fa-lg dash-box-icon"></i>
+          <h4>날씨</h4>
         </div>
         <div class="dash-box-content">
           <img
@@ -21,21 +21,18 @@
       <!-- 기온 -->
       <div class="dash-box">
         <div class="dash-box-title">
-          <i class="fas fa-thermometer-three-quarters"></i>
-          <h3>기온</h3>
+          <i class="fas fa-thermometer-three-quarters fa-lg"></i>
+          <h4>기온</h4>
         </div>
-        <div class="dash-box-content">
-          {{ current_temp }}
-        </div>
+        <div class="dash-box-content">{{ current_temp }} ℃</div>
       </div>
       <!-- 습도 -->
       <div class="dash-box">
         <div class="dash-box-title">
-          <h3>습도</h3>
+          <i class="fas fa-tint fa-lg"></i>
+          <h4>습도</h4>
         </div>
-        <div class="dash-box-content">
-          {{ current_humid }}
-        </div>
+        <div class="dash-box-content">{{ current_humid }} ％</div>
       </div>
     </div>
   </div>
@@ -48,13 +45,14 @@ declare global {
 }
 import { ref, onMounted, computed, defineComponent } from 'vue'
 import store from '@/store/index'
-import http from '@/types/http'
-import apiModule from '@/types/apiClient'
+import axios from '@/types/apiClient'
 
 export default defineComponent({
   name: 'parkDashWeather',
   setup() {
-    const apiClient = apiModule.apiClient(store)
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -152,7 +150,7 @@ export default defineComponent({
       try {
         // console.log(lon)
         // console.log(lat)
-        const response = await http.get(`/dash/weather`, {
+        const response = await api.get(`/dash/weather`, {
           params: {
             year: year,
             month: month,
@@ -212,7 +210,7 @@ export default defineComponent({
 
     async function getTempAndHumidData() {
       try {
-        const response = await http.get(
+        const response = await api.get(
           `/dash/facilities/${facility_id}/sensors`
         )
 
@@ -251,14 +249,6 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-/* .container {
-  display: flex;
-  flex-direction: column;
-  width: 480px;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #f2f7ff;
-} */
 /* 날씨 기온 습도를 합치기 위함 */
 .weather-dash-box {
   display: flex;
@@ -266,6 +256,15 @@ export default defineComponent({
 }
 
 .weather-dash-box > div {
-  width: 100px;
+  width: 140px;
+}
+
+.dash-box-content {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 30px;
 }
 </style>

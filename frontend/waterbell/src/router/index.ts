@@ -41,12 +41,17 @@ import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
 import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
-
+import parkManageMember from '@/undergroundParkingLot/components/manage/parkResidentList.vue'
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
 import parkAlarmLog from '../undergroundParkingLot/components/systemLog/parkDeviceAlarmLog.vue'
 import parkDeviceStatusLog from '../undergroundParkingLot/components/systemLog/parkDeviceStatusLog.vue'
 import parkDeviceControlLog from '../undergroundParkingLot/components/systemLog/parkDeviceControlLog.vue'
+
+// 지하주차장 신고접수
+import parkReportItem from '../undergroundParkingLot/components/report/parkReportListItem.vue'
+import parkReportCreate from '../undergroundParkingLot/components/report/parkCreateReport.vue'
+import parkReportUpdate from '../undergroundParkingLot/components/report/parkReportUpdate.vue'
 
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
@@ -221,10 +226,24 @@ const router = createRouter({
       name: 'ParkDash',
       component: ParkDash
     },
+    // 지하주차장 신고접수
     {
       path: '/park/report',
       name: 'ParkReport',
       component: ParkReport
+    },
+    {
+      path: '/park/report/create', // 신고접수 등록
+      name: 'ParkReportCreate',
+      component: parkReportCreate
+    },
+    {
+      path: '/park/report/update/:report_id', // 신고접수 업데이트
+      component: parkReportUpdate
+    },
+    {
+      path: '/park/report/:report_id/detail', // 신고접수 상세
+      component: parkReportItem
     },
     {
       path: '/park/systemlog',
@@ -249,7 +268,10 @@ const router = createRouter({
       path: '/park/manage',
       name: 'ParkManage',
       component: ParkManage,
-      children: [{ path: 'custom', name: 'parkCustom', component: parkCustom }]
+      children: [
+        { path: 'custom', name: 'parkCustom', component: parkCustom },
+        { path: 'member', name: 'manageMember', component: parkManageMember }
+      ]
     },
     {
       path: '/park/controll',
