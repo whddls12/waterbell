@@ -1,6 +1,6 @@
 <template>
   <div class="report-create-container">
-    <div class="report-page-title"><h1>신고접수 글쓰기</h1></div>
+    <div class="report-page-title"><h1>신고접수 수정</h1></div>
     <div class="report-write">
       <div class="report-box report-title">
         <div class="report-subtitle">제목</div>
@@ -19,7 +19,17 @@
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
-              {{ getSelectedFileNames }}
+              <div v-for="(image, index) in imageList" :key="index">
+                {{ image?.imageName }}
+                <i @click="deleteFile(image?.id)" class="fas fa-backspace"></i>
+              </div>
+              <div v-for="(file, index) in selectedFiles" :key="index">
+                {{ file.name }}
+                <i
+                  @click="unselectFile(file.name)"
+                  class="fas fa-backspace"
+                ></i>
+              </div>
             </div>
           </div>
           <div class="report-file-attach">
@@ -46,42 +56,38 @@
       </div>
     </div>
     <div class="report-btn">
-      <button @click="goToList">취소</button>
-      <button @click="writeReport()">등록</button>
+      <button @click="goBack">취소</button>
+      <button @click="updateReport()">수정</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed, defineComponent, onMounted } from 'vue'
+import { ref, computed, onMounted, defineComponent } from 'vue'
 import router from '@/router/index'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: 'parkReportCreateVue',
+  name: 'parkReportUpdate',
   setup() {
-    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const route = useRoute()
+    const report_id = route.params.report_id
+    const imageList = ref(null)
+    const removeFilesList = ref<string[]>([])
+
+    const facility_id = computed(() => store.getters['auth/facilityId'])
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
-    // let userData = ref({
-    //   id: '',
-    //   loginId: '',
-    //   role: '',
-    //   phone: '',
-    //   token: '',
-    //   facilityId: '',
-    //   name: '',
-    //   addressNumber: ''
-    // })
-
     let report = ref({
       name: '',
       phone: '',
+      boardPassword: '',
       title: '',
       content: '',
       uploadedfiles: null
@@ -89,21 +95,22 @@ export default defineComponent({
 
     const fileInputRef = ref<HTMLInputElement | null>(null)
     const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
-    // 유저정보 가져오기
-    async function getUserData() {
-      const userData = await apiClient
-        .get(`/member/findMember/token`)
-        .then((res) => {
-          console.log(res.data.member)
-          report.value.name = res.data.member.name
-          report.value.phone = res.data.member.phone
-        })
-        .catch((err) => console.log(err))
-      return userData
-    }
-
     // FormData 객체 만들기
     let formData = new FormData()
+
+    // 기존 접수글 데이터 가져와서 저장
+    function getReportData() {
+      apiClient
+        .get(`/reports/apart/ApartBoard/detail/${report_id}`)
+        .then((res) => {
+          imageList.value = res.data.imageList
+          report.value.name = res.data.board.name
+          report.value.phone = res.data.board.phone
+          report.value.title = res.data.board.title
+          report.value.content = res.data.board.content
+        })
+        .catch((err) => console.log(err))
+    }
 
     // 사용자가 첨부한 파일들 저장
     function upload(event: any) {
@@ -112,8 +119,14 @@ export default defineComponent({
       if (files && files.length > 0) {
         for (const file of files) {
           selectedFiles.value.push(file)
-          formData.append('uploadedfiles', file)
+          formData.append('addUploadedfiles', file)
         }
+        console.log(selectedFiles.value)
+
+        // formData에 데이터 잘 들어가는지 확인
+        // for (const values of formData.values()) {
+        //   console.log(values)
+        // }
       }
     }
 
@@ -125,55 +138,75 @@ export default defineComponent({
 
       return selectedFileNames
     })
+    // 기존에 있던 첨부파일에서 파일 제거
+    function deleteFile(image_id: any) {
+      removeFilesList.value.push(image_id)
+      console.log(removeFilesList.value)
+    }
 
-    // 신고접수 취소 시 목록으로 이동
-    function goToList() {
-      router.push({ path: '/park/report' })
+    function unselectFile(file_name: any) {
+      for (let file of selectedFiles.value) {
+        if (file.name === file_name) {
+          selectedFiles.value.splice(selectedFiles.value.indexOf(file), 1)
+          break
+        }
+      }
+      console.log(selectedFiles.value)
+    }
+
+    function goBack() {
+      router.go(-1)
     }
 
     // 신고접수 등록
-    async function writeReport() {
-      // FormData에 양식에 채워진 값들 넣기
+    async function updateReport() {
+      // FormData에 양식에 채워진 값들 넣기 (필수값)
       formData.append('name', report.value.name)
-      formData.append('phone', report.value.phone)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
+      formData.append('boardPassword', report.value.boardPassword)
+
+      // FormData에 삭제할 첨부파일의 id 담아주기
+      for (let value of removeFilesList.value) {
+        console.log(value)
+        formData.append('removefiles', value)
+      }
 
       // formData 의 밸류값을 확인하는 방법
       for (let values of formData.entries()) {
         console.log(values[0] + ', ' + values[1])
       }
 
-      // 신고접수 등록하는 요청보내기
+      // 신고접수 수정하는 요청보내기
       await apiClient
-        .post(`/reports/write/apartMember/${facility_id}`, formData, {
+        .post(`/reports/apartMember/update/${report_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
         .then((response) => {
-          console.log(response)
-          //   const newReport_id = response.data.id
-          //   router.push(`/reports/apart/ApartBoard/detail/${newReport_id}`)
+          router.push(`/park/report/${report_id}/detail`)
         })
         .catch(function (error) {
           console.log(error)
         })
     }
-
     onMounted(() => {
-      getUserData()
+      getReportData()
     })
-
     return {
       report,
+      imageList,
       fileInputRef,
       selectedFiles,
+      removeFilesList,
       upload,
+      deleteFile,
+      unselectFile,
       getSelectedFileNames,
-      goToList,
-      writeReport,
-      getUserData
+      goBack,
+      updateReport,
+      getReportData
     }
   }
 })
@@ -245,5 +278,9 @@ export default defineComponent({
   text-align: start;
 
   padding-left: 10px;
+}
+
+i {
+  cursor: pointer;
 }
 </style>
