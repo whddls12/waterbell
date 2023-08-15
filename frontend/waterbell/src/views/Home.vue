@@ -12,17 +12,54 @@
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
-        <!-- <router-link to="/park/dash"> -->
-        <div class="select-box park" @click="goToOther1">지하주차장</div>
-        <!-- </router-link> -->
-        <!-- <router-link to="/road/dash"> -->
-        <div class="select-box road" @click="goToOther2">지하차도</div>
-        <!-- </router-link> -->
+        <div class="select-box park" @click="goToOther1">
+          <div class="select-box-text">
+            <div class="service-title">지하주차장</div>
+            <div class="service-feature">
+              지하주차장 침수 수위 측정 및 자동 알림
+            </div>
+            <div class="service-feature">
+              지하주차장 침수 대응 차수판 원격 제어
+            </div>
+          </div>
+          <div class="select-box-image-park-one">
+            <img
+              class="service-image-park-one"
+              src="@/assets/images/mainpage/지하주차장1.jpg"
+              width="400px"
+              height="300px"
+              alt="지하주차장1"
+            />
+          </div>
+          <div class="select-box-image-park-two">
+            <img
+              class="service-image-park-two"
+              src="@/assets/images/mainpage/지하주차장2.jpg"
+              width="400px"
+              height="300px"
+              alt="지하주차장2"
+            />
+          </div>
+        </div>
+        <div class="select-box road" @click="goToOther2">
+          <div class="select-box-text">
+            <div class="service-title">지하차도</div>
+            <div class="service-feature">
+              지하차도 침수 수위 측정 및 자동 알림
+            </div>
+            <div class="service-feature">지하차도 침수 시 진입 금지 안내</div>
+          </div>
+          <div class="select-box-image-road">
+            <img
+              class="service-image-road"
+              src="@/assets/images/mainpage/지하차도1.png"
+              width="400px"
+              height="300px"
+              alt="지하차도1"
+            />
+          </div>
+        </div>
       </div>
-      <!-- 관리자 로그인 버튼 -->
-      <!-- <div class="manager-login">
-        <button class="login-btn" @click="moveToLogin">관리자 로그인</button>
-      </div> -->
       <button class="button-managerLogin" @click="moveToLogin">
         <img class="icon" src="@/assets/images/icon.png" />
         <div class="labelWrap">
@@ -207,11 +244,11 @@ export default defineComponent({
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  /* overflow: auto; */
+  overflow: auto;
   background-color: white;
-  margin-left: 209px;
-  margin-right: 210px;
-  margin-top: 20px;
+  margin-left: 200px;
+  margin-right: 200px;
+  margin-top: 50px;
 
   display: flex;
   width: 1100px;

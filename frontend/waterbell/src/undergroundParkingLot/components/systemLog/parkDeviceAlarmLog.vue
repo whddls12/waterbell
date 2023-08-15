@@ -1,90 +1,98 @@
 <template lang="">
-  <div class="table-box">
-    <div class="title">SMS&웹 알림 발신 로그</div>
-    <h6>{{ LogFacilityName }}</h6>
-    <div class="datepicker-row">
-      <div>
-        <label>시작일시</label>
-        <span class="VueDatePicker">
-          <VueDatePicker
-            v-model="startDate"
-            placeholder="Select date"
-          ></VueDatePicker>
-        </span>
+  <div class="router-box">
+    <div class="table-box">
+      <div class="title">SMS&웹 알림 발신 로그</div>
+      <h6>{{ LogFacilityName }}</h6>
+      <div class="datepicker-row">
+        <div>
+          <label>시작일시</label>
+          <span class="VueDatePicker">
+            <VueDatePicker
+              v-model="startDate"
+              placeholder="Select date"
+            ></VueDatePicker>
+          </span>
+        </div>
+        <div>
+          <label>종료일시</label>
+          <span class="VueDatePicker">
+            <VueDatePicker
+              v-model="endDate"
+              placeholder="Select date"
+            ></VueDatePicker>
+          </span>
+        </div>
       </div>
-      <div>
-        <label>종료일시</label>
-        <span class="VueDatePicker">
-          <VueDatePicker
-            v-model="endDate"
-            placeholder="Select date"
-          ></VueDatePicker>
-        </span>
-      </div>
-    </div>
 
-    <table class="table table-hover table-bordered table-bordered">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col" class="text-center" style="width: 200px">발신시간</th>
-          <th scope="col" class="text-center" style="width: 550px">알림내용</th>
-          <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
-          <th scope="col" class="text-center" style="width: 150px">구분</th>
-          <th scope="col" class="text-center" style="width: 100px">발신인원</th>
-        </tr>
-      </thead>
-      <tbody v-if="logList && logList.length">
-        <tr
-          v-for="log in logList"
-          :key="log.id"
-          class="tr"
-          @click="movePage(log.id)"
-          align="center"
-        >
-          <td>{{ formattedSensorTime(log.regDate) }}</td>
-          <td>{{ log.content }}</td>
-          <!-- <td>{{ log.facility_name }}</td> -->
-          <td>{{ log.category }}</td>
-          <td>{{ log.cnt }}</td>
-        </tr>
-      </tbody>
-      <tbody v-else>
-        <tr>
-          <td colspan="6" class="text-center">해당하는 데이터가 없습니다.</td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- 페이지네이션 컨트롤 -->
-    <div class="pagination-container">
-      <div class="pagination">
-        <!-- 이전 페이지 그룹으로 이동 -->
-        <span
-          v-if="pageNavigation.startPage > 1"
-          @click.prevent="goToPage(pageNavigation.pre)"
-        >
-          &laquo;
-        </span>
+      <table class="table table-hover table-bordered table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="text-center" style="width: 200px">
+              발신시간
+            </th>
+            <th scope="col" class="text-center" style="width: 550px">
+              알림내용
+            </th>
+            <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
+            <th scope="col" class="text-center" style="width: 150px">구분</th>
+            <th scope="col" class="text-center" style="width: 100px">
+              발신인원
+            </th>
+          </tr>
+        </thead>
+        <tbody v-if="logList && logList.length">
+          <tr
+            v-for="log in logList"
+            :key="log.id"
+            class="tr"
+            @click="movePage(log.id)"
+            align="center"
+          >
+            <td>{{ formattedSensorTime(log.regDate) }}</td>
+            <td>{{ log.content }}</td>
+            <!-- <td>{{ log.facility_name }}</td> -->
+            <td>{{ log.category }}</td>
+            <td>{{ log.cnt }}</td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="6" class="text-center">해당하는 데이터가 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- 페이지네이션 컨트롤 -->
+      <div class="pagination-container">
+        <div class="pagination">
+          <!-- 이전 페이지 그룹으로 이동 -->
+          <span
+            v-if="pageNavigation.startPage > 1"
+            @click.prevent="goToPage(pageNavigation.pre)"
+          >
+            &laquo;
+          </span>
 
-        <!-- 현재 페이지 그룹의 페이지 숫자들 -->
-        <span
-          v-for="page in range(
-            pageNavigation.startPage,
-            pageNavigation.endPage
-          )"
-          :key="page"
-          :class="{ active: page === pageNavigation.pgno }"
-          @click.prevent="goToPage(page)"
-        >
-          {{ page }}
-        </span>
+          <!-- 현재 페이지 그룹의 페이지 숫자들 -->
+          <span
+            v-for="page in range(
+              pageNavigation.startPage,
+              pageNavigation.endPage
+            )"
+            :key="page"
+            :class="{ active: page === pageNavigation.pgno }"
+            @click.prevent="goToPage(page)"
+          >
+            {{ page }}
+          </span>
 
-        <!-- 다음 페이지 그룹으로 이동 -->
-        <span
-          v-if="pageNavigation.endPage < pageNavigation.totalPageCnt"
-          @click.prevent="goToPage(pageNavigation.next)"
-        >
-          &raquo;
-        </span>
+          <!-- 다음 페이지 그룹으로 이동 -->
+          <span
+            v-if="pageNavigation.endPage < pageNavigation.totalPageCnt"
+            @click.prevent="goToPage(pageNavigation.next)"
+          >
+            &raquo;
+          </span>
+        </div>
       </div>
     </div>
   </div>

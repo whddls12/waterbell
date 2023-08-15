@@ -2,6 +2,7 @@
   <div class="container" id="dash-cctv">
     <div class="dash-box">
       <div class="dash-box-title">
+        <i class="fas fa-chart-line fa-lg"></i>
         <h4>강수량 그래프</h4>
       </div>
       <div class="dash-box-content">

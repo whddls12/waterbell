@@ -200,26 +200,33 @@ public class SystemService {
     }
 
     public WaterStatus fromSensor(String message) throws Exception {
-        String[] result = message.toString().split("/");
 
-        int facilityId = Integer.parseInt(result[0]);
-        SensorType sensorType = SensorType.valueOf(result[1]);
-        int value = Integer.parseInt(result[2]);
+        try {
+            String[] result = message.toString().split("/");
 
-        Facility facility = facilityRepository.findById(facilityId);
+            int facilityId = Integer.parseInt(result[0]);
+            SensorType sensorType = SensorType.valueOf(result[1]);
+            int value = Integer.parseInt(result[2]);
 
-        WaterStatus status = null;
-        if (sensorType.equals(SensorType.HEIGHT)) {
-            status = checkSituation(facility, value);
+            Facility facility = facilityRepository.findById(facilityId);
+
+            WaterStatus status = null;
+            if (sensorType.equals(SensorType.HEIGHT)) {
+                status = checkSituation(facility, value);
+            }
+
+            insertLog(facilityId, sensorType, value);
+
+            return status;
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-
-        insertLog(facilityId, sensorType, value);
-
-        return status;
+        return null;
     }
 
     @Transactional
     public WaterStatus checkSituation(Facility facility, int value) throws Exception {
+
         if (value > facility.getSecondAlarmValue()) {
             if (facility.getStatus() == WaterStatus.FIRST || facility.getStatus() == WaterStatus.DEFAULT) {
                 facilityService.updateStatus(facility, WaterStatus.SECOND);
@@ -243,7 +250,7 @@ public class SystemService {
             } else if (facility.getStatus() == WaterStatus.SECOND) {
                 facilityService.updateStatus(facility, WaterStatus.FIRST);
             }
-        } else {
+        } else if(facility.getStatus() != WaterStatus.WORKING){
             facilityService.updateStatus(facility, WaterStatus.DEFAULT);
         }
 
