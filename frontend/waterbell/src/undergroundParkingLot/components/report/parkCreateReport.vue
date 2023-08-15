@@ -1,6 +1,6 @@
 <template>
   <div class="report-create-container" style="width: 90%">
-    <div class="report-page-title">
+    <div class="report-page-title title">
       <h1>신고접수 글쓰기</h1>
       <div class="report-empty-box"></div>
     </div>

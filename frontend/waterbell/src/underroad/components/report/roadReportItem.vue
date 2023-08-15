@@ -2,7 +2,7 @@
   <div class="each-report">
     <!-- 게시판 이름과 목록관련버튼들 -->
     <div class="report-header">
-      <div class="board-title">
+      <div class="board-title title">
         <h2>신고접수</h2>
       </div>
       <div class="list-btn">
