@@ -207,11 +207,11 @@ export default defineComponent({
   padding: 10px 20px;
   display: flex;
   justify-content: center;
-  overflow: auto;
+  /* overflow: auto; */
   background-color: white;
-  margin-left: 200px;
-  margin-right: 200px;
-  margin-top: 50px;
+  margin-left: 209px;
+  margin-right: 210px;
+  margin-top: 20px;
 
   display: flex;
   width: 1100px;

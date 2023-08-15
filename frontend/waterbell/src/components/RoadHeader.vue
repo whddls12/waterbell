@@ -35,11 +35,11 @@
         <router-link to="/road/report">신고접수</router-link>
       </div>
       <div class="each-menu" v-show="isManager">
-        <router-link to="/road/controll">제어</router-link>
+        <router-link to="/road/controll">기기제어</router-link>
       </div>
       <div class="each-menu" v-show="!isManager"></div>
       <div class="each-menu" v-show="isManager">
-        <router-link to="/road/systemlog">센서 내역</router-link>
+        <router-link to="/road/systemlog">센서내역</router-link>
       </div>
       <div class="each-menu" v-show="!isManager"></div>
       <div class="each-menu" v-show="isManager">
