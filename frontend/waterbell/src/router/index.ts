@@ -18,6 +18,7 @@ import roadReportItemVue from '../underroad/components/report/roadReportItem.vue
 // import roadReportListVue from '../underroad/components/report/roadReportList.vue'
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
+import roadReportVerification from '../underroad/components/report/roadReportVerification.vue'
 
 //지하차도 시스템 로그
 import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
@@ -88,6 +89,7 @@ const router = createRouter({
       name: 'RoadDash',
       component: RoadDash
     },
+    // 신고접수
     {
       path: '/road/report',
       name: 'RoadReport',
@@ -95,7 +97,12 @@ const router = createRouter({
     },
     {
       path: '/road/report/create',
+      name: 'roadReportCreate',
       component: roadReportCreateVue
+    },
+    {
+      path: '/road/report/verification',
+      component: roadReportVerification
     },
     {
       path: '/road/report/update/:report_id',
