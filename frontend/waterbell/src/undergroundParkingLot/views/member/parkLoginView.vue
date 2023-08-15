@@ -50,8 +50,8 @@
             </div>
           </form>
         </div>
-
-        <a href="#none">비밀번호 찾기?</a>
+        <router-link to="/park/find/id">아이디 찾기</router-link>
+        <router-link to="/park/find/password">비밀번호 찾기</router-link>
       </div>
     </div>
   </div>

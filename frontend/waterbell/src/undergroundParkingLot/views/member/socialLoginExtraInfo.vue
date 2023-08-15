@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div>
     <div class="big-box">
       <h3>추가 정보 입력</h3>
