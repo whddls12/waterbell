@@ -2,7 +2,7 @@
   <!-- <div class="dash-box"> -->
   <div class="bigbox">
     <!-- <div> -->
-    <roadDashWarnMsgVue />
+    <roadDashWarnMsgVue class="roadDashWarnMsgVue" id="dashcomponent" />
     <div id="columnflex">
       <div id="rowflex">
         <div id="columnflex">
@@ -23,9 +23,7 @@
 </template>
 <script>
 // import Map from '@/underroad/components/dashboard/roadDashNearUnderroad.vue'
-
 import { defineComponent } from 'vue'
-
 import roadDashMapVue from '../components/dashboard/roadDashNearUnderroad.vue'
 import roadDashReportVue from '../components/dashboard/roadDashReportList.vue'
 import roadDashWarnMsgVue from '../components/dashboard/roadDashWarningMessage.vue'
@@ -118,5 +116,9 @@ export default defineComponent({
 
 .left {
   flex-grow: 2;
+}
+
+.roadDashWarnMsgVue {
+  width: 98%;
 }
 </style>

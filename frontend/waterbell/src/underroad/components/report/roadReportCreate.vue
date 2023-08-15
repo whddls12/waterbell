@@ -28,7 +28,7 @@
       <div class="report-box titleName">
         <div class="report-subtitle"><h5 style="margin: 0px">제목</h5></div>
         <div class="report-inputbox">
-          <input type="text" style="width: 700px" v-model="report.title" />
+          <input type="text" style="width: 850px" v-model="report.title" />
         </div>
       </div>
       <div class="report-box content">
@@ -97,7 +97,7 @@ import store from '@/store/index'
 export default defineComponent({
   name: 'roadReportCreateVue',
   setup() {
-    const facility_id = computed(() => store.getters['auth/facilityId'])
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
@@ -161,14 +161,15 @@ export default defineComponent({
 
       // 신고접수 등록하는 요청보내기
       await api
-        .post(`/reports/write/${facility_id.value}`, formData, {
+        .post(`/reports/write/${facility_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
         .then((response) => {
           console.log(response)
-          // router.push('/road/report')
+          const newReport_id = response.data.id
+          router.push(`/road/report/${newReport_id}/detail`)
           //상세보기로 이동하는 코드 넣어야 함
         })
         .catch(function (error) {
@@ -187,7 +188,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .report-create-container {
   width: 100%;
 }
@@ -245,7 +246,7 @@ export default defineComponent({
 } */
 
 .report-file-list > .report-file-list-name {
-  width: 700px;
+  width: 800px;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 20%);
   /* background: rgba(217, 217, 217, 0); */
@@ -315,7 +316,7 @@ input {
   background: rgba(217, 217, 217, 0);
 }
 textarea {
-  width: 700px;
+  width: 850px;
   border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 20%);
   background: rgba(217, 217, 217, 0);
