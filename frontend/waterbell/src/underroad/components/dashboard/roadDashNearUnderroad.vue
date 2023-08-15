@@ -1,6 +1,9 @@
 <template>
   <div class="container" id="outline bigbox">
-    <h4>침수 지도</h4>
+    <div class="dash-box-title">
+      <i class="fas fa-map-marked-alt fa-lg"></i>
+      <h4>침수 지도</h4>
+    </div>
     <div id="inner-box">
       <div id="map"></div>
     </div>

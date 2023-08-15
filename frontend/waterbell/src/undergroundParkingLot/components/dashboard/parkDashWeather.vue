@@ -4,7 +4,7 @@
       <!-- 날씨 -->
       <div class="dash-box">
         <div class="dash-box-title">
-          <i class="fas fa-cloud dash-box-icon"></i>
+          <i class="fas fa-cloud fa-lg dash-box-icon"></i>
           <h4>날씨</h4>
         </div>
         <div class="dash-box-content">
@@ -21,7 +21,7 @@
       <!-- 기온 -->
       <div class="dash-box">
         <div class="dash-box-title">
-          <i class="fas fa-thermometer-three-quarters"></i>
+          <i class="fas fa-thermometer-three-quarters fa-lg"></i>
           <h4>기온</h4>
         </div>
         <div class="dash-box-content">{{ current_temp }} ℃</div>
@@ -29,6 +29,7 @@
       <!-- 습도 -->
       <div class="dash-box">
         <div class="dash-box-title">
+          <i class="fas fa-tint fa-lg"></i>
           <h4>습도</h4>
         </div>
         <div class="dash-box-content">{{ current_humid }} ％</div>
@@ -248,14 +249,6 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-/* .container {
-  display: flex;
-  flex-direction: column;
-  width: 480px;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #f2f7ff;
-} */
 /* 날씨 기온 습도를 합치기 위함 */
 .weather-dash-box {
   display: flex;
