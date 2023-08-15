@@ -2,20 +2,26 @@
   <div class="report-create-container">
     <div class="report-page-title"><h1>신고접수 수정</h1></div>
     <div class="report-write">
-      <div class="report-box report-title">
-        <div class="report-subtitle">제목</div>
+      <div class="report-box titleName">
+        <div class="report-subtitle"><h5 style="margin: 0px">제목</h5></div>
         <div class="report-inputbox">
           <input type="text" v-model="report.title" />
         </div>
       </div>
       <div class="report-box content">
-        <div class="report-subtitle">신고내용</div>
+        <div class="report-subtitle"><h5 style="margin: 0px">신고내용</h5></div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.content" />
+          <textarea
+            name="content"
+            rows="5"
+            cols="40"
+            v-model="report.content"
+          ></textarea>
+          <!-- <input type="text" v-model="report.content" /> -->
         </div>
       </div>
       <div class="report-box attachment">
-        <div class="report-subtitle">파일첨부</div>
+        <div class="report-subtitle"><h5 style="margin: 0px">파일첨부</h5></div>
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
@@ -55,9 +61,11 @@
         </div>
       </div>
     </div>
+    <div class="report-empty-box-bottom"></div>
+
     <div class="report-btn">
-      <button @click="goBack">취소</button>
-      <button @click="updateReport()">수정</button>
+      <button class="cancel-btn" @click="goBack">취소</button>
+      <button class="ok-btn" @click="updateReport()">수정</button>
     </div>
   </div>
 </template>
@@ -218,7 +226,37 @@ export default defineComponent({
 }
 
 .report-page-title {
+  color: #000;
+  text-align: center;
+  /* font-family: Roboto; */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
   border-bottom: 2px solid black;
+}
+
+.report-page-title h1 {
+  /* font-family: Roboto; */
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+}
+
+.report-empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 55px;
+}
+.report-empty-box-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 40px;
 }
 
 /* 각 입력 컬럼 */
@@ -238,10 +276,22 @@ export default defineComponent({
   padding: 10px 10px;
 }
 
-.report-file-list-name {
+/* .report-file-list-name {
   border: 1px solid #939393;
   padding: 10px;
   color: #939393;
+  text-align: start;
+} */
+
+.report-file-list > .report-file-list-name {
+  width: 800px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 20%);
+  /* background: rgba(217, 217, 217, 0); */
+  /* border: 1px solid #939393; */
+  padding: 10px;
+  /* height: 28px; */
+  /* color: #939393; */
   text-align: start;
 }
 
@@ -256,6 +306,47 @@ export default defineComponent({
 
 .report-file-attach {
   display: flex;
+}
+
+.search-btn > button {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: rgba(217, 217, 217, 0);
+}
+
+.search-btn {
+  width: 93px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.attach-notice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  margin-bottom: 20px;
+}
+
+.attach-notice > p {
+  font-size: 8px;
+  text-align: start;
+  margin: 0px;
+  padding-left: 10px;
+}
+
+.report-create-container h5 {
+  color: #000;
+  text-align: center;
+  /* font-family: Roboto; */
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 28px;
+  letter-spacing: 0.25px;
+  margin: 0px, 0px;
 }
 
 /* 하단 버튼 */
@@ -282,5 +373,86 @@ export default defineComponent({
 
 i {
   cursor: pointer;
+}
+
+.cancel-btn {
+  display: flex;
+  width: 90px;
+  height: 32px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--unnamed, #939393);
+  color: #fff;
+  text-align: center;
+  /* Button */
+  /* font-family: Roboto; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  border: 0;
+}
+
+.ok-btn {
+  display: flex;
+  width: 90px;
+  height: 32px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--1, #10316b);
+  color: #fff;
+  text-align: center;
+  /* Button */
+  /* font-family: Roboto; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  border: 0;
+}
+
+.report-btn > button {
+  margin: 10px;
+}
+
+.search-btn > button {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}
+
+.attach-notice > p {
+  font-size: 8px;
+  text-align: start;
+
+  padding-left: 10px;
+}
+
+input {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 20%);
+  background: rgba(217, 217, 217, 0);
+  margin: 10px;
+}
+textarea {
+  width: 800px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 20%);
+  background: rgba(217, 217, 217, 0);
+  margin: 10px;
+}
+
+.report-create-container {
+  width: 90%;
 }
 </style>
