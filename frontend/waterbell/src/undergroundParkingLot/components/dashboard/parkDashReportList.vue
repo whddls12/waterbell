@@ -3,7 +3,7 @@
     <div class="dash-box">
       <div class="dash-box-title">
         <i class="fas fa-bell fa-lg"></i>
-        <h4>최근 신고접수 내역</h4>
+        <h4 class="title">최근 신고접수 내역</h4>
       </div>
       <div class="dash-box-content">
         <thead>
