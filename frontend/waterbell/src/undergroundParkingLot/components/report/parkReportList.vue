@@ -9,7 +9,7 @@
           <th scope="col" class="text-center" style="width: 150px">처리상태</th>
           <th scope="col" class="text-center" style="width: 150px">작성일시</th>
           <th scope="col" class="text-center" style="width: 150px">조회수</th>
-          <th scope="col" class="text-center" style="width: 150px">파일</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">파일</th> -->
         </tr>
       </thead>
       <tbody v-if="reportList && reportList.length">
@@ -22,11 +22,11 @@
         >
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
-          <td>{{ report.name }}</td>
+          <td>{{ report.apartMember.name }}</td>
           <td>{{ report.status }}</td>
           <td>{{ report.createDate }}</td>
           <td>{{ report.viewCount }}</td>
-          <td>{{ report.uploadedfiles }}</td>
+          <!-- <td>{{ report.uploadedfiles }}</td> -->
         </tr>
       </tbody>
       <tbody v-else>
@@ -129,7 +129,7 @@ export default defineComponent({
     // // 신고접수 리스트 가져오기
     const setList = () => {
       apiClient
-        .get(`/apartBoard/apart/${facility_id}/${currentPage.value}`)
+        .get(`/reports/apartBoard/apart/${facility_id}/${currentPage.value}`)
         .then((res) => {
           console.log(res.data)
           reportList.value = res.data.list
@@ -148,7 +148,7 @@ export default defineComponent({
       currentPage.value = page
       try {
         apiClient
-          .get(`/apartBoard/apart/${facility_id}/${currentPage.value}`)
+          .get(`/reports/apartBoard/apart/${facility_id}/${currentPage.value}`)
           .then((res) => {
             reportList.value = res.data.list
             pageNavigation.value = res.data.pageNavigation
@@ -160,10 +160,9 @@ export default defineComponent({
 
     const router = useRouter()
     // 신고접수 상세 조회로 이동
-    const movePage = (report_id: any) => {
-      router.push({ path: `/reports/apart/ApartBoard/detail/${report_id}` })
+    const movePage = (board_id: any) => {
+      router.push(`/park/report/${board_id}/detail`)
     }
-
     onMounted(() => {
       setList()
     })

@@ -9,7 +9,7 @@
           <th scope="col" class="text-center" style="width: 150px">처리상태</th>
           <th scope="col" class="text-center" style="width: 150px">작성일시</th>
           <th scope="col" class="text-center" style="width: 150px">조회수</th>
-          <th scope="col" class="text-center" style="width: 150px">파일</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">파일</th> -->
         </tr>
       </thead>
       <tbody v-if="reportList && reportList.length">
@@ -26,7 +26,7 @@
           <td>{{ report.status }}</td>
           <td>{{ report.createDate }}</td>
           <td>{{ report.viewCount }}</td>
-          <td>{{ report.uploadedfiles }}</td>
+          <!-- <td>{{ report.uploadedfiles }}</td> -->
         </tr>
       </tbody>
       <tbody v-else>
