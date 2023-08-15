@@ -12,7 +12,7 @@
         <input type="password" id="currentPW" v-model="currentPW" />
       </div>
       <!-- 버튼 -->
-      <div class="password-check-btn">
+      <div class="password-check-bt">
         <button id="check" @click="isEqual">확인</button>
       </div>
     </div>
@@ -77,21 +77,17 @@ input {
   padding-left: 10px;
 }
 
-.password-check-btn {
-  display: flex;
+.password-check-bt {
   flex-direction: column;
   gap: 40px;
 }
 
 #check {
   display: flex;
-  width: 644px;
+  width: 660px;
   height: 60px;
-  padding: 11px 16px;
-  gap: 8px;
   justify-content: center;
   align-items: center;
-  align-self: center;
 
   border: none;
   border-radius: 40px;

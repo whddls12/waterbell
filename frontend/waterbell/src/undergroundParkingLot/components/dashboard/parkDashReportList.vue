@@ -69,9 +69,8 @@ export default defineComponent({
           console.log(res.data.list)
           reportList.value = res.data.list
         })
-      } catch (error) {
-        // hasReport.value = false
-        console.log(error.response)
+      } catch (err) {
+        console.log(err.response)
       }
     }
     const router = useRouter()
