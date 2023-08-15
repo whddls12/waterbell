@@ -302,20 +302,50 @@ export default defineComponent({
 </script>
 
 <style>
-/* 영어 전용인듯 */
-/* @font-face {
-  font-family: 'Roboto';
-  src: url('./font/Roboto-Bold.ttf');
-} */
-
-@font-face {
-  font-family: 'IBMPlex';
-  src: url('./font/IBMPlexSansKR-SemiBold.ttf');
-}
-
 @font-face {
   font-family: 'score';
+  font-weight: 100;
+  src: url('./font/SCDream1.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 200;
+  src: url('./font/SCDream2.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 300;
+  src: url('./font/SCDream3.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 400;
   src: url('./font/SCDream4.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 500;
+  src: url('./font/SCDream5.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 600;
+  src: url('./font/SCDream6.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 700;
+  src: url('./font/SCDream7.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 800;
+  src: url('./font/SCDream8.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 900;
+  src: url('./font/SCDream9.otf');
 }
 
 #app {
@@ -339,6 +369,7 @@ export default defineComponent({
 /* 홈페이지 구성요소 세로로 정렬 */
 #nav {
   font-family: 'score';
+  font-weight: 500;
 
   display: flex;
   flex-direction: column;
