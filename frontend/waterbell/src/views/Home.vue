@@ -269,4 +269,8 @@ router-view {
   margin-left: 50px;
   margin-right: 50px;
 }
+
+.page-start {
+  height: 900px;
+}
 </style>

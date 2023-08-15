@@ -26,37 +26,31 @@
       </div>
     </div>
     <!-- 메뉴 내비게이션바 -->
-    <div class="menu-navbar">
+    <div class="menu-navbar" :key="isManager.toString()">
       <div class="each-menu">
         <router-link to="/park/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/park/report">신고접수</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
+      <div class="each-menu" v-show="isManager">
         <router-link to="/park/controll">제어</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
+      <div class="each-menu" v-show="!isManager"></div>
+      <div class="each-menu" v-show="isManager">
         <router-link to="/park/systemlog">센서 내역</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
+      <div class="each-menu" v-show="!isManager"></div>
+      <div class="each-menu" v-show="isManager">
         <router-link to="/park/manage">관리</router-link>
       </div>
+      <div class="each-menu" v-show="!isManager"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, watch } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/index'
 import { mapGetters } from 'vuex'
@@ -110,6 +104,7 @@ export default defineComponent({
     const checkRole = async () => {
       if (role.value == 'APART_MANAGER') isManager.value = true
       else isManager.value = false
+      await nextTick()
     }
 
     onMounted(async () => {
