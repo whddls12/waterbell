@@ -1,26 +1,46 @@
 <template lang="">
   <div>
     <div>
-      <h3>회원가입</h3>
+      <h3 style="margin: 20px">회원가입</h3>
+      <!-- <div class="report-empty-box"></div> -->
+
       <form>
-        <div>
-          <label for="name">이름</label><br />
-          <input type="text" label="name" id="name" v-model="name" />
-          <p :class="{ 'p-msg': true, success: validate.name }">
+        <div class="title-box-box clearfix">
+          <label class="title-name-label" for="name">이름</label><br />
+          <input
+            class="title-input-box"
+            type="text"
+            label="name"
+            id="name"
+            v-model="name"
+          />
+          <p
+            :class="{ 'p-msg': true, success: validate.name }"
+            v-show="nameMsg.value != ''"
+          >
             {{ nameMsg }}
           </p>
         </div>
-        <div>
-          <label for="id">아이디</label><br />
-          <input type="text" label="id" id="id" v-model="id" />
-          <button @click.prevent="checkId">중복확인</button>
+        <div class="title-box-box">
+          <label class="title-name-label" for="id">아이디</label><br />
+          <div class="btn-and-input">
+            <input
+              class="title-input-box-btn"
+              type="text"
+              label="id"
+              id="id"
+              v-model="id"
+            />
+            <button class="check-btn" @click.prevent="checkId">중복확인</button>
+          </div>
           <p :class="{ 'p-msg': true, success: validate.isDuplicated }">
             {{ idMsg }}
           </p>
         </div>
-        <div>
-          <label for="password">비밀번호</label><br />
+        <div class="title-box-box">
+          <label class="title-name-label" for="password">비밀번호</label><br />
           <input
+            class="title-input-box"
             type="password"
             label="password"
             id="password"
@@ -31,9 +51,11 @@
           </p>
         </div>
 
-        <div>
-          <label for="confirmPass">비밀번호 확인</label><br />
+        <div class="title-box-box">
+          <label class="title-name-label" for="confirmPass">비밀번호 확인</label
+          ><br />
           <input
+            class="title-input-box"
             type="password"
             label="confirmPass"
             id="confirmPass"
@@ -43,50 +65,76 @@
             {{ confirmPassMsg }}
           </p>
         </div>
-        <div>
-          <label for="phoneNum">휴대폰번호</label><br />
-          <input
-            type="text"
-            label="phoneNum"
-            id="phoneNum"
-            v-model="phoneNum"
-          />
-          <button @click.prevent="requestVerification">인증번호 요청</button>
+        <div class="title-box-box">
+          <label class="title-name-label" for="phoneNum">휴대폰번호</label
+          ><br />
+          <div class="btn-and-input">
+            <input
+              class="title-input-box-btn"
+              type="text"
+              label="phoneNum"
+              id="phoneNum"
+              v-model="phoneNum"
+            />
+            <button class="check-btn" @click.prevent="requestVerification">
+              인증번호 요청
+            </button>
+          </div>
           <p :class="{ 'p-msg': true, success: validate.phoneVerification }">
             {{ phoneMsg }}
           </p>
           <label for="verification" v-if="verificationVisible"
             >인증번호 입력</label
           ><br />
-          <div v-if="verificationVisible">
+          <div
+            v-if="verificationVisible"
+            class="btn-and-input"
+            style="margin-bottom: 20px"
+          >
+            <!-- <div v-if="true" class="btn-and-input"> -->
             <input
+              class="title-input-box-btn"
               type="text"
               label="verification"
               placeholder="인증번호를 입력해주세요."
               id="verification"
+              style="width: 320px"
               v-model="verification"
             />
-            <button @click.prevent="onConfirmClick">인증번호 확인</button>
-            <p>{{ formattedCountdown }}</p>
+            <p class="time-text">{{ formattedCountdown }}</p>
+            <button class="check-btn" @click.prevent="onConfirmClick">
+              인증번호<br />
+              확인
+            </button>
+            <!-- <p class="time-text">{{ formattedCountdown }}</p> -->
           </div>
         </div>
-        <div>
-          <label for="apartCode">아파트 코드</label><br />
-          <input
-            type="text"
-            label="apartCode"
-            id="apartCode"
-            v-model="apartCode"
-          />
-          <button @click.prevent="findAddressByCode">주소 찾기</button>
+        <!-- <div class="title-box-box" style="margin-top: 20px"> -->
+        <div class="title-box-box">
+          <label class="title-name-label" for="apartCode">아파트 코드</label
+          ><br />
+          <div class="btn-and-input">
+            <input
+              class="title-input-box-btn"
+              type="text"
+              label="apartCode"
+              id="apartCode"
+              v-model="apartCode"
+            />
+            <button class="check-btn" @click.prevent="findAddressByCode">
+              주소 찾기
+            </button>
+          </div>
           <p :class="{ 'p-msg': true, success: validate.name }">
             {{ codeMsg }}
           </p>
         </div>
 
-        <div>
-          <label for="address">아파트 주소</label><br />
+        <div class="title-box-box">
+          <label class="title-name-label" for="address">아파트 주소</label
+          ><br />
           <input
+            class="title-input-box"
             type="text"
             required
             label="address"
@@ -96,17 +144,23 @@
           />
         </div>
 
-        <div>
-          <label for="detailAddress">아파트 호수</label><br />
+        <div class="title-box-box" style="margin-top: 20px">
+          <label class="title-name-label" for="detailAddress">아파트 호수</label
+          ><br />
           <input
+            class="title-input-box"
             type="text"
             label="detailAddress"
             id="detailAddress"
             v-model="detailAddress"
           />
         </div>
-        <button @click.prevent="join">회원가입</button>
-        <button>취소</button>
+        <div class="report-empty-box-bottom"></div>
+
+        <div class="sign-btn">
+          <button class="ok-btn" @click.prevent="join">회원가입</button>
+          <button class="cancel-btn">취소</button>
+        </div>
       </form>
     </div>
   </div>
@@ -492,10 +546,186 @@ export default defineComponent({
 <style scoped lang="css">
 .p-msg {
   color: red;
-  margin-top: 5px;
+  /* margin-top: 5px; */
 }
 .p-msg.success {
   color: blue;
+}
+
+.title-box-box {
+  display: flex;
+  flex: 1;
+  /* flex-grow: 0; */
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+  margin: 0;
+  width: 500px;
+}
+.title-name-label {
+  color: #666;
+  /* Body2 */
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  margin: 0;
+}
+
+.title-input-box {
+  height: 40px;
+  align-self: stretch;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 102, 102, 0.3);
+  margin: 0;
+}
+
+.title-box p {
+  margin-top: 5px; /* 메시지 텍스트와의 상단 간격을 조절 */
+}
+
+.title-input-box-btn {
+  height: 40px;
+  align-self: stretch;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 102, 102, 0.3);
+  margin: 0;
+  width: 380px;
+}
+
+.btn-and-input {
+  display: flex;
+  align-items: flex-start;
+  /* gap: 15px; */
+  align-self: stretch;
+}
+
+.clearfix::ater {
+  content: '';
+
+  display: block;
+
+  clear: both;
+}
+
+.check-btn {
+  display: flex;
+  width: 114.001px;
+  /* padding: 11px 16px; */
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  align-self: stretch;
+  border-radius: 10px;
+  background: #aaa9a9;
+  height: 40px;
+  margin-left: 15px;
+  color: var(--unnamed, #424242);
+  text-align: center;
+  /* Body2 */
+  /* font-family: Roboto; */
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 20px; /* 100% */
+  letter-spacing: 0.25px;
+  border: 0;
+}
+
+.time-text {
+  margin-left: 10px;
+}
+
+.report-empty-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 55px;
+}
+.report-empty-box-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 40px;
+}
+
+/* 하단 버튼 */
+.sign-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  /* 버튼 사이 간격 */
+  align-self: stretch;
+  margin-top: 10px;
+}
+
+.cancel-btn {
+  display: flex;
+  width: 90px;
+  height: 32px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--unnamed, #939393);
+  color: #fff;
+  text-align: center;
+  text-transform: uppercase;
+  width: 114.001px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  height: 40px;
+  margin-left: 15px;
+  text-align: center;
+  /* Body2 */
+  /* font-family: Roboto; */
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 20px; /* 100% */
+  letter-spacing: 0.25px;
+  border: 0;
+}
+
+.ok-btn {
+  display: flex;
+  width: 90px;
+  height: 32px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--1, #10316b);
+  color: #fff;
+  text-align: center;
+  /* Button */
+  /* font-family: Roboto; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 15px; /* 142.857% */
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  width: 114.001px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  height: 40px;
+  margin-left: 15px;
+  text-align: center;
+  /* Body2 */
+  /* font-family: Roboto; */
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 20px; /* 100% */
+  letter-spacing: 0.25px;
+  border: 0;
 }
 </style>
 
