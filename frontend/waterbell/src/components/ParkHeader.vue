@@ -38,7 +38,7 @@
       </div>
       <div class="each-menu" v-show="!isManager"></div>
       <div class="each-menu" v-show="isManager">
-        <router-link to="/park/systemlog">센서 내역</router-link>
+        <router-link to="/park/systemlog">센서내역</router-link>
       </div>
       <div class="each-menu" v-show="!isManager"></div>
       <div class="each-menu" v-show="isManager">

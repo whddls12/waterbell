@@ -2,6 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
+        <i class="fas fa-bell fa-lg"></i>
         <h4>최근 신고접수 내역</h4>
       </div>
       <div class="dash-box-content">
@@ -75,9 +76,8 @@ export default defineComponent({
           console.log(res.data.list)
           reportList.value = res.data.list
         })
-      } catch (error) {
-        // hasReport.value = false
-        console.log(error.response)
+      } catch (err) {
+        console.log(err.response)
       }
     }
 
