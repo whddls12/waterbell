@@ -6,7 +6,7 @@
         <h2>신고접수</h2>
       </div>
       <div class="list-btn">
-        <button @click="goReportList">목록</button>
+        <button class="list-btn-list" @click="goReportList">목록</button>
         <!-- <button>윗글</button>
         <button>아랫글</button> -->
       </div>
@@ -15,12 +15,13 @@
     <div class="report-body">
       <div class="report-title-box">
         <div class="report-title">
-          <p>{{ reportInfo?.title }}</p>
+          <div>{{ reportInfo?.title }}</div>
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <p>{{ reportInfo?.name }}</p>
-            <p>{{ reportInfo?.createDate }}</p>
+            <div class="into-status">{{ reportInfo?.name }}</div>
+            <div>|</div>
+            <div>{{ formattedTime(reportInfo?.createDate) }}</div>
           </div>
           <div class="report-info info-box">
             <select
@@ -36,8 +37,11 @@
                 {{ status.text }}
               </option>
             </select>
-            <p v-else>{{ reportInfo?.status }}</p>
-            <p>{{ reportInfo?.viewCount }}</p>
+
+            <div v-else class="info-status">
+              {{ statusEngToKr(reportInfo?.status) }}
+            </div>
+            <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
           </div>
         </div>
       </div>
@@ -60,20 +64,41 @@
     <div class="report-footer">
       <!-- 관리자 -->
       <div v-if="role == 'PUBLIC_MANAGER'" class="manager-btn">
-        <button @click="statusUpdate(reportInfo?.id)">수정</button>
-        <button @click="deleteReportManager">삭제</button>
+        <button
+          class="manager-btn-modify"
+          @click="statusUpdate(reportInfo?.id)"
+        >
+          수정
+        </button>
+        <button class="btn-delete" @click="deleteReportManager">삭제</button>
       </div>
       <!-- 작성자 -->
       <div v-else>
-        <button @click="goToUpdate(reportInfo?.id)">수정</button>
-        <button @click="openCheckModal">삭제</button>
+        <button class="btn-modify" @click="openCheckModalUpdate">수정</button>
+        <button class="btn-delete" @click="openCheckModalDelete">삭제</button>
       </div>
     </div>
+    <!-- 수정 전 비밀번호 확인 -->
+    <div class="password-check-modal" v-if="pwCheckUpdate">
+      <label for="password-check">수정하려면 비밀번호를 입력해주세요</label>
+      <input
+        type="password"
+        id="password-check"
+        v-model="inputPasswordUpdate"
+      />
+      <button @click="goToUpdate(reportInfo?.id)">확인</button>
+      <button @click="pwCheckUpdate = false">취소</button>
+    </div>
     <!-- 삭제 전 비밀번호 확인 -->
-    <div class="password-check-modal" v-if="pwCheckVisible">
-      <label for="password-check">삭제하시려면 비밀번호를 입력해주세요</label>
-      <input type="password" id="password-check" v-model="inputPassword" />
+    <div class="password-check-modal" v-if="pwCheckDelete">
+      <label for="password-check">삭제하려면 비밀번호를 입력해주세요</label>
+      <input
+        type="password"
+        id="password-check"
+        v-model="inputPasswordDelete"
+      />
       <button @click="deleteReport">확인</button>
+      <button @click="pwCheckDelete = false">취소</button>
     </div>
   </div>
 </template>
@@ -98,30 +123,53 @@ export default defineComponent({
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
+    // 글 수정 전 비밀번호 체크를 위한 변수
+    const pwCheckUpdate = ref(false)
+    const inputPasswordUpdate = ref(null)
+
     // 글 삭제 전 비밀번호 체크를 위한 변수
-    const pwCheckVisible = ref(false) // 비밀번호 체크창이 보이는지 여부
-    const inputPassword = ref(null) // 사용자가 입력한 비밀번호
+    const pwCheckDelete = ref(false) // 비밀번호 체크창이 보이는지 여부
+    const inputPasswordDelete = ref(null) // 사용자가 입력한 비밀번호
 
     const reportStatus = ref<string | null>()
     // 신고접수 글 처리상태 리스트
     const statusList = [
       {
-        text: 'BEFORE',
+        text: '처리전',
         value: '0'
       },
       {
-        text: 'PROCESSING',
+        text: '처리중',
         value: '1'
       },
       {
-        text: 'COMPLETE',
+        text: '처리완료',
         value: '2'
       }
     ]
     const selectedStatus = ref('0')
 
-    function openCheckModal() {
-      pwCheckVisible.value = true
+    // 작성일 포맷팅
+    const formattedTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
+      let seconds = date.getSeconds().toString().padStart(2, '0')
+
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}:${seconds}`
+    }
+
+    function openCheckModalDelete() {
+      pwCheckDelete.value = true
+      pwCheckUpdate.value = false
+    }
+
+    function openCheckModalUpdate() {
+      pwCheckUpdate.value = true
+      pwCheckDelete.value = false
     }
 
     function getReportData() {
@@ -147,7 +195,30 @@ export default defineComponent({
     }
 
     function goToUpdate(report_id: any) {
-      router.push({ path: `/road/report/update/${report_id}` })
+      api
+        .post(
+          // 글 비밀번호 검증
+          `/reports/undergroundRoad/board/password/validation/${report_id}`,
+          {
+            boardPassword: inputPasswordUpdate.value
+          }
+        )
+        .then(() => {
+          router.push({ path: `/road/report/update/${report_id}` })
+        })
+        .catch((err) => {
+          alert('비밀번호가 일치하지 않습니다.')
+          console.log(err)
+        })
+    }
+    function statusEngToKr(status: string) {
+      if (status === 'BEFORE') {
+        return '처리전'
+      } else if (status === 'PROCESSING') {
+        return '처리중'
+      } else if (status === 'COMPLETE') {
+        return '처리완료'
+      }
     }
 
     function statusNumToStr() {
@@ -176,16 +247,15 @@ export default defineComponent({
 
     // 글 삭제 (작성자)
     function deleteReport() {
-      console.log('deleteReport')
-      console.log('입력한 비밀번호: ', inputPassword.value)
       api
         .post(
+          // 글 비밀번호 검증
           `/reports/undergroundRoad/board/password/validation/${report_id}`,
           {
-            boardPassword: inputPassword.value
+            boardPassword: inputPasswordDelete.value
           }
         )
-        .then((res) => {
+        .then(() => {
           api
             .get(`/reports/deleteBoard/${report_id}`)
             .then((res) => {
@@ -225,16 +295,21 @@ export default defineComponent({
       reportInfo,
       reportStatus,
       imageList,
-      inputPassword,
-      pwCheckVisible,
-      openCheckModal,
+      inputPasswordUpdate,
+      inputPasswordDelete,
+      pwCheckUpdate,
+      pwCheckDelete,
+      openCheckModalUpdate,
+      openCheckModalDelete,
       getReportData,
       goReportList,
       goToUpdate,
       deleteReport,
       deleteReportManager,
       statusUpdate,
-      statusNumToStr
+      statusNumToStr,
+      statusEngToKr,
+      formattedTime
     }
   }
 })
@@ -251,7 +326,26 @@ export default defineComponent({
 
 .list-btn {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
+}
+
+.list-btn-list {
+  display: flex;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--1, #10316b);
+  color: var(--1, #10316b);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
 }
 
 .report-header {
@@ -263,23 +357,33 @@ export default defineComponent({
 }
 
 .report-title-box {
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #939393;
   text-align: start;
 }
 
 .report-info {
   display: flex;
   justify-content: space-between;
+  color: var(--unnamed, #939393);
+  text-align: center;
+
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 140% */
+  letter-spacing: 0.25px;
 }
 
 .report-content {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  padding: 20px;
 }
 
 .info-box {
   gap: 10px;
+  margin: 10px 0px;
 }
 
 .report-image {
@@ -289,6 +393,91 @@ export default defineComponent({
 
 .report-footer {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
+}
+
+.btn-modify {
+  width: 101px;
+  margin: 10px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  /* background: #ffa132; */
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  border: 1px solid var(--unnamed, #ffa132);
+  background-color: #ffa132;
+  color: #fff;
+  text-align: center;
+}
+
+.btn-delete {
+  margin: 10px 10px 10px 0;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--unnamed, #ffa132);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
+  color: var(--unnamed, #ffa132);
+  text-align: center;
+}
+
+.report-title {
+  color: #000;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 28px; /* 140% */
+  letter-spacing: 0.25px;
+  margin: 5px;
+}
+
+.info-status {
+  color: var(--ing, #0d7e83);
+}
+
+.password-check-modal {
+  gap: 10px;
+}
+
+.password-input {
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(217, 217, 217, 0);
+  line-height: 10px; /* 128.571% */
+}
+
+.password-check-btn {
+  margin: 5px;
+  width: 101px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  border: 1px solid var(--1, #10316b);
+  color: var(--1, #10316b);
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 10px; /* 128.571% */
+  letter-spacing: 0.1px;
+  background-color: white;
 }
 </style>

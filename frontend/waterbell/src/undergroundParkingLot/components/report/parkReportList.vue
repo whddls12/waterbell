@@ -23,8 +23,8 @@
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
           <td>{{ report.apartMember.name }}</td>
-          <td>{{ report.status }}</td>
-          <td>{{ report.createDate }}</td>
+          <td>{{ statusEngToKr(report.status) }}</td>
+          <td>{{ formattedTime(report.createDate) }}</td>
           <td>{{ report.viewCount }}</td>
           <!-- <td>{{ report.uploadedfiles }}</td> -->
         </tr>
@@ -163,6 +163,30 @@ export default defineComponent({
     const movePage = (board_id: any) => {
       router.push(`/park/report/${board_id}/detail`)
     }
+
+    function statusEngToKr(status: string) {
+      if (status === 'BEFORE') {
+        return '처리전'
+      } else if (status === 'PROCESSING') {
+        return '처리중'
+      } else if (status === 'COMPLETE') {
+        return '처리완료'
+      }
+    }
+
+    // 작성일 포맷팅
+    const formattedTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
+      let seconds = date.getSeconds().toString().padStart(2, '0')
+
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}:${seconds}`
+    }
+
     onMounted(() => {
       setList()
     })
@@ -173,7 +197,9 @@ export default defineComponent({
       movePage,
       range,
       goToPage,
-      setList
+      setList,
+      statusEngToKr,
+      formattedTime
     }
   }
 })
