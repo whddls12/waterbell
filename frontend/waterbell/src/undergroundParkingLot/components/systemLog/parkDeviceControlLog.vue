@@ -1,6 +1,7 @@
 <template lang="">
   <div class="container">
     <div class="title">기기 제어 로그</div>
+    <h6>{{ LogFacilityName }}</h6>
     <div class="datepicker-row">
       <div>
         <label>시작일시</label>
@@ -25,9 +26,9 @@
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th scope="col" class="text-center" style="width: 50px">번호</th>
-          <th scope="col" class="text-center" style="width: 400px">시간</th>
-          <th scope="col" class="text-center" style="width: 150px">시설이름</th>
+          <!-- <th scope="col" class="text-center" style="width: 50px">번호</th> -->
+          <th scope="col" class="text-center" style="width: 550px">시간</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
           <th scope="col" class="text-center" style="width: 150px">구분</th>
           <th scope="col" class="text-center" style="width: 150px">수위</th>
           <th scope="col" class="text-center" style="width: 150px">제어</th>
@@ -35,15 +36,15 @@
       </thead>
       <tbody v-if="logList && logList.length">
         <tr
-          v-for="(log, index) in logList"
+          v-for="log in logList"
           :key="log.id"
           class="tr"
           @click="movePage(log.id)"
           align="center"
         >
-          <td>{{ index + 1 }}</td>
+          <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ formattedSensorTime(log.time) }}</td>
-          <td>{{ log.name }}</td>
+          <!-- <td>{{ log.name }}</td> -->
           <td>{{ categoryLabel(log.category) }}</td>
           <td>{{ log.height }}cm</td>
           <td>{{ controlLabel(log.command) }}</td>
@@ -281,6 +282,10 @@ export default defineComponent({
       return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
     }
 
+    const LogFacilityName = computed(() => {
+      return logList.value.length ? logList.value[0].name : ''
+    })
+
     onMounted(() => {
       setList()
     })
@@ -297,12 +302,13 @@ export default defineComponent({
       goToPage,
       categoryLabel,
       formattedSensorTime,
-      controlLabel
+      controlLabel,
+      LogFacilityName
     }
   }
 })
 </script>
-<style lang="css">
+<style scoped>
 .thead-dark th {
   background-color: #343a40 !important;
   color: white !important;
@@ -314,7 +320,7 @@ export default defineComponent({
 
 .container {
   width: 90%;
-  margin: 0 auto;
+  /* margin; */
 }
 
 /* 테이블 셀 내용 가운데 정렬 */
@@ -381,7 +387,8 @@ export default defineComponent({
 .datepicker-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
 .datepicker-row > div {
@@ -398,13 +405,13 @@ export default defineComponent({
   text-align: center;
   /* 회원가입상자_제목 */
   font-family: Roboto;
-  font-size: 30px;
+  font-size: 40px;
   font-style: normal;
   font-weight: 500;
   line-height: 16px; /* 53.333% */
   letter-spacing: 3px;
   margin-bottom: 20px;
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 #category-select {
