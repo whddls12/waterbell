@@ -72,7 +72,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
-import http from '@/types/http'
 import store from '@/store/index'
 import { useRouter } from 'vue-router'
 import axios from '@/types/apiClient'
@@ -86,6 +85,7 @@ export default defineComponent({
     const facility_id = computed(() => store.getters['auth/facilityId'])
     const currentPage = ref(1)
 
+    const api = axios.api
     const apiClient = axios.apiClient(store)
 
     let reportList = ref<
@@ -128,7 +128,7 @@ export default defineComponent({
     })
 
     const setList = () => {
-      http
+      api
         .get(
           `/reports/undergroudRoad/${facility_id.value}/${currentPage.value}`
         )

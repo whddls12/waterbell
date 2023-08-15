@@ -79,7 +79,7 @@ import store from '@/store/index'
 export default defineComponent({
   name: 'roadReportCreateVue',
   setup() {
-    const facility_id = computed(() => store.getters['auth/facilityId'])
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
@@ -143,14 +143,15 @@ export default defineComponent({
 
       // 신고접수 등록하는 요청보내기
       await api
-        .post(`/reports/write/${facility_id.value}`, formData, {
+        .post(`/reports/write/${facility_id}`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         })
         .then((response) => {
           console.log(response)
-          // router.push('/road/report')
+          const newReport_id = response.data.id
+          router.push(`/road/report/${newReport_id}/detail`)
           //상세보기로 이동하는 코드 넣어야 함
         })
         .catch(function (error) {
