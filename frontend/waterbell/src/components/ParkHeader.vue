@@ -28,7 +28,7 @@
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
       <div class="each-menu">
-        <router-link to="/park/dash">대시보드</router-link>
+        <router-link to="/park/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/park/report">신고접수</router-link>
@@ -43,7 +43,7 @@
         class="each-menu"
         v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
       >
-        <router-link to="/park/systemlog">시스템 로그</router-link>
+        <router-link to="/park/systemlog">센서 내역</router-link>
       </div>
       <div
         class="each-menu"
@@ -139,6 +139,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.header-container {
+  width: 100%;
+}
+
 .header-top {
   display: flex;
   justify-content: space-between;

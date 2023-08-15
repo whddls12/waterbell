@@ -29,7 +29,7 @@
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
       <div class="each-menu">
-        <router-link to="/road/dash">대시보드</router-link>
+        <router-link to="/road/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
@@ -44,7 +44,7 @@
         class="each-menu"
         v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
       >
-        <router-link to="/road/systemlog">시스템 로그</router-link>
+        <router-link to="/road/systemlog">센서 내역</router-link>
       </div>
       <div
         class="each-menu"

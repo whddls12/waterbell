@@ -2,7 +2,7 @@
   <div class="container" id="dash-cctv">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>강수량 그래프</h3>
+        <h4>강수량 그래프</h4>
       </div>
       <div class="dash-box-content">
         <canvas
