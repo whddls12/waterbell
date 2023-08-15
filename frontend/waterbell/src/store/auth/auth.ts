@@ -30,8 +30,11 @@ const auth: Module<any, any> = {
     },
     underroadListByGugun: [] as any, //지하차도 리스트(구군에 따라 리스트로 되어 있음)
     underroadList: [] as Underroad[], //지하차도 전부 리스트 //map에서 뿌릴 때 썼음
-    firstEnter: true as boolean
+    firstEnter: true as boolean,
     //----------------------------------------------------------------------------------
+
+    cctvImg1: null as any,
+    cctvImg2: null as any
   },
   getters: {
     isLogin: (state) => state.isLogin,
@@ -52,6 +55,13 @@ const auth: Module<any, any> = {
     },
     firstEnter(state) {
       return state.firstEnter
+    },
+
+    cctvImg1(state) {
+      return state.cctvImg1
+    },
+    cctvImg2(state) {
+      return state.cctvImg2
     }
   },
   mutations: {
@@ -104,6 +114,13 @@ const auth: Module<any, any> = {
     },
     switchFirstEnter(state, payload) {
       state.firstEnter = payload
+    },
+
+    setCctvImg1(state, payload) {
+      state.cctvImg1 = payload
+    },
+    setCctvImg2(state, payload) {
+      state.cctvImg2 = payload
     }
   },
   actions: {
@@ -113,6 +130,14 @@ const auth: Module<any, any> = {
         refreshToken: payload.member.refreshToken
       })
       commit('setFacilityId', payload.member.facilityId)
+    },
+
+    setCctvImg1({ commit }, payload) {
+      commit('setCctvImg1', payload)
+    },
+
+    setCctvImg2({ commit }, payload) {
+      commit('setCctvImg2', payload)
     }
     // async memberLogin({ commit }, { loginId, password }) {
     //   try {

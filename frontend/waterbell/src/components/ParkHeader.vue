@@ -34,7 +34,7 @@
         <router-link to="/park/report">신고접수</router-link>
       </div>
       <div class="each-menu" v-show="isManager">
-        <router-link to="/park/controll">제어</router-link>
+        <router-link to="/park/control">제어</router-link>
       </div>
       <div class="each-menu" v-show="!isManager"></div>
       <div class="each-menu" v-show="isManager">
