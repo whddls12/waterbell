@@ -94,6 +94,7 @@ import { ref, computed, defineComponent, onMounted } from 'vue'
 import router from '@/router/index'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'roadReportCreateVue',
@@ -129,15 +130,8 @@ export default defineComponent({
           selectedFiles.value.push(file)
           formData.append('uploadedfiles', file)
         }
-        console.log(selectedFiles.value)
-
-        // formData에 데이터 잘 들어가는지 확인
-        // for (const values of formData.values()) {
-        //   console.log(values)
-        // }
       }
     }
-
     // 담긴 첨부파일들의 이름을 반환
     const getSelectedFileNames = computed(() => {
       const selectedFileNames = Array.from(selectedFiles.value)
@@ -146,7 +140,6 @@ export default defineComponent({
 
       return selectedFileNames
     })
-
     // 신고접수 취소 시 리스트 페이지로 이동
     function goToList() {
       router.push({ path: `/road/report` })
@@ -183,6 +176,24 @@ export default defineComponent({
         })
     }
 
+    // 회원의 경우 화면에 띄울 핸드폰 번호나 이름을 가져오는 함수
+    async function getMemberData() {
+      console.log('입력창에 채울 정보가 있다면 가져오는 함수')
+      await apiClient
+        .get(`/reports/writeMember`)
+        .then((res) => {
+          if (res.data.message === '회원') {
+            report.value.name = res.data.name
+            report.value.phone = res.data.phone
+          }
+        })
+        .catch((err) => console.log(err))
+    }
+
+    onMounted(() => {
+      getMemberData()
+    })
+
     return {
       report,
       fileInputRef,
@@ -190,7 +201,8 @@ export default defineComponent({
       upload,
       getSelectedFileNames,
       goToList,
-      writeReport
+      writeReport,
+      getMemberData
     }
   }
 })
@@ -253,6 +265,10 @@ export default defineComponent({
   padding: 10px 10px;
 } */
 
+.report-file-list {
+  margin-top: 10px;
+}
+
 .report-file-list > .report-file-list-name {
   width: 800px;
   border-radius: 8px;
@@ -260,7 +276,6 @@ export default defineComponent({
   /* background: rgba(217, 217, 217, 0); */
   /* border: 1px solid #939393; */
   padding: 10px;
-  height: 28px;
   /* color: #939393; */
   text-align: start;
 }
@@ -268,6 +283,7 @@ export default defineComponent({
 .report-filebox {
   display: flex;
   flex-direction: column;
+  margin-left: 10px;
 }
 
 .report-filebox > div {

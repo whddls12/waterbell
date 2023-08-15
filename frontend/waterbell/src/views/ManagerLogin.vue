@@ -1,4 +1,3 @@
-div
 <template lang="">
   <div>
     <h2>관리자 로그인</h2>
@@ -54,7 +53,9 @@ export default defineComponent({
     const store = useStore() // 전역 스토어를 가져옵니다.
     const login = async () => {
       const result = await managerLogin(id.value, password.value)
-      router.push(`/${result}/dash`)
+      // router.push(`/${result}/dash`)
+      // window.location.href = `/${result}/dash`
+      router.push(`/`)
     }
 
     return {
