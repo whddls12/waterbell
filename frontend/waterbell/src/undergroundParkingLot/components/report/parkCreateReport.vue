@@ -141,8 +141,8 @@ export default defineComponent({
         })
         .then((response) => {
           console.log(response)
-          //   const newReport_id = response.data.id
-          //   router.push(`/reports/apart/ApartBoard/detail/${newReport_id}`)
+          const newReport_id = response.data.id
+          router.push(`/park/report/${newReport_id}/detail`)
         })
         .catch(function (error) {
           console.log(error)
@@ -232,7 +232,7 @@ export default defineComponent({
   /* background: rgba(217, 217, 217, 0); */
   /* border: 1px solid #939393; */
   padding: 10px;
-  height: 28px;
+  /* height: 28px; */
   /* color: #939393; */
   text-align: start;
 }
