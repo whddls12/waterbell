@@ -37,7 +37,7 @@
         <router-link to="/road/report">신고접수</router-link>
       </div>
       <div class="each-menu" v-if="isManager">
-        <router-link to="/road/controll">기기제어</router-link>
+        <router-link to="/road/control">기기제어</router-link>
       </div>
       <div class="each-menu" v-if="!isManager"></div>
       <div class="each-menu" v-if="isManager">
