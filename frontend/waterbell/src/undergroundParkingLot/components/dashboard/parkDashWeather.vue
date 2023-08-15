@@ -24,18 +24,14 @@
           <i class="fas fa-thermometer-three-quarters"></i>
           <h3>기온</h3>
         </div>
-        <div class="dash-box-content">
-          {{ current_temp }}
-        </div>
+        <div class="dash-box-content">{{ current_temp }} ℃</div>
       </div>
       <!-- 습도 -->
       <div class="dash-box">
         <div class="dash-box-title">
           <h3>습도</h3>
         </div>
-        <div class="dash-box-content">
-          {{ current_humid }}
-        </div>
+        <div class="dash-box-content">{{ current_humid }} ％</div>
       </div>
     </div>
   </div>
@@ -267,6 +263,15 @@ export default defineComponent({
 }
 
 .weather-dash-box > div {
-  width: 100px;
+  width: 140px;
+}
+
+.dash-box-content {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 30px;
 }
 </style>

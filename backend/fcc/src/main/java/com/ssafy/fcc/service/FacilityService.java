@@ -1,5 +1,7 @@
 package com.ssafy.fcc.service;
 
+import com.amazonaws.services.iot.client.AWSIotException;
+import com.ssafy.fcc.config.AwsIoTConfig;
 import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.UndergroundRoad;
@@ -8,6 +10,7 @@ import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.dto.FacilityManagementDto;
 import com.ssafy.fcc.repository.FacilityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,10 +49,11 @@ public class FacilityService {
     }
 
     @Transactional
-    public void updateStatus(Facility facility, WaterStatus status) {
+    public void updateStatus(Facility facility, WaterStatus status) throws AWSIotException {
 
         facility.setStatus(status);
         facilityRepository.merge(facility);
+
 
     }
 

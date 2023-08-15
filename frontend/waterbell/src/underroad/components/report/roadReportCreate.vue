@@ -20,7 +20,7 @@
           <input type="text" v-model="report.boardPassword" />
         </div>
       </div>
-      <div class="report-box title">
+      <div class="report-box report-title">
         <div class="report-subtitle">제목</div>
         <div class="report-inputbox">
           <input type="text" v-model="report.title" />
@@ -64,14 +64,14 @@
       </div>
     </div>
     <div class="report-btn">
-      <button>취소</button>
+      <button @click="goToList()">취소</button>
       <button @click="writeReport()">등록</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { ref, computed, defineComponent } from 'vue'
+import { ref, computed, defineComponent, onMounted } from 'vue'
 import router from '@/router/index'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -97,6 +97,7 @@ export default defineComponent({
 
     const fileInputRef = ref<HTMLInputElement | null>(null)
     const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
+
     // FormData 객체 만들기
     let formData = new FormData()
 
@@ -127,6 +128,10 @@ export default defineComponent({
       return selectedFileNames
     })
 
+    // 신고접수 취소 시 리스트 페이지로 이동
+    function goToList() {
+      router.push({ path: `/road/report` })
+    }
     // 신고접수 등록
     async function writeReport() {
       // FormData에 양식에 채워진 값들 넣기
@@ -158,12 +163,14 @@ export default defineComponent({
           console.log(error)
         })
     }
+
     return {
       report,
       fileInputRef,
       selectedFiles,
       upload,
       getSelectedFileNames,
+      goToList,
       writeReport
     }
   }
