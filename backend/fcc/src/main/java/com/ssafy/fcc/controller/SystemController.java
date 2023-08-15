@@ -64,16 +64,34 @@ public class SystemController {
     }
 
     @PostMapping("/manager/facilities/{facility_id}/control/logs/{command}")
-    public int saveControlLog(@PathVariable("facility_id") Integer facilityId, @PathVariable String command) {
+    public int saveControlLog(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
 
         int result = systemService.insertControlLog(facilityId, command);
 
         return result;
     }
+    
+    @GetMapping("/manager/facilities/{facility_id}/response/logs/{page}")
+    public ResponseEntity<Map<String, Object>> responseLogList(@PathVariable("facility_id") int facilityId,
+                                @PathVariable int page,
+                                @RequestParam(value = "searchStartDate", required = false, defaultValue = "1900-01-01T00:00:00") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime searchStartDate,
+                                @RequestParam(value = "searchEndDate", required = false, defaultValue = "9999-12-31T00:00:00") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") LocalDateTime searchEndDate) {
+        Map<String, Object> logList;
+
+        try {
+            logList = systemService.getResponseLogList(facilityId, page, searchStartDate, searchEndDate);
+            if (logList.size() == 0) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(logList, HttpStatus.OK);
+    }
 
     @GetMapping("/manager/facilities/{facilityId}/sensors/HEIGHT/latest")
-    public int getLatestHeightSensor(@PathVariable Integer facilityId){
-        System.out.println("facilityId = " + facilityId);
+    public int getLatestHeightSensor(@PathVariable int facilityId) {
         return systemService.getLatestHeightSensor(facilityId);
     }
 
