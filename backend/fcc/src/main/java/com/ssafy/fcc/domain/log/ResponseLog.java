@@ -20,7 +20,7 @@ public class ResponseLog {
     @JoinColumn(name = "facility_id")
     private Facility facility;
 
-    private String category;
+    private ControlType category;
 
     private LocalDateTime responseTime;
 
