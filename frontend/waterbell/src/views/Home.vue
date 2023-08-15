@@ -290,8 +290,8 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   background-color: white;
-  margin-left: 200px;
-  margin-right: 200px;
+  margin-left: 208px;
+  margin-right: 210px;
   margin-top: 50px;
   margin-bottom: 80px;
 

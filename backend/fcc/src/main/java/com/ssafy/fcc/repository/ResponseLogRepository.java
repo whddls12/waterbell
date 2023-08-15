@@ -23,7 +23,7 @@ public class ResponseLogRepository {
 
     public long getResponseLogCnt(Facility facility, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
         return em.createQuery("select COUNT(r.id) from ResponseLog r " +
-                "where r.facility = :facility and r.responseTime >= :searchStartDate and r.responseTime <= :searchEndDate", Long.class)
+                "where r.facility = :facility and r.responseTime >= :searchStartDate and r.responseTime <= :searchEndDate order by r.responseTime DESC", Long.class)
                 .setParameter("facility",facility)
                 .setParameter("searchStartDate",searchStartDate)
                 .setParameter("searchEndDate",searchEndDate)
@@ -32,7 +32,7 @@ public class ResponseLogRepository {
 
     public List<ResponseLog> getLogList(Facility facility, int start, int size, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
         return em.createQuery("select r from ResponseLog r " +
-                "where r.facility = :facility and r.responseTime >= :searchStartDate and r.responseTime <= :searchEndDate",ResponseLog.class)
+                "where r.facility = :facility and r.responseTime >= :searchStartDate and r.responseTime <= :searchEndDate order by r.responseTime DESC",ResponseLog.class)
                 .setParameter("facility",facility)
                 .setParameter("searchStartDate",searchStartDate)
                 .setParameter("searchEndDate",searchEndDate)
