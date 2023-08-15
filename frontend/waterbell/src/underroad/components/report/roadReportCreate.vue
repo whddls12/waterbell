@@ -150,7 +150,8 @@ export default defineComponent({
         })
         .then((response) => {
           console.log(response)
-          // router.push('/road/report')
+          const newReport_id = response.data.id
+          router.push(`/road/report/${newReport_id}/detail`)
           //상세보기로 이동하는 코드 넣어야 함
         })
         .catch(function (error) {

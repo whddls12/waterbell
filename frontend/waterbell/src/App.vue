@@ -302,6 +302,22 @@ export default defineComponent({
 </script>
 
 <style>
+/* 영어 전용인듯 */
+/* @font-face {
+  font-family: 'Roboto';
+  src: url('./font/Roboto-Bold.ttf');
+} */
+
+@font-face {
+  font-family: 'IBMPlex';
+  src: url('./font/IBMPlexSansKR-SemiBold.ttf');
+}
+
+@font-face {
+  font-family: 'score';
+  src: url('./font/SCDream4.otf');
+}
+
 #app {
   margin: auto;
   text-align: center;
@@ -322,6 +338,8 @@ export default defineComponent({
 
 /* 홈페이지 구성요소 세로로 정렬 */
 #nav {
+  font-family: 'score';
+
   display: flex;
   flex-direction: column;
   flex-grow: 1;

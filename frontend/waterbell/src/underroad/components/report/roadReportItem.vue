@@ -169,6 +169,7 @@ export default defineComponent({
         .get(`/reports/publicManager/updateStatus/${report_id}/${boardStatus}`)
         .then((res) => {
           console.log(res)
+          alert('처리상태가 변경되었습니다.')
         })
         .catch((err) => console.log(err))
     }

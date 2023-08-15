@@ -88,12 +88,20 @@ export default defineComponent({
             x: {
               grid: {
                 display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시:분)'
               }
             },
             y: {
               beginAtZero: true,
               grid: {
                 display: false
+              },
+              title: {
+                display: true,
+                text: '지하주차장 수위(cm)'
               }
             }
           },

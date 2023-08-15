@@ -60,6 +60,7 @@ a {
 }
 
 .router-view-style {
+  padding: 40px 0px;
   min-height: 500px;
   min-width: 600px;
 }

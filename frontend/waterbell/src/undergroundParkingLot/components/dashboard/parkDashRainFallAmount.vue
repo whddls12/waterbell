@@ -98,13 +98,14 @@ export default defineComponent({
         options: {
           elements: {
             line: {
-              fill: true
+              fill: false
             }
           },
           scales: {
             y: {
               grid: {
-                display: false
+                // 가로축 격자선
+                display: true
               },
               title: {
                 display: true,

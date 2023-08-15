@@ -34,7 +34,9 @@ export default defineComponent({
 
     async function getDustData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
+        const response = await http.get(
+          `/dash/facilities/${facility_id}/sensors`
+        ) // 10 -> 시설 아이디로 교체해야함.
         console.log(response.data)
         current_dust.value = response.data.Dust
         if (current_dust.value) {
