@@ -3,11 +3,12 @@
     <div class="big-box">
       <h3>추가 정보 입력</h3>
       <div class="formBox">
-        <form>
+        <form class="form">
           <div class="labelBox">
             <label for="phoneNum">휴대폰번호</label><br />
             <div class="btnInput">
               <input
+                class="input"
                 type="text"
                 label="phoneNum"
                 id="phoneNum"
@@ -22,16 +23,18 @@
                 'p-msg': true,
                 success: validate.phoneNum && offerPhone
               }"
+              v-show="phoneMsg != ''"
             >
               {{ phoneMsg }}
             </p>
           </div>
-          <div class="labelBox">
+          <div class="labelBox" v-show="verificationVisible">
             <label for="verification" v-if="verificationVisible"
               >인증번호 입력</label
             ><br />
             <div class="btnInput" v-if="verificationVisible">
               <input
+                class="input"
                 type="text"
                 label="verification"
                 placeholder="인증번호를 입력해주세요."
@@ -48,6 +51,7 @@
             <label for="apartCode">아파트 코드</label><br />
             <div class="btnInput">
               <input
+                class="input"
                 type="text"
                 label="apartCode"
                 id="apartCode"
@@ -65,6 +69,7 @@
           <div class="labelBox">
             <label for="address">아파트 주소</label><br />
             <input
+              class="input"
               type="text"
               required
               label="address"
@@ -77,6 +82,7 @@
           <div class="labelBox">
             <label for="detailAddress">아파트 호수</label><br />
             <input
+              class="input"
               type="text"
               label="detailAddress"
               id="detailAddress"
@@ -343,7 +349,7 @@ export default defineComponent({
 h3 {
   color: #000;
   /* 회원가입상자_제목 */
-  font-family: Roboto;
+  font-family: score;
   font-size: 30px;
   font-style: normal;
   font-weight: 500;
@@ -367,17 +373,23 @@ h3 {
 }
 .formBox {
   display: flex;
+  max-width: 500px;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
   align-self: stretch;
+  overflow: hidden;
 }
 
+.form {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
 label,
 .text {
   color: #666;
   /* Body2 */
-  font-family: Roboto;
+  font-family: score;
   font-size: 20px;
   font-style: normal;
   font-weight: 300;
@@ -399,10 +411,10 @@ button {
 }
 .labelBox {
   display: flex;
-  width: 665px;
+  width: 500px;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
   /* border: 1px solid red; */
 }
 .btnInput {
@@ -410,20 +422,21 @@ button {
   flex-direction: row;
   justify-content: space-between;
   align-self: stretch;
+
   /* border: 1px solid blue; */
 }
 .btnInput input {
   margin-right: 10px; /* 오른쪽 마진을 추가하여 button과의 간격을 조절합니다. */
 }
 
-input {
+.input {
   display: flex;
-  height: 56px;
+  height: 40px;
   padding: 16px 17px;
   justify-content: flex-end;
   align-items: center;
   align-self: stretch;
-  gap: 10px;
+
   flex: 1 0 0;
   border-radius: 12px;
   border: 1px solid rgba(102, 102, 102, 0.35);
@@ -431,8 +444,8 @@ input {
 
 .joinBtn {
   display: flex;
-  width: 644px;
-  height: 60px;
+  width: 500px;
+  height: 40px;
   padding: 11px 16px;
   justify-content: center;
   align-items: center;
