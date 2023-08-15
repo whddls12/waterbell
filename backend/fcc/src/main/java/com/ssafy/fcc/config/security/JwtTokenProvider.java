@@ -25,7 +25,7 @@ public class JwtTokenProvider { // JWT 토큰을 생성 및 검증
     @Value("spring.jwt.secret") //application.properites에 저장
     private String secretKey; 
 
-    private final long accessTokenValidMillisecond = 1000L * 60 * 60; // 1시간 토큰 유효
+    private final long accessTokenValidMillisecond = 1000L * 60 * 60 * 24; // 1시간 * 24 토큰 유효
 
     private final  long refreshTokenValidMillisecond = 1000L * 60 * 60* 14; // 14일 토큰 유효
 

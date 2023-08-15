@@ -11,9 +11,6 @@
       Launch demo modal
     </button> -->
 
-    <button @click="toggleWaterModal">모달 열기</button>
-    <button @click="toggleBoardModal">신고접수 모달 열기</button>
-
     <!-- Modal -->
     <!-- -------------------------------침수관련 모달 ------------------------------------ -->
     <div class="modal fade" id="waterModal" ref="waterModalRef">
@@ -153,21 +150,6 @@ export default defineComponent({
     let waterModalInstance: bootstrap.Modal | null = null
     let boardModalInstance: bootstrap.Modal | null = null
 
-    const toggleWaterModal = () => {
-      store.dispatch('toggleWaterModal')
-      // if (waterModalInstance) {
-      //   if (store.state.showWaterModal) {
-      //     waterModalInstance.show()
-      //   } else {
-      //     waterModalInstance.hide()
-      //   }
-      // }
-    }
-
-    const toggleBoardModal = () => {
-      store.dispatch('toggleBoardModal')
-    }
-
     const setWaterModal = () => {
       // console.log('onMounted에서 모달이 set됩니다.')
       const element = document.getElementById('waterModal')
@@ -287,11 +269,9 @@ export default defineComponent({
       waterNotification,
       closeWaterModal,
       closeBoardModal,
-      toggleWaterModal,
       setWaterModal,
       moveToControl,
       isControlBtn,
-      toggleBoardModal,
       boardNotification,
       moveToBoardDetail,
       waterModalRef,
@@ -302,6 +282,52 @@ export default defineComponent({
 </script>
 
 <style>
+@font-face {
+  font-family: 'score';
+  font-weight: 100;
+  src: url('./font/SCDream1.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 200;
+  src: url('./font/SCDream2.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 300;
+  src: url('./font/SCDream3.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 400;
+  src: url('./font/SCDream4.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 500;
+  src: url('./font/SCDream5.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 600;
+  src: url('./font/SCDream6.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 700;
+  src: url('./font/SCDream7.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 800;
+  src: url('./font/SCDream8.otf');
+}
+@font-face {
+  font-family: 'score';
+  font-weight: 900;
+  src: url('./font/SCDream9.otf');
+}
+
 #app {
   margin: auto;
   text-align: center;
@@ -322,6 +348,9 @@ export default defineComponent({
 
 /* 홈페이지 구성요소 세로로 정렬 */
 #nav {
+  font-family: 'score';
+  font-weight: 500;
+
   display: flex;
   flex-direction: column;
   flex-grow: 1;

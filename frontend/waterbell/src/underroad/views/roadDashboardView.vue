@@ -6,11 +6,11 @@
     <div id="columnflex">
       <div id="rowflex">
         <div id="columnflex">
-          <roadDashCctvVue class="left" id="dashcomponent" />
+          <roadDashCctvVue class="left up" id="dashcomponent" />
         </div>
         <div id="columnflex">
-          <roadDashMapVue class="right" id="dashcomponent" />
-          <roadDashRainAmountVue class="right" id="dashcomponent" />
+          <roadDashMapVue class="right map up" id="dashcomponent" />
+          <roadDashRainAmountVue class="right up" id="dashcomponent" />
         </div>
       </div>
 
@@ -47,7 +47,7 @@ export default defineComponent({
 .bigbox {
   width: 100%;
   max-width: 1400px;
-  margin: 0;
+  margin: 0px;
   height: 100%; /* set height to 100% */
   display: flex;
   justify-self: center;
@@ -64,11 +64,12 @@ export default defineComponent({
   padding: 10px;
   background-color: #f2f7ff;
 }
+
 #rowflex {
   display: flex;
   border-radius: 8px;
   flex-direction: row;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   align-items: stretch; /* stretch child components to have equal heights */
 }
 
@@ -80,7 +81,7 @@ export default defineComponent({
 
 #dashcomponent {
   flex-grow: 1; /* allow components to grow equally */
-  margin: 10px;
+  /* margin: 10px; */
 }
 /* .container {
   display: flex;
@@ -120,5 +121,17 @@ export default defineComponent({
 
 .roadDashWarnMsgVue {
   width: 98%;
+}
+
+.map {
+  height: 530px;
+}
+
+#columnflex .right {
+  /* width: 500px; */
+}
+
+.up {
+  width: 531px;
 }
 </style>

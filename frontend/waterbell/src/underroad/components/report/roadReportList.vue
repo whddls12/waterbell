@@ -9,7 +9,7 @@
           <th scope="col" class="text-center" style="width: 150px">처리상태</th>
           <th scope="col" class="text-center" style="width: 150px">작성일시</th>
           <th scope="col" class="text-center" style="width: 150px">조회수</th>
-          <th scope="col" class="text-center" style="width: 150px">파일</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">파일</th> -->
         </tr>
       </thead>
       <tbody v-if="reportList && reportList.length">
@@ -23,10 +23,10 @@
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
           <td>{{ report.name }}</td>
-          <td>{{ report.status }}</td>
-          <td>{{ report.createDate }}</td>
+          <td>{{ statusEngToKr(report.status) }}</td>
+          <td>{{ formattedTime(report.createDate) }}</td>
           <td>{{ report.viewCount }}</td>
-          <td>{{ report.uploadedfiles }}</td>
+          <!-- <td>{{ report.uploadedfiles }}</td> -->
         </tr>
       </tbody>
       <tbody v-else>
@@ -72,7 +72,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, computed, ref } from 'vue'
-import http from '@/types/http'
 import store from '@/store/index'
 import { useRouter } from 'vue-router'
 import axios from '@/types/apiClient'
@@ -86,6 +85,7 @@ export default defineComponent({
     const facility_id = computed(() => store.getters['auth/facilityId'])
     const currentPage = ref(1)
 
+    const api = axios.api
     const apiClient = axios.apiClient(store)
 
     let reportList = ref<
@@ -128,7 +128,7 @@ export default defineComponent({
     })
 
     const setList = () => {
-      http
+      api
         .get(
           `/reports/undergroudRoad/${facility_id.value}/${currentPage.value}`
         )
@@ -171,6 +171,30 @@ export default defineComponent({
         path: `/road/report/${report_id}/detail`
       })
     }
+
+    // 작성일 포맷팅
+    const formattedTime = (dateTime: string) => {
+      let date = new Date(dateTime)
+      let year = date.getFullYear()
+      let month = (1 + date.getMonth()).toString().padStart(2, '0')
+      let day = date.getDate().toString().padStart(2, '0')
+      let hours = date.getHours().toString().padStart(2, '0')
+      let minutes = date.getMinutes().toString().padStart(2, '0')
+      let seconds = date.getSeconds().toString().padStart(2, '0')
+
+      return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}:${seconds}`
+    }
+
+    function statusEngToKr(status: string) {
+      if (status === 'BEFORE') {
+        return '처리전'
+      } else if (status === 'PROCESSING') {
+        return '처리중'
+      } else if (status === 'COMPLETE') {
+        return '처리완료'
+      }
+    }
+
     onMounted(() => {
       setList()
     })
@@ -181,7 +205,9 @@ export default defineComponent({
       movePage,
       range,
       goToPage,
-      setList
+      setList,
+      statusEngToKr,
+      formattedTime
     }
   }
 })
