@@ -22,7 +22,7 @@
         >
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
-          <td>{{ report.name }}</td>
+          <td>{{ report.apartMember.name }}</td>
           <td>{{ report.status }}</td>
           <td>{{ report.createDate }}</td>
           <td>{{ report.viewCount }}</td>

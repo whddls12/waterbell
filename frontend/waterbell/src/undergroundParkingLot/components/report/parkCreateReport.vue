@@ -68,17 +68,6 @@ export default defineComponent({
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
-    // let userData = ref({
-    //   id: '',
-    //   loginId: '',
-    //   role: '',
-    //   phone: '',
-    //   token: '',
-    //   facilityId: '',
-    //   name: '',
-    //   addressNumber: ''
-    // })
-
     let report = ref({
       name: '',
       phone: '',
@@ -89,18 +78,6 @@ export default defineComponent({
 
     const fileInputRef = ref<HTMLInputElement | null>(null)
     const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
-    // 유저정보 가져오기
-    async function getUserData() {
-      const userData = await apiClient
-        .get(`/member/findMember/token`)
-        .then((res) => {
-          console.log(res.data.member)
-          report.value.name = res.data.member.name
-          report.value.phone = res.data.member.phone
-        })
-        .catch((err) => console.log(err))
-      return userData
-    }
 
     // FormData 객체 만들기
     let formData = new FormData()
@@ -161,10 +138,6 @@ export default defineComponent({
         })
     }
 
-    onMounted(() => {
-      getUserData()
-    })
-
     return {
       report,
       fileInputRef,
@@ -172,8 +145,7 @@ export default defineComponent({
       upload,
       getSelectedFileNames,
       goToList,
-      writeReport,
-      getUserData
+      writeReport
     }
   }
 })

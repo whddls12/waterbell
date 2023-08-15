@@ -19,7 +19,7 @@
         </div>
         <div class="report-info">
           <div class="report-info info-box">
-            <p>{{ reportInfo?.name }}</p>
+            <p>{{ reportInfo?.apartMember.name }}</p>
             <p>{{ reportInfo?.createDate }}</p>
           </div>
           <div class="report-info info-box">
