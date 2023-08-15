@@ -1,7 +1,10 @@
 <template>
   <div class="bigbox">
     <!-- <div> -->
-    <parkDashWarningMessageVue />
+    <parkDashWarningMessageVue
+      class="parkDashWarningMessageVue"
+      id="dashcomponent"
+    />
     <div id="columnflex">
       <div id="rowflex">
         <div id="columnflex">
@@ -120,5 +123,9 @@ export default defineComponent({
 
 .left {
   flex-grow: 2;
+}
+
+.parkDashWarningMessageVue {
+  width: 98%;
 }
 </style>

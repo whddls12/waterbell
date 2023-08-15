@@ -14,9 +14,6 @@
           >기기 제어 로그</router-link
         >
       </div>
-      <div class="select-region-box">
-        <router-link to="/road/systemlog/alarmLog">알림 로그</router-link>
-      </div>
     </div>
     <router-view class="router-view-style"></router-view>
   </div>
@@ -62,5 +59,6 @@ a {
 .router-view-style {
   min-height: 500px;
   min-width: 600px;
+  overflow: hidden;
 }
 </style>
