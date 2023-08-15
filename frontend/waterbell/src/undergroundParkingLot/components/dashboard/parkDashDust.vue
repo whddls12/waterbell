@@ -44,7 +44,7 @@ export default defineComponent({
         const response = await api.get(
           `/dash/facilities/${facility_id}/sensors`
         )
-        console.log(response.data)
+        console.log(current_dust.value)
         current_dust.value = response.data.Dust
         if (current_dust.value) {
           if (current_dust.value >= 250) {
