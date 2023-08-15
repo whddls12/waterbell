@@ -291,8 +291,8 @@ export default defineComponent({
   justify-content: center;
   overflow: auto;
   background-color: white;
-  margin-left: 200px;
-  margin-right: 200px;
+  margin-left: 209px;
+  margin-right: 211px;
   margin-top: 50px;
   margin-bottom: 80px;
 
