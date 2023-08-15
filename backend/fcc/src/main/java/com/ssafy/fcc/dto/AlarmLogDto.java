@@ -22,11 +22,11 @@ public class AlarmLogDto {
     private int facility_id;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm:ss")
     private LocalDateTime regDate;
-    String content;
-    boolean is_apart;
-    boolean is_flood;
-    int apart_board_id;
-    int underground_board_id;
+    private String content;
+    private boolean is_apart;
+    private boolean is_flood;
+    private int apart_board_id;
+    private int underground_board_id;
     private String status;
 
     public AlarmLogDto(BoardAlarmLog log) {

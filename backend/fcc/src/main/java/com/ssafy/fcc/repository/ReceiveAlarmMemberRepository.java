@@ -35,6 +35,13 @@ public class ReceiveAlarmMemberRepository {
         return countQuery.getSingleResult();
     }
 
+    public Long getReceiveAlarmMemberCnt(Long alarm_id){
+        String jpqlQuery = "SELECT COUNT(R) FROM ReceiveAlarmMember R WHERE R.alarm.id = :alarm_id";
+        TypedQuery<Long> countQuery = em.createQuery(jpqlQuery, Long.class)
+                .setParameter("alarm_id", alarm_id);
+        return countQuery.getSingleResult();
+    }
+
     public ReceiveAlarmMember findById(Long id){
         return em.find(ReceiveAlarmMember.class, id);
     }
