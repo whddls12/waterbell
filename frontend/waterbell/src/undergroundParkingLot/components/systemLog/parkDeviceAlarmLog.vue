@@ -1,90 +1,98 @@
 <template lang="">
-  <div class="container">
-    <div class="title">SMS&웹 알림 발신 로그</div>
-    <h6>{{ LogFacilityName }}</h6>
-    <div class="datepicker-row">
-      <div>
-        <label>시작일시</label>
-        <span class="VueDatePicker">
-          <VueDatePicker
-            v-model="startDate"
-            placeholder="Select date"
-          ></VueDatePicker>
-        </span>
+  <div class="router-box">
+    <div class="table-box">
+      <div class="title">SMS&웹 알림 발신 로그</div>
+      <h6>{{ LogFacilityName }}</h6>
+      <div class="datepicker-row">
+        <div>
+          <label>시작일시</label>
+          <span class="VueDatePicker">
+            <VueDatePicker
+              v-model="startDate"
+              placeholder="Select date"
+            ></VueDatePicker>
+          </span>
+        </div>
+        <div>
+          <label>종료일시</label>
+          <span class="VueDatePicker">
+            <VueDatePicker
+              v-model="endDate"
+              placeholder="Select date"
+            ></VueDatePicker>
+          </span>
+        </div>
       </div>
-      <div>
-        <label>종료일시</label>
-        <span class="VueDatePicker">
-          <VueDatePicker
-            v-model="endDate"
-            placeholder="Select date"
-          ></VueDatePicker>
-        </span>
-      </div>
-    </div>
 
-    <table class="table table-hover table-bordered table-bordered">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col" class="text-center" style="width: 200px">발신시간</th>
-          <th scope="col" class="text-center" style="width: 550px">알림내용</th>
-          <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
-          <th scope="col" class="text-center" style="width: 150px">구분</th>
-          <th scope="col" class="text-center" style="width: 100px">발신인원</th>
-        </tr>
-      </thead>
-      <tbody v-if="logList && logList.length">
-        <tr
-          v-for="log in logList"
-          :key="log.id"
-          class="tr"
-          @click="movePage(log.id)"
-          align="center"
-        >
-          <td>{{ formattedSensorTime(log.regDate) }}</td>
-          <td>{{ log.content }}</td>
-          <!-- <td>{{ log.facility_name }}</td> -->
-          <td>{{ log.category }}</td>
-          <td>{{ log.cnt }}</td>
-        </tr>
-      </tbody>
-      <tbody v-else>
-        <tr>
-          <td colspan="6" class="text-center">해당하는 데이터가 없습니다.</td>
-        </tr>
-      </tbody>
-    </table>
-    <!-- 페이지네이션 컨트롤 -->
-    <div class="pagination-container">
-      <div class="pagination">
-        <!-- 이전 페이지 그룹으로 이동 -->
-        <span
-          v-if="pageNavigation.startPage > 1"
-          @click.prevent="goToPage(pageNavigation.pre)"
-        >
-          &laquo;
-        </span>
+      <table class="table table-hover table-bordered table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="text-center" style="width: 200px">
+              발신시간
+            </th>
+            <th scope="col" class="text-center" style="width: 550px">
+              알림내용
+            </th>
+            <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
+            <th scope="col" class="text-center" style="width: 150px">구분</th>
+            <th scope="col" class="text-center" style="width: 100px">
+              발신인원
+            </th>
+          </tr>
+        </thead>
+        <tbody v-if="logList && logList.length">
+          <tr
+            v-for="log in logList"
+            :key="log.id"
+            class="tr"
+            @click="movePage(log.id)"
+            align="center"
+          >
+            <td>{{ formattedSensorTime(log.regDate) }}</td>
+            <td>{{ log.content }}</td>
+            <!-- <td>{{ log.facility_name }}</td> -->
+            <td>{{ log.category }}</td>
+            <td>{{ log.cnt }}</td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="6" class="text-center">해당하는 데이터가 없습니다.</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- 페이지네이션 컨트롤 -->
+      <div class="pagination-container">
+        <div class="pagination">
+          <!-- 이전 페이지 그룹으로 이동 -->
+          <span
+            v-if="pageNavigation.startPage > 1"
+            @click.prevent="goToPage(pageNavigation.pre)"
+          >
+            &laquo;
+          </span>
 
-        <!-- 현재 페이지 그룹의 페이지 숫자들 -->
-        <span
-          v-for="page in range(
-            pageNavigation.startPage,
-            pageNavigation.endPage
-          )"
-          :key="page"
-          :class="{ active: page === pageNavigation.pgno }"
-          @click.prevent="goToPage(page)"
-        >
-          {{ page }}
-        </span>
+          <!-- 현재 페이지 그룹의 페이지 숫자들 -->
+          <span
+            v-for="page in range(
+              pageNavigation.startPage,
+              pageNavigation.endPage
+            )"
+            :key="page"
+            :class="{ active: page === pageNavigation.pgno }"
+            @click.prevent="goToPage(page)"
+          >
+            {{ page }}
+          </span>
 
-        <!-- 다음 페이지 그룹으로 이동 -->
-        <span
-          v-if="pageNavigation.endPage < pageNavigation.totalPageCnt"
-          @click.prevent="goToPage(pageNavigation.next)"
-        >
-          &raquo;
-        </span>
+          <!-- 다음 페이지 그룹으로 이동 -->
+          <span
+            v-if="pageNavigation.endPage < pageNavigation.totalPageCnt"
+            @click.prevent="goToPage(pageNavigation.next)"
+          >
+            &raquo;
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -283,26 +291,56 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
 .thead-dark th {
-  background-color: #343a40 !important;
-  color: white !important;
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
 }
 
 .tr {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  margin: 0 auto;
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px 0; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
 }
 
+.table {
+  width: 100%;
+}
 /* 테이블 셀 내용 가운데 정렬 */
 .table th,
 .table td {
   text-align: center;
+  vertical-align: middle;
 }
 
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
 /* 테이블 헤더 글자 크기 및 굵게 */
 .table th {
   font-size: 14px;
@@ -318,7 +356,6 @@ export default defineComponent({
 .table tbody tr {
   height: 50px;
 }
-
 /* "등록된 신고접수가 없습니다." 메시지 스타일 */
 .no-data-message {
   font-size: 16px;
@@ -372,20 +409,6 @@ export default defineComponent({
 .VueDatePicker {
   height: 50px;
   width: 100%; /* 또는 적당한 %값 */
-}
-
-.title {
-  color: var(--typography-1, #1c2a53);
-  text-align: center;
-  /* 회원가입상자_제목 */
-  font-family: Roboto;
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 16px; /* 53.333% */
-  letter-spacing: 3px;
-  margin-bottom: 20px;
-  margin-top: 40px;
 }
 
 #category-select {

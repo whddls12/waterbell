@@ -8,13 +8,13 @@
     <div id="columnflex">
       <div id="rowflex">
         <div id="columnflex">
-          <parkDashCctvVue class="left" id="dashcomponent" />
+          <parkDashCctvVue class="left up" id="dashcomponent" />
         </div>
         <div id="columnflex">
-          <parkDashWeatherVue class="right" id="dashcomponent" />
+          <parkDashWeatherVue class="right up" id="dashcomponent" />
           <!-- <parkDashTempAndHumidVue class="right" id="dashcomponent" /> -->
-          <parkDashDustVue class="right" id="dashcomponent" />
-          <parkDashRainFallAmountVue class="right" id="dashcomponent" />
+          <parkDashDustVue class="right up dust" id="dashcomponent" />
+          <parkDashRainFallAmountVue class="right up" id="dashcomponent" />
         </div>
       </div>
 
@@ -127,5 +127,13 @@ export default defineComponent({
 
 .parkDashWarningMessageVue {
   width: 98%;
+}
+
+.up {
+  width: 531px;
+}
+
+.dust {
+  height: 292px;
 }
 </style>

@@ -2,7 +2,8 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>수위센서 그래프</h3>
+        <i class="fas fa-chart-line fa-lg"></i>
+        <h4>수위센서 그래프</h4>
       </div>
       <div class="dash-box-content">
         <canvas
@@ -18,12 +19,15 @@
 <script lang="ts">
 import Chart from 'chart.js/auto'
 import { ref, onMounted, computed, nextTick, defineComponent } from 'vue'
-import http from '@/types/http'
+import axios from '@/types/apiClient'
 import store from '@/store/index'
 
 export default defineComponent({
   name: 'roadDashWaterLevelVue',
   setup() {
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const chartRef = ref(null)
     const timeArr = ref<string[]>([])
     const amountArr = ref<string[]>([])
@@ -42,12 +46,11 @@ export default defineComponent({
     // 수위 센서 데이터 가져오기
     async function getSensorData() {
       try {
-        const response = await http.get(
-          `/dash/facilities/10/sensors/heightPerhour`
+        const response = await api.get(
+          `/dash/facilities/${facility_id}/sensors/heightPerhour`
         )
 
         const apiData = response.data
-        console.log(apiData)
 
         return { apiData }
       } catch (error) {

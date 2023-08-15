@@ -63,6 +63,7 @@ a {
 .router-view-style {
   min-height: 500px;
   min-width: 600px;
+  width: 100%;
   overflow: hidden;
 }
 </style>
