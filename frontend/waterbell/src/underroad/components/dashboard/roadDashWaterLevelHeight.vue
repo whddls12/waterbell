@@ -2,6 +2,7 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
+        <i class="fas fa-chart-line fa-lg"></i>
         <h4>수위센서 그래프</h4>
       </div>
       <div class="dash-box-content">

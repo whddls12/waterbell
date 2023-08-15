@@ -235,6 +235,10 @@ export default defineComponent({
   overflow: hidden;
 }
 
+.select-box:hover {
+  cursor: pointer;
+}
+
 .select-box-text {
   padding: 20px;
   text-align: start;

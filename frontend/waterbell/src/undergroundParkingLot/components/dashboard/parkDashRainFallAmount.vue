@@ -2,8 +2,8 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <i class="fas fa-chart-line"></i>
-        <h4>강수량 그래프</h4>
+        <i class="fas fa-chart-line fa-lg"></i>
+        <div><h4>강수량 그래프</h4></div>
       </div>
       <div class="dash-box-content">
         <canvas
@@ -150,7 +150,7 @@ export default defineComponent({
 })
 </script>
 <style>
-/* #dash-cctv {
-  height: 500px;
-} */
+.fas {
+  margin-bottom: 8px;
+}
 </style>
