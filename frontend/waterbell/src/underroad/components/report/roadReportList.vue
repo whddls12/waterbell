@@ -1,6 +1,12 @@
 <template>
   <div class="table-box">
-    <button id="create" @click="createReport">글쓰기</button>
+    <button
+      v-if="role != 'APART_MANAGER' && role != 'PUBLIC_MANAGER'"
+      id="create"
+      @click="createReport"
+    >
+      글쓰기
+    </button>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
@@ -209,6 +215,7 @@ export default defineComponent({
       setList()
     })
     return {
+      role,
       reportList,
       currentPage,
       pageNavigation,

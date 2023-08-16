@@ -1,6 +1,8 @@
 <template>
   <div class="table-box">
-    <button id="create" @click="createReport">글작성</button>
+    <button v-if="role == 'APART_MEMBER'" id="create" @click="createReport">
+      글작성
+    </button>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
@@ -81,6 +83,8 @@ import axios from '@/types/apiClient'
 export default defineComponent({
   name: 'parkReportListVue',
   setup() {
+    const role = computed(() => store.getters['auth/role']).value
+
     // 아파트 id 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -174,7 +178,6 @@ export default defineComponent({
         return '처리완료'
       }
     }
-    const role = computed(() => store.getters['auth/role']).value
 
     function createReport() {
       // 권한이 있는 경우 글쓰기 페이지로 이동
@@ -202,6 +205,7 @@ export default defineComponent({
       setList()
     })
     return {
+      role,
       reportList,
       pageNavigation,
       currentPage,
