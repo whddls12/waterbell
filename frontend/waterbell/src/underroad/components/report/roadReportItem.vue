@@ -466,7 +466,7 @@ export default defineComponent({
   font-weight: 500;
   line-height: 28px; /* 140% */
   letter-spacing: 0.25px;
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 .info-status {

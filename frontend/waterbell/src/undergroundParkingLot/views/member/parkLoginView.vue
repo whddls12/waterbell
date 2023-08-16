@@ -50,8 +50,10 @@
             </div>
           </form>
         </div>
-        <router-link to="/park/find/id">아이디 찾기</router-link>
-        <router-link to="/park/find/password">비밀번호 찾기</router-link>
+        <div class="find-bt">
+          <router-link to="/park/find/id">아이디 찾기</router-link>
+          <router-link to="/park/find/password">비밀번호 찾기</router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -194,5 +196,10 @@ button img {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.find-bt {
+  display: flex;
+  gap: 10px;
 }
 </style>

@@ -32,6 +32,16 @@ export default defineComponent({
     // const api = axios.api
     const currentPW = ref('')
 
+    // 입력을 다 하고 엔터키로 비밀번호 확인이 가능하게끔
+    let input = document.getElementById('currentPW')
+
+    input?.addEventListener('keyup', function (event: any) {
+      if (event.keyCode === 13) {
+        event.preventDefault()
+        document.getElementById('check')?.click()
+      }
+    })
+
     // 현재 비밀번호를 잘 입력했는지 검증
     function isEqual() {
       apiClient

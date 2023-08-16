@@ -36,6 +36,7 @@ export default defineComponent({
     const phoneNum = ref(null)
 
     function findId() {
+      console.log(name.value, phoneNum.value)
       api
         .post(`/member/apart/searchId`, {
           name: name.value,
@@ -47,7 +48,7 @@ export default defineComponent({
         .catch((err) => console.log(err))
     }
 
-    return { findId }
+    return { name, phoneNum, findId }
   }
 })
 </script>
