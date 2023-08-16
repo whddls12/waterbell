@@ -161,7 +161,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .dust-box {
   position: relative;
 }

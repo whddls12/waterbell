@@ -108,7 +108,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script scoped lang="ts">
 import { defineComponent, onMounted, computed, ref, watch } from 'vue'
 import store from '@/store/index'
 import VueDatePicker from '@vuepic/vue-datepicker'
