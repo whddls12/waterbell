@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>로그인</h2>
+    <h2 class="title">로그인</h2>
 
     <div>
       <div class="includeFinding">
@@ -71,6 +71,7 @@
         <router-link to="/park/find/password">비밀번호 찾기</router-link> -->
       </div>
     </div>
+    <div class="report-empty-box-bottom"></div>
   </div>
 </template>
 <script>
@@ -223,7 +224,7 @@ button img {
 
 .id-input {
   display: flex;
-  width: 665px;
+  width: 500px;
   align-items: center;
   gap: 4px;
   margin-top: 30px;
@@ -232,7 +233,7 @@ button img {
 .input-inner-label {
   flex-grow: 0;
   display: flex;
-  width: 150px;
+  width: 90px;
   height: 30px;
   flex-direction: column;
   justify-content: center;
@@ -310,5 +311,12 @@ button img {
   font-weight: 600;
   line-height: 32px; /* 133.333% */
   letter-spacing: 7px;
+}
+
+.report-empty-box-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 40px;
 }
 </style>

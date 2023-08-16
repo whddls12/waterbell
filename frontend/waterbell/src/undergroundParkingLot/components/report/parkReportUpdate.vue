@@ -267,7 +267,7 @@ export default defineComponent({
 
 /* 각 컬럼명 */
 .report-subtitle {
-  width: 150px;
+  width: 90px;
   border-right: 1px solid #939393;
   padding: 10px 10px;
 }
