@@ -16,7 +16,6 @@ GPIO.setup(21,GPIO.OUT)
 servo_pin = 18
 GPIO.setup(servo_pin, GPIO.OUT)
 GPIO.output(servo_pin, False)
-pwm = GPIO.PWM(servo_pin, 50)
 
 # 0 : OFF 1: ON
 servoStatus = 0
@@ -24,7 +23,6 @@ servoStatus = 0
 sub_servo_topic = "Server/BOARD"
 sub_lcd_topic = "Server/STATUS"
 
-mqtt_server = "172.30.1.38"
 facility_id = "10"
 
 pub_topic = "Arduino/CONTROL"
@@ -44,11 +42,8 @@ def on_connect(client, userdata, flags, rc):
 
 def connect_mqtt():
     arduino = mqtt.Client()
-<<<<<<< HEAD
     arduino.connect("172.20.10.8", 1883, 60)
-=======
-    arduino.connect(mqtt_server, 1883, 60)
->>>>>>> d0c3c248a5648717af760083c3ea4fb93f848af5
+
     arduino.on_connect = on_connect
     return arduino
 
@@ -62,7 +57,7 @@ def subscribe(arduino):
 
 def on_message_servo(client, userdata, msg):
     global servoStatus
-    global pwm
+    pwm = GPIO.PWM(servo_pin, 50)
     payload = msg.payload.decode()
     
     pwm.start(3.0)
