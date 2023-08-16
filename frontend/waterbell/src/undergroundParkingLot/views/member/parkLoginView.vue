@@ -67,10 +67,6 @@
             </div>
           </form>
         </div>
-        <div class="find-bt">
-          <router-link to="/park/find/id">아이디 찾기</router-link>
-          <router-link to="/park/find/password">비밀번호 찾기</router-link>
-        </div>
       </div>
     </div>
     <div class="report-empty-box-bottom"></div>

@@ -136,6 +136,7 @@ export default defineComponent({
             if (status === window.kakao.maps.services.Status.OK) {
               lon = result[0].x
               lat = result[0].y
+              console.log('주소 검색: ', lon, lat)
               resolve()
             } else {
               reject('주소 검색에 실패했습니다.')
