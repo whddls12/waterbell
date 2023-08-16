@@ -29,6 +29,7 @@ export default defineComponent({
             const key = response.data.key
             router.push(`/social-join/extra?key=${key}`)
           } else if (response.data.type === 'login') {
+            console.log(response.data)
             await store.dispatch('auth/socialLogin', response)
             connectWebSocket()
           }
