@@ -47,7 +47,7 @@
           <!-- <td>{{ log.name }}</td> -->
           <td>{{ categoryLabel(log.category) }}</td>
           <td>{{ log.height }}cm</td>
-          <td>{{ controlLabel(log.command) }}</td>
+          <td v-html="controlLabel(log.command)"></td>
         </tr>
       </tbody>
       <tbody v-else>
@@ -248,9 +248,9 @@ export default defineComponent({
     const controlLabel = (cat: string) => {
       switch (cat) {
         case 'ON':
-          return '동작'
+          return '<span style="color: blue;">동작<span>'
         case 'OFF':
-          return '해제'
+          return '<span style="color: red;">해제<span>'
         default:
           return ''
       }

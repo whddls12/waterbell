@@ -27,12 +27,12 @@ function connectWebSocket(): void {
       const data = event.data
       // console.log(data)
       if (JSON.parse(data).camClient1 == 'camClient1') {
-        store.commit('setCamClient1', data.camClient1)
+        store.commit('auth/setCamClient1', data.camClient1)
       } else {
         const base64Image = JSON.parse(data).temp_img
         console.log('서버로부터 이미지string을 받았습니다: ' + base64Image)
         //이미지 처리 어떻게 할거야
-        store.dispatch('setCctvImg1', base64Image)
+        store.dispatch('auth/setCctvImg1', base64Image)
         const imgString = store.getters['auth/cctvImg1']
         // 이미지를 화면에 표시할 요소 생성
         const imgTag = document.getElementById('cctv1') as HTMLImageElement

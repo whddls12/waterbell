@@ -29,8 +29,18 @@
               name="report-status"
               v-model="selectedStatus"
               class="custom-select"
+              :class="{
+                'text-primary': selectedStatus == '2',
+                'text-success': selectedStatus == '1',
+                'text-danger': selectedStatus == '0'
+              }"
             >
               <option
+                :class="{
+                  'text-primary': status.value == '2',
+                  'text-success': status.value == '1',
+                  'text-danger': status.value == '0'
+                }"
                 v-for="(status, index) in statusList"
                 :key="index"
                 :value="status.value"
@@ -38,7 +48,15 @@
                 {{ status.text }}
               </option>
             </select>
-            <div v-else class="info-status">
+            <div
+              v-else
+              class="info-status"
+              :class="{
+                'text-primary': reportInfo?.status == 'COMPLETE',
+                'text-success': reportInfo?.status == 'PROCESSING',
+                'text-danger': reportInfo?.status == 'BEFORE'
+              }"
+            >
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
             <div class="viewCount">
@@ -158,15 +176,18 @@ export default defineComponent({
     const statusList = [
       {
         text: '처리전',
-        value: '0'
+        value: '0',
+        color: 'warning'
       },
       {
         text: '처리중',
-        value: '1'
+        value: '1',
+        color: 'success'
       },
       {
         text: '처리완료',
-        value: '2'
+        value: '2',
+        color: 'primary'
       }
     ]
     const selectedStatus = ref('0')
@@ -469,9 +490,9 @@ export default defineComponent({
   /* margin: 5px; */
 }
 
-.info-status {
+/* .info-status {
   color: var(--ing, #0d7e83);
-}
+} */
 
 .password-check-modal {
   gap: 10px;
@@ -536,7 +557,7 @@ export default defineComponent({
   background-color: #fff;
   appearance: none;
   cursor: pointer;
-  color: var(--ing, #0d7e83);
+  /* color: var(--ing, #0d7e83); */
   text-align: center;
   text-align: center;
   font-size: 14px;
@@ -558,7 +579,7 @@ export default defineComponent({
   transform: translateY(-50%);
   pointer-events: none;
   color: #888;
-  color: var(--ing, #0d7e83);
+  /* color: var(--ing, #0d7e83); */
   text-align: center;
 }
 
@@ -577,7 +598,7 @@ export default defineComponent({
 option {
   background-color: #fff;
   color: #333;
-  color: var(--ing, #0d7e83);
+  /* color: var(--ing, #0d7e83); */
   text-align: center;
 }
 
