@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AwsIoTConfig {
 
-    String clientEndpoint = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com";
-    String clientId = "IoT222123";
-    String awsAccessKeyId = "AKIASBP5HSYQ5IDP7QNO";
-    String awsSecretAccessKey = "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";
+    String clientEndpoint = "a3kqjba8huf6r2-ats.iot.us-east-2.amazonaws.com";
+    String clientId = "rasp";
+    String awsAccessKeyId = "AKIARGSGEM3WCHCNAJBF";
+    String awsSecretAccessKey = "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";
 
     AWSIotMqttClient client;
 
