@@ -1,7 +1,7 @@
 <template>
   <div class="report-create-container" style="width: 90%">
-    <div class="report-page-title">
-      <h1>신고접수 글쓰기</h1>
+    <div class="report-page-title title" style="margin-bottom: 0px">
+      <h1>신고접수 글 작성</h1>
       <div class="report-empty-box"></div>
     </div>
     <div class="report-write">
