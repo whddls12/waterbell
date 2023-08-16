@@ -1,15 +1,17 @@
-
 #include <PubSubClient.h>
 #include <WiFiEsp.h>
 #include <SoftwareSerial.h>
 #include <DHT.h>
 #include <pm2008_i2c.h>
 
+
+// #define DISPIN A0
 PM2008_I2C pm2008_i2c;
 
 #define DHTPIN 6
 float hum; //Stores humidity value
 float temp; //Stores temperature value
+// int distance = 0; // initial Distance
 
 
 unsigned long lastMsg = 0;
@@ -23,10 +25,10 @@ DHT dht(DHTPIN, DHTTYPE);
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "";             // your network SSID (name)
-char pass[] = "";        // your network password
+char ssid[] = "Galaxy A313285";             // network SSID (name)
+char pass[] = "12345678";        // network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "";    // IP address of the MQTT server
+char server[] = "192.168.43.96";    // IP address of the MQTT server(Raspberry Pi)
 char topic[] = "test";            // Default topic string
 char clientId[] = "Arduino weather";      // Cliwent id: Must be unique on the broker
 
@@ -82,24 +84,29 @@ void loop() {
 
   unsigned long now = millis();
 
-  if(now-lastMsg>2000){
+  if(now-lastMsg>10000){
     lastMsg=now;
     uint8_t ret = pm2008_i2c.read();
       if (ret == 0) {
-        Serial.print("PM 10 (GRIMM) : : ");
+        Serial.print("PM 10 (GRIMM) : ");
         Serial.println(pm2008_i2c.pm10_grimm);
-        mqttClient.publish("test", pm2008_i2c.pm10_grimm);
+        snprintf (msg, MSG_BUFFER_SIZE, "DUST/%d", (int)pm2008_i2c.pm10_grimm);
+        mqttClient.publish("Arduino/SENSOR", msg);
       }
     hum = dht.readHumidity();
     temp = dht.readTemperature();
-    Serial.print("humidity : ");
-    Serial.print(hum);
+
+    Serial.print("Humid : ");
+    Serial.println(hum);
     Serial.print("Temp:");
-    Serial.print(temp);
-    snprintf (msg, MSG_BUFFER_SIZE, "%d", (int)temp);
-    mqttClient.publish("test", msg);
-    snprintf (msg, MSG_BUFFER_SIZE, "%d", (int)hum);
-    mqttClient.publish("test", msg);
+    Serial.println(temp);
+    
+    snprintf (msg, MSG_BUFFER_SIZE, "HUMID/%d", (int)hum);
+    mqttClient.publish("Arduino/SENSOR", msg);/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    snprintf (msg, MSG_BUFFER_SIZE, "TEMP/%d", (int)temp);
+    mqttClient.publish("Arduino/SENSOR", msg);
+
   }
 
 

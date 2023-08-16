@@ -2,44 +2,59 @@
 #include <PubSubClient.h>
 #include <WiFiEsp.h>
 #include <SoftwareSerial.h>
+#include <AccelStepper.h>
 
-// IR Distance Sensor Pin
-#define DISPIN A0;
+#define motorPin1 6   // IN1
+#define motorPin2 7   // IN2
+#define motorPin3 8  // IN3
+#define motorPin4 9  // IN4
 
-// Message format
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE  (10)
 char msg[MSG_BUFFER_SIZE];
 
-int distance = 0; // initial Distance
-int intevalTime = 5000;
-
-
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "";             // network SSID (name)
-char pass[] = "";        // network password
+char ssid[] = "jjhjjh";             // your network SSID (name)
+char pass[] = "123456700";        // your network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "";    // IP address of the MQTT server(Raspberry Pi)
-char topic[] = "Arduino/HEIGHT";            // Default topic string
-char clientId[] = "Arduino waterHeight";      // Cliwent id: Must be unique on the broker
+char server[] = "172.20.10.5";    // IP address of the MQTT server
+// Server/시설번호/plate나 보드 - ON OFF
+
+char Sub_topic[] = "Server/PLATE";            // Default topic string
+char Pub_topic[] = "Arduino/CONTROL";
+
+char clientId[] = "Motor1";      // Cliwent id: Must be unique on the broker
 
 WiFiEspClient wifi;               // Initialize the Ethernet client object
 PubSubClient mqttClient(wifi);    // Initialize the MQTT client
 
+AccelStepper stepper(AccelStepper::FULL4WIRE, motorPin1, motorPin3, motorPin2, motorPin4);
+
+int motorStatus = 0; // 0 : OFF 1: ON
+int operate = 0; // 0: default, 1 : up, 2 : down 
+
+int interval = 5000; // send status time 
+
+bool flag = true;
+byte* str;
+
 void setup() {
-  Serial.begin(115200); // serial baud rate
+  Serial.begin(115200);
 
   // Set baud rate of ESP8266 to 9600 regardless of original setting
   set_esp8266_baud_rate(baudRate);
 
-  // Set baud rate of ESP 8266  
+  stepper.setMaxSpeed(1000);     // 최대 속도 설정 (steps per second)
+  stepper.setAcceleration(50);  // 가속도 설정 (steps per second squared)
+
   espSerial.begin(baudRate);
   espSerial.print("AT+UART_CUR=");
   espSerial.print(baudRate);
   espSerial.print(",8,1,0,0\r\n");
   WiFi.init(&espSerial);
+
 
   // check for the presence of the shield
   if (WiFi.status() == WL_NO_SHIELD) {
@@ -61,40 +76,47 @@ void setup() {
 
   printWifiStatus();
 
-  // mqtt server port : 1883 (general)
   mqttClient.setServer(server, 1883);
-  // set of subscriber
   mqttClient.setCallback(onReceive);
+}
+
+void runMotorClock(){
+  stepper.moveTo(512);
+  stepper.run();
+}
+
+void runMotorRevClock(){
+  stepper.moveTo(-512);
+  stepper.run();
 }
 
 void loop() {
 
-  // if not connected mqtt -> try reconnect mqtt server
   if (!mqttClient.connected()) {
     reconnect();
   }
   mqttClient.loop();
 
-  unsigned long now = millis();
-
-  // publish interval is 2sec 
-  if(now-lastMsg>intevalTime){
-    lastMsg=now;
-
-    // sensing distances
-    int volt = map(analogRead(DISPIN), 0, 1023, 0, 5000);
-
-    // calcurate distance (cm)
-    distance = (27.61 / (volt - 0.1696)) * 1000;
-
-
-    Serial.print("Distance : ");
-    Serial.print(distance);
-
-    snprintf (msg, MSG_BUFFER_SIZE, "%d", distance);
-    mqttClient.publish(topic, msg);
-  }
-
+  // unsigned long now = millis();
+  // if(flag){
+  //   if (operate == 1){
+  //     // up
+  //     runMotorClock();
+  //     operate = 0;
+  //   }else if(operate == 2){
+  //     //down
+  //     runMotorRevClock();
+  //     operate = 0;
+  //   }
+  //   if(now - lastMsg > interval){
+  //     lastMsg = now;
+  //     snprintf (msg, MSG_BUFFER_SIZE, "%d", motorStatus);
+  //     mqttClient.publish(Pub_topic, msg);
+  //   }
+  // }else{
+  //   Serial.print("falsesss");
+  //   setMotor();
+  // }
 }
 
 void printWifiStatus()
@@ -119,10 +141,34 @@ void onReceive(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (int i=0;i<length;i++) {
-    Serial.print((char)payload[i]);
+  
+  flag = false;
+  str = payload;
+
+  // for (int i=0;i<length;i++) {
+  //   Serial.print((char)payload[i]);
+  // }
+
+
+}
+
+void setMotor(){
+  // if(str == "1"){
+  //   motorStatus = 1;
+  //   operate = 1;
+  // }else if(str =="OFF"){
+  //   motorStatus = 0;
+  //   operate = 2;
+  // }
+  Serial.print(flag);
+ if (strcmp((char*)str, "1") == 0) {
+    motorStatus = 1;
+    operate = 1;
+  } else if (strcmp((char*)str, "OFF") == 0) {
+    motorStatus = 0;
+    operate = 2;
   }
-  Serial.println();
+  flag = true;
 }
 
 void reconnect() {
@@ -133,9 +179,9 @@ void reconnect() {
     if (mqttClient.connect(clientId)) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      mqttClient.publish(topic,"hello world");
+      mqttClient.publish(Pub_topic,"hello world");
       // ... and resubscribe
-      mqttClient.subscribe(topic);
+      mqttClient.subscribe(Sub_topic);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
