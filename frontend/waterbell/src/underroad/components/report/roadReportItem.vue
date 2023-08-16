@@ -2,7 +2,7 @@
   <div class="each-report">
     <!-- 게시판 이름과 목록관련버튼들 -->
     <div class="report-header">
-      <div class="board-title">
+      <div class="board-title title">
         <h2>신고접수</h2>
       </div>
       <div class="list-btn">
@@ -82,25 +82,45 @@
     </div>
     <!-- 수정 전 비밀번호 확인 -->
     <div class="password-check-modal" v-if="pwCheckUpdate">
-      <label for="password-check">수정하려면 비밀번호를 입력해주세요</label>
-      <input
-        type="password"
-        id="password-check"
-        v-model="inputPasswordUpdate"
-      />
-      <button @click="goToUpdate(reportInfo?.id)">확인</button>
-      <button @click="pwCheckUpdate = false">취소</button>
+      <div>
+        <label for="password-check">수정하려면 비밀번호를 입력해주세요</label>
+      </div>
+      <div class="modify-inner-modal" style="display: flex; text-align: center">
+        <div class="center-content">
+          <input
+            type="password"
+            id="password-check"
+            v-model="inputPasswordUpdate"
+          />
+          <!-- </div>
+        <div class="center-content"> -->
+          <button class="ok-btn" @click="goToUpdate(reportInfo?.id)">
+            확인
+          </button>
+          <button class="cancel-btn" @click="pwCheckUpdate = false">
+            취소
+          </button>
+        </div>
+      </div>
     </div>
     <!-- 삭제 전 비밀번호 확인 -->
     <div class="password-check-modal" v-if="pwCheckDelete">
-      <label for="password-check">삭제하려면 비밀번호를 입력해주세요</label>
-      <input
-        type="password"
-        id="password-check"
-        v-model="inputPasswordDelete"
-      />
-      <button @click="deleteReport">확인</button>
-      <button @click="pwCheckDelete = false">취소</button>
+      <div>
+        <label for="password-check">삭제하려면 비밀번호를 입력해주세요</label>
+      </div>
+      <div class="modify-inner-modal" style="display: flex; text-align: center">
+        <div class="center-content">
+          <input
+            type="password"
+            id="password-check"
+            v-model="inputPasswordDelete"
+          />
+          <button class="ok-btn" @click="deleteReport">확인</button>
+          <button class="cancel-btn" @click="pwCheckDelete = false">
+            취소
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -455,6 +475,9 @@ export default defineComponent({
 
 .password-check-modal {
   gap: 10px;
+  /* display: flex; */
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
 }
 
 .password-input {
@@ -562,5 +585,64 @@ option {
 option:hover {
   background-color: #007bff;
   color: #fff;
+}
+
+.cancel-btn {
+  display: flex;
+  width: 90px;
+  height: 32px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--unnamed, #939393);
+  color: #fff;
+  text-align: center;
+  /* Button */
+  /* font-family: Roboto; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  border: 0;
+}
+
+.ok-btn {
+  display: flex;
+  width: 90px;
+  height: 32px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  background: var(--1, #10316b);
+  color: #fff;
+  text-align: center;
+  /* Button */
+  /* font-family: Roboto; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
+  letter-spacing: 1.25px;
+  text-transform: uppercase;
+  border: 0;
+}
+
+.modify-inner-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
 </style>

@@ -79,8 +79,9 @@ export default defineComponent({
 .cctvLabel {
   /*position: absolute;
   /* top: 10px; 위치를 조정하여 텍스트 위치 변경 가능 */
-  left: 50%;
-  transform: translateX(-40%);
+  justify-self: center;
+  align-self: center;
+
   z-index: 2; /* 텍스트를 이미지 위에 표시하기 위해 z-index 추가 */
 }
 </style>
