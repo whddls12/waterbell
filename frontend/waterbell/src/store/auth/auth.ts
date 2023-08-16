@@ -128,7 +128,6 @@ const auth: Module<any, any> = {
   },
   actions: {
     socialLogin({ commit }, payload) {
-      commit('setRefreshToken', payload.member.refreshToken)
       commit('setAccessToken', payload.member.accessToken)
       commit('setFacilityId', payload.member.facilityId)
       commit('auth/setIsLogin', true)
