@@ -78,7 +78,9 @@
         <button class="btn-modify" @click="goToUpdate(reportInfo?.id)">
           수정
         </button>
-        <button class="btn-delete" @click="openCheckModal">삭제</button>
+        <button class="btn-delete" @click="deleteReport(reportInfo?.id)">
+          삭제
+        </button>
       </div>
     </div>
   </div>
@@ -183,6 +185,21 @@ export default defineComponent({
       return reportStatus.value
     }
 
+    // 글 삭제 (작성자)
+    function deleteReport(report_id: any) {
+      api
+        .get(`/reports/apart/deleteBoard/${report_id}`)
+        .then((res) => {
+          router.push({ path: `/park/report` })
+        })
+        .catch((error) => {
+          if (error.response.data.exception == '권한이 없습니다') {
+            alert('본인이 작성한 글이 아닙니다.')
+          }
+        })
+    }
+
+    // 처리상태 수정 (관리자)
     async function statusUpdate(report_id: any) {
       const boardStatus = await statusNumToStr()
       console.log('처리상태 업데이트: ', boardStatus)
@@ -196,36 +213,6 @@ export default defineComponent({
         })
         .catch((err) => console.log(err))
     }
-
-    // // 글 삭제 (작성자)
-    // function deleteReport() {
-    //   console.log('deleteReport')
-    //   console.log('입력한 비밀번호: ', inputPassword.value)
-    //   api
-    //     .post(
-    //       `/reports/undergroundRoad/board/password/validation/${report_id}`,
-    //       {
-    //         boardPassword: inputPassword.value
-    //       }
-    //     )
-    //     .then((res) => {
-    //       api
-    //         .get(`/reports/deleteBoard/${report_id}`)
-    //         .then((res) => {
-    //           console.log(res)
-    //           alert('글이 삭제되었습니다.')
-    //           router.push({ path: '/park/report' })
-    //         })
-    //         .catch((err) => console.log(err))
-    //     })
-    //     .catch((err) => {
-    //       alert('비밀번호가 일치하지 않습니다.')
-    //       console.log(err)
-    //     })
-    // }
-
-    // 처리상태 수정 (관리자)
-
     // 글 삭제 (관리자)
     function deleteReportManager() {
       apiClient
@@ -257,6 +244,7 @@ export default defineComponent({
       statusNumToStr,
       statusEngToKr,
       formattedTime,
+      deleteReport,
       deleteReportManager
     }
   }

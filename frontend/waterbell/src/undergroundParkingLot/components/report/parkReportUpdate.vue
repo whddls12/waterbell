@@ -196,7 +196,13 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error)
-          console.log(error.response.data)
+          console.log(error.response.data.exception)
+          if (
+            error.response.data.exception == '수정할 수 있는 권한이 없습니다.'
+          ) {
+            alert('본인이 작성한 글이 아닙니다.')
+            router.go(-1)
+          }
         })
     }
     onMounted(() => {
