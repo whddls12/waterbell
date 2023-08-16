@@ -23,7 +23,7 @@
         >
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
-          <td>{{ report.apartMember.name }}</td>
+          <!-- <td>{{ report.apartMember.name }}</td> -->
           <td>{{ statusEngToKr(report.status) }}</td>
           <td>{{ formattedTime(report.createDate) }}</td>
           <td>{{ report.viewCount }}</td>

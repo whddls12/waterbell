@@ -41,7 +41,7 @@
       </div>
       <div class="each-menu" v-if="!isManager"></div>
       <div class="each-menu" v-if="isManager">
-        <router-link to="/road/systemlog">센서내역</router-link>
+        <router-link to="/road/systemlog/measureLog">센서내역</router-link>
       </div>
       <div class="each-menu" v-if="!isManager"></div>
       <div class="each-menu" v-if="isManager">
@@ -51,11 +51,7 @@
     </div>
     <!-- 지역 선택 바 -->
     <div class="select-region">
-      <div class="select-region-box">시도</div>
-      <div class="select-region-box">시구군</div>
-      <div>
-        <button class="go-selected-btn">이동</button>
-      </div>
+      <select-region></select-region>
     </div>
   </div>
 </template>
@@ -67,6 +63,7 @@ import store from '@/store/index'
 // import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
 import { logout } from '@/types/authFunctionModule'
+import SelectRegion from '../components/selectRegion.vue'
 // import { getUserInfo } from '@/types/getUserInfo'
 
 // import apiModule from '@/types/apiClient'
@@ -79,7 +76,7 @@ import { logout } from '@/types/authFunctionModule'
 
 export default defineComponent({
   name: 'RoadHeader',
-  components: {},
+  components: { SelectRegion },
   computed: {
     ...mapGetters('auth', [
       'loginUser',
@@ -224,26 +221,6 @@ a {
 }
 
 /* 지역 선택 박스 (시도, 시구군) */
-.select-region-box {
-  border: 1px solid #939393;
-  border-radius: 8px;
-  background-color: white;
-
-  width: 100px;
-  margin: 10px 10px;
-}
-/* 이동 버튼 */
-.go-selected-btn {
-  display: block;
-  border: 1px solid #10316b;
-  border-radius: 8px;
-  color: white;
-  background-color: #10316b;
-
-  width: 50px;
-  margin: 10px 10px;
-}
-
 #hello-msg {
   margin-right: 10px;
 }
