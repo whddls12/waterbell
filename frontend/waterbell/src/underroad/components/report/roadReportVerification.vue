@@ -142,10 +142,16 @@ export default defineComponent({
             if (res.data.message == '인증완료') {
               validate.value.phoneVerification = true
               phoneMsg.value = '휴대폰 인증이 완료되었습니다.'
+
+              const queryParams = {
+                phone: phoneNum.value
+              }
+
               setTimeout(
                 () =>
                   router.push({
-                    path: `/road/report/create?phone=${phoneNum.value}`
+                    path: `/road/report/create`,
+                    query: queryParams
                   }),
                 1000
               )
