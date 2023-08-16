@@ -62,8 +62,6 @@ def on_message_lcd(client, userdata, msg):
     payload = msg.payload.decode()
     print(f"Received message: {payload}")
 
-    payload = msg.payload.decode()
-
     if(payload == "DEFAULT"):
         mylcd.lcd_clear()
         mylcd.lcd_display_string("WaterBell", 1)
@@ -87,14 +85,11 @@ def on_message_lcd(client, userdata, msg):
         GPIO.output(20,True)
 
 
-
-
 # plate
 def on_message_step(client, userdata, msg):
     global stepStatus
     payload = msg.payload.decode()
-    print("ON")
-    
+
     if(payload == "ON"):
         stepStatus = 1
         cnt = 0
