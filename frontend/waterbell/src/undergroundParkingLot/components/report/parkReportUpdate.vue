@@ -172,7 +172,6 @@ export default defineComponent({
       formData.append('name', report.value.name)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
-      formData.append('boardPassword', report.value.boardPassword)
 
       // FormData에 삭제할 첨부파일의 id 담아주기
       for (let value of removeFilesList.value) {
@@ -197,6 +196,7 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error)
+          console.log(error.response.data)
         })
     }
     onMounted(() => {

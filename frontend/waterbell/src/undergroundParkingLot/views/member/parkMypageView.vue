@@ -7,7 +7,7 @@
     </div>
     <div class="myPage-content">
       <!-- 이름 -->
-      <div class="myPage-content-box name">
+      <div v-if="role == 'APART_MEMBER'" class="myPage-content-box name">
         <label for="name">이름</label>
         <input type="text" id="name" disabled :placeholder="memberInfo?.name" />
       </div>
@@ -52,7 +52,10 @@
         />
       </div>
       <!-- 호수 -->
-      <div class="myPage-content-box addressNumber">
+      <div
+        v-if="role == 'APART_MEMBER'"
+        class="myPage-content-box addressNumber"
+      >
         <label for="addressNumber">호수</label>
         <div class="addressNumber-box">
           <input
@@ -76,15 +79,17 @@
 </template>
 
 <script>
-import { ref, onMounted, defineComponent } from 'vue'
+import { ref, computed, onMounted, defineComponent } from 'vue'
 import router from '@/router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
-import { logout } from '@/types/authFunctionModule'
+// import { logout } from '@/types/authFunctionModule'
 
 export default defineComponent({
   name: 'parkMypage',
   setup() {
+    const role = computed(() => store.getters['auth/role']).value
+
     const apiClient = axios.apiClient(store)
     // const api = axios.api
     const memberInfo = ref(null)
@@ -116,7 +121,7 @@ export default defineComponent({
     onMounted(() => {
       getMemberData()
     })
-    return { memberInfo, getMemberData, passwordCheck, goWithdrawal }
+    return { role, memberInfo, getMemberData, passwordCheck, goWithdrawal }
   }
 })
 </script>
