@@ -80,6 +80,7 @@ import { ref, onMounted, defineComponent } from 'vue'
 import router from '@/router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
+import { logout } from '@/types/authFunctionModule'
 
 export default defineComponent({
   name: 'parkMypage',
@@ -101,11 +102,13 @@ export default defineComponent({
       router.push({ path: '/park/mypage/passwordCheck' })
     }
 
-    function goWithdrawal() {
+    async function goWithdrawal() {
       apiClient
         .get(`/member/apartMember/withdrawal`)
         .then((res) => {
           console.log(res)
+          // 회원탈퇴 후 로그아웃 / 메인화면으로 이동 처리
+          alert('회원탈퇴가 완료되었습니다.')
         })
         .catch((err) => console.log(err))
     }
