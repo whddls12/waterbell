@@ -157,6 +157,7 @@ label {
 #loginBtn {
   border-radius: 40px;
   background: #114cb1;
+  border: 0;
 }
 #idAndPassBox {
   display: flex;
