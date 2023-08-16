@@ -150,6 +150,7 @@ export default defineComponent({
         (role.value == 'APART_MEMBER' || role.value == 'APART_MANAGER')
       ) {
         const member = await getUserInfo()
+        console.log(member)
         store.commit('auth/setFacilityId', member.facilityId)
         //--------------------------------------------------------------------------------
         //여기에 nowUnderroad null 만들고 현재 보고 있는 아파트 정보 넣기.

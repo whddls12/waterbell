@@ -30,13 +30,12 @@ export function setInterceptors(instance: any, store: any) {
           const originRequest = config
           const refreshToken = store.getters['auth/refreshToken']
 
-          const { data } = await instance.post(
-            `/member/refresh-token`,
-            refreshToken
-          )
+          const { data } = await instance.post(`/member/refresh-token`, {
+            refreshToken: refreshToken
+          })
           if (data.accessToken) {
             const newAccessToken = data.accessToken
-            await store.commit('/auth/setAccessToken')
+            await store.commit('auth/setAccessToken', newAccessToken)
             console.log('새로운 accessToken을 발급받아 저장하였습니다.')
             instance.defaults.headers.Authorization = `Bearer ${newAccessToken}`
             originRequest.headers.Authorization = `Bearer ${newAccessToken}`
@@ -44,7 +43,7 @@ export function setInterceptors(instance: any, store: any) {
             return instance(originRequest)
           } else {
             //토큰 만료
-            await logout()
+            store.commit('logout')
             console.log('토큰이 만료되어 로그아웃합니다.')
           }
         }
@@ -52,7 +51,7 @@ export function setInterceptors(instance: any, store: any) {
         status == 400 &&
         error.response.data.error == '유효하지 않은 토큰입니다.'
       ) {
-        await logout()
+        store.commit('logout')
         console.log('로그아웃함')
         router.push('/park/login')
       }

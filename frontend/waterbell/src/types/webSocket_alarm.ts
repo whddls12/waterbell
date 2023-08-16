@@ -1,8 +1,9 @@
 // types/websocket.ts 파일
 import { computed, ref } from 'vue'
 import store from '@/store/index'
-import apiModul from '@/types/apiClient'
+import apiModule from '@/types/apiClient'
 
+const apiClient = apiModule.apiClient(store)
 // const store = useStore()
 let socket: WebSocket | null = null
 export function connectWebSocket(): void {
@@ -31,7 +32,7 @@ export function connectWebSocket(): void {
       console.log('서버로부터 알림을 받았습니다: ' + notification)
       const isFlood = notification._flood
       const isApart = notification._apart
-      const api = apiModul.api
+      const api = apiModule.api
       let facilityName = ''
       if (isApart) {
         api.get(`/facilities/${notification.facility_id}/apart`).then((res) => {
@@ -87,6 +88,11 @@ export function connectWebSocket(): void {
         }
       }
     }
+
+    socket.onerror = function (error) {
+      console.error('웹소켓 연결 중 오류가 발생했습니다:', error)
+      handleTokenExpiration()
+    }
   }
 }
 
@@ -100,6 +106,28 @@ export function connectWebSocket(): void {
 //   modalState.value = false
 // }
 
+async function handleTokenExpiration() {
+  try {
+    const { data } = await apiClient.post(`/member/refresh-token`, {
+      refreshToken: store.getters['auth/refreshToken'] // refreshToken의 위치에 따라 경로를 수정해야 할 수 있습니다.
+    })
+
+    if (data && data.accessToken) {
+      await store.commit('auth/setAccessToken', data.accessToken) // 경로를 확인하고 필요에 따라 수정해주세요.
+      console.log('새로운 accessToken을 발급받아 저장하였습니다.')
+      connectWebSocket() // 새 토큰으로 웹소켓 연결을 재시도합니다.
+    } else {
+      // 토큰 갱신에 실패했으므로 로그아웃 로직을 호출합니다.
+      await store.dispatch('auth/logout')
+      console.log('토큰 갱신에 실패하여 사용자가 로그아웃되었습니다.')
+    }
+  } catch (error) {
+    console.error('토큰 갱신 중 오류가 발생했습니다:', error)
+    await store.commit('auth/logout')
+    console.log('토큰 갱신 중 오류로 인해 사용자가 로그아웃되었습니다.')
+  }
+}
+
 export function closeWebSocket() {
   console.log(socket)
   socket?.close()
@@ -108,5 +136,6 @@ export function closeWebSocket() {
 
 export default {
   connectWebSocket,
-  closeWebSocket
+  closeWebSocket,
+  handleTokenExpiration
 }
