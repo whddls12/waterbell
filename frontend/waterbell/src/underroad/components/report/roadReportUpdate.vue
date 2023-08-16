@@ -219,19 +219,23 @@ export default defineComponent({
         console.log(values[0] + ', ' + values[1])
       }
 
-      // 신고접수 수정하는 요청보내기
-      await api
-        .post(`/reports/update/${report_id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((response) => {
-          router.push(`/road/report/${report_id}/detail`)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      if (validate.value.confirmPass) {
+        // 신고접수 수정하는 요청보내기
+        await api
+          .post(`/reports/update/${report_id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response) => {
+            router.push(`/road/report/${report_id}/detail`)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      } else {
+        alert('비밀번호 확인이 일치하지 않습니다.')
+      }
     }
 
     const validate = ref({

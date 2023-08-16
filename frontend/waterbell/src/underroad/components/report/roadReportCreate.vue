@@ -122,6 +122,7 @@ export default defineComponent({
     console.log('유저 권한: ', role)
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
+    console.log(nowUnderroad)
 
     const apiClient = axios.apiClient(store)
     const api = axios.api
@@ -223,7 +224,7 @@ export default defineComponent({
             console.log(error)
           })
       } else {
-        alert('비밀번호가 일치하지 않습니다.')
+        alert('비밀번호 확인이 일치하지 않습니다.')
       }
     }
 

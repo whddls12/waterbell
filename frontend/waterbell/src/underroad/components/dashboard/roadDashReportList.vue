@@ -147,4 +147,8 @@ tbody tr {
 tbody td {
   padding: 10px; /* 모든 방향으로 10px 패딩 추가 */
 }
+
+tbody:hover {
+  cursor: pointer;
+}
 </style>
