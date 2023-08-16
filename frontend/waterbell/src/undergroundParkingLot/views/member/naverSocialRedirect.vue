@@ -4,7 +4,7 @@
 
 <script>
 import { defineComponent, onMounted } from 'vue'
-
+import { connectWebSocket } from '@/types/webSocket_alarm'
 import { useRouter, useRoute } from 'vue-router'
 import store from '@/store/index'
 import http from '@/types/http'
@@ -29,11 +29,12 @@ export default defineComponent({
             const key = response.data.key
             router.push(`/social-join/extra?key=${key}`)
           } else if (response.data.type === 'login') {
-            store.dispatch('auth/socialLogin', response)
+            await store.dispatch('auth/socialLogin', response)
+            connectWebSocket()
           }
         } catch (error) {
           console.error(error)
-          alert('네이버 로그인 실패')
+          // alert('네이버 로그인 실패')
         }
       }
     })
