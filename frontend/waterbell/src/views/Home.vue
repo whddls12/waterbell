@@ -310,7 +310,7 @@ export default defineComponent({
   background-color: white;
   margin-left: 208px;
   margin-right: 210px;
-  margin-top: 50px;
+  margin-top: 20px;
   margin-bottom: 80px;
 
   width: 1100px;
