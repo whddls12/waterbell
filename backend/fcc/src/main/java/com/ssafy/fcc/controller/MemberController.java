@@ -192,22 +192,33 @@ public class MemberController {
 
 
     @GetMapping("/findMember/token")
-    public ResponseEntity<Map<String, Object>> findMember() throws Exception {
+    public ResponseEntity<Map<String, Object>> findMember(HttpServletRequest servletRequest) throws Exception {
 
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = HttpStatus.ACCEPTED;
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String id = authentication.getName();
 
-        System.out.println(id);
-        if (id == null || id.equals("") || id.equals("anonymousUser")) {
+        try {
+            String accessToken = jwtTokenProvider.resolveToken(servletRequest);
+            if (!jwtTokenProvider.validateToken(accessToken)) {
+                resultMap.put("message", "fail");
+                resultMap.put("error", "유효하지 않은 토큰입니다.");
+            }
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String id = authentication.getName();
+
+            System.out.println(id);
+            if (id == null || id.equals("") || id.equals("anonymousUser")) {
+                resultMap.put("error", "유효하지 않은 토큰입니다.");
+            } else {
+                Member findMember = memberService.findById(Integer.parseInt(id));
+                resultMap.put("message", "success");
+                resultMap.put("member", memberService.getMemberResponse(findMember, ""));
+            }
+        } catch (Exception e) {
             resultMap.put("message", "fail");
-        } else {
-            Member findMember = memberService.findById(Integer.parseInt(id));
-            resultMap.put("message", "success");
-            resultMap.put("member", memberService.getMemberResponse(findMember, ""));
-
+            resultMap.put("error", "유효하지 않은 토큰입니다.");
         }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
