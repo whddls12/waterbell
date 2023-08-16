@@ -52,7 +52,7 @@ def on_message_sensor(client, userdata, msg):
 def on_message_cam1(client, userdata, msg):
     # CAM
     global IoTCore
-    topic = "Arduino/CAM1"
+    topic = "Arduino/" + FacilityId + "/CAM1"
     # payload = FacilityId + msg.payload.decode()
     publisher(IoTCore, topic, msg.payload)
     pass
@@ -60,7 +60,7 @@ def on_message_cam1(client, userdata, msg):
 def on_message_cam2(client, userdata, msg):
     # CAM
     global IoTCore
-    topic = "Arduino/CAM2"
+    topic = "Arduino/" + FacilityId + "/CAM2"
     # payload = FacilityId + msg.payload.decode()
     publisher(IoTCore, topic, msg.payload)
     pass
@@ -99,8 +99,8 @@ def on_message_board(client, userdata, msg):
 def on_message_cam3(client, userdata, msg):
     # BOARD
     global arduino
-    topic = "Server/CAM1"
-    # payload = FacilityId + msg.payload.decode()
+    topic = "CAM1"
+    payload = FacilityId + msg.payload.decode()
     publisher(arduino, topic, msg)
 
     pass
@@ -109,8 +109,8 @@ def on_message_cam3(client, userdata, msg):
 def on_message_cam4(client, userdata, msg):
     # BOARD
     global arduino
-    topic = "Server/CAM2"
-    # payload = FacilityId + msg.payload.decode()
+    topic = "CAM2"
+    payload = FacilityId + msg.payload.decode()
     publisher(arduino, topic, msg)
 
     pass
