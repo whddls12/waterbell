@@ -44,7 +44,7 @@ def on_connect(client, userdata, flags, rc):
 
 def connect_mqtt():
     arduino = mqtt.Client()
-    arduino.connect("192.168.43.96", 1883, 60)
+    arduino.connect(mqtt_server, 1883, 60)
     arduino.on_connect = on_connect
     return arduino
 
@@ -79,7 +79,6 @@ def on_message_lcd(client, userdata, msg):
     payload = msg.payload.decode()
     print(f"Received message: {payload}")
 
-    payload = msg.payload.decode()
 
     if(payload == "DEFAULT"):
         mylcd.lcd_clear()
