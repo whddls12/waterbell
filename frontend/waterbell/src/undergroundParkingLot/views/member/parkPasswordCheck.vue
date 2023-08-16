@@ -41,7 +41,7 @@ export default defineComponent({
           password: currentPW.value
         })
         .then((res) => {
-          router.push({ path: '/park/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
+          router.push({ path: '/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
         })
         .catch((err) => {
           console.log(err)

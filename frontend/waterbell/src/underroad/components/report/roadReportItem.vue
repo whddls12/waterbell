@@ -41,7 +41,9 @@
             <div v-else class="info-status">
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
-            <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
+            <div class="viewCount">
+              <i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}
+            </div>
           </div>
         </div>
       </div>
