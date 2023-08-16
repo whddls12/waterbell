@@ -88,7 +88,7 @@ const auth: Module<any, any> = {
       localStorage.removeItem('auth')
       // localStorage.removeItem('loginUser')
       // localStorage.removeItem('isLogin')
-      console.log('되냐')
+      // console.log('되냐')
     },
 
     setAccessToken(state, accessToken) {
@@ -130,6 +130,8 @@ const auth: Module<any, any> = {
         refreshToken: payload.member.refreshToken
       })
       commit('setFacilityId', payload.member.facilityId)
+      commit('auth/setIsLogin', true)
+      commit('auth/setRole', payload.member.role)
     },
 
     setCctvImg1({ commit }, payload) {
