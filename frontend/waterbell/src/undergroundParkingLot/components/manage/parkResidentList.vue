@@ -39,10 +39,12 @@
           <td>{{ member.name }}</td>
           <td>{{ member.phone }}</td>
           <td>{{ setCreatedAt(member.createdAt) }}</td>
-          <td>
-            <button id="deleteBtn" @click="deleteMember(member.id)">
-              삭제
-            </button>
+          <td id="deletePlace">
+            <div id="deleteBox">
+              <button id="deleteBtn" @click="deleteMember(member.id)">
+                삭제
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -459,5 +461,30 @@ table td:last-child {
 
 .datepicker-row > div {
   flex: 1; /* 각 요소가 같은 너비를 가지도록 합니다. */
+}
+
+/* #deletePlace {
+  text-align: center;
+} */
+#deleteBox {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+#deleteBtn {
+  display: flex;
+  width: 60px;
+  height: 35px;
+  padding: 11px 8px;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  justify-self: center;
+  gap: 8px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  color: white;
+  border: 0px;
+  background: var(--2, #114cb1);
 }
 </style>

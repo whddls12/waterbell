@@ -52,7 +52,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .reset-password {
   display: flex;
   width: inherit;
