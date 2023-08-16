@@ -334,7 +334,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .each-report {
   width: 100%;
   padding: 20px;
