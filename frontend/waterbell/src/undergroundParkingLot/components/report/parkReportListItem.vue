@@ -22,6 +22,7 @@
             <div class="into-status">{{ reportInfo?.apartMember.name }}</div>
             <div>|</div>
             <div>{{ formattedTime(reportInfo?.createDate) }}</div>
+            <div>{{ reportInfo?.createDate }}</div>
           </div>
           <div class="report-info info-box">
             <select
