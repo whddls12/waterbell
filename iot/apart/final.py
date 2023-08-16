@@ -36,7 +36,7 @@ mqtt_server = "172.30.1.38"
 facility_id = "11"
 
 # 0 : OFF 1: ON
-stepStatus = 0;
+stepStatus = 0
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
