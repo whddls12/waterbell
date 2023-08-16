@@ -30,7 +30,15 @@
             <!-- <th scope="row">{{ no }}</th> -->
 
             <td>{{ report.title }}</td>
-            <td>{{ statusEngToKr(report.status) }}</td>
+            <td
+              :class="{
+                'text-primary': report.status == 'COMPLETE',
+                'text-success': report.status == 'PROCESSING',
+                'text-danger': report.status == 'BEFORE'
+              }"
+            >
+              {{ statusEngToKr(report.status) }}
+            </td>
             <td>{{ setDate(report.createDate) }}</td>
           </tr>
         </tbody>

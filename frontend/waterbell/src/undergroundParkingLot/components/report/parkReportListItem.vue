@@ -30,8 +30,18 @@
               name="report-status"
               v-model="selectedStatus"
               class="custom-select"
+              :class="{
+                'text-primary': selectedStatus == '2',
+                'text-success': selectedStatus == '1',
+                'text-danger': selectedStatus == '0'
+              }"
             >
               <option
+                :class="{
+                  'text-primary': status.value == '2',
+                  'text-success': status.value == '1',
+                  'text-danger': status.value == '0'
+                }"
                 v-for="(status, index) in statusList"
                 :key="index"
                 :value="status.value"
@@ -39,7 +49,15 @@
                 {{ status.text }}
               </option>
             </select>
-            <div v-else class="info-status">
+            <div
+              v-else
+              class="info-status"
+              :class="{
+                'text-primary': reportInfo?.status == 'COMPLETE',
+                'text-success': reportInfo?.status == 'PROCESSING',
+                'text-danger': reportInfo?.status == 'BEFORE'
+              }"
+            >
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
             <div class="viewCount">

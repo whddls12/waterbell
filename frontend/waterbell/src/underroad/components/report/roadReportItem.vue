@@ -48,7 +48,15 @@
                 {{ status.text }}
               </option>
             </select>
-            <div v-else class="info-status">
+            <div
+              v-else
+              class="info-status"
+              :class="{
+                'text-primary': reportInfo?.status == 'COMPLETE',
+                'text-success': reportInfo?.status == 'PROCESSING',
+                'text-danger': reportInfo?.status == 'BEFORE'
+              }"
+            >
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
             <div class="viewCount">

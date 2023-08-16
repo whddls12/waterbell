@@ -30,7 +30,15 @@
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
           <td>{{ report.name }}</td>
-          <td>{{ statusEngToKr(report.status) }}</td>
+          <td
+            :class="{
+              'text-primary': report.status == 'COMPLETE',
+              'text-success': report.status == 'PROCESSING',
+              'text-danger': report.status == 'BEFORE'
+            }"
+          >
+            {{ statusEngToKr(report.status) }}
+          </td>
           <td>{{ formattedTime(report.createDate) }}</td>
           <td>{{ report.viewCount }}</td>
           <!-- <td>{{ report.uploadedfiles }}</td> -->
