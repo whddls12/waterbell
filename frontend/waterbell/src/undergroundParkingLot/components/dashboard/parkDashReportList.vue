@@ -29,7 +29,9 @@
           >
             <!-- <th scope="row">{{ no }}</th> -->
 
-            <td>{{ report.title }}</td>
+            <td class="report-title-summary">
+              {{ truncateText(report.title, 10) }}
+            </td>
             <td
               :class="{
                 'text-primary': report.status == 'COMPLETE',
@@ -110,6 +112,14 @@ export default defineComponent({
     const movePage = (board_id: any) => {
       router.push(`/park/report/${board_id}/detail`)
     }
+
+    const truncateText = (text: any, maxLength: any) => {
+      if (text.length > maxLength) {
+        return text.slice(0, maxLength) + '...'
+      }
+      return text
+    }
+
     onMounted(() => {
       setList()
     })
@@ -118,12 +128,17 @@ export default defineComponent({
       setDate,
       movePage,
       setList,
-      statusEngToKr
+      statusEngToKr,
+      truncateText
     }
   }
 })
 </script>
 <style scoped lang="css">
+.report-title-summary {
+  text-align: start;
+}
+
 thead tr:last-child th {
   border-bottom: 1px solid #939393;
 }
