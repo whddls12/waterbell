@@ -115,7 +115,7 @@ public class MemberService {
         ApartMember member = (ApartMember) memberRepository.findById(id);
         member.setState(false);
         member.setExpiredAt(LocalDateTime.now());
-        member.setPhone(null);
+//        member.setPhone(null);
         member.setRole(Role.USER);
     }
 
