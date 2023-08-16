@@ -51,7 +51,8 @@
             <td>{{ formattedSensorTime(log.regDate) }}</td>
             <td>{{ log.content }}</td>
             <!-- <td>{{ log.facility_name }}</td> -->
-            <td>{{ log.category }}</td>
+            <td v-html="categoryLabel(log.category)"></td>
+            <!-- <td>{{ log.command }}</td> -->
             <td>{{ log.cnt }}</td>
           </tr>
         </tbody>
@@ -270,6 +271,19 @@ export default defineComponent({
       return logList.value.length ? logList.value[0].facility_name : ''
     })
 
+    const categoryLabel = (cat: string) => {
+      switch (cat) {
+        case '차수판동작':
+          return '<span style="color: blue;">차수판동작</span>'
+        case '차수판해제':
+          return '<span style="color: red;">차수판해제</span>'
+        case '1차 경고 알림':
+          return '<span style="color: orange;">1차 경고 알림</span>'
+        default:
+          return ''
+      }
+    }
+
     onMounted(() => {
       setList()
     })
@@ -285,7 +299,8 @@ export default defineComponent({
       range,
       goToPage,
       formattedSensorTime,
-      LogFacilityName
+      LogFacilityName,
+      categoryLabel
     }
   }
 })
