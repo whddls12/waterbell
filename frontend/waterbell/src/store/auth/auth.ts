@@ -94,6 +94,9 @@ const auth: Module<any, any> = {
     setAccessToken(state, accessToken) {
       state.accessToken = accessToken
     },
+    setRefreshToken(state, refreshToken) {
+      state.refreshToken = refreshToken
+    },
 
     //--------------------------------------------------------------지하차도
     setFacilityId(state, value) {
@@ -125,10 +128,8 @@ const auth: Module<any, any> = {
   },
   actions: {
     socialLogin({ commit }, payload) {
-      commit('setTokens', {
-        accessToken: payload.member.accessToken,
-        refreshToken: payload.member.refreshToken
-      })
+      commit('setRefreshToken', payload.member.refreshToken)
+      commit('setAccessToken', payload.member.accessToken)
       commit('setFacilityId', payload.member.facilityId)
       commit('auth/setIsLogin', true)
       commit('auth/setRole', payload.member.role)
