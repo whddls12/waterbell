@@ -8,7 +8,13 @@
       <div class="report-box name">
         <div class="report-subtitle"><h5 style="margin: 0px">이름</h5></div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.name" />
+          <input
+            v-if="role === 'APART_MEMBER'"
+            disabled
+            type="text"
+            v-model="report.name"
+          />
+          <input v-else type="text" v-model="report.name" />
         </div>
       </div>
       <div class="report-box phoneNumber">
@@ -16,13 +22,24 @@
           <h5 style="margin: 0px">휴대폰번호</h5>
         </div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.phone" />
+          <input type="text" disabled v-model="report.phone" />
         </div>
       </div>
       <div class="report-box password">
-        <div class="report-subtitle"><h5>비밀번호</h5></div>
+        <div class="report-subtitle"><h5 style="margin: 0px">비밀번호</h5></div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.boardPassword" />
+          <input type="password" v-model="report.boardPassword" />
+        </div>
+      </div>
+      <div class="report-box password-confirm">
+        <div class="report-subtitle">
+          <h5 style="margin: 0px">비밀번호 확인</h5>
+        </div>
+        <div class="report-inputbox">
+          <input type="password" v-model="report.boardPasswordConfirm" />
+          <p :class="{ 'p-msg': true, success: validate.confirmPass }">
+            {{ confirmPassMsg }}
+          </p>
         </div>
       </div>
       <div class="report-box titleName">
@@ -90,7 +107,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, defineComponent, onMounted } from 'vue'
+import { ref, watch, computed, defineComponent, onMounted } from 'vue'
 import router from '@/router/index'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -100,20 +117,51 @@ export default defineComponent({
   name: 'roadReportCreateVue',
   setup() {
     const facility_id = computed(() => store.getters['auth/facilityId']).value
+    console.log('시설 아이디: ', facility_id)
+    const role = computed(() => store.getters['auth/role']).value
+    console.log('유저 권한: ', role)
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
+    console.log(nowUnderroad)
 
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
+    const route = useRoute()
+    const phone = route.query.phone
+    console.log('인증 후 넘겨받은 핸드폰 번호: ', phone)
+
     let report = ref({
       name: '',
-      phone: '',
+      phone: phone || '',
       boardPassword: '',
+      boardPasswordConfirm: '',
       title: '',
       content: '',
       uploadedfiles: null
     })
+
+    const validate = ref({
+      confirmPass: false // 비밀번호와 일치하는가
+    })
+    const confirmPassMsg = ref('')
+
+    const validateConfirmPass = () => {
+      if (report.value.boardPasswordConfirm == '') {
+        validate.value.confirmPass = false
+        confirmPassMsg.value = '비밀번호 확인을 입력하세요.'
+      } else if (
+        report.value.boardPasswordConfirm != report.value.boardPassword
+      ) {
+        validate.value.confirmPass = false
+        confirmPassMsg.value = '비밀번호 확인이 일치하지 않습니다.'
+      } else if (
+        report.value.boardPasswordConfirm == report.value.boardPassword
+      ) {
+        validate.value.confirmPass = true
+        confirmPassMsg.value = '비밀번호 확인이 일치합니다.'
+      }
+    }
 
     const fileInputRef = ref<HTMLInputElement | null>(null)
     const selectedFiles = ref<File[]>([]) // 담긴 첨부파일을 저장할 변수
@@ -148,7 +196,7 @@ export default defineComponent({
     async function writeReport() {
       // FormData에 양식에 채워진 값들 넣기
       formData.append('name', report.value.name)
-      formData.append('phone', report.value.phone)
+      formData.append('phone', String(report.value.phone))
       formData.append('boardPassword', report.value.boardPassword)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
@@ -158,22 +206,26 @@ export default defineComponent({
         console.log(values[0] + ', ' + values[1])
       }
 
-      // 신고접수 등록하는 요청보내기
-      await api
-        .post(`/reports/write/${facility_id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((response) => {
-          console.log(response)
-          const newReport_id = response.data.id
-          router.push(`/road/report/${newReport_id}/detail`)
-          //상세보기로 이동하는 코드 넣어야 함
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      if (validate.value.confirmPass) {
+        // 신고접수 등록하는 요청보내기
+        await api
+          .post(`/reports/write/${facility_id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response) => {
+            console.log(response)
+            const newReport_id = response.data.id
+            router.push(`/road/report/${newReport_id}/detail`)
+            //상세보기로 이동하는 코드 넣어야 함
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      } else {
+        alert('비밀번호 확인이 일치하지 않습니다.')
+      }
     }
 
     // 회원의 경우 화면에 띄울 핸드폰 번호나 이름을 가져오는 함수
@@ -190,11 +242,25 @@ export default defineComponent({
         .catch((err) => console.log(err))
     }
 
+    // 비밀번호 확인 검증을 위한 watch 함수
+    watch(
+      () => report.value.boardPasswordConfirm,
+      (newValue: any, oldValue: any) => {
+        if (newValue != oldValue) {
+          validateConfirmPass()
+        }
+      }
+    )
+
     onMounted(() => {
       getMemberData()
     })
 
     return {
+      role,
+      validate,
+      confirmPassMsg,
+      phone,
       report,
       fileInputRef,
       selectedFiles,
@@ -202,13 +268,22 @@ export default defineComponent({
       getSelectedFileNames,
       goToList,
       writeReport,
-      getMemberData
+      getMemberData,
+      validateConfirmPass
     }
   }
 })
 </script>
 
 <style scoped>
+.p-msg {
+  color: red;
+  /* margin-top: 5px; */
+}
+.p-msg.success {
+  color: blue;
+}
+
 .report-create-container {
   width: 100%;
 }

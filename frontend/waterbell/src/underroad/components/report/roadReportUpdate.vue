@@ -22,7 +22,18 @@
       <div class="report-box password">
         <div class="report-subtitle"><h5 style="margin: 0px">비밀번호</h5></div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.boardPassword" />
+          <input type="password" v-model="report.boardPassword" />
+        </div>
+      </div>
+      <div class="report-box password-confirm">
+        <div class="report-subtitle">
+          <h5 style="margin: 0px">비밀번호 확인</h5>
+        </div>
+        <div class="report-inputbox">
+          <input type="password" v-model="report.boardPasswordConfirm" />
+          <p :class="{ 'p-msg': true, success: validate.confirmPass }">
+            {{ confirmPassMsg }}
+          </p>
         </div>
       </div>
       <div class="report-box titleName">
@@ -92,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { ref, computed, onMounted, defineComponent } from 'vue'
+import { ref, watch, computed, onMounted, defineComponent } from 'vue'
 import router from '@/router/index'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -117,6 +128,7 @@ export default defineComponent({
       name: '',
       phone: '',
       boardPassword: '',
+      boardPasswordConfirm: '',
       title: '',
       content: '',
       uploadedfiles: null
@@ -207,24 +219,63 @@ export default defineComponent({
         console.log(values[0] + ', ' + values[1])
       }
 
-      // 신고접수 수정하는 요청보내기
-      await api
-        .post(`/reports/update/${report_id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((response) => {
-          router.push(`/road/report/${report_id}/detail`)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      if (validate.value.confirmPass) {
+        // 신고접수 수정하는 요청보내기
+        await api
+          .post(`/reports/update/${report_id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response) => {
+            router.push(`/road/report/${report_id}/detail`)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      } else {
+        alert('비밀번호 확인이 일치하지 않습니다.')
+      }
     }
+
+    const validate = ref({
+      confirmPass: false // 비밀번호와 일치하는가
+    })
+    const confirmPassMsg = ref('')
+
+    const validateConfirmPass = () => {
+      if (report.value.boardPasswordConfirm == '') {
+        validate.value.confirmPass = false
+        confirmPassMsg.value = '비밀번호 확인을 입력하세요.'
+      } else if (
+        report.value.boardPasswordConfirm != report.value.boardPassword
+      ) {
+        validate.value.confirmPass = false
+        confirmPassMsg.value = '비밀번호 확인이 일치하지 않습니다.'
+      } else if (
+        report.value.boardPasswordConfirm == report.value.boardPassword
+      ) {
+        validate.value.confirmPass = true
+        confirmPassMsg.value = '비밀번호 확인이 일치합니다.'
+      }
+    }
+
+    // 비밀번호 확인 검증을 위한 watch 함수
+    watch(
+      () => report.value.boardPasswordConfirm,
+      (newValue: any, oldValue: any) => {
+        if (newValue != oldValue) {
+          validateConfirmPass()
+        }
+      }
+    )
+
     onMounted(() => {
       getReportData()
     })
     return {
+      validate,
+      confirmPassMsg,
       report,
       imageList,
       fileInputRef,
@@ -236,7 +287,8 @@ export default defineComponent({
       getSelectedFileNames,
       goBack,
       updateReport,
-      getReportData
+      getReportData,
+      validateConfirmPass
     }
   }
 })
