@@ -62,7 +62,7 @@
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ formattedSensorTime(log.sensorTime) }}</td>
           <!-- <td>{{ log.facilityName }}</td> -->
-          <td>{{ categoryLabel(log.category) }}</td>
+          <td v-html="categoryLabel(log.category)"></td>
           <td>{{ log.value }}</td>
         </tr>
       </tbody>
@@ -276,13 +276,13 @@ export default defineComponent({
     const categoryLabel = (cat: string) => {
       switch (cat) {
         case 'HEIGHT':
-          return '수위'
+          return '<span style="color: blue;">수위</span>'
         case 'TEMP':
-          return '온도'
+          return '<span style="color: red;">온도</span>'
         case 'HUMID':
-          return '습도'
+          return '<span style="color: green;">습도</span>'
         case 'DUST':
-          return '미세먼지'
+          return '<span style="color: orange;">미세먼지</span>'
         default:
           return ''
       }
