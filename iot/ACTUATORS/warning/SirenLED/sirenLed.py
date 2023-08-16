@@ -19,7 +19,7 @@ def on_connect(client, userdata, flags, rc):
 
 def connect_mqtt():
     arduino = mqtt.Client()
-    arduino.connect("172.20.10.8", 1883, 60)
+    arduino.connect("192.168.43.96", 1883, 60)
     arduino.on_connect = on_connect
     return arduino
 

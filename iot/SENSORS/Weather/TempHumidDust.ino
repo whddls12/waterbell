@@ -25,10 +25,10 @@ DHT dht(DHTPIN, DHTTYPE);
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "jjhjjh";             // your network SSID (name)
-char pass[] = "123456700";        // your network password
+char ssid[] = "Galaxy A313285";             // network SSID (name)
+char pass[] = "12345678";        // network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "172.20.10.8";    // IP address of the MQTT server
+char server[] = "192.168.43.96";    // IP address of the MQTT server(Raspberry Pi)
 char topic[] = "test";            // Default topic string
 char clientId[] = "Arduino weather";      // Cliwent id: Must be unique on the broker
 

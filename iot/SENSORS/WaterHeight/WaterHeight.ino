@@ -1,55 +1,55 @@
 #include <PubSubClient.h>
 #include <WiFiEsp.h>
 #include <SoftwareSerial.h>
-
-// IR Distance Sensor Pin
-int echoPin = 12;
-int trigPin = 13;
+#include <DHT.h>
+#include <pm2008_i2c.h>
 
 
-int Sensor_val; //센서 ADC값 저장 변수
-int lcd_pos;
-byte i;
-#define VOLTS_PER_UNIT .0049F // (.0049 for 10 bit A-D) 
-float volts;
-float inches;
-float cm;
+// #define DISPIN A0
+PM2008_I2C pm2008_i2c;
 
-// Message format
+#define DHTPIN 6
+float hum; //Stores humidity value
+float temp; //Stores temperature value
+// int distance = 0; // initial Distance
+
+
 unsigned long lastMsg = 0;
-unsigned long lastTemp = 0;
-#define MSG_BUFFER_SIZE  (20)
+#define MSG_BUFFER_SIZE  (10)
 char msg[MSG_BUFFER_SIZE];
 
-int distance = 0; // initial Distance
 
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
 
 SoftwareSerial espSerial(2, 3); // RX, TX
 long int baudRate = 9600;
 
-char ssid[] = "jjhjjh";             // network SSID (name)
-char pass[] = "123456700";        // network password
+char ssid[] = "Galaxy A313285";             // network SSID (name)
+char pass[] = "12345678";        // network password
 int status = WL_IDLE_STATUS;      // the Wifi radio's status
-char server[] = "172.20.10.8";    // IP address of the MQTT server(Raspberry Pi)
-char topic[] = "test";         // Default topic string
-char clientId[] = "Arduino waterHeight";      // Cliwent id: Must be unique on the broker
+char server[] = "192.168.43.96";    // IP address of the MQTT server(Raspberry Pi)
+char topic[] = "test";            // Default topic string
+char clientId[] = "Arduino weather";      // Cliwent id: Must be unique on the broker
 
 WiFiEspClient wifi;               // Initialize the Ethernet client object
 PubSubClient mqttClient(wifi);    // Initialize the MQTT client
 
 void setup() {
-  Serial.begin(115200); // serial baud rate
-    pinMode(trigPin, OUTPUT);
-    pinMode(echoPin, INPUT);
+  pm2008_i2c.begin();
+  pm2008_i2c.command();
+  Serial.begin(115200);
+  dht.begin();
   // Set baud rate of ESP8266 to 9600 regardless of original setting
   set_esp8266_baud_rate(baudRate);
 
-  // Set baud rate of ESP 8266  
+  
   espSerial.begin(baudRate);
   espSerial.print("AT+UART_CUR=");
   espSerial.print(baudRate);
   espSerial.print(",8,1,0,0\r\n");
   WiFi.init(&espSerial);
+
 
   // check for the presence of the shield
   if (WiFi.status() == WL_NO_SHIELD) {
@@ -71,46 +71,48 @@ void setup() {
 
   printWifiStatus();
 
-  // mqtt server port : 1883 (general)
   mqttClient.setServer(server, 1883);
-  // set of subscriber
   mqttClient.setCallback(onReceive);
 }
 
 void loop() {
 
-  // if not connected mqtt -> try reconnect mqtt server
   if (!mqttClient.connected()) {
     reconnect();
   }
   mqttClient.loop();
 
   unsigned long now = millis();
-  
 
-  // publish interval is 2sec 
-  if(now-lastMsg>5000){
+  if(now-lastMsg>10000){
     lastMsg=now;
+    uint8_t ret = pm2008_i2c.read();
+      if (ret == 0) {
+        Serial.print("PM 10 (GRIMM) : ");
+        Serial.println(pm2008_i2c.pm10_grimm);
+        snprintf (msg, MSG_BUFFER_SIZE, "DUST/%d", (int)pm2008_i2c.pm10_grimm);
+        mqttClient.publish("Arduino/SENSOR", msg);
+      }
+    hum = dht.readHumidity();
+    temp = dht.readTemperature();
 
-    // Sensor_val = analogRead(Sensor); // 센서저장변수에 아날로그값을 저장
-    // volts = (float)Sensor_val * VOLTS_PER_UNIT; // 아날로그값을 volt 단위로 변환
-    // cm = 60.495 * pow(volts,-1.1904); // 측정전압에 따른 cm단위 거리 계산
-    float duration, distance;
-    digitalWrite(trigPin, HIGH);
-    delay(10);
-    digitalWrite(trigPin, LOW);
-    duration = pulseIn(echoPin, HIGH); 
-    // HIGH 였을 때 시간(초음파가 보냈다가 다시 들어온 시간)을 가지고 거리를 계산 한다.
-    distance = ((float)(340 * duration) / 10000) / 2;  
+    Serial.print("Humid : ");
+    Serial.println(hum);
+    Serial.print("Temp:");
+    Serial.println(temp);
+    
+    snprintf (msg, MSG_BUFFER_SIZE, "HUMID/%d", (int)hum);
+    mqttClient.publish("Arduino/SENSOR", msg);/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    Serial.print("Distance : ");
-    Serial.println(distance);
-
-    snprintf (msg, MSG_BUFFER_SIZE, "HEIGHT/%d", (int)distance);
-    Serial.println(msg);
+    snprintf (msg, MSG_BUFFER_SIZE, "TEMP/%d", (int)temp);
     mqttClient.publish("Arduino/SENSOR", msg);
 
   }
+
+
+
+ 
+
 
 }
 
