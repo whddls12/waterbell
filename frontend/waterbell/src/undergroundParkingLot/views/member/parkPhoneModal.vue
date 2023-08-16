@@ -28,7 +28,12 @@
     </div>
     <p @click="$emit('close', false)">취소</p>
     <p v-if="role == 'APART_MEMBER'" @click="changePhoneNumberMember">변경</p>
-    <p v-else @click="changePhoneNumberManager">변경</p>
+    <p
+      v-if="role == 'APART_MANAGER' || role == 'PUBLIC_MANAGER'"
+      @click="changePhoneNumberManager"
+    >
+      변경
+    </p>
   </div>
 </template>
 <script>

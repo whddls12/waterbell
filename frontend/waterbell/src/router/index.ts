@@ -229,19 +229,19 @@ const router = createRouter({
 
     // 회원정보 조회(마이페이지)
     {
-      path: '/park/mypage',
+      path: '/mypage',
       name: 'parkMypage',
       component: parkMypage
     },
     // 회원정보 수정 시 비밀번호 확인 창
     {
-      path: '/park/mypage/passwordCheck',
+      path: '/mypage/passwordCheck',
       name: 'parkPasswordCheck',
       component: parkPasswordCheck
     },
     // 회원정보 수정
     {
-      path: '/park/mypage/update',
+      path: '/mypage/update',
       name: 'parkMypageUpdate',
       component: parkMypageUpdate
     },

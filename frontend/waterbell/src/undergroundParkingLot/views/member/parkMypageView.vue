@@ -32,7 +32,10 @@
         />
       </div>
       <!-- 아파트 인증코드 -->
-      <div class="myPage-content-box apartCode">
+      <div
+        v-if="role == 'APART_MEMBER' || role == 'APART_MANAGER'"
+        class="myPage-content-box apartCode"
+      >
         <label for="apart-code">아파트 인증코드</label>
         <input
           type="text"
@@ -42,7 +45,10 @@
         />
       </div>
       <!-- 주소 -->
-      <div class="myPage-content-box address">
+      <div
+        v-if="role == 'APART_MEMBER' || role == 'APART_MANAGER'"
+        class="myPage-content-box address"
+      >
         <label for="address">주소</label>
         <input
           type="text"
@@ -70,7 +76,11 @@
       <!-- 버튼 -->
       <div class="myPage-btn">
         <button id="update" @click="passwordCheck">회원정보 수정하기</button>
-        <div class="withdrawal" @click="goWithdrawal">
+        <div
+          v-if="role == 'APART_MEMBER'"
+          class="withdrawal"
+          @click="goWithdrawal"
+        >
           <i class="fas fa-arrow-right"> 회원탈퇴하기</i>
         </div>
       </div>
@@ -104,7 +114,7 @@ export default defineComponent({
         .catch((error) => console.log(error))
     }
     function passwordCheck() {
-      router.push({ path: '/park/mypage/passwordCheck' })
+      router.push({ path: '/mypage/passwordCheck' })
     }
 
     async function goWithdrawal() {

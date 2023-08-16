@@ -43,7 +43,10 @@
         />
       </div>
       <!-- 아파트 인증코드 -->
-      <div class="myPage-content-box apartCode">
+      <div
+        v-if="role == 'APART_MEMBER' || role == 'APART_MANAGER'"
+        class="myPage-content-box apartCode"
+      >
         <label for="apartCode">아파트 인증코드</label>
         <div class="inputbtn">
           <input
@@ -67,7 +70,10 @@
         </div>
       </div>
       <!-- 주소 -->
-      <div class="myPage-content-box address">
+      <div
+        v-if="role == 'APART_MEMBER' || role == 'APART_MANAGER'"
+        class="myPage-content-box address"
+      >
         <label for="address">주소</label>
         <input
           type="text"
@@ -185,7 +191,7 @@ export default defineComponent({
     }
 
     function goBack() {
-      router.push({ path: '/park/mypage' })
+      router.push({ path: '/mypage' })
     }
 
     function saveChange() {
@@ -200,10 +206,10 @@ export default defineComponent({
           })
           .then((res) => {
             console.log(res)
-            router.push({ path: '/park/mypage' })
+            router.push({ path: '/mypage' })
           })
           .catch((err) => console.log(err))
-      } else if (role == 'APART_MANAGER') {
+      } else if (role == 'APART_MANAGER' || role == 'PUBLIC_MANAGER') {
         apiClient
           .post(`/member/manager/modify`, {
             id: memberInfo.value.id,
@@ -214,7 +220,7 @@ export default defineComponent({
           })
           .then((res) => {
             console.log(res)
-            router.push({ path: '/park/mypage' })
+            router.push({ path: '/mypage' })
           })
           .catch((err) => console.log(err))
       }
