@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
+import { computed } from 'vue'
 // import apiModule from '@/types/apiClient'
 import http from '@/types/http'
 import Home from '@/views/Home.vue'
 import NotFound from '@/views/NotFound.vue'
+import store from '@/store/index'
 
 //관리자 로그인
 import managerLogin from '@/views/ManagerLogin.vue'
@@ -60,7 +62,6 @@ import parkReportUpdate from '../undergroundParkingLot/components/report/parkRep
 //알림함
 import alarmBox from '@/alarm/alarmBox.vue'
 import alarmDetail from '@/alarm/AlarmDetail.vue'
-import store from '@/store'
 // const api = apiModule.api
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
@@ -118,32 +119,38 @@ const router = createRouter({
     {
       path: '/road/control',
       name: 'RoadControl',
-      component: RoadControl
+      component: RoadControl,
+      meta: { allowedRoles: ['PUBLIC_MANAGER'] }
     },
     {
       path: '/road/manage',
       name: 'RoadManage',
-      component: RoadManage
+      component: RoadManage,
+      meta: { allowedRoles: ['PUBLIC_MANAGER'] }
     },
     {
       path: '/road/systemlog',
       name: 'RoadSystemlog',
       component: RoadSystemlog,
+      meta: { allowedRoles: ['PUBLIC_MANAGER'] },
       children: [
         {
           path: 'measureLog',
           name: 'roadMeasureLog',
-          component: roadMeasureLog
+          component: roadMeasureLog,
+          meta: { allowedRoles: ['PUBLIC_MANAGER'] }
         },
         {
           path: 'statusLog',
           name: 'roadDeviceStatusLog',
-          component: roadDeviceStatusLog
+          component: roadDeviceStatusLog,
+          meta: { allowedRoles: ['PUBLIC_MANAGER'] }
         },
         {
           path: 'controlLog',
           name: 'roadDeviceControlLog',
-          component: roadDeviceControlLog
+          component: roadDeviceControlLog,
+          meta: { allowedRoles: ['PUBLIC_MANAGER'] }
         }
       ]
     },
@@ -229,19 +236,19 @@ const router = createRouter({
 
     // 회원정보 조회(마이페이지)
     {
-      path: '/park/mypage',
+      path: '/mypage',
       name: 'parkMypage',
       component: parkMypage
     },
     // 회원정보 수정 시 비밀번호 확인 창
     {
-      path: '/park/mypage/passwordCheck',
+      path: '/mypage/passwordCheck',
       name: 'parkPasswordCheck',
       component: parkPasswordCheck
     },
     // 회원정보 수정
     {
-      path: '/park/mypage/update',
+      path: '/mypage/update',
       name: 'parkMypageUpdate',
       component: parkMypageUpdate
     },
@@ -249,43 +256,61 @@ const router = createRouter({
     {
       path: '/park/dash',
       name: 'ParkDash',
-      component: ParkDash
+      component: ParkDash,
+      meta: { allowedRoles: ['APART_MANAGER', 'APART_MEMBER'] }
     },
     // 지하주차장 신고접수
     {
       path: '/park/report',
       name: 'ParkReport',
-      component: ParkReport
+      component: ParkReport,
+      meta: { allowedRoles: ['APART_MANAGER', 'APART_MEMBER'] }
     },
     {
       path: '/park/report/create', // 신고접수 등록
       name: 'ParkReportCreate',
-      component: parkReportCreate
+      component: parkReportCreate,
+      meta: { allowedRoles: ['APART_MANAGER', 'APART_MEMBER'] }
     },
     {
       path: '/park/report/update/:report_id', // 신고접수 업데이트
-      component: parkReportUpdate
+      component: parkReportUpdate,
+      meta: { allowedRoles: ['APART_MANAGER', 'APART_MEMBER'] }
     },
     {
       path: '/park/report/:report_id/detail', // 신고접수 상세
-      component: parkReportItem
+      component: parkReportItem,
+      meta: { allowedRoles: ['APART_MANAGER', 'APART_MEMBER'] }
     },
     {
       path: '/park/systemlog',
       name: 'ParkSystemlog',
       component: ParkSystemlog,
+      meta: { allowedRoles: ['APART_MANAGER'] },
       children: [
-        { path: 'measureLog', name: 'parkMeasure', component: parkMeasureLog },
-        { path: 'alarmLog', name: 'parkAlarmLog', component: parkAlarmLog },
+        {
+          path: 'measureLog',
+          name: 'parkMeasure',
+          component: parkMeasureLog,
+          meta: { allowedRoles: ['APART_MANAGER'] }
+        },
+        {
+          path: 'alarmLog',
+          name: 'parkAlarmLog',
+          component: parkAlarmLog,
+          meta: { allowedRoles: ['APART_MANAGER'] }
+        },
         {
           path: 'statusLog',
           name: 'parkDeviceStatusLog',
-          component: parkDeviceStatusLog
+          component: parkDeviceStatusLog,
+          meta: { allowedRoles: ['APART_MANAGER'] }
         },
         {
           path: 'controlLog',
           name: 'parkDeviceControlLog',
-          component: parkDeviceControlLog
+          component: parkDeviceControlLog,
+          meta: { allowedRoles: ['APART_MANAGER'] }
         }
       ]
     },
@@ -293,15 +318,27 @@ const router = createRouter({
       path: '/park/manage',
       name: 'ParkManage',
       component: ParkManage,
+      meta: { allowedRoles: ['APART_MANAGER'] },
       children: [
-        { path: 'custom', name: 'parkCustom', component: parkCustom },
-        { path: 'member', name: 'manageMember', component: parkManageMember }
+        {
+          path: 'custom',
+          name: 'parkCustom',
+          component: parkCustom,
+          meta: { allowedRoles: ['APART_MANAGER'] }
+        },
+        {
+          path: 'member',
+          name: 'manageMember',
+          component: parkManageMember,
+          meta: { allowedRoles: ['APART_MANAGER'] }
+        }
       ]
     },
     {
       path: '/park/control',
       name: 'ParkControl',
-      component: ParkControl
+      component: ParkControl,
+      meta: { allowedRoles: ['APART_MANAGER'] }
     },
     //알림함
     {
@@ -324,6 +361,15 @@ router.beforeEach((to, from, next) => {
     store.commit('setIsMainpage', true)
   } else {
     store.commit('setIsMainpage', false)
+  }
+
+  // 권한 검사
+  const role = computed(() => store.getters['auth/role'])
+  const allowedRoles = to.meta.allowedRoles as string[]
+  if (allowedRoles && !allowedRoles.includes(role.value)) {
+    // Role mismatch. Redirect to a different page or block the navigation.
+    alert('잘못된 접근입니다.')
+    next('/')
   }
 
   next()

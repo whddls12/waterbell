@@ -41,7 +41,7 @@
             <div v-else class="info-status">
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
-            <div style="margin: 5px">
+            <div class="viewCount">
               <i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}
             </div>
           </div>

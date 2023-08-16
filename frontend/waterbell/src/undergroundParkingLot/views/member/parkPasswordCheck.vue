@@ -6,14 +6,16 @@
       <h1>회원 정보 수정</h1>
     </div>
     <div class="password-check-content">
-      <!-- 비밀번호 -->
-      <div class="password-check-content-box password">
-        <label for="currentPW">비밀번호</label>
-        <input type="password" id="currentPW" v-model="currentPW" />
-      </div>
+      <form @submit.prevent="isEqual">
+        <!-- 비밀번호 -->
+        <div class="password-check-content-box password">
+          <label for="currentPW">비밀번호</label>
+          <input type="password" id="currentPW" v-model="currentPW" />
+        </div>
+      </form>
       <!-- 버튼 -->
       <div class="password-check-bt">
-        <button id="check" @click="isEqual">확인</button>
+        <button type="submit" id="check" @click="isEqual">확인</button>
       </div>
     </div>
   </div>
@@ -32,16 +34,6 @@ export default defineComponent({
     // const api = axios.api
     const currentPW = ref('')
 
-    // 입력을 다 하고 엔터키로 비밀번호 확인이 가능하게끔
-    let input = document.getElementById('currentPW')
-
-    input?.addEventListener('keyup', function (event: any) {
-      if (event.keyCode === 13) {
-        event.preventDefault()
-        document.getElementById('check')?.click()
-      }
-    })
-
     // 현재 비밀번호를 잘 입력했는지 검증
     function isEqual() {
       apiClient
@@ -49,7 +41,7 @@ export default defineComponent({
           password: currentPW.value
         })
         .then((res) => {
-          router.push({ path: '/park/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
+          router.push({ path: '/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
         })
         .catch((err) => {
           console.log(err)
