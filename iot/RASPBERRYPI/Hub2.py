@@ -151,7 +151,7 @@ def subscribe(arduino, IoTCore):
         elif Actuator == "CAM2":
             IoTCore.message_callback_add(topic, on_message_cam4)
         elif Actuator == "STATUS":
-           IoTCore.message_callback_add(topic, on_message_status)
+            IoTCore.message_callback_add(topic, on_message_status)
 
 def publisher(client, topic, message):
     print("send")
@@ -164,7 +164,7 @@ def run():
     arduino = connect_mqtt1()
     IoTCore = connect_mqtt2()
     subscribe(arduino, IoTCore)
-    
+
     arduino_thread = threading.Thread(target=arduino.loop_forever)
     IoTCore_thread = threading.Thread(target=IoTCore.loop_forever)
 
@@ -181,3 +181,4 @@ if __name__ == '__main__':
         print("\nProgram interrupted. Performing cleanup...")
         # Add cleanup actions here if needed
         sys.exit(0)     # Exit the program gracefully
+

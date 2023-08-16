@@ -5,9 +5,9 @@ import threading
 #AWS IoT 관련 설정
 THING_NAME = 'IoT'
 ENDPOINT = "a221zxhtj4qlos-ats.iot.us-east-2.amazonaws.com"
-CERTPATH =  "/home/jjhjjh/Desktop/IoT.cert.pem" # cert파일 경로
-KEYPATH = "/home/jjhjjh/Desktop/IoT.private.key" # key 파일 경로
-CAROOTPATH = "/home/jjhjjh/Desktop/root-CA.crt" # RootCaPem 파일 경로
+CERTPATH =  "/home/jjhjjh/Desktop/jjhIoTCore/IoT.cert.pem" # cert파일 경로
+KEYPATH = "/home/jjhjjh/Desktop/jjhIoTCore/IoT.private.key" # key 파일 경로
+CAROOTPATH = "/home/jjhjjh/Desktop/jjhIoTCore/root-CA.crt" # RootCaPem 파일 경로
 
 
 ArduinoList = ["SENSOR", "CAM1", "CAM2"]
