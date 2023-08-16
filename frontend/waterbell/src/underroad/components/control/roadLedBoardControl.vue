@@ -1,6 +1,6 @@
 <template lang="">
   <div class="main">
-    <div class="controll1">전광판 & 경고등 제어</div>
+    <div class="control1" id="state">전광판 & 경고등 제어</div>
     <div class="warning1">{{ warningText }}</div>
     <div class="buttons">
       <button class="button1" @click="onAction">동작</button>
@@ -116,13 +116,13 @@ export default defineComponent({
   border-radius: 6px; /* 반경도 절반으로 줄임 */
 }
 
-.controll1 {
+.control1 {
   width: 368px;
   height: 59px;
   text-align: center;
   color: black;
   font-size: 15px;
-  font-family: Roboto;
+  font-family: score;
   font-weight: 500;
   line-height: 28px;
   letter-spacing: 0.25px;
@@ -135,7 +135,7 @@ export default defineComponent({
   text-align: center;
   color: black;
   font-size: 25px;
-  font-family: Roboto;
+  font-family: score;
   font-weight: 600;
   line-height: 48px;
   letter-spacing: 0.25px;
@@ -179,5 +179,10 @@ export default defineComponent({
   margin-left: 10px;
   color: #fff;
   margin-bottom: 20px;
+}
+
+.warn-text {
+  font-size: 20px;
+  font-family: score;
 }
 </style>

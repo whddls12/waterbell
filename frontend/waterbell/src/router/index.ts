@@ -11,13 +11,14 @@ import RoadDash from '@/underroad/views/roadDashboardView.vue' // 대쉬보드
 import RoadReport from '@/underroad/views/roadReportView.vue' // 신고접수
 import RoadSystemlog from '@/underroad/views/roadSystemLogView.vue' // 시스템로그
 import RoadManage from '@/underroad/views/roadManageView.vue' // 관리
-import RoadControll from '@/underroad/views/roadControlView.vue' // 제어
+import RoadControl from '@/underroad/views/roadControlView.vue' // 제어
 
 //지하차도 신고접수
 import roadReportItemVue from '../underroad/components/report/roadReportItem.vue'
 // import roadReportListVue from '../underroad/components/report/roadReportList.vue'
 import roadReportCreateVue from '../underroad/components/report/roadReportCreate.vue'
 import roadReportUpdateVue from '../underroad/components/report/roadReportUpdate.vue'
+import roadReportVerification from '../underroad/components/report/roadReportVerification.vue'
 
 //지하차도 시스템 로그
 import roadMeasureLog from '../underroad/components/systemLog/roadSensorMeasureLog.vue'
@@ -34,13 +35,15 @@ import parkMypageUpdate from '../undergroundParkingLot/views/member/parkMypageUp
 import parkCustom from '../undergroundParkingLot/components/manage/parkMessageAndValueCustom.vue'
 import kakaoRedirectPage from '@/undergroundParkingLot/views/member/kakaoSocialRedirect.vue'
 import socialJoinExtra from '@/undergroundParkingLot/views/member/socialLoginExtraInfo.vue'
+import parkFindId from '@/undergroundParkingLot/views/member/parkFindId.vue'
+import parkFindPassword from '@/undergroundParkingLot/views/member/parkFindPassword.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
 import ParkReport from '@/undergroundParkingLot/views/parkReportView.vue' // 신고접수
 import ParkSystemlog from '@/undergroundParkingLot/views/parkSystemLogView.vue' // 시스템로그
 import ParkManage from '@/undergroundParkingLot/views/parkManageView.vue' // 관리
-import ParkControll from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
+import ParkControl from '@/undergroundParkingLot/views/parkControlView.vue' // 제어
 import parkManageMember from '@/undergroundParkingLot/components/manage/parkResidentList.vue'
 //지하주차장 시스템 로그
 import parkMeasureLog from '../undergroundParkingLot/components/systemLog/parkSensorMeasureLog.vue'
@@ -88,6 +91,7 @@ const router = createRouter({
       name: 'RoadDash',
       component: RoadDash
     },
+    // 신고접수
     {
       path: '/road/report',
       name: 'RoadReport',
@@ -95,7 +99,12 @@ const router = createRouter({
     },
     {
       path: '/road/report/create',
+      name: 'roadReportCreate',
       component: roadReportCreateVue
+    },
+    {
+      path: '/road/report/verification',
+      component: roadReportVerification
     },
     {
       path: '/road/report/update/:report_id',
@@ -106,9 +115,9 @@ const router = createRouter({
       component: roadReportItemVue
     },
     {
-      path: '/road/controll',
-      name: 'RoadControll',
-      component: RoadControll
+      path: '/road/control',
+      name: 'RoadControl',
+      component: RoadControl
     },
     {
       path: '/road/manage',
@@ -145,6 +154,16 @@ const router = createRouter({
       path: '/park/login',
       name: 'parkLogin',
       component: parkLogin
+    },
+    {
+      path: '/park/find/id',
+      name: 'parkFindId',
+      component: parkFindId
+    },
+    {
+      path: '/park/find/password',
+      name: 'parkFindPassword',
+      component: parkFindPassword
     },
 
     {
@@ -274,9 +293,9 @@ const router = createRouter({
       ]
     },
     {
-      path: '/park/controll',
-      name: 'ParkControll',
-      component: ParkControll
+      path: '/park/control',
+      name: 'ParkControl',
+      component: ParkControl
     },
     //알림함
     {

@@ -10,6 +10,8 @@
     >
       Launch demo modal
     </button> -->
+    <!-- <button @click="toggleWaterModal">모달 열기</button>
+    <button @click="toggleBoardModal">신고접수 모달 열기</button> -->
 
     <!-- Modal -->
     <!-- -------------------------------침수관련 모달 ------------------------------------ -->
@@ -32,7 +34,7 @@
               위치 :
               {{ waterNotification ? waterNotification.facilityName : '' }}
             </p>
-            <p>내용 {{ waterNotification ? waterNotification.content : '' }}</p>
+            <p>{{ waterNotification ? waterNotification.content : '' }}</p>
           </div>
 
           <div class="modal-footer justify-content-center">
@@ -80,7 +82,7 @@
               위치 :
               {{ boardNotification ? boardNotification.facilityName : '' }}
             </p>
-            <p class="text-start">내용</p>
+
             <p>{{ boardNotification ? boardNotification.content : '' }}</p>
           </div>
 
@@ -183,9 +185,9 @@ export default defineComponent({
       }
       //park인지 아파트인지 구분 ......
       if (role.value == 'PUBLIC_MANAGER') {
-        router.push('/road/control')
+        window.location.href = '/road/control'
       } else {
-        router.push('/park/control')
+        window.location.href = '/park/control'
       }
     }
 
@@ -195,11 +197,20 @@ export default defineComponent({
       }
 
       if (role.value == 'APART_MANAGER') {
-        router.push(`/park/report?boardId=${boardNotification.value.boardId}`)
+        window.location.href = `/park/report/${boardNotification.value.boardId}/detail`
       } else {
-        router.push(`/road/report?boardId=${boardNotification.value.boardId}`)
+        window.location.href = `/road/report/${boardNotification.value.boardId}/detail`
       }
     }
+
+    const toggleWaterModal = () => {
+      store.dispatch('toggleWaterModal')
+    }
+
+    const toggleBoardModal = () => {
+      store.dispatch('toggleBoardModal')
+    }
+
     watch(
       () => store.state.showWaterModal,
       (newValue) => {
@@ -275,13 +286,28 @@ export default defineComponent({
       boardNotification,
       moveToBoardDetail,
       waterModalRef,
-      boardModalRef
+      boardModalRef,
+      toggleWaterModal,
+      toggleBoardModal
     }
   }
 })
 </script>
 
 <style>
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
 @font-face {
   font-family: 'score';
   font-weight: 100;

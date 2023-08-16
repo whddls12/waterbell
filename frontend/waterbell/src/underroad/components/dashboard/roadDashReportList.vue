@@ -8,9 +8,13 @@
       <div class="dash-box-content">
         <thead>
           <tr>
-            <th scope="col" class="text-center">제목</th>
-            <th scope="col" class="text-center">처리상태</th>
-            <th scope="col" class="text-center">등록일시</th>
+            <th scope="col" class="text-center" style="width: 200px">제목</th>
+            <th scope="col" class="text-center" style="width: 100px">
+              처리상태
+            </th>
+            <th scope="col" class="text-center" style="width: 150px">
+              등록일시
+            </th>
           </tr>
         </thead>
         <tbody v-if="reportList.length != 0">
@@ -20,11 +24,13 @@
             class="tr"
             @click="movePage(report.id)"
             align="center"
+            onmousemove="this.style.backgroundColor='#f0f0f0';"
+            onmouseout="this.style.backgroundColor='transparent';"
           >
             <!-- <th scope="row">{{ no }}</th> -->
             <td>{{ report.title }}</td>
-            <td>{{ report.status }}</td>
-            <td>{{ report.createDate }}</td>
+            <td>{{ statusEngToKr(report.status) }}</td>
+            <td>{{ setDate(report.createDate) }}</td>
           </tr>
         </tbody>
 
@@ -70,6 +76,25 @@ export default defineComponent({
         return
       }
     }
+
+    const setDate = (dateString: any) => {
+      const date = new Date(dateString)
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0') // +1 이유: getMonth()는 0-11의 값을 반환하기 때문입니다.
+      const day = String(date.getDate()).padStart(2, '0')
+
+      return `${year}-${month}-${day}`
+    }
+
+    function statusEngToKr(status: string) {
+      if (status === 'BEFORE') {
+        return '처리전'
+      } else if (status === 'PROCESSING') {
+        return '처리중'
+      } else if (status === 'COMPLETE') {
+        return '처리완료'
+      }
+    }
     const router = useRouter()
     const movePage = (board_id: any) => {
       router.push(`/road/report/${board_id}/detail`)
@@ -80,9 +105,23 @@ export default defineComponent({
     return {
       reportList,
       movePage,
-      setList
+      setList,
+      setDate,
+      statusEngToKr
     }
   }
 })
 </script>
-<style lang="css"></style>
+<style scoped lang="css">
+thead tr:last-child th {
+  border-bottom: 1px solid #939393;
+}
+
+tbody tr {
+  padding: 10px 0; /* 위아래로 10px 패딩 추가 */
+}
+
+tbody td {
+  padding: 10px; /* 모든 방향으로 10px 패딩 추가 */
+}
+</style>
