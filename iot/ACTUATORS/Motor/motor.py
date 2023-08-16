@@ -24,14 +24,17 @@ RevSeq = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 sub_servo_topic = "Server/BOARD" 
 sub_step_topic = "Server/PLATE" 
 
-mqtt_server = "100.100.2.63"
+pub_topic = "Arduino/CONTROL"
+
+mqtt_server = "192.168.28.60"
 
 facility_id = "11"
 
 # 0 : OFF 1: ON
 stepStatus = 0;
 
-
+lastMsg = 0
+interval = 5
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -54,10 +57,16 @@ def subscribe(arduino):
     arduino.subscribe(sub_step_topic)
     arduino.message_callback_add(sub_step_topic, on_message_step)
 
+def publish_status(client, topic, interval):
+    global stepStatus
+    while True:
+        client.publish(topic, stepStatus, qos = 0)
+        time.sleep(interval)
 
 
 # board
 def on_message_servo(client, userdata, msg):
+    global stepStatus
     payload = msg.payload.decode()
     pwm = GPIO.PWM(servo_pin, 50)
     pwm.start(3.0)
@@ -75,6 +84,7 @@ def on_message_servo(client, userdata, msg):
 
 # plate
 def on_message_step(client, userdata, msg):
+    global stepStatus
     payload = msg.payload.decode()
     print("ON")
     
@@ -123,19 +133,24 @@ def on_message_step(client, userdata, msg):
 
 
 def publisher(client, topic, message):
+    QOS = 0
     client.publish(topic, message, QOS)
 
 
 def run():
+    global stepStatus
     arduino = connect_mqtt()
 
     subscribe(arduino)
 
     arduino_thread = threading.Thread(target=arduino.loop_forever)
+    pub_thread = threading.Thread(target = publish_status, args=(arduino,pub_topic, 5))
 
     arduino_thread.start()
+    pub_thread.start()
 
     arduino_thread.join()
+    pub_thread.join()
 
 if __name__ == '__main__':
     try:
