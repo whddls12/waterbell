@@ -40,11 +40,11 @@
       </div>
       <div class="each-menu" v-if="!isManager"></div>
       <div class="each-menu" v-if="isManager">
-        <router-link to="/park/systemlog">센서내역</router-link>
+        <router-link to="/park/systemlog/measureLog">센서내역</router-link>
       </div>
       <div class="each-menu" v-if="!isManager"></div>
       <div class="each-menu" v-if="isManager">
-        <router-link to="/park/manage">관리</router-link>
+        <router-link to="/park/manage/custom">관리</router-link>
       </div>
       <div class="each-menu" v-if="!isManager"></div>
     </div>
