@@ -2,12 +2,20 @@ import time,json,ssl
 import paho.mqtt.client as mqtt
 import threading
 import RPi.GPIO as GPIO
+import RPi_I2C_driver
 
 
+mylcd = RPi_I2C_driver.lcd()
+
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(16,GPIO.OUT)
+GPIO.setup(20,GPIO.OUT)
+GPIO.setup(21,GPIO.OUT)
+
+
 StepPins = [8,9,10,11]
-
-
 for pin in StepPins:
     GPIO.setup(pin, GPIO.OUT)
     GPIO.output(pin, False)
@@ -20,9 +28,10 @@ RevSeq = [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
 
 # ON/OFF
 sub_step_topic = "Server/PLATE" 
+sub_lcd_topic = "Server/STATUS"
 pub_topic = "Arduino/CONTROL"
 
-mqtt_server = "172.20.10.8"
+mqtt_server = "172.30.1.38"
 
 facility_id = "11"
 
@@ -42,13 +51,47 @@ def connect_mqtt():
     return arduino
 
 def subscribe(arduino):
-    print(sub_step_topic)
     arduino.subscribe(sub_step_topic)
     arduino.message_callback_add(sub_step_topic, on_message_step)
+
+    arduino.subscribe(sub_lcd_topic)
+    arduino.message_callback_add(sub_lcd_topic, on_message_lcd)
+
+
+def on_message_lcd(client, userdata, msg):
+    payload = msg.payload.decode()
+    print(f"Received message: {payload}")
+
+    payload = msg.payload.decode()
+
+    if(payload == "DEFAULT"):
+        mylcd.lcd_clear()
+        mylcd.lcd_display_string("WaterBell", 1)
+        mylcd.lcd_display_string("Have a nice day!", 2)
+        GPIO.output(16,True)
+        GPIO.output(20,False)
+        GPIO.output(21,False)
+    elif(payload == "WORKING"):
+        mylcd.lcd_clear()
+        mylcd.lcd_display_string("Danger!!",1)
+        mylcd.lcd_display_string("STOP! No entry",2)
+        GPIO.output(16,False)
+        GPIO.output(21,True)
+        GPIO.output(20,False)
+    else:
+        mylcd.lcd_clear()
+        mylcd.lcd_display_string("Warning!!",1)
+        mylcd.lcd_display_string("Move carfully",2)
+        GPIO.output(16,False)
+        GPIO.output(21,False)
+        GPIO.output(20,True)
+
+
 
 
 # plate
 def on_message_step(client, userdata, msg):
+    global stepStatus
     payload = msg.payload.decode()
     print("ON")
     
@@ -130,4 +173,6 @@ if __name__ == '__main__':
         print("\nProgram interrupted. Performing cleanup...")
         # Add cleanup actions here if needed
         GPIO.cleanup()  # Cleanup GPIO pins if you're using them
+        mylcd.lcd_clear()
+        mylcd.backlight(0)
         sys.exit(0)     # Exit the program gracefully
