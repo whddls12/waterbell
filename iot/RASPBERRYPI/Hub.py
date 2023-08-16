@@ -10,7 +10,7 @@ KEYPATH = "/home/jjhjjh/Desktop/IoT.private.key" # key 파일 경로
 CAROOTPATH = "/home/jjhjjh/Desktop/root-CA.crt" # RootCaPem 파일 경로
 
 
-ArduinoList = ["SENSOR", "CAM1", "CAM2"]
+ArduinoList = ["SENSOR", "CAM1", "CAM2", "CONTROL"]
 IoTCoreList = ["PLATE", "BOARD", "CAM1", "CAM2","STATUS"]
 
 FacilityId = "10"
@@ -42,7 +42,7 @@ def connect_mqtt2():
 
 # 각 메시지가 들어왔을 때 실행할 코드
 def on_message_sensor(client, userdata, msg):
-    # TEMP 
+    # SENSOR 
     global IoTCore
     topic = "Arduino/SENSOR"
     print("send")
@@ -53,20 +53,24 @@ def on_message_sensor(client, userdata, msg):
 def on_message_cam1(client, userdata, msg):
     # CAM 
     global IoTCore
-    topic = "Arduino/CAM1"
-    # payload = FacilityId + msg.payload.decode()
+    topic = "Arduino/"+FacilityId+"/CAM1"
     publisher(IoTCore, topic, msg.payload)
     pass
 
 def on_message_cam2(client, userdata, msg):
     # CAM 
     global IoTCore
-    topic = "Arduino/CAM2"
-    # payload = FacilityId + msg.payload.decode()
+    topic = "Arduino/"+FacilityId+"/CAM2"
     publisher(IoTCore, topic, msg.payload)
     pass
 
-
+def on_message_control(client, userdata, msg):
+    # control state
+    global IoTCore
+    topic = "Arduino/CONTROL"
+    payload = FacilityId + "/"+msg.payload.decode()
+    publisher(IoTCore, topic, payload)
+    pass
 
 
 def on_message_plate(client, userdata, msg):
@@ -93,7 +97,7 @@ def on_message_board(client, userdata, msg):
 def on_message_cam3(client, userdata, msg):
     # BOARD
     global arduino
-    topic = "Server/CAM1"
+    topic = "CAM1"
     # payload = FacilityId + msg.payload.decode()
     publisher(arduino, topic, msg)
 
@@ -103,7 +107,7 @@ def on_message_cam3(client, userdata, msg):
 def on_message_cam4(client, userdata, msg):
     # BOARD
     global arduino
-    topic = "Server/CAM2"
+    topic = "CAM2"
     # payload = FacilityId + msg.payload.decode()
     publisher(arduino, topic, msg)
 
@@ -117,9 +121,9 @@ def on_message_status(client, userdata, msg):
 
 def subscribe(arduino, IoTCore):
 
+    # Arduino -> Server
     for sensor in ArduinoList:
         topic = "Arduino/"+sensor
-
         arduino.subscribe(topic)
 
         if sensor == "SENSOR":
@@ -128,7 +132,10 @@ def subscribe(arduino, IoTCore):
             arduino.message_callback_add(topic, on_message_cam1)
         elif sensor == "CAM2":
             arduino.message_callback_add(topic, on_message_cam2)
+        elif sensor == "CONTROL":
+            arduino.message_callback_add(topic, on_message_control)
 
+    # Server -> Arduino
     for Actuator in IoTCoreList:
         topic = "Server/"+FacilityId+"/"+Actuator
 
@@ -137,12 +144,12 @@ def subscribe(arduino, IoTCore):
             IoTCore.message_callback_add(topic, on_message_plate)
         elif Actuator == "BOARD":
             IoTCore.message_callback_add(topic, on_message_board)
-        elif Actuator == "CAM3":
+        elif Actuator == "CAM1":
             IoTCore.message_callback_add(topic, on_message_cam3)
-        elif Actuator == "CAM4":
+        elif Actuator == "CAM2":
             IoTCore.message_callback_add(topic, on_message_cam4)
         elif Actuator == "STATUS":
-           IoTCore.message_callback_add(topic, on_message_status)
+            IoTCore.message_callback_add(topic, on_message_status)
 
 def publisher(client, topic, message):
     client.publish(topic, message, QOS)
