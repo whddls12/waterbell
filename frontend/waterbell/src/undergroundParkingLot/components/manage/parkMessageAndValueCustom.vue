@@ -120,19 +120,27 @@
         </svg>
         <label for="deactivation">기준치 설정</label>
       </div>
-      <label for="threshold1">1차 </label>
-      <div>
-        <input id="threshold1" type="number" v-model="custom.firstAlarmValue" />
-      </div>
-    </div>
-    <div class="input-field2">
-      <label for="threshold2">2차 </label>
-      <div>
-        <input
-          id="threshold2"
-          type="number"
-          v-model="custom.secondAlarmValue"
-        />
+      <div class="criteriaBox">
+        <div>
+          <label for="threshold1">1차 </label>
+          <div>
+            <input
+              id="threshold1"
+              type="number"
+              v-model="custom.firstAlarmValue"
+            />
+          </div>
+        </div>
+        <div>
+          <label for="threshold2">2차 </label>
+          <div>
+            <input
+              id="threshold2"
+              type="number"
+              v-model="custom.secondAlarmValue"
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div class="btn-container">
@@ -217,7 +225,8 @@ export default defineComponent({
 .subtitle {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
+  margin-bottom: 20px;
 }
 .input-field {
   margin-top: 30px;
@@ -232,9 +241,9 @@ export default defineComponent({
   width: 100%; /* 가로 크기 변경 */
   height: 50px; /* 세로 크기를 다른 입력 필드의 반으로 변경 */
 }
-.input-field2 label {
+/* .input-field2 label {
   margin-bottom: 12px;
-}
+} */
 
 .label-flex {
   display: flex;
@@ -282,8 +291,9 @@ input:focus {
 
 .btn-container {
   display: flex;
+  width: 100%;
   justify-content: center; /* 가운데 정렬 */
-  margin-top: 50px; /* 버튼과 다른 입력 필드 간의 간격을 주기 위해 추가 */
+  margin-top: 100px; /* 버튼과 다른 입력 필드 간의 간격을 주기 위해 추가 */
 }
 
 textarea {
@@ -307,6 +317,13 @@ textarea {
 textarea:focus {
   outline: none;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.criteriaBox {
+  display: flex;
+  width: 100%;
+  gap: 30px;
+  margin-left: 40px;
 }
 
 #updateBtn {
