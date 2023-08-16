@@ -25,7 +25,7 @@
           </div>
           <div class="report-info info-box">
             <select
-              v-if="role == 'PUBLIC_MANAGER'"
+              v-if="role == 'APART_MANAGER'"
               name="report-status"
               v-model="selectedStatus"
               class="custom-select"
@@ -41,8 +41,10 @@
             <div v-else class="info-status">
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
-
-            <div><i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}</div>
+            <div class="viewCount">
+              <div><i class="fas fa-eye"></i></div>
+              <div>{{ reportInfo?.viewCount }}</div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,7 +66,7 @@
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
       <!-- 관리자 -->
-      <div v-if="role == 'PUBLIC_MANAGER'" class="manager-btn">
+      <div v-if="role == 'APART_MANAGER'" class="manager-btn">
         <button
           class="manager-btn-modify"
           @click="statusUpdate(reportInfo?.id)"
@@ -74,11 +76,13 @@
         <button class="btn-delete" @click="deleteReportManager">삭제</button>
       </div>
       <!-- 작성자 -->
-      <div v-else>
+      <div v-if="role == 'APART_MEMBER'">
         <button class="btn-modify" @click="goToUpdate(reportInfo?.id)">
           수정
         </button>
-        <button class="btn-delete" @click="openCheckModal">삭제</button>
+        <button class="btn-delete" @click="deleteReport(reportInfo?.id)">
+          삭제
+        </button>
       </div>
     </div>
   </div>
@@ -108,15 +112,15 @@ export default defineComponent({
     // 신고접수 글 처리상태 리스트
     const statusList = [
       {
-        text: 'BEFORE',
+        text: '처리전',
         value: '0'
       },
       {
-        text: 'PROCESSING',
+        text: '처리중',
         value: '1'
       },
       {
-        text: 'COMPLETE',
+        text: '처리완료',
         value: '2'
       }
     ]
@@ -183,56 +187,45 @@ export default defineComponent({
       return reportStatus.value
     }
 
+    // 글 삭제 (작성자)
+    function deleteReport(report_id: any) {
+      api
+        .get(`/reports/apart/deleteBoard/${report_id}`)
+        .then((res) => {
+          router.push({ path: `/park/report` })
+        })
+        .catch((error) => {
+          if (error.response.data.exception == '권한이 없습니다') {
+            alert('본인이 작성한 글이 아닙니다.')
+          }
+        })
+    }
+
+    // 처리상태 수정 (관리자)
     async function statusUpdate(report_id: any) {
       const boardStatus = await statusNumToStr()
       console.log('처리상태 업데이트: ', boardStatus)
       apiClient
-        .get(`/reports/publicManager/updateStatus/${report_id}/${boardStatus}`)
+        .get(
+          `/reports/apartManager/updateStatus/apartBoard/${report_id}/${boardStatus}`
+        )
         .then((res) => {
           console.log(res)
           alert('처리상태가 변경되었습니다.')
         })
         .catch((err) => console.log(err))
     }
-
-    // // 글 삭제 (작성자)
-    // function deleteReport() {
-    //   console.log('deleteReport')
-    //   console.log('입력한 비밀번호: ', inputPassword.value)
-    //   api
-    //     .post(
-    //       `/reports/undergroundRoad/board/password/validation/${report_id}`,
-    //       {
-    //         boardPassword: inputPassword.value
-    //       }
-    //     )
-    //     .then((res) => {
-    //       api
-    //         .get(`/reports/deleteBoard/${report_id}`)
-    //         .then((res) => {
-    //           console.log(res)
-    //           alert('글이 삭제되었습니다.')
-    //           router.push({ path: '/park/report' })
-    //         })
-    //         .catch((err) => console.log(err))
-    //     })
-    //     .catch((err) => {
-    //       alert('비밀번호가 일치하지 않습니다.')
-    //       console.log(err)
-    //     })
-    // }
-
-    // // 글 삭제 (관리자)
-    // function deleteReportManager() {
-    //   apiClient
-    //     .get(`/reports/publicManager/deleteBoard/${report_id}`)
-    //     .then((res) => {
-    //       console.log(res)
-    //       alert('글이 삭제되었습니다.')
-    //       router.push({ path: '/park/report' })
-    //     })
-    //     .catch((err) => console.log(err))
-    // }
+    // 글 삭제 (관리자)
+    function deleteReportManager() {
+      apiClient
+        .get(`/reports/apart/deleteBoard/${report_id}`)
+        .then((res) => {
+          console.log(res)
+          alert('글이 삭제되었습니다.')
+          router.push({ path: '/park/report' })
+        })
+        .catch((err) => console.log(err))
+    }
 
     onMounted(() => {
       getReportData()
@@ -252,12 +245,14 @@ export default defineComponent({
       statusUpdate,
       statusNumToStr,
       statusEngToKr,
-      formattedTime
+      formattedTime,
+      deleteReport,
+      deleteReportManager
     }
   }
 })
 </script>
-<style>
+<style scoped>
 .each-report {
   width: 100%;
   padding: 20px;
@@ -334,7 +329,7 @@ export default defineComponent({
 
 .report-footer {
   display: flex;
-  stify-content: flex-end;
+  justify-content: flex-end;
 }
 
 .btn-modify {

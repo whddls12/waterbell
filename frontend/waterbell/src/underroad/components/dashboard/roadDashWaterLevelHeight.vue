@@ -31,17 +31,16 @@ export default defineComponent({
     const chartRef = ref(null)
     const timeArr = ref<string[]>([])
     const amountArr = ref<string[]>([])
-
+    // 차트 데이터 가공
     const makeData = (i: Record<string, any>) => {
       for (const key in i) {
         timeArr.value.push(key)
         amountArr.value.push(i[key])
       }
     }
-
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
-    console.log(facility_id)
+    console.log('시설 아이디: ', facility_id)
 
     // 수위 센서 데이터 가져오기
     async function getSensorData() {

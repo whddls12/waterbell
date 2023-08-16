@@ -162,7 +162,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .report-create-container {
   width: 100%;
 }

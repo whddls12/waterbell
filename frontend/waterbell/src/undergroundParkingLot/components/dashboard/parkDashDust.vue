@@ -44,8 +44,8 @@ export default defineComponent({
         const response = await api.get(
           `/dash/facilities/${facility_id}/sensors`
         )
-        console.log(current_dust.value)
         current_dust.value = response.data.Dust
+        console.log('미세먼지 수치: ', current_dust.value)
         if (current_dust.value) {
           if (current_dust.value >= 250) {
             left_dust.value = 0
@@ -161,7 +161,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .dust-box {
   position: relative;
 }

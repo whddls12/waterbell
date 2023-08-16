@@ -449,7 +449,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="css">
+<style scoped lang="css">
 #inner-box {
   display: flex;
   flex-direction: column;
