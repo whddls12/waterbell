@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script scoped lang="ts">
 import { ref, defineComponent } from 'vue'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -52,7 +52,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .reset-password {
   display: flex;
   width: inherit;

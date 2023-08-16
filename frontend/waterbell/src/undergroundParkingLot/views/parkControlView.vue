@@ -4,7 +4,7 @@
     <div class="road-control-cctv-com">
       <ParkControlCctvCom />
     </div>
-    <div class="controll-container">
+    <div class="control-container">
       <ParkControlWarningLightCom />
       <ParkControlWallCom />
     </div>
