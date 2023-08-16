@@ -87,7 +87,7 @@ export default defineComponent({
     }
 
     function goToMypage() {
-      router.push({ path: '/park/mypage' })
+      router.push({ path: '/mypage' })
     }
 
     async function Logout() {

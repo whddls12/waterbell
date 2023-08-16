@@ -6,14 +6,16 @@
       <h1>회원 정보 수정</h1>
     </div>
     <div class="password-check-content">
-      <!-- 비밀번호 -->
-      <div class="password-check-content-box password">
-        <label for="currentPW">비밀번호</label>
-        <input type="password" id="currentPW" v-model="currentPW" />
-      </div>
+      <form @submit.prevent="isEqual">
+        <!-- 비밀번호 -->
+        <div class="password-check-content-box password">
+          <label for="currentPW">비밀번호</label>
+          <input type="password" id="currentPW" v-model="currentPW" />
+        </div>
+      </form>
       <!-- 버튼 -->
       <div class="password-check-bt">
-        <button id="check" @click="isEqual">확인</button>
+        <button type="submit" id="check" @click="isEqual">확인</button>
       </div>
     </div>
   </div>
@@ -39,7 +41,7 @@ export default defineComponent({
           password: currentPW.value
         })
         .then((res) => {
-          router.push({ path: '/park/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
+          router.push({ path: '/mypage/update' }) // 비밀번호가 맞으면 수정화면으로
         })
         .catch((err) => {
           console.log(err)

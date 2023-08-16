@@ -154,6 +154,9 @@
             id="detailAddress"
             v-model="detailAddress"
           />
+          <p :class="{ 'p-msg': true, success: validate.detailAddress }">
+            {{ detailAddressMsg }}
+          </p>
         </div>
         <div class="report-empty-box-bottom"></div>
 
@@ -193,6 +196,7 @@ export default defineComponent({
     const passMsg = ref('')
     const confirmPassMsg = ref('')
     const phoneMsg = ref('')
+    const detailAddressMsg = ref('')
 
     //휴대폰번호 인증 확인 여부
     const offerPhone = ref(false)
@@ -306,13 +310,14 @@ export default defineComponent({
       // validate.value.phoneVerification = true
       if (detailAddress.value == '') {
         validate.value.detailAddress = false
-        phoneMsg.value = '필수입력 항목입니다.'
+        detailAddressMsg.value = '필수입력 항목입니다.'
       } else if (!validateRule.phone.test(phoneNum.value)) {
         validate.value.detailAddress = false
-        phoneMsg.value = '거주 중이신 세대의 호수를 숫자로 입력해주세요.'
+        detailAddressMsg.value =
+          '거주 중이신 세대의 호수를 숫자로 입력해주세요.'
       } else {
         validate.value.detailAddress = true
-        phoneMsg.value = ''
+        detailAddressMsg.value = ''
       }
     }
 
@@ -525,6 +530,7 @@ export default defineComponent({
       idMsg,
       passMsg,
       confirmPassMsg,
+      detailAddressMsg,
       validatedName,
       validateId,
       validatePass,

@@ -172,7 +172,6 @@ export default defineComponent({
       formData.append('name', report.value.name)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
-      formData.append('boardPassword', report.value.boardPassword)
 
       // FormData에 삭제할 첨부파일의 id 담아주기
       for (let value of removeFilesList.value) {
@@ -197,6 +196,13 @@ export default defineComponent({
         })
         .catch(function (error) {
           console.log(error)
+          console.log(error.response.data.exception)
+          if (
+            error.response.data.exception == '수정할 수 있는 권한이 없습니다.'
+          ) {
+            alert('본인이 작성한 글이 아닙니다.')
+            router.go(-1)
+          }
         })
     }
     onMounted(() => {
@@ -220,7 +226,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
 .report-create-container {
   width: 100%;
 }

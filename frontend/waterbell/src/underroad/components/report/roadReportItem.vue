@@ -41,7 +41,7 @@
             <div v-else class="info-status">
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
-            <div style="margin: 5px">
+            <div class="viewCount">
               <i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}
             </div>
           </div>
@@ -336,7 +336,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .each-report {
   width: 100%;
   padding: 20px;
@@ -466,7 +466,7 @@ export default defineComponent({
   font-weight: 500;
   line-height: 28px; /* 140% */
   letter-spacing: 0.25px;
-  margin: 5px;
+  /* margin: 5px; */
 }
 
 .info-status {
