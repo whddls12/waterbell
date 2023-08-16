@@ -182,6 +182,8 @@ export default defineComponent({
       } else if (status_sky.value === '4') {
         // 흐림
         SKY.value = 'blur'
+      } else {
+        SKY.value = 'sunny'
       }
 
       // 이미지 지정
@@ -193,6 +195,8 @@ export default defineComponent({
         PTY.value = 'rainsnow'
       } else if (type_rainfall.value === '3' || type_rainfall.value === '7') {
         PTY.value = 'snow'
+      } else {
+        PTY.value = 'none'
       }
     }
 
