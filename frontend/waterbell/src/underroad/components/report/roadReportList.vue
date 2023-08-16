@@ -1,6 +1,12 @@
 <template>
   <div class="table-box">
-    <button id="create" @click="createReport">글쓰기</button>
+    <button
+      v-if="role != 'APART_MANAGER' && role != 'PUBLIC_MANAGER'"
+      id="create"
+      @click="createReport"
+    >
+      글쓰기
+    </button>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
@@ -24,7 +30,15 @@
           <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ report.title }}</td>
           <td>{{ report.name }}</td>
-          <td>{{ statusEngToKr(report.status) }}</td>
+          <td
+            :class="{
+              'text-primary': report.status == 'COMPLETE',
+              'text-success': report.status == 'PROCESSING',
+              'text-danger': report.status == 'BEFORE'
+            }"
+          >
+            {{ statusEngToKr(report.status) }}
+          </td>
           <td>{{ formattedTime(report.createDate) }}</td>
           <td>{{ report.viewCount }}</td>
           <!-- <td>{{ report.uploadedfiles }}</td> -->
@@ -209,6 +223,7 @@ export default defineComponent({
       setList()
     })
     return {
+      role,
       reportList,
       currentPage,
       pageNavigation,
