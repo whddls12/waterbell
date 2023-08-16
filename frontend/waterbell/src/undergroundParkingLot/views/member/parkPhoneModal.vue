@@ -27,7 +27,8 @@
       <p>{{ formattedCountdown }}</p>
     </div>
     <p @click="$emit('close', false)">취소</p>
-    <p @click="changePhoneNumber">변경</p>
+    <p v-if="role == 'APART_MEMBER'" @click="changePhoneNumberMember">변경</p>
+    <p v-else @click="changePhoneNumberManager">변경</p>
   </div>
 </template>
 <script>
@@ -38,6 +39,8 @@ import store from '@/store/index'
 export default defineComponent({
   name: 'parkPhoneModal',
   setup() {
+    const role = computed(() => store.getters['auth/role']).value
+
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
@@ -157,10 +160,20 @@ export default defineComponent({
       confirmVerification()
     }
 
-    // 인증되었을 때 회원의 휴대폰 번호 변경
-    function changePhoneNumber() {
+    // 회원 휴대폰 번호 변경
+    function changePhoneNumberMember() {
       if (validate.value.phoneVerification) {
-        console.log('changePhoneNumber 실행')
+        console.log('changePhoneNumberMember 실행')
+        // 인증이 완료된 휴대폰 번호를 회원정보 수정 페이지의 input창의 값으로 바꿔준다.
+        // 변경은 수정페이지에서 한번에 들어가야함.
+        this.$emit('verify-success', phoneNum.value)
+        this.$emit('close')
+      }
+    }
+    // 관리자 휴대폰 번호 변경
+    function changePhoneNumberManager() {
+      if (validate.value.phoneVerification) {
+        console.log('changePhoneNumberManager 실행')
         // 인증이 완료된 휴대폰 번호를 회원정보 수정 페이지의 input창의 값으로 바꿔준다.
         // 변경은 수정페이지에서 한번에 들어가야함.
         this.$emit('verify-success', phoneNum.value)
@@ -175,6 +188,7 @@ export default defineComponent({
       }
     })
     return {
+      role,
       phoneNum,
       verification,
       phoneMsg,
@@ -187,7 +201,8 @@ export default defineComponent({
       requestVerification,
       confirmVerification,
       onConfirmClick,
-      changePhoneNumber
+      changePhoneNumberMember,
+      changePhoneNumberManager
     }
   }
 })
