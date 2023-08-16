@@ -25,7 +25,7 @@
           </div>
           <div class="report-info info-box">
             <select
-              v-if="role == 'PUBLIC_MANAGER'"
+              v-if="role == 'APART_MANAGER'"
               name="report-status"
               v-model="selectedStatus"
               class="custom-select"
@@ -64,7 +64,7 @@
     <!-- 수정, 삭제 버튼 -->
     <div class="report-footer">
       <!-- 관리자 -->
-      <div v-if="role == 'PUBLIC_MANAGER'" class="manager-btn">
+      <div v-if="role == 'APART_MANAGER'" class="manager-btn">
         <button
           class="manager-btn-modify"
           @click="statusUpdate(reportInfo?.id)"
@@ -74,7 +74,7 @@
         <button class="btn-delete" @click="deleteReportManager">삭제</button>
       </div>
       <!-- 작성자 -->
-      <div v-else>
+      <div v-if="role == 'APART_MEMBER'">
         <button class="btn-modify" @click="goToUpdate(reportInfo?.id)">
           수정
         </button>
@@ -108,15 +108,15 @@ export default defineComponent({
     // 신고접수 글 처리상태 리스트
     const statusList = [
       {
-        text: 'BEFORE',
+        text: '처리전',
         value: '0'
       },
       {
-        text: 'PROCESSING',
+        text: '처리중',
         value: '1'
       },
       {
-        text: 'COMPLETE',
+        text: '처리완료',
         value: '2'
       }
     ]
@@ -187,7 +187,9 @@ export default defineComponent({
       const boardStatus = await statusNumToStr()
       console.log('처리상태 업데이트: ', boardStatus)
       apiClient
-        .get(`/reports/publicManager/updateStatus/${report_id}/${boardStatus}`)
+        .get(
+          `/reports/apartManager/updateStatus/apartBoard/${report_id}/${boardStatus}`
+        )
         .then((res) => {
           console.log(res)
           alert('처리상태가 변경되었습니다.')
@@ -222,17 +224,19 @@ export default defineComponent({
     //     })
     // }
 
-    // // 글 삭제 (관리자)
-    // function deleteReportManager() {
-    //   apiClient
-    //     .get(`/reports/publicManager/deleteBoard/${report_id}`)
-    //     .then((res) => {
-    //       console.log(res)
-    //       alert('글이 삭제되었습니다.')
-    //       router.push({ path: '/park/report' })
-    //     })
-    //     .catch((err) => console.log(err))
-    // }
+    // 처리상태 수정 (관리자)
+
+    // 글 삭제 (관리자)
+    function deleteReportManager() {
+      apiClient
+        .get(`/reports/apart/deleteBoard/${report_id}`)
+        .then((res) => {
+          console.log(res)
+          alert('글이 삭제되었습니다.')
+          router.push({ path: '/park/report' })
+        })
+        .catch((err) => console.log(err))
+    }
 
     onMounted(() => {
       getReportData()
@@ -252,7 +256,8 @@ export default defineComponent({
       statusUpdate,
       statusNumToStr,
       statusEngToKr,
-      formattedTime
+      formattedTime,
+      deleteReportManager
     }
   }
 })
@@ -334,7 +339,7 @@ export default defineComponent({
 
 .report-footer {
   display: flex;
-  stify-content: flex-end;
+  justify-content: flex-end;
 }
 
 .btn-modify {
