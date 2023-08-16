@@ -17,7 +17,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 .title {
   color: var(--typography-1, #1c2a53);
   text-align: center;

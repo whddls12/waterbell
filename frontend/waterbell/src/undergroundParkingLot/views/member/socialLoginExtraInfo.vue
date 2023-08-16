@@ -200,9 +200,7 @@ export default defineComponent({
       const phoneNumber = phoneNum.value
       try {
         api
-          .post('/verification/code', null, {
-            params: { phoneNumber: phoneNumber }
-          })
+          .post('/verification/code', { phoneNumber: phoneNumber })
           .then((res) => {
             if (res.data.code == 200) {
               //요청 보냈음을 확인하는 변수
