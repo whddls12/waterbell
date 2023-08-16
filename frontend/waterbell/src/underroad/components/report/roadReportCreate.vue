@@ -8,7 +8,13 @@
       <div class="report-box name">
         <div class="report-subtitle"><h5 style="margin: 0px">이름</h5></div>
         <div class="report-inputbox">
-          <input type="text" v-model="report.name" />
+          <input
+            v-if="role === 'APART_MEMBER'"
+            disabled
+            type="text"
+            v-model="report.name"
+          />
+          <input v-else type="text" v-model="report.name" />
         </div>
       </div>
       <div class="report-box phoneNumber">
@@ -111,6 +117,9 @@ export default defineComponent({
   name: 'roadReportCreateVue',
   setup() {
     const facility_id = computed(() => store.getters['auth/facilityId']).value
+    console.log('시설 아이디: ', facility_id)
+    const role = computed(() => store.getters['auth/role']).value
+    console.log('유저 권한: ', role)
 
     const nowUnderroad = computed(() => store.getters.nowUnderroad).value
 
@@ -186,7 +195,7 @@ export default defineComponent({
     async function writeReport() {
       // FormData에 양식에 채워진 값들 넣기
       formData.append('name', report.value.name)
-      formData.append('phone', String(phone))
+      formData.append('phone', String(report.value.phone))
       formData.append('boardPassword', report.value.boardPassword)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
@@ -196,22 +205,26 @@ export default defineComponent({
         console.log(values[0] + ', ' + values[1])
       }
 
-      // 신고접수 등록하는 요청보내기
-      await api
-        .post(`/reports/write/${facility_id}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        })
-        .then((response) => {
-          console.log(response)
-          const newReport_id = response.data.id
-          router.push(`/road/report/${newReport_id}/detail`)
-          //상세보기로 이동하는 코드 넣어야 함
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+      if (validate.value.confirmPass) {
+        // 신고접수 등록하는 요청보내기
+        await api
+          .post(`/reports/write/${facility_id}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          })
+          .then((response) => {
+            console.log(response)
+            const newReport_id = response.data.id
+            router.push(`/road/report/${newReport_id}/detail`)
+            //상세보기로 이동하는 코드 넣어야 함
+          })
+          .catch(function (error) {
+            console.log(error)
+          })
+      } else {
+        alert('비밀번호가 일치하지 않습니다.')
+      }
     }
 
     // 회원의 경우 화면에 띄울 핸드폰 번호나 이름을 가져오는 함수
@@ -243,6 +256,7 @@ export default defineComponent({
     })
 
     return {
+      role,
       validate,
       confirmPassMsg,
       phone,
