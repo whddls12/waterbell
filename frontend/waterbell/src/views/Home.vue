@@ -12,18 +12,63 @@
       </div>
       <!-- 서비스 선택 메뉴 -->
       <div class="service-select">
-        <!-- <router-link to="/park/dash"> -->
-        <div class="select-box park" @click="goToOther1">지하주차장</div>
-        <!-- </router-link> -->
-        <!-- <router-link to="/road/dash"> -->
-        <div class="select-box road" @click="goToOther2">지하차도</div>
-        <!-- </router-link> -->
+        <div
+          class="select-box park"
+          @click="goToOther1"
+          :class="{ 'orange-border': role == 'APART_MANAGER' }"
+        >
+          <div class="select-box-text">
+            <div class="service-title">지하주차장</div>
+            <div class="service-feature">
+              지하주차장 침수 수위 측정 및 자동 알림
+            </div>
+            <div class="service-feature">
+              지하주차장 침수 대응 차수판 원격 제어
+            </div>
+          </div>
+          <div class="select-box-image-park-one">
+            <img
+              class="service-image-park-one"
+              src="@/assets/images/mainpage/지하주차장1.jpg"
+              width="400px"
+              height="300px"
+              alt="지하주차장1"
+            />
+          </div>
+          <div class="select-box-image-park-two">
+            <img
+              class="service-image-park-two"
+              src="@/assets/images/mainpage/지하주차장2.jpg"
+              width="400px"
+              height="300px"
+              alt="지하주차장2"
+            />
+          </div>
+        </div>
+        <div
+          class="select-box road"
+          @click="goToOther2"
+          :class="{ 'orange-border': role == 'PUBLIC_MANAGER' }"
+        >
+          <div class="select-box-text">
+            <div class="service-title">지하차도</div>
+            <div class="service-feature">
+              지하차도 침수 수위 측정 및 자동 알림
+            </div>
+            <div class="service-feature">지하차도 침수 시 진입 금지 안내</div>
+          </div>
+          <div class="select-box-image-road">
+            <img
+              class="service-image-road"
+              src="@/assets/images/mainpage/지하차도1.png"
+              width="400px"
+              height="300px"
+              alt="지하차도1"
+            />
+          </div>
+        </div>
       </div>
-      <!-- 관리자 로그인 버튼 -->
-      <!-- <div class="manager-login">
-        <button class="login-btn" @click="moveToLogin">관리자 로그인</button>
-      </div> -->
-      <button class="button-managerLogin" @click="moveToLogin">
+      <button class="button-managerLogin" @click="moveToLogin" v-show="!role">
         <img class="icon" src="@/assets/images/icon.png" />
         <div class="labelWrap">
           <div class="label">관리자 로그인</div>
@@ -32,11 +77,11 @@
     </div>
 
     <!-- 서비스 화면 -->
-    <div v-else>
+    <div class="service" v-else>
       <ParkHeader v-if="isPark" />
       <RoadHeader v-else />
       <div class="router-view-container">
-        <router-view></router-view>
+        <router-view class="router-view"></router-view>
       </div>
       <footer></footer>
     </div>
@@ -75,6 +120,7 @@ export default defineComponent({
       store.commit('setIspark', true)
       if (shouldNavigateToDashboard) {
         await setParkFacilityId()
+        // window.location.href = '/park/dash'
         router.push('/park/dash')
       }
     }
@@ -83,7 +129,14 @@ export default defineComponent({
     //facilityId 설정하기
 
     function moveToMemberLogin() {
-      if (!isLogin.value) {
+      if (role.value == 'PUBLIC_MANAGER') {
+        alert('지하차도 관리인은 로그아웃 후 다시 시도해주세요.')
+        // router.push('/road/dash')
+        // window.location.href = '/road/dash'
+        return false
+      } else if (
+        !(role.value == 'APART_MEMBER' || role.value == 'APART_MANAGER')
+      ) {
         router.push('/park/login')
         return false
       } else {
@@ -122,6 +175,7 @@ export default defineComponent({
       store.commit('setIsMainpage', false)
       store.commit('setIspark', false)
       router.push('/road/dash')
+      // window.location.href = '/road/dash'
     }
 
     async function setRoadFacilityId() {
@@ -149,13 +203,18 @@ export default defineComponent({
       moveToLogin,
       moveToMemberLogin,
       setParkFacilityId,
-      setRoadFacilityId
+      setRoadFacilityId,
+      role
     }
   }
 })
 </script>
 
 <style>
+.service {
+  width: 100%;
+}
+
 .home {
   width: 100%;
 }
@@ -183,15 +242,61 @@ export default defineComponent({
 
 /* 지하주차장, 지하차도 박스 */
 .select-box {
-  border: 1px solid #939393;
+  position: relative;
   border-radius: 8px;
   background-color: white;
+  box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.25);
 
   width: 500px;
-  height: 300px;
+  height: 350px;
   margin: 20px;
+  overflow: hidden;
 }
 
+.select-box:hover {
+  cursor: pointer;
+}
+
+.select-box-text {
+  padding: 20px;
+  text-align: start;
+}
+
+.service-title {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.service-feature {
+  padding-left: 5px;
+}
+
+.select-box-image-park-one {
+  position: absolute;
+  left: -120px;
+  top: 120px;
+}
+
+.select-box-image-park-two {
+  position: absolute;
+  left: 280px;
+}
+
+.select-box-image-road {
+  position: absolute;
+  left: 130px;
+  top: 120px;
+}
+
+.service-image-park-one {
+  transform: rotate(-0.3deg);
+  opacity: 0.5;
+}
+
+.service-image-park-two {
+  transform: rotate(-1.358deg);
+  opacity: 0.5;
+}
 /* 메뉴 화면 (대시보드, 신고접수, 제어, 시스템로그, 관리) */
 .header {
   display: flex;
@@ -200,21 +305,19 @@ export default defineComponent({
 
 .router-view-container {
   box-sizing: border-box; /* 콘텐츠 영역이 아닌 테두리 기준으로 박스 크기 설정 */
-  padding: 10px 20px;
   display: flex;
   justify-content: center;
-  overflow: auto; /* prevent components from going out of bounds */
   background-color: white;
-  margin-left: 200px;
-  margin-right: 200px;
-  margin-top: 50px;
+  margin-left: 208px;
+  margin-right: 210px;
+  margin-top: 20px;
+  margin-bottom: 80px;
 
-  display: flex;
-  width: 1000px;
-  padding: 80px 0px;
+  width: 1100px;
+  padding: 10px 0px;
   flex-direction: column;
   align-items: center;
-  gap: 139px;
+  gap: 13px;
   border-radius: 10px;
   background: var(--unnamed, #fff);
 }
@@ -259,5 +362,19 @@ router-view {
   font-weight: 600;
   line-height: 32px;
   word-wrap: break-word;
+}
+
+.router-view {
+  margin-left: 50px;
+  margin-right: 50px;
+}
+
+.page-start {
+  height: 900px;
+}
+
+.orange-border {
+  /* border: 10px solid #ffa132; */
+  box-shadow: 0px 0px 10px 0px #ffa132;
 }
 </style>

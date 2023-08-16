@@ -14,7 +14,9 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
-        <p id="hello-msg">김동현님 어서오세요!</p>
+        <p id="hello-msg" v-if="role === 'APART_MANAGER'">
+          관리자님 어서오세요!
+        </p>
         <button @click="goToAlarm">알림함</button>
         <button @click="goToMypage">마이페이지</button>
         <button @click="Logout">로그아웃</button>
@@ -28,35 +30,29 @@
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
       <div class="each-menu">
-        <router-link to="/park/dash">대시보드</router-link>
+        <router-link to="/park/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/park/report">신고접수</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/park/controll">제어</router-link>
+      <div class="each-menu" v-if="isManager">
+        <router-link to="/park/control">기기제어</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/park/systemlog">시스템 로그</router-link>
+      <div class="each-menu" v-if="!isManager"></div>
+      <div class="each-menu" v-if="isManager">
+        <router-link to="/park/systemlog/measureLog">센서내역</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/park/manage">관리</router-link>
+      <div class="each-menu" v-if="!isManager"></div>
+      <div class="each-menu" v-if="isManager">
+        <router-link to="/park/manage/custom">관리</router-link>
       </div>
+      <div class="each-menu" v-if="!isManager"></div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, watch } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/index'
 import { mapGetters } from 'vuex'
@@ -79,7 +75,7 @@ export default defineComponent({
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
     const role = computed(() => store.getters['auth/role'])
-    const isManager = ref(false)
+    const isManager = ref(role.value === 'APART_MANAGER')
 
     function goToMain() {
       store.commit('setIsMainpage', true)
@@ -91,7 +87,7 @@ export default defineComponent({
     }
 
     function goToMypage() {
-      router.push({ path: '/park/mypage' })
+      router.push({ path: '/mypage' })
     }
 
     async function Logout() {
@@ -110,6 +106,7 @@ export default defineComponent({
     const checkRole = async () => {
       if (role.value == 'APART_MANAGER') isManager.value = true
       else isManager.value = false
+      await nextTick()
     }
 
     onMounted(async () => {
@@ -139,6 +136,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.header-container {
+  width: 100%;
+}
+
 .header-top {
   display: flex;
   justify-content: space-between;
@@ -186,5 +187,9 @@ export default defineComponent({
 a {
   color: white;
   text-decoration: none;
+}
+
+#hello-msg {
+  margin-right: 10px;
 }
 </style>

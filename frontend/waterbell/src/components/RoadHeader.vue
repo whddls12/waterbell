@@ -14,63 +14,56 @@
       <!-- 각종 버튼들 (로그인 로그아웃 회원가입 알림함 마이페이지) -->
       <!-- 로그인 상태-->
       <div class="header-btn" v-if="accessToken">
-        <span id="hello-msg">김동현님 어서오세요!</span>
+        <p id="hello-msg" v-if="role === 'PUBLIC_MANAGER'">
+          관리자님 어서오세요!
+        </p>
         <button @click="goToAlarm">알림함</button>
-        <button>마이페이지</button>
+        <button @click="goToMypage">마이페이지</button>
         <button @click="Logout">로그아웃</button>
       </div>
       <!-- 지하차도는 로그인 버튼 불필요 -->
 
-      <div class="header-btn" v-else>
+      <!-- <div class="header-btn" v-else>
         <button @click="goToLogin">로그인</button>
         <button @click="goToJoin">회원가입</button>
-      </div>
+      </div> -->
     </div>
     <!-- 메뉴 내비게이션바 -->
     <div class="menu-navbar">
       <div class="each-menu">
-        <router-link to="/road/dash">대시보드</router-link>
+        <router-link to="/road/dash">현황판</router-link>
       </div>
       <div class="each-menu">
         <router-link to="/road/report">신고접수</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/road/controll">제어</router-link>
+      <div class="each-menu" v-if="isManager">
+        <router-link to="/road/control">기기제어</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
-        <router-link to="/road/systemlog">시스템 로그</router-link>
+      <div class="each-menu" v-if="!isManager"></div>
+      <div class="each-menu" v-if="isManager">
+        <router-link to="/road/systemlog/measureLog">센서내역</router-link>
       </div>
-      <div
-        class="each-menu"
-        v-bind:style="{ visibility: isManager ? 'visible' : 'hidden' }"
-      >
+      <div class="each-menu" v-if="!isManager"></div>
+      <div class="each-menu" v-if="isManager">
         <router-link to="/road/manage">관리</router-link>
       </div>
+      <div class="each-menu" v-if="!isManager"></div>
     </div>
     <!-- 지역 선택 바 -->
     <div class="select-region">
-      <div class="select-region-box">시도</div>
-      <div class="select-region-box">시구군</div>
-      <div>
-        <button class="go-selected-btn">이동</button>
-      </div>
+      <select-region></select-region>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, watch } from 'vue'
+import { computed, defineComponent, ref, onMounted, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import store from '@/store/index'
 // import { useStore } from 'vuex'
 import { mapGetters } from 'vuex'
 import { logout } from '@/types/authFunctionModule'
+import SelectRegion from '../components/selectRegion.vue'
 // import { getUserInfo } from '@/types/getUserInfo'
 
 // import apiModule from '@/types/apiClient'
@@ -83,7 +76,7 @@ import { logout } from '@/types/authFunctionModule'
 
 export default defineComponent({
   name: 'RoadHeader',
-  components: {},
+  components: { SelectRegion },
   computed: {
     ...mapGetters('auth', [
       'loginUser',
@@ -97,7 +90,7 @@ export default defineComponent({
     const isMainPage = computed(() => store.state.isMainpage)
     const router = useRouter()
     const role = computed(() => store.getters['auth/role'])
-    const isManager = ref(false)
+    const isManager = ref(role.value === 'PUBLIC_MANAGER')
 
     // const apiClient = apiModule.apiClient
 
@@ -118,9 +111,15 @@ export default defineComponent({
       router.push({ path: '/park/join' })
     }
 
+    function goToMypage() {
+      router.push({ path: '/mypage' })
+    }
+
     async function Logout() {
       await logout() // 로그아웃 액션을 호출 (액션 이름은 프로젝트에 맞게 수정하세요)
-      router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
+      router.push({ path: '/' })
+      // window.location.href = '/'
+      // router.push({ path: '/road/dash' }) // 로그아웃 후 리디렉션될 경로
     }
 
     // const loginUser = () => {
@@ -136,6 +135,7 @@ export default defineComponent({
     const checkRole = async () => {
       if (role.value == 'PUBLIC_MANAGER') isManager.value = true
       else isManager.value = false
+      await nextTick()
     }
 
     onMounted(async () => {
@@ -157,6 +157,7 @@ export default defineComponent({
       goToLogin,
       Logout,
       goToJoin,
+      goToMypage,
       isManager
     }
   }
@@ -225,23 +226,7 @@ a {
 }
 
 /* 지역 선택 박스 (시도, 시구군) */
-.select-region-box {
-  border: 1px solid #939393;
-  border-radius: 8px;
-  background-color: white;
-
-  width: 100px;
-  margin: 10px 10px;
-}
-/* 이동 버튼 */
-.go-selected-btn {
-  display: block;
-  border: 1px solid #10316b;
-  border-radius: 8px;
-  color: white;
-  background-color: #10316b;
-
-  width: 50px;
-  margin: 10px 10px;
+#hello-msg {
+  margin-right: 10px;
 }
 </style>

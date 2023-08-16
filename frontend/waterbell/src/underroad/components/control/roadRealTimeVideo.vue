@@ -1,7 +1,21 @@
 <template lang="">
   <div class="cctv">
-    <div class="entrance">지하차도 입구<img id="cctv1" /></div>
-    <div class="internal">지하차도 내부<img id="cctv2" /></div>
+    <div>
+      <p class="cctvLabel">지하차도 입구</p>
+      <div class="cctvBox">
+        <div>
+          <img id="cctv1" />
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="cctvLabel">지하차도 내부</p>
+      <div class="cctvBox">
+        <div>
+          <img id="cctv2" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -28,23 +42,46 @@ export default defineComponent({
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 700px;
-  height: 341.163px;
+  gap: 10px;
+  /* width: 700px; */
+  height: 320px;
 }
 
-.entrance {
-  width: 300px;
-  height: 280px;
+.cctvBox {
+  width: 480px;
+  height: 320px;
   background: url(<path-to-image>),
     lightgray -9.84px 0px / 120.982% 100% no-repeat;
-  margin-left: 50px;
+  margin-left: 0;
+  position: relative; /* 추가된 코드 */
+  overflow: hidden;
+}
+.cctvBox > div {
+  position: absolute; /* 내부 div의 절대 위치 설정 */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.cctvBox > div > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지 비율을 유지하면서 꽉 차게 표시 */
+  position: absolute; /*이미지를 div의 상단과 좌측 모서리에 위치시키기 위한 코드 */
+  top: 0;
+  left: 0;
+  z-index: 1; /* 텍스트를 이미지 위에 표시하기 위해 z-index 추가 */
 }
 
-.internal {
-  width: 300px;
-  height: 280px;
-  background: url(<path-to-image>),
-    lightgray -9.84px 0px / 120.982% 100% no-repeat;
-  margin-left: 50px;
+.cctv > div {
+  position: relative;
+}
+.cctvLabel {
+  /*position: absolute;
+  /* top: 10px; 위치를 조정하여 텍스트 위치 변경 가능 */
+  justify-self: center;
+  align-self: center;
+
+  z-index: 2; /* 텍스트를 이미지 위에 표시하기 위해 z-index 추가 */
 }
 </style>

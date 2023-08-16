@@ -6,7 +6,7 @@
     </div>
     <div class="myPage-content">
       <!-- 이름 -->
-      <div class="myPage-content-box name">
+      <div v-if="role == 'APART_MEMBER'" class="myPage-content-box name">
         <label for="name">이름</label>
         <input
           type="text"
@@ -21,7 +21,7 @@
         <input type="text" id="loginId" disabled :value="memberInfo?.loginId" />
       </div>
       <!-- 비밀번호 -->
-      <div class="myPage-content-box phone">
+      <div v-if="role == 'APART_MEMBER'" class="myPage-content-box phone">
         <label for="password">현재 비밀번호</label>
         <div class="inputbtn">
           <input type="password" id="password" disabled value="********" />
@@ -43,10 +43,22 @@
         />
       </div>
       <!-- 아파트 인증코드 -->
-      <div class="myPage-content-box apartCode">
+      <div
+        v-if="role == 'APART_MEMBER' || role == 'APART_MANAGER'"
+        class="myPage-content-box apartCode"
+      >
         <label for="apartCode">아파트 인증코드</label>
         <div class="inputbtn">
           <input
+            v-if="role == 'APART_MANAGER'"
+            type="text"
+            id="apartCode"
+            disabled
+            :placeholder="memberInfo?.apartCode"
+            v-model="newApartCode"
+          />
+          <input
+            v-else
             type="text"
             id="apartCode"
             :placeholder="memberInfo?.apartCode"
@@ -58,7 +70,10 @@
         </div>
       </div>
       <!-- 주소 -->
-      <div class="myPage-content-box address">
+      <div
+        v-if="role == 'APART_MEMBER' || role == 'APART_MANAGER'"
+        class="myPage-content-box address"
+      >
         <label for="address">주소</label>
         <input
           type="text"
@@ -68,7 +83,10 @@
         />
       </div>
       <!-- 호수 -->
-      <div class="myPage-content-box addressNumber">
+      <div
+        v-if="role == 'APART_MEMBER'"
+        class="myPage-content-box addressNumber"
+      >
         <label for="addressNumber">호수</label>
         <div class="addressNumber-box">
           <input
@@ -90,7 +108,7 @@
 </template>
 
 <script>
-import { ref, onMounted, defineComponent } from 'vue'
+import { ref, onMounted, computed, defineComponent } from 'vue'
 import router from '@/router'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -104,6 +122,8 @@ export default defineComponent({
     parkPhoneModal
   },
   setup() {
+    const role = computed(() => store.getters['auth/role']).value
+
     const api = axios.api
     const apiClient = axios.apiClient(store)
     const memberInfo = ref(null)
@@ -126,6 +146,7 @@ export default defineComponent({
           console.log(memberInfo.value)
           // 수정 시 넘겨줄 데이터에 기존값 저장
           newName.value = res.data.memberInfo.name
+          console.log(newName.value)
           newPhoneNum.value = res.data.memberInfo.phone
           newApartCode.value = res.data.memberInfo.apartCode
           newApartAddressNumber.value = res.data.memberInfo.addressNumber
@@ -170,23 +191,39 @@ export default defineComponent({
     }
 
     function goBack() {
-      router.push({ path: '/park/mypage' })
+      router.push({ path: '/mypage' })
     }
 
     function saveChange() {
-      apiClient
-        .post(`/member/apartMember/modify`, {
-          id: memberInfo.value.id,
-          phone: newPhoneNum.value,
-          name: newName.value,
-          apartCode: newApartCode.value,
-          addressNumber: newApartAddressNumber.value
-        })
-        .then((res) => {
-          console.log(res)
-          router.push({ path: '/park/mypage' })
-        })
-        .catch((err) => console.log(err))
+      if (role == 'APART_MEMBER') {
+        apiClient
+          .post(`/member/apartMember/modify`, {
+            id: memberInfo.value.id,
+            phone: newPhoneNum.value,
+            name: newName.value,
+            apartCode: newApartCode.value,
+            addressNumber: newApartAddressNumber.value
+          })
+          .then((res) => {
+            console.log(res)
+            router.push({ path: '/mypage' })
+          })
+          .catch((err) => console.log(err))
+      } else if (role == 'APART_MANAGER' || role == 'PUBLIC_MANAGER') {
+        apiClient
+          .post(`/member/manager/modify`, {
+            id: memberInfo.value.id,
+            phone: newPhoneNum.value,
+            name: newName.value,
+            apartCode: newApartCode.value,
+            addressNumber: newApartAddressNumber.value
+          })
+          .then((res) => {
+            console.log(res)
+            router.push({ path: '/mypage' })
+          })
+          .catch((err) => console.log(err))
+      }
     }
 
     // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
@@ -194,7 +231,10 @@ export default defineComponent({
       getMemberData()
     })
     return {
+      role,
       memberInfo,
+      newName,
+      newApartAddressNumber,
       newPhoneNum,
       newApartCode,
       popState_pw,

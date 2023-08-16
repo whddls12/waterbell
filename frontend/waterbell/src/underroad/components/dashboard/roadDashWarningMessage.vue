@@ -69,6 +69,7 @@ export default defineComponent({
   font-weight: 600;
   line-height: 10px; /* 184.615% */
   letter-spacing: 7px;
+  padding-top: 10px;
 }
 .blue-text {
   color: #114cb1;

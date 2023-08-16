@@ -1,51 +1,58 @@
 <template>
-  <div class="container weather-dash-box">
-    <!-- 날씨 -->
-    <div class="dash-box">
-      <div class="dash-box-title">
-        <i class="fas fa-cloud dash-box-icon"></i>
-        <h3>날씨</h3>
+  <div class="container">
+    <div class="weather-dash-box">
+      <!-- 날씨 -->
+      <div class="dash-box">
+        <div class="dash-box-title">
+          <i class="fas fa-cloud fa-lg dash-box-icon"></i>
+          <h4>날씨</h4>
+        </div>
+        <div class="dash-box-content">
+          <img
+            v-if="SKY && PTY"
+            :src="getWeatherImageUrl()"
+            alt="날씨 이미지"
+            width="80"
+            height="80"
+          />
+          <p v-else>관측되지 않는 지역입니다.</p>
+        </div>
       </div>
-      <div class="dash-box-content">
-        <img
-          v-if="SKY && PTY"
-          :src="getWeatherImageUrl()"
-          alt="날씨 이미지"
-          width="80"
-          height="80"
-        />
-        <p v-else>관측되지 않는 지역입니다.</p>
+      <!-- 기온 -->
+      <div class="dash-box">
+        <div class="dash-box-title">
+          <i class="fas fa-thermometer-three-quarters fa-lg"></i>
+          <h4>기온</h4>
+        </div>
+        <div class="dash-box-content">{{ current_temp }} ℃</div>
       </div>
-    </div>
-    <!-- 기온 -->
-    <div class="dash-box">
-      <div class="dash-box-title">
-        <i class="fas fa-thermometer-three-quarters"></i>
-        <h3>기온</h3>
-      </div>
-      <div class="dash-box-content">
-        {{ current_temp }}
-      </div>
-    </div>
-    <!-- 습도 -->
-    <div class="dash-box">
-      <div class="dash-box-title">
-        <h3>습도</h3>
-      </div>
-      <div class="dash-box-content">
-        {{ current_humid }}
+      <!-- 습도 -->
+      <div class="dash-box">
+        <div class="dash-box-title">
+          <i class="fas fa-tint fa-lg"></i>
+          <h4>습도</h4>
+        </div>
+        <div class="dash-box-content">{{ current_humid }} ％</div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
+declare global {
+  interface Window {
+    kakao: any
+  }
+}
 import { ref, onMounted, computed, defineComponent } from 'vue'
 import store from '@/store/index'
-import http from '@/types/http'
+import axios from '@/types/apiClient'
 
 export default defineComponent({
   name: 'parkDashWeather',
   setup() {
+    const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -56,9 +63,10 @@ export default defineComponent({
     const day = now.getDate().toString().padStart(2, '0')
     const hour = now.getHours().toString().padStart(2, '0') // 24시간 형식
     const minute = now.getMinutes().toString().padStart(2, '0')
-    const lon = store.state.location['lon']
-    const lat = store.state.location['lat']
-    console.log(now)
+    // const address = ref('')
+    let lon = store.state.location['lon']
+    let lat = store.state.location['lat']
+    // console.log(now)
 
     // 날씨 정보 데이터
     const status_sky = ref(null) // 하늘 상태
@@ -68,9 +76,82 @@ export default defineComponent({
     const SKY = ref<string | null>(null) // 하늘 상태
     const PTY = ref<string | null>(null) // 기상 상태
 
+    //카카오맵 script 추가하기 (geocorder 쓰기 위해)
+    //지도 script 추가하기1
+    const loadScript = async () => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src =
+          '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=374cff0d8903c1ed2bf1e9533bb0feab&libraries=clusterer,drawing,services'
+        script.addEventListener('load', async () => {
+          await window.kakao.maps.load(getWeatherData)
+        })
+        script.onload = resolve // 스크립트 로드 완료시 resolve
+        script.onerror = reject // 에러 발생시 reject
+
+        document.head.appendChild(script)
+      })
+    }
+
+    //현재 facilityId의 아파트 주소 받아오기
+    // const getAddress = (): Promise<string> => {
+    //   return new Promise((resolve, reject) => {
+    //     apiClient
+    //       .get(`/facilities/${facility_id}/apart`)
+    //       .then((res) => {
+    //         if (!res.data.apart || !res.data.apart.address) {
+    //           reject('올바르지 않은 주소 데이터입니다.')
+    //           return
+    //         }
+    //         let result = res.data.apart.address
+    //         // console.log(result)
+    //         resolve(result)
+    //       })
+    //       .catch((error) => {
+    //         reject(error)
+    //       })
+    //   })
+    // }
+
+    async function getAddress(): Promise<any> {
+      try {
+        const res = await apiClient.get(`/facilities/${facility_id}/apart`)
+        if (!res.data.apart || !res.data.apart.address) {
+          throw new Error('올바르지 않은 주소 데이터입니다.')
+        }
+        return res.data.apart.address
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    async function getCoordinate() {
+      try {
+        const address = await getAddress() // 1. getAddress 기능
+        const geocoder = new window.kakao.maps.services.Geocoder()
+
+        return new Promise<void>((resolve, reject) => {
+          geocoder.addressSearch(address, (result: any, status: any) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              lon = result[0].x
+              lat = result[0].y
+              console.log('주소 검색: ', lon, lat)
+              resolve()
+            } else {
+              reject('주소 검색에 실패했습니다.')
+            }
+          })
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    }
     async function getWeatherData() {
       try {
-        const response = await http.get(`/dash/weather`, {
+        // console.log(lon)
+        // console.log(lat)
+        const response = await api.get(`/dash/weather`, {
           params: {
             year: year,
             month: month,
@@ -81,11 +162,11 @@ export default defineComponent({
             lat: lat //여기 변경됨
           }
         })
-        console.log(response)
+        // console.log(response)
         status_sky.value = response.data.SKY.fcstValue
         type_rainfall.value = response.data.PTY.fcstValue
-        console.log(status_sky.value)
-        console.log(type_rainfall.value)
+        // console.log(status_sky.value)
+        // console.log(type_rainfall.value)
       } catch (error) {
         console.log('기상상태 데이터 가져오기 실패:', error)
       }
@@ -102,8 +183,10 @@ export default defineComponent({
       } else if (status_sky.value === '4') {
         // 흐림
         SKY.value = 'blur'
+      } else {
+        SKY.value = 'sunny'
       }
-      // SKY.value = 'cloudy'
+
       // 이미지 지정
       if (type_rainfall.value === '0') {
         PTY.value = 'none'
@@ -113,8 +196,9 @@ export default defineComponent({
         PTY.value = 'rainsnow'
       } else if (type_rainfall.value === '3' || type_rainfall.value === '7') {
         PTY.value = 'snow'
+      } else {
+        PTY.value = 'none'
       }
-      // PTY.value = 'rain'
     }
 
     function getWeatherImageUrl() {
@@ -131,7 +215,9 @@ export default defineComponent({
 
     async function getTempAndHumidData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors`)
+        const response = await api.get(
+          `/dash/facilities/${facility_id}/sensors`
+        )
 
         current_temp.value = response.data.Temperature
         current_humid.value = response.data.Humidity
@@ -140,9 +226,17 @@ export default defineComponent({
       }
     }
     onMounted(async () => {
+      // await getCoordinate() // 주소를 통한 좌표 검색 완료까지 기다림
+      // await loadScript() // 스크립트 로딩 완료까지 기다림
+      // await getWeatherData() // 날씨 데이터 가져오기 완료까지 기다림
+      // await getTempAndHumidData() // 온도 및 습도 데이터 가져오기 완료까지 기다림
+      // makeWeatherImage() // 날씨 이미지 생성
+      // // makeWeatherImage()
+      await loadScript() // 먼저 Kakao Map 스크립트를 로드합니다.
+      await getCoordinate() // 2. address 값을 addressSearch 함수로 좌표값으로 변환
+      await getWeatherData() // 3. 좌표값을 가지고 getWeatherData 실행
+      makeWeatherImage() // 4. 결과를 바탕으로 makeWeatherImage 실행
       await getTempAndHumidData()
-      await getWeatherData()
-      makeWeatherImage()
     })
 
     return {
@@ -159,15 +253,23 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 /* 날씨 기온 습도를 합치기 위함 */
 .weather-dash-box {
   display: flex;
-  flex-direction: row;
   gap: 20px;
 }
 
 .weather-dash-box > div {
-  width: 100px;
+  width: 155px;
+}
+
+.dash-box-content {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 30px;
 }
 </style>

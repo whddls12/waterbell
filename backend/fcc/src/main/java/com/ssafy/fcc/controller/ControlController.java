@@ -32,10 +32,11 @@ public class ControlController {
                 case "ON":
                     // 차수판 동작 명령, cotrolLog 저장, 시설 상태 WORKING
                     topic = String.format("Server/%d/%s", facilityId, sensorType);
-                    mqttPubSubService.publishMessage(topic, "WORKING");
+                    mqttPubSubService.publishMessage(topic, "ON");
                     systemService.insertControlLog(facilityId, "ON");
                     facilityService.updateStatus(facility, WaterStatus.WORKING);
-
+                    topic = String.format("Server/%d/STATUS",facilityId);
+                    mqttPubSubService.publishMessage(topic,"WORKING");
                     // 동작 알림
 
 
@@ -43,9 +44,11 @@ public class ControlController {
                 case "OFF":
                     // 차수판 해제 명령, cotrolLog 저장, 시설 상태 SECOND, 사이렌/LED 동작
                     topic = String.format("Server/%d/%s", facilityId, sensorType);
-                    mqttPubSubService.publishMessage(topic, "SECOND");
+                    mqttPubSubService.publishMessage(topic, "OFF");
                     systemService.insertControlLog(facilityId, "OFF");
                     facilityService.updateStatus(facility, WaterStatus.SECOND);
+                    topic = String.format("Server/%d/STATUS",facilityId);
+                    mqttPubSubService.publishMessage(topic,"SECOND");
 
                     // 해제 알림
 

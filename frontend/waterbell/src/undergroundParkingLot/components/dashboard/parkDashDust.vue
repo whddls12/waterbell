@@ -2,16 +2,21 @@
   <div class="container">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>미세먼지</h3>
-        <p>{{ current_dust }}</p>
+        <i class="fas fa-wind fa-lg"></i>
+        <h4>미세먼지</h4>
       </div>
-      <div class="dash-box-content">
+      <div class="dash-box-content dust-box">
         <canvas
           ref="dustChartCanvas"
           id="dustChartCanvas"
           width="400"
-          height="200"
+          height="180"
         ></canvas>
+        <div class="dust-value">
+          <div class="value-box">
+            {{ current_dust }}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -19,12 +24,14 @@
 <script lang="ts">
 import Chart from 'chart.js/auto'
 import { ref, onMounted, computed, defineComponent, nextTick } from 'vue'
+import axios from '@/types/apiClient'
 import store from '@/store/index'
-import http from '@/types/http'
 
 export default defineComponent({
   name: 'parkDashDust',
   setup() {
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
     // 시설 아이디 가져오기
     const facility_id = computed(() => store.getters['auth/facilityId']).value
 
@@ -34,9 +41,11 @@ export default defineComponent({
 
     async function getDustData() {
       try {
-        const response = await http.get(`/dash/facilities/10/sensors`) // 10 -> 시설 아이디로 교체해야함.
-        console.log(response.data)
+        const response = await api.get(
+          `/dash/facilities/${facility_id}/sensors`
+        )
         current_dust.value = response.data.Dust
+        console.log('미세먼지 수치: ', current_dust.value)
         if (current_dust.value) {
           if (current_dust.value >= 250) {
             left_dust.value = 0
@@ -111,6 +120,8 @@ export default defineComponent({
           ]
         },
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           // plugin이 있어야 적용될거같음.
           elements: {
             center: {
@@ -146,8 +157,30 @@ export default defineComponent({
       drawChart(chartRef.value)
     })
 
-    return { chartRef, getDustData }
+    return { chartRef, current_dust, getDustData }
   }
 })
 </script>
-<style></style>
+<style scoped>
+.dust-box {
+  position: relative;
+}
+
+.dust-value {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  left: 205px;
+  top: 135px;
+  font-size: 30px;
+}
+
+.value-box {
+  width: 80px;
+  height: 40px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

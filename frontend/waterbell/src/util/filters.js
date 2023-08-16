@@ -1,4 +1,4 @@
-"use strict";
+'use strict'
 // export function formatDate(value: string | number | Date): string {
 //   const date = new Date(value)
 //   const year = date.getFullYear()

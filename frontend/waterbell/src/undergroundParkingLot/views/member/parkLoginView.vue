@@ -1,35 +1,51 @@
-div
-<template lang="">
+<template>
   <div>
-    <h2>로그인</h2>
+    <h2 class="title">로그인</h2>
 
     <div>
       <div class="includeFinding">
         <div class="loginForm">
           <form @submit.prevent="login">
-            <div id="idAndPssBox">
-              <div id="idInput">
-                <label for="id">아이디</label>
-                <input
-                  type="text"
-                  id="id"
-                  :value="id"
-                  @input="(e) => (id = e.target.value)"
-                  class="in"
-                />
+            <div class="login-user-box">
+              <div id="idAndPssBox">
+                <div id="idInput" class="id-input">
+                  <label for="id" class="input-inner-label">아이디</label>
+                  <input
+                    class="input-inner-box"
+                    type="text"
+                    id="id"
+                    :value="id"
+                    @input="(e) => (id = e.target.value)"
+                  />
+                </div>
+                <div id="passInput" class="id-input">
+                  <label for="password" class="input-inner-label"
+                    >비밀번호</label
+                  >
+                  <input
+                    class="input-inner-box"
+                    type="password"
+                    id="password"
+                    @input="(e) => (password = e.target.value)"
+                    :value="password"
+                  />
+                </div>
               </div>
-              <div id="passInput">
-                <label for="password">비밀번호</label>
-                <input
-                  type="password"
-                  id="password"
-                  @input="(e) => (password = e.target.value)"
-                  :value="password"
-                  class="in"
-                />
+              <button type="submit" id="loginBtn" class="login-btn">
+                로그인</button
+              ><br />
+              <div class="search-box">
+                <div class="search-content">
+                  <router-link to="/park/find/id">아이디 찾기</router-link>
+                </div>
+                <div>|</div>
+                <div class="search-content">
+                  <router-link to="/park/find/password"
+                    >비밀번호 찾기</router-link
+                  >
+                </div>
               </div>
             </div>
-            <button type="submit" id="loginBtn">로그인</button><br />
             <div class="socialBox">
               <img src="@/assets/Login&Signup/OR.png" />
               <div>
@@ -51,10 +67,9 @@ div
             </div>
           </form>
         </div>
-
-        <a href="#none">비밀번호 찾기?</a>
       </div>
     </div>
+    <div class="report-empty-box-bottom"></div>
   </div>
 </template>
 <script>
@@ -82,64 +97,23 @@ export default defineComponent({
 
     const naverLogin = () => {
       //로컬 서버 연결용
-      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://localhost:3000/auth/naver&state=WaterBell`
+      // const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http:/localhost:3000/auth/naver&state=WaterBell`
 
-      //운영용
-      // const url= `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=http://i9b101.p.ssafy.io:8080/login/oauth2/code/naver&state=WaterBell`
+      //서버배포용
+      const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=dIwg6T0yWa9t8y2yMsHJ&redirect_uri=https://i9b101.p.ssafy.io/auth/naver&state=WaterBell`
 
       window.location.href = url
     }
     const client_id_kakao = '333ed4acdf908937b3480366ff4b1d75'
-    const redirect_uri = 'http://localhost:3000/auth/kakao'
+
+    //로컬용
+    // const redirect_uri = 'http//localhost:3000/auth/kakao'
+    //서버 배포용
+    const redirect_uri = 'https://i9b101.p.ssafy.io/auth/kakao'
     const kakaoLogin = () => {
       const url = `https://kauth.kakao.com/oauth/authorize?client_id=${client_id_kakao}&redirect_uri=${redirect_uri}&response_type=code`
       window.location.href = url
     }
-
-    // const nvalidateMember = async (code, state) => {
-    //   http
-    //     .get('/login/oauth2/code/naver', {
-    //       params: {
-    //         code: this.$route.query.code,
-    //         state: this.$route.query.state
-    //       }
-    //     })
-    //     .then((response) => {
-    //       if (response.data.message === 'success') {
-    //         if (response.data.type === 'join') {
-    //           router.push('/park/join')
-    //           // 회원 가입 페이지로 리다이렉션하거나 알림 표시
-    //         } else {
-    //           // 로그인 처리
-    //           router.push('/')
-    //         }
-    //       } else {
-    //         console.error(response.data.exception) // 실패 시 서버에서 보낸 예외 메시지 출력
-    //       }
-    //     })
-
-    //   // console.log(response.data)
-    //   //  = { ...response.data }
-    // }
-    // const invalidateMember = async () => {
-    //   alert('로그인 실패')
-    // }
-
-    // const nLogin = async (code, state) => {
-    //   try {
-    //     await nvalidateMember(code, state)
-    //     alert('네이버 로그인 성공')
-    //     router.push({ name: 'Home' })
-    //   } catch (err) {
-    //     alert('네이버 로그인 실패')
-    //     console.error(err)
-    //   }
-    // }
-
-    // // 쿼리스트링으로 code를 받게되면 이를 통해 서버에 요청을 보내는 로직을 수행한다.
-    // if (route.query.code && route.query.state) {
-    //   nLogin(route.query.code, route.query.state)
-    // }
 
     return {
       id,
@@ -147,9 +121,6 @@ export default defineComponent({
       login, // login 함수를 템플릿에서 사용할 수 있도록 반환합니다.
       naverLogin,
       kakaoLogin
-      // nvalidateMember,
-      // nLogin,
-      // invalidateMember
     }
   }
 })
@@ -186,6 +157,7 @@ label {
 #loginBtn {
   border-radius: 40px;
   background: #114cb1;
+  border: 0;
 }
 #idAndPassBox {
   display: flex;
@@ -205,6 +177,8 @@ label {
   justify-content: center;
   align-items: center;
   gap: 68px;
+  max-width: 500px; /* Set a maximum width for the form */
+  margin: 0 auto; /* Center align the form horizontally */
 }
 
 .includeFinding {
@@ -239,5 +213,115 @@ button img {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.find-bt {
+  display: flex;
+  gap: 10px;
+}
+
+.idAndPssBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+}
+
+.id-input {
+  display: flex;
+  width: 500px;
+  align-items: center;
+  gap: 4px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.input-inner-label {
+  flex-grow: 0;
+  display: flex;
+  width: 90px;
+  height: 30px;
+  flex-direction: column;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--login-color, #666);
+  text-align: center;
+  /* Body2 */
+  /* font-family: Roboto; */
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 20px; /* 100% */
+  letter-spacing: 0.25px;
+}
+
+.input-inner-box {
+  height: 50px;
+  flex: 1 0 0;
+  border-radius: 12px;
+  border: 1px solid rgba(102, 102, 102, 0.35);
+  /* width: 450px; */
+}
+.login-btn {
+  display: flex;
+  width: 511px;
+  height: 54px;
+  padding: 11px 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  border-radius: 40px;
+  background: var(--2, #114cb1);
+}
+.login-user-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* gap: 68px; */
+}
+
+.search-box {
+  gap: 10px;
+  margin: 10px 0px;
+  display: flex;
+}
+.search-content {
+  display: flex;
+  width: 137px;
+  height: 30px;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--login-color, #666);
+  text-align: center;
+  /* Body1 */
+  font-family: Roboto;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 150% */
+  letter-spacing: 0.5px;
+}
+
+.search-content a {
+  color: var(--login-color, #666);
+}
+
+.login-btn {
+  color: #fff;
+  text-align: center;
+  /* 로그인_btn */
+  /* font-family: Roboto; */
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px; /* 133.333% */
+  letter-spacing: 7px;
+}
+
+.report-empty-box-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: 40px;
 }
 </style>

@@ -1,6 +1,7 @@
 <template lang="">
-  <div class="container">
+  <div class="table-box">
     <div class="title">센서 측정 로그</div>
+    <h6>{{ LogFacilityName }}</h6>
     <div class="datepicker-row">
       <div>
         <label>시작일시</label>
@@ -23,37 +24,45 @@
     </div>
 
     <div id="category-select">
-      <input type="radio" id="height" value="HEIGHT" v-model="category" />
-      <label for="height">수위</label>
-      <input type="radio" id="TEMP" value="TEMP" v-model="category" />
-      <label for="TEMP">온도</label>
-      <input type="radio" id="humidity" value="HUMID" v-model="category" />
-      <label for="humidity">습도</label>
-      <input type="radio" id="dust" value="DUST" v-model="category" />
-      <label for="dust">미세먼지</label>
+      <div>
+        <input type="radio" id="height" value="HEIGHT" v-model="category" />
+        <label for="height">수위</label>
+      </div>
+      <div>
+        <input type="radio" id="TEMP" value="TEMP" v-model="category" />
+        <label for="TEMP">온도</label>
+      </div>
+      <div>
+        <input type="radio" id="humidity" value="HUMID" v-model="category" />
+        <label for="humidity">습도</label>
+      </div>
+      <div>
+        <input type="radio" id="dust" value="DUST" v-model="category" />
+        <label for="dust">미세먼지</label>
+      </div>
     </div>
     <table class="table table-hover table-bordered table-bordered">
       <thead class="thead-dark">
         <tr>
-          <th scope="col" class="text-center" style="width: 50px">번호</th>
-          <th scope="col" class="text-center" style="width: 400px">시간</th>
-          <th scope="col" class="text-center" style="width: 150px">시설이름</th>
-          <th scope="col" class="text-center" style="width: 150px">구분</th>
-          <th scope="col" class="text-center" style="width: 150px">센서값</th>
+          <!-- <th scope="col" class="text-center" style="width: 50px">번호</th> -->
+          <th scope="col" class="text-center" style="width: 600px">시간</th>
+          <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
+          <th scope="col" class="text-center" style="width: 200px">구분</th>
+          <th scope="col" class="text-center" style="width: 200px">센서값</th>
         </tr>
       </thead>
       <tbody v-if="logList && logList.length">
         <tr
-          v-for="(log, index) in logList"
+          v-for="log in logList"
           :key="log.id"
           class="tr"
           @click="movePage(log.id)"
           align="center"
         >
-          <td>{{ index + 1 }}</td>
+          <!-- <td>{{ index + 1 }}</td> -->
           <td>{{ formattedSensorTime(log.sensorTime) }}</td>
-          <td>{{ log.facilityName }}</td>
-          <td>{{ categoryLabel(log.category) }}</td>
+          <!-- <td>{{ log.facilityName }}</td> -->
+          <td v-html="categoryLabel(log.category)"></td>
           <td>{{ log.value }}</td>
         </tr>
       </tbody>
@@ -267,13 +276,13 @@ export default defineComponent({
     const categoryLabel = (cat: string) => {
       switch (cat) {
         case 'HEIGHT':
-          return '수위'
+          return '<span style="color: blue;">수위</span>'
         case 'TEMP':
-          return '온도'
+          return '<span style="color: red;">온도</span>'
         case 'HUMID':
-          return '습도'
+          return '<span style="color: green;">습도</span>'
         case 'DUST':
-          return '미세먼지'
+          return '<span style="color: orange;">미세먼지</span>'
         default:
           return ''
       }
@@ -305,6 +314,10 @@ export default defineComponent({
       return `${year}년 ${month}월 ${day}일 ${hours}:${minutes}`
     }
 
+    const LogFacilityName = computed(() => {
+      return logList.value.length ? logList.value[0].facilityName : ''
+    })
+
     onMounted(() => {
       setList()
     })
@@ -320,32 +333,63 @@ export default defineComponent({
       range,
       goToPage,
       categoryLabel,
-      formattedSensorTime
+      formattedSensorTime,
+      LogFacilityName
     }
   }
 })
 </script>
-<style lang="css">
+<style scoped lang="css">
+.title {
+  color: var(--typography-1, #1c2a53);
+  text-align: center;
+  font-family: score;
+  /* 회원가입상자_제목 */
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px; /* 53.333% */
+  letter-spacing: 3px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
 .thead-dark th {
-  background-color: #343a40 !important;
-  color: white !important;
+  background-color: #f2f7ff !important;
+  color: #114cb1 !important;
 }
 
 .tr {
   cursor: pointer;
 }
 
-.container {
-  width: 90%;
-  margin: 0 auto;
+.table-box {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 너비를 100%로 설정하여 부모 요소의 전체 너비를 사용 */
+  padding: 20px 0; /* 좌우에 20px의 패딩을 추가 */
+  margin: 10px auto; /* 상하 간격을 10px로 유지하고 좌우 마진을 자동으로 설정하여 가운데 정렬 */
+  box-sizing: border-box; /* 패딩을 포함한 전체 너비를 100%로 유지*/
 }
 
+.table {
+  width: 100%;
+}
 /* 테이블 셀 내용 가운데 정렬 */
 .table th,
 .table td {
   text-align: center;
+  vertical-align: middle;
 }
 
+table th:first-child,
+table td:first-child {
+  border-left: 0;
+}
+table th:last-child,
+table td:last-child {
+  border-right: 0;
+}
 /* 테이블 헤더 글자 크기 및 굵게 */
 .table th {
   font-size: 14px;
@@ -361,7 +405,6 @@ export default defineComponent({
 .table tbody tr {
   height: 50px;
 }
-
 /* "등록된 신고접수가 없습니다." 메시지 스타일 */
 .no-data-message {
   font-size: 16px;
@@ -403,7 +446,9 @@ export default defineComponent({
 
 .datepicker-row {
   display: flex;
-  justify-content: space-between; /* 두 요소 사이에 공간을 동일하게 분배 */
+  justify-content: space-between;
+  margin-top: 30px;
+  margin-bottom: 50px;
 }
 
 .datepicker-row > div {
@@ -415,22 +460,17 @@ export default defineComponent({
   width: 100%; /* 또는 적당한 %값 */
 }
 
-.title {
-  color: var(--typography-1, #1c2a53);
-  text-align: center;
-  /* 회원가입상자_제목 */
-  font-family: Roboto;
-  font-size: 30px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 16px; /* 53.333% */
-  letter-spacing: 3px;
+#category-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 20px;
   margin-top: 20px;
+  gap: 20px;
 }
 
-#category-select {
-  margin-bottom: 20px;
-  margin-top: 20px;
+#category-select > div {
+  display: flex;
+  gap: 5px;
 }
 </style>

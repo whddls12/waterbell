@@ -1,23 +1,27 @@
 package com.ssafy.fcc.service;
 
-import com.ssafy.fcc.controller.DashController;
+
+
+import com.ssafy.fcc.domain.alarm.BoardAlarmLog;
+import com.ssafy.fcc.domain.alarm.FloodAlarmLog;
+import com.ssafy.fcc.domain.facility.Apart;
 import com.ssafy.fcc.domain.facility.Facility;
 import com.ssafy.fcc.domain.facility.WaterStatus;
 import com.ssafy.fcc.domain.log.*;
+import com.ssafy.fcc.domain.sms.SmsLog;
 import com.ssafy.fcc.dto.ControlLogDto;
+import com.ssafy.fcc.dto.ResponseLogDto;
 import com.ssafy.fcc.dto.SensorLogDto;
-import com.ssafy.fcc.handler.CamWebSocketHandler;
+
+import com.ssafy.fcc.dto.TotalAlarmLogDto;
 import com.ssafy.fcc.repository.*;
 import com.ssafy.fcc.util.PageNavigation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Entity;
+
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -27,14 +31,20 @@ public class SystemService {
 
     private final FacilityRepository facilityRepository;
     private final SensorLogRepository sensorLogRepository;
+    private final ResponseLogRepository responseLogRepository;
     private final ApartRepository apartRepository;
     private final UndergroundRoadRepository undergroundRoadRepository;
     private final ControlLogRepository controlLogRepository;
+    private final FloodAlarmLogRepository floodAlarmLogRepository;
+    private final BoardAlarmLogRepository boardAlarmLogRepository;
+    private final ReceiveAlarmMemberRepository receiveAlarmMemberRepository;
+    private final SmsLogRepository smsLogRepository;
+    private final ReceiveSmsMemberRepository receiveSmsMemberRepository;
 
     public final FacilityService facilityService;
     public final UndergroundRoadService undergroundRoadService;
     public final ApartService apartService;
-    public CamWebSocketHandler camWebSocketHandler;
+
 
     public void insertLog(int facilityId, SensorType category, int value) {
 
@@ -125,6 +135,36 @@ public class SystemService {
         }
     }
 
+    public Map<String, Object> getResponseLogList(int facilityId, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+
+        Facility facility = facilityRepository.findById(facilityId);
+
+        long responseCnt = responseLogRepository.getResponseLogCnt(facility, searchStartDate, searchEndDate);
+        PageNavigation pageNavigation = new PageNavigation(page,responseCnt);
+
+        List<ResponseLog> logList = responseLogRepository.getLogList(facility,pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+
+        boolean isApart = facility.isApart();
+        String name;
+        if (isApart) {
+            name = apartRepository.findById(facilityId).getApartName();
+        } else {
+            name = undergroundRoadRepository.findById(facilityId).getUndergroundRoadName();
+        }
+
+        List<ResponseLogDto> logDtoList = new ArrayList<>();
+        for(ResponseLog log : logList) {
+            logDtoList.add(new ResponseLogDto(log.getResponseTime(), isApart == true ? "차수판" : "전광판", log.isStatus() == true ? "정상" : "결함"));
+        }
+
+        Map<String,Object> resultMap = new LinkedHashMap<>();
+        resultMap.put("pageNavigation",pageNavigation);
+        resultMap.put("facilityName",name);
+        resultMap.put("list",logDtoList);
+
+        return resultMap;
+    }
+
     @Transactional
     public int insertControlLog(int facilityId, String command_str) {
 
@@ -151,12 +191,6 @@ public class SystemService {
 
         Facility facility = facilityRepository.findById(facilityId);
 
-//        for (int i = 5; i >= 0; i--) {
-//            LocalDateTime time = LocalDateTime.now().minusHours(i);
-//            int height = sensorLogRepository.getHeightPerhour(facility, SensorType.HEIGHT, time);
-//            resultMap.put(LocalDateTime.now().minusHours(i).getHour(), height);
-//        }
-
         LocalDateTime time = LocalDateTime.now();
         List<SensorLog> sensorLogList = sensorLogRepository.getHeightPerhour(facility,SensorType.HEIGHT,time);
         for(SensorLog log : sensorLogList) {
@@ -165,29 +199,38 @@ public class SystemService {
         return resultMap;
     }
 
-    public void fromSensor(String message) throws Exception {
-        String[] result = message.toString().split("/");
+    public WaterStatus fromSensor(String message) throws Exception {
 
-        int facilityId = Integer.parseInt(result[0]);
-        SensorType sensorType = SensorType.valueOf(result[1]);
-        int value = Integer.parseInt(result[2]);
+        try {
+            String[] result = message.toString().split("/");
 
-        Facility facility = facilityRepository.findById(facilityId);
+            int facilityId = Integer.parseInt(result[0]);
+            SensorType sensorType = SensorType.valueOf(result[1]);
+            int value = Integer.parseInt(result[2]);
 
-        if (sensorType.equals(SensorType.HEIGHT)) {
-            checkSituation(facility, value);
+            Facility facility = facilityRepository.findById(facilityId);
+
+            WaterStatus status = null;
+            if (sensorType.equals(SensorType.HEIGHT)) {
+                status = checkSituation(facility, value);
+            }
+
+            insertLog(facilityId, sensorType, value);
+
+            return status;
+        }catch (Exception e) {
+            e.printStackTrace();
         }
-
-        insertLog(facilityId, sensorType, value);
-
+        return null;
     }
 
     @Transactional
-    public void checkSituation(Facility facility, int value) throws Exception {
+    public WaterStatus checkSituation(Facility facility, int value) throws Exception {
 
         if (value > facility.getSecondAlarmValue()) {
             if (facility.getStatus() == WaterStatus.FIRST || facility.getStatus() == WaterStatus.DEFAULT) {
                 facilityService.updateStatus(facility, WaterStatus.SECOND);
+
                 if (facility.isApart()) { // 아파트
                     apartService.sendAutoNotificationToManager(facility.getId(), facility.getStatus(), value);
                 } else { // 지하차도
@@ -207,15 +250,101 @@ public class SystemService {
             } else if (facility.getStatus() == WaterStatus.SECOND) {
                 facilityService.updateStatus(facility, WaterStatus.FIRST);
             }
-
-        } else {
+        } else if(facility.getStatus() != WaterStatus.WORKING){
             facilityService.updateStatus(facility, WaterStatus.DEFAULT);
         }
 
+        return facility.getStatus();
     }
 
     public int getLatestHeightSensor(int facilityId){
         Facility facility = facilityRepository.findById(facilityId);
         return sensorLogRepository.getRecentData(facility, SensorType.HEIGHT);
+    }
+
+    public void checkControl(String message) {
+
+        String[] result = message.split("/");
+
+        int facilityId = Integer.parseInt(result[0]);
+        String controlStatus = result[1];
+
+        Facility facility = facilityRepository.findById(facilityId);
+
+        ResponseLog responseLog = new ResponseLog();
+        responseLog.setFacility(facility);
+        responseLog.setCategory(facility.isApart() == true ? ControlType.BOARD : ControlType.PLATE);
+        responseLog.setResponseTime(LocalDateTime.now());
+        if(controlStatus.equals("0")) { // 기기가 보낸 상태가 해제 상태일때
+            if(facility.getStatus() != WaterStatus.WORKING) {
+                responseLog.setStatus(true);
+            } else {
+                responseLog.setStatus(false);
+            }
+        } else { // 기기가 보낸 상태가 작동 상태일때
+            if(facility.getStatus() == WaterStatus.WORKING) {
+                responseLog.setStatus(true);
+            } else {
+                responseLog.setStatus(false);
+            }
+        }
+
+        responseLogRepository.save(responseLog);
+
+    }
+
+    public Map<String, Object> getAlarmSendWebLogList(int facilityId, int member_id, String category, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<TotalAlarmLogDto> logDtoList = new ArrayList<>();
+        Facility facility = facilityRepository.findById(facilityId);
+        Apart apart = apartRepository.findById(facilityId);
+        PageNavigation pageNavigation;
+        boolean is_flood = false;
+        if(category.equals("flood")) is_flood = true;
+        if(is_flood) {
+            Long totalCount = floodAlarmLogRepository.getSendWebLogCnt(facility, member_id, searchStartDate, searchEndDate);
+            pageNavigation = new PageNavigation(page, totalCount);
+            List<FloodAlarmLog> logList = floodAlarmLogRepository.getSendWebLogList(facility, member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+            for(FloodAlarmLog l : logList){
+                TotalAlarmLogDto dto = new TotalAlarmLogDto(l);
+                dto.setCnt(receiveAlarmMemberRepository.getReceiveAlarmMemberCnt(l.getId()));
+                dto.setFacility_name(apart.getApartName());
+                logDtoList.add(dto);
+            }
+        }
+        else {
+            Long totalCount = boardAlarmLogRepository.getSendWebLogCnt(facility, member_id, searchStartDate, searchEndDate);
+            pageNavigation = new PageNavigation(page, totalCount);
+            List<BoardAlarmLog> logList = boardAlarmLogRepository.getSendWebLogList(facility, member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+            for(BoardAlarmLog l : logList){
+                TotalAlarmLogDto dto = new TotalAlarmLogDto(l);
+                dto.setCnt(receiveAlarmMemberRepository.getReceiveAlarmMemberCnt(l.getId()));
+                dto.setFacility_name(apart.getApartName());
+                logDtoList.add(dto);
+            }
+        }
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", logDtoList);
+        return resultMap;
+    }
+
+    public Map<String, Object> getAlarmSendSmsLogList(int facilityId, int member_id, int page, LocalDateTime searchStartDate, LocalDateTime searchEndDate) {
+        Map<String, Object> resultMap = new HashMap<>();
+        List<TotalAlarmLogDto> logDtoList = new ArrayList<>();
+        Apart apart = apartRepository.findById(facilityId);
+        PageNavigation pageNavigation;
+        Long totalCount = smsLogRepository.getSendSmsLogCnt(member_id, searchStartDate, searchEndDate);
+        pageNavigation = new PageNavigation(page, totalCount);
+        List<SmsLog> logList = smsLogRepository.getSendSmsLogList(member_id, pageNavigation.getStart(), pageNavigation.getSizePerPage(), searchStartDate, searchEndDate);
+        for(SmsLog l : logList){
+            TotalAlarmLogDto dto = new TotalAlarmLogDto(l);
+            dto.setFacility_id(facilityId);
+            dto.setFacility_name(apart.getApartName());
+            dto.setCnt(receiveSmsMemberRepository.getReceiveAlarmMemberCnt(l.getId()));
+            logDtoList.add(dto);
+        }
+        resultMap.put("pageNavigation", pageNavigation);
+        resultMap.put("list", logDtoList);
+        return resultMap;
     }
 }

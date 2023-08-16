@@ -32,6 +32,7 @@ export default defineComponent({
 .select-region {
   display: flex;
   justify-content: center;
+  margin-bottom: 30px;
 }
 
 .select-region-box {
@@ -62,5 +63,7 @@ a {
 .router-view-style {
   min-height: 500px;
   min-width: 600px;
+  /* width: 1100px; */
+  overflow: hidden;
 }
 </style>

@@ -167,7 +167,7 @@ public class MemberController {
 
                     PublicManagerResponse publicManagerResponse = new PublicManagerResponse((PublicManager) loginUser, token);
                     resultMap.put("member", publicManagerResponse);
-                }else{
+                }else if (loginUser.getRole() == Role.USER){
                     MemberResponse memberResponse = new MemberResponse(loginUser,token);
                     resultMap.put("member", memberResponse);
                 }

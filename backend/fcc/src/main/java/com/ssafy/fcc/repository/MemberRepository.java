@@ -60,8 +60,9 @@ public class MemberRepository {
 
     public Member findByPhone(String phone) {
         try {
-            return em.createQuery("select m from Member m where m.phone = :phone ", Member.class)
+            return em.createQuery("select m from Member m where m.phone = :phone and m.role = :role ", Member.class)
                     .setParameter("phone", phone)
+                    .setParameter("role", Role.APART_MEMBER)
                     .setMaxResults(1)
                     .getSingleResult();
         } catch (NoResultException e) {
@@ -71,7 +72,7 @@ public class MemberRepository {
 
     public Member getSystemMember(){
         try {
-            return em.createQuery("select m from Member m where m.role = :role", Member.class)
+            return em.createQuery("select m from Member m where m.role = :role ", Member.class)
                     .setParameter("role", Role.SYSTEM)
                     .setMaxResults(1)
                     .getSingleResult();
@@ -133,6 +134,11 @@ public class MemberRepository {
 
         Predicate statePredicate = cb.isTrue(a.get("state"));
         criteria.add(statePredicate);
+
+        //권한이 아파트
+        Predicate apartRole = cb.equal(a.get("role"), Role.APART_MEMBER);
+        criteria.add(apartRole);
+
 
         cq.where(cb.and(criteria.toArray(new Predicate[criteria.size()])));
         final TypedQuery<ApartMember> query = em.createQuery(cq);

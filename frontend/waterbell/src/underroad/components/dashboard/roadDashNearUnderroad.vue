@@ -1,7 +1,10 @@
 <template>
   <div class="container" id="outline bigbox">
+    <div class="dash-box-title">
+      <i class="fas fa-map-marked-alt fa-lg"></i>
+      <h4>침수 지도</h4>
+    </div>
     <div id="inner-box">
-      <button>이 동하기</button>
       <div id="map"></div>
     </div>
   </div>
@@ -446,17 +449,12 @@ export default defineComponent({
 })
 </script>
 
-<style lang="css">
-button {
-  width: 100px;
-  align-self: end;
-}
-
+<style scoped lang="css">
 #inner-box {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  align-self: stretch; /* stretch to match the height of other components */
+  align-self: stretch;
 }
 
 #map {
@@ -468,6 +466,11 @@ button {
   flex-grow: 2;
   align-self: stretch; /* stretch to match the height of other components */
 }
+
+h4 {
+  text-align: left;
+}
+
 /* button {
   width: 100px;
   align-self: end;

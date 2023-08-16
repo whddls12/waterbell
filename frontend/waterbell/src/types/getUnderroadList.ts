@@ -36,8 +36,8 @@ export async function fetchUnderroads() {
         // }
         member = res.data.member
       })
-      .then(() => {
-        http.get('/facilities/roads').then((res: { data: any }) => {
+      .then(async () => {
+        await http.get('/facilities/roads').then((res: { data: any }) => {
           res.data.forEach(async (element: any) => {
             // console.log(element)
             //결과
@@ -76,6 +76,8 @@ export async function fetchUnderroads() {
             //element의 sido.id와 member의 sidoId가 일치하는 경우만
             // console.log(element.sido.id)
             // console.log(member.sidoId)
+            // console.log('fetchUnderroad')
+            // console.log(element)
             if (element.sido.id == member.sidoId) {
               // console.log('여기 들어오냐')
               store.commit('auth/setUnderroadbygugun', element)

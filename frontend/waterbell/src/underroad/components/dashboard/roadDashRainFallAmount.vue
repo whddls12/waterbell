@@ -2,7 +2,8 @@
   <div class="container" id="dash-cctv">
     <div class="dash-box">
       <div class="dash-box-title">
-        <h3>강수량 그래프</h3>
+        <i class="fas fa-chart-line fa-lg"></i>
+        <h4>강수량 그래프</h4>
       </div>
       <div class="dash-box-content">
         <canvas
@@ -19,14 +20,16 @@
 import Chart from 'chart.js/auto'
 import { ref, onMounted, nextTick } from 'vue'
 import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
-import http from '@/types/http'
+import axios from '@/types/apiClient'
+import store from '@/store/index'
 
 export default defineComponent({
   name: 'roadDashRainAmountVue',
   setup() {
+    // const apiClient = axios.apiClient(store)
+    const api = axios.api
+
     const chartRef = ref(null)
-    const store = useStore()
     const timeArr = ref<string[]>([])
     const amountArr = ref<string[]>([])
     // 현재 날짜 및 시간 가져오기
@@ -49,7 +52,7 @@ export default defineComponent({
     // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
       try {
-        const response = await http.get('http://localhost:8080/dash/map/rain', {
+        const response = await api.get('/dash/map/rain', {
           params: {
             year: year,
             month: month,
@@ -130,7 +133,7 @@ export default defineComponent({
   }
 })
 </script>
-<style>
+<style scoped>
 #dash-cctv {
   height: 500px;
 }
