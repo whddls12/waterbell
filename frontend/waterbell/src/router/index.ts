@@ -37,6 +37,7 @@ import kakaoRedirectPage from '@/undergroundParkingLot/views/member/kakaoSocialR
 import socialJoinExtra from '@/undergroundParkingLot/views/member/socialLoginExtraInfo.vue'
 import parkFindId from '@/undergroundParkingLot/views/member/parkFindId.vue'
 import parkFindPassword from '@/undergroundParkingLot/views/member/parkFindPassword.vue'
+import parkPasswordReset from '@/undergroundParkingLot/views/member/parkPasswordReset.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -164,6 +165,11 @@ const router = createRouter({
       path: '/park/find/password',
       name: 'parkFindPassword',
       component: parkFindPassword
+    },
+    {
+      path: '/park/find/password/reset',
+      name: 'parkPasswordReset',
+      component: parkPasswordReset
     },
 
     {

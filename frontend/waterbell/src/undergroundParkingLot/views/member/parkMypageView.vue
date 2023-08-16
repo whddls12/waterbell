@@ -67,7 +67,7 @@
       <!-- 버튼 -->
       <div class="myPage-btn">
         <button id="update" @click="passwordCheck">회원정보 수정하기</button>
-        <div class="withdrawal">
+        <div class="withdrawal" @click="goWithdrawal">
           <i class="fas fa-arrow-right"> 회원탈퇴하기</i>
         </div>
       </div>
@@ -100,11 +100,20 @@ export default defineComponent({
     function passwordCheck() {
       router.push({ path: '/park/mypage/passwordCheck' })
     }
-    // 토큰을 백으로 보내서 해당 회원정보를 받아온 후 화면에 띄워준다.
+
+    function goWithdrawal() {
+      apiClient
+        .get(`/member/apartMember/withdrawal`)
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => console.log(err))
+    }
+
     onMounted(() => {
       getMemberData()
     })
-    return { memberInfo, getMemberData, passwordCheck }
+    return { memberInfo, getMemberData, passwordCheck, goWithdrawal }
   }
 })
 </script>
@@ -181,5 +190,6 @@ input {
 
 .withdrawal:hover {
   cursor: pointer;
+  color: black;
 }
 </style>
