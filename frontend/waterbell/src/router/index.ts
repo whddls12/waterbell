@@ -40,6 +40,7 @@ import socialJoinExtra from '@/undergroundParkingLot/views/member/socialLoginExt
 import parkFindId from '@/undergroundParkingLot/views/member/parkFindId.vue'
 import parkFindPassword from '@/undergroundParkingLot/views/member/parkFindPassword.vue'
 import parkPasswordReset from '@/undergroundParkingLot/views/member/parkPasswordReset.vue'
+import socialJoinEnd from '@/undergroundParkingLot/views/member/socialJoinEnd.vue'
 
 //지하주차장 페이지
 import ParkDash from '@/undergroundParkingLot/views/parkDashboardView.vue' // 대쉬보드
@@ -232,6 +233,11 @@ const router = createRouter({
       path: '/social-join/extra',
       name: 'socialJoinExtraInfo',
       component: socialJoinExtra
+    },
+    {
+      path: '/social-join/end',
+      name: 'socialJoinEnd',
+      component: socialJoinEnd
     },
 
     // 회원정보 조회(마이페이지)
