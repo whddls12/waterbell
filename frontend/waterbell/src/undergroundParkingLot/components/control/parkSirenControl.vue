@@ -62,7 +62,7 @@ export default defineComponent({
         const response = await apiClient.get(
           `/system/manager/facilities/${facility_id}/sensors/HEIGHT/latest`
         )
-        currentHeight.value = '현재수위 : ' + response.data + 'mm'
+        currentHeight.value = '현재수위 : ' + response.data + 'cm'
       } catch (error) {
         console.error('Error fetching height data:', error)
       }
