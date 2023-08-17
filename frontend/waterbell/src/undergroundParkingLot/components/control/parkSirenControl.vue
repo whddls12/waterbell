@@ -41,6 +41,7 @@ export default defineComponent({
     const apiClient = apiModule.apiClient(store)
     const api = apiModule.api
     const facility_id = computed(() => store.getters['auth/facilityId']).value
+    const showWaterModal = computed(() => store.getters['showWaterModal']).value
 
     const sirenImage = ref(SirenGreenImage)
     const status = ref('')
@@ -89,6 +90,16 @@ export default defineComponent({
 
     watch(
       () => actionTriggered.value,
+      async (newValue: any) => {
+        await fetchStatusData()
+        setTimeout(async () => {
+          await fetchHeightData()
+        }, 1000) // 1초 (1000밀리초) 후에 fetchHeightData() 실행
+      }
+    )
+
+    watch(
+      () => showWaterModal.value,
       async (newValue: any) => {
         await fetchStatusData()
         setTimeout(async () => {
