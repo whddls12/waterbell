@@ -7,13 +7,13 @@
       </div>
       <div class="dash-box-content">
         <div class="dash-box-content" id="cctv-box-content">
-          <p class="text-start">지하차도 내부</p>
+          <p class="text-start">지하주차장 입구</p>
           <div class="cctvBox">
             <div>
               <img id="cctv1" />
             </div>
           </div>
-          <p class="text-start">지하차도 외부</p>
+          <p class="text-start">지하주차장 내부</p>
           <div class="cctvBox">
             <div>
               <img id="cctv2" />
