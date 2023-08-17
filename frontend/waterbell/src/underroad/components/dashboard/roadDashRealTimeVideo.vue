@@ -6,7 +6,7 @@
         <h4>CCTV</h4>
       </div>
       <div class="dash-box-content" id="cctv-box-content">
-        <p class="text-start">지하차도 외부</p>
+        <p class="text-start">지하차도 내부</p>
         <div class="cctvBox">
           <div>
             <img id="cctv1" />
