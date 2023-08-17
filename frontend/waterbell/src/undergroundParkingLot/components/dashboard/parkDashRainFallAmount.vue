@@ -18,20 +18,21 @@
 </template>
 <script lang="ts">
 import Chart from 'chart.js/auto'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { defineComponent } from 'vue'
-import { useStore } from 'vuex'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
 
 export default defineComponent({
   name: 'parkDashRainAmountVue',
   setup() {
-    // const apiClient = axios.apiClient(store)
+    const apiClient = axios.apiClient(store)
     const api = axios.api
 
+    // 시설 아이디 가져오기
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+
     const chartRef = ref(null)
-    const store = useStore()
     const timeArr = ref<string[]>([]) // 시간 데이터
     const amountArr = ref<string[]>([]) // 강수량 데이터
 
@@ -42,14 +43,67 @@ export default defineComponent({
     const day = now.getDate().toString().padStart(2, '0')
     const hour = now.getHours().toString().padStart(2, '0') // 24시간 형식
     const minute = now.getMinutes().toString().padStart(2, '0')
-    const lon = store.state.location['lon']
-    const lat = store.state.location['lat']
+
+    let lon = store.state.location['lon']
+    let lat = store.state.location['lat']
 
     // 차트에 들어갈 데이터로 가공하는 함수
     const makeData = (i: Record<string, any>) => {
       for (const key in i) {
         timeArr.value.push(key)
         amountArr.value.push(i[key])
+      }
+    }
+
+    //카카오맵 script 추가하기 (geocorder 쓰기 위해)
+    //지도 script 추가하기1
+    const loadScript = async () => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src =
+          '//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=374cff0d8903c1ed2bf1e9533bb0feab&libraries=clusterer,drawing,services'
+        script.addEventListener('load', async () => {
+          await window.kakao.maps.load(getData)
+        })
+        script.onload = resolve // 스크립트 로드 완료시 resolve
+        script.onerror = reject // 에러 발생시 reject
+
+        document.head.appendChild(script)
+      })
+    }
+
+    async function getAddress(): Promise<any> {
+      try {
+        const res = await apiClient.get(`/facilities/${facility_id}/apart`)
+        if (!res.data.apart || !res.data.apart.address) {
+          throw new Error('올바르지 않은 주소 데이터입니다.')
+        }
+        return res.data.apart.address
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    async function getCoordinate() {
+      try {
+        const address = await getAddress() // 1. getAddress 기능
+        const geocoder = new window.kakao.maps.services.Geocoder()
+
+        return new Promise<void>((resolve, reject) => {
+          geocoder.addressSearch(address, (result: any, status: any) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              lon = result[0].x
+              lat = result[0].y
+              console.log('주소 검색: ', lon, lat)
+              resolve()
+            } else {
+              reject('주소 검색에 실패했습니다.')
+            }
+          })
+        })
+      } catch (error) {
+        console.error(error)
       }
     }
 
@@ -69,6 +123,7 @@ export default defineComponent({
           }
         })
         const apiData = response.data
+        console.log(apiData)
         return { apiData }
         // 차트 생성을 위한 데이터 가공
         // apiData를 인자로 넘겨줍니다
@@ -138,6 +193,8 @@ export default defineComponent({
     }
 
     onMounted(async () => {
+      await loadScript() // 먼저 Kakao Map 스크립트를 로드합니다.
+      await getCoordinate() // 2. address 값을 addressSearch 함수로 좌표값으로 변환
       const apiData = await getData()
       if (apiData) {
         makeData(apiData.apiData)
