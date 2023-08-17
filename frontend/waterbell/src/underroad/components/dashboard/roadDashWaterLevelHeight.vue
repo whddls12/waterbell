@@ -77,10 +77,36 @@ export default defineComponent({
           ]
         },
         options: {
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          elements: {
+            line: {
+              fill: true
+            }
+          },
           // 차트 옵션
           scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시:분)'
+              }
+            },
             y: {
-              beginAtZero: true
+              beginAtZero: true,
+              gird: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '지하차도 수위(cm)'
+              }
             }
           }
         }
