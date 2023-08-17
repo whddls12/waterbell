@@ -291,8 +291,7 @@ export default defineComponent({
             })
             .then((res) => {
               if ((res.data.message = 'success')) {
-                alert('회원가입이 완료되었습니다.')
-                router.push('/park/dash')
+                router.push('/social-join/end')
                 //--------------------------------------------------------------------------------------
                 //code 다시 끌어와서 로그인 시킬 것.
                 //   store.dispatch('auth/socialLogin', {
