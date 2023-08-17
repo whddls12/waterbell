@@ -48,7 +48,38 @@
           <th scope="col" class="text-center" style="width: 600px">시간</th>
           <!-- <th scope="col" class="text-center" style="width: 150px">시설이름</th> -->
           <th scope="col" class="text-center" style="width: 200px">구분</th>
-          <th scope="col" class="text-center" style="width: 200px">센서값</th>
+          <th
+            v-if="category === 'HEIGHT'"
+            scope="col"
+            class="text-center"
+            style="width: 200px"
+          >
+            센서값(cm)
+          </th>
+          <th
+            v-if="category === 'TEMP'"
+            scope="col"
+            class="text-center"
+            style="width: 200px"
+          >
+            센서값(℃)
+          </th>
+          <th
+            v-if="category === 'HUMID'"
+            scope="col"
+            class="text-center"
+            style="width: 200px"
+          >
+            센서값(%)
+          </th>
+          <th
+            v-if="category === 'DUST'"
+            scope="col"
+            class="text-center"
+            style="width: 200px"
+          >
+            센서값(㎍/㎥)
+          </th>
         </tr>
       </thead>
       <tbody v-if="logList && logList.length">
@@ -63,7 +94,10 @@
           <td>{{ formattedSensorTime(log.sensorTime) }}</td>
           <!-- <td>{{ log.facilityName }}</td> -->
           <td v-html="categoryLabel(log.category)"></td>
-          <td>{{ log.value }}</td>
+          <td v-if="log.category === 'HEIGHT'">{{ log.value }} cm</td>
+          <td v-if="log.category === 'TEMP'">{{ log.value }} ℃</td>
+          <td v-if="log.category === 'HUMID'">{{ log.value }} %</td>
+          <td v-if="log.category === 'DUST'">{{ log.value }} ㎍/㎥</td>
         </tr>
       </tbody>
       <tbody v-else>

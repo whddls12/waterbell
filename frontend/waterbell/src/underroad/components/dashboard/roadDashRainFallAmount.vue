@@ -59,7 +59,7 @@ export default defineComponent({
 
     // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
-      console.log('이 좌표의 강수량 데이터를 가져옴: ', lat, lon)
+      console.log(`위도(${lat}) 경도(${lon}) 의 강수량 데이터를 가져옴`)
       try {
         const response = await api.get('/dash/map/rain', {
           params: {
