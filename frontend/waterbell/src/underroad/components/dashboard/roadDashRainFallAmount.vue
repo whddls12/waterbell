@@ -18,7 +18,7 @@
 </template>
 <script lang="ts">
 import Chart from 'chart.js/auto'
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import { defineComponent } from 'vue'
 import axios from '@/types/apiClient'
 import store from '@/store/index'
@@ -26,6 +26,16 @@ import store from '@/store/index'
 export default defineComponent({
   name: 'roadDashRainAmountVue',
   setup() {
+    // 시설 아이디 가져오기
+    const facility_id = computed(() => store.getters['auth/facilityId']).value
+    console.log('시설 아이디: ', facility_id)
+    // 현재 보고있는 지하차도의 좌표 가져오기
+    const nowUnderroad = computed(
+      () => store.getters['auth/nowUnderroad']
+    ).value
+
+    let lon = nowUnderroad.longitude
+    let lat = nowUnderroad.latitude
     // const apiClient = axios.apiClient(store)
     const api = axios.api
 
@@ -39,8 +49,6 @@ export default defineComponent({
     const day = now.getDate().toString().padStart(2, '0')
     const hour = now.getHours().toString().padStart(2, '0') // 24시간 형식
     const minute = now.getMinutes().toString().padStart(2, '0')
-    const lon = store.state.location['lon']
-    const lat = store.state.location['lat']
 
     const makeData = (i: Record<string, any>) => {
       for (const key in i) {
@@ -51,6 +59,7 @@ export default defineComponent({
 
     // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
+      console.log('이 좌표의 강수량 데이터를 가져옴: ', lat, lon)
       try {
         const response = await api.get('/dash/map/rain', {
           params: {
@@ -75,14 +84,6 @@ export default defineComponent({
     }
 
     async function drawChart(rainChartCanvas: HTMLElement | null) {
-      // const labels = apiData.map((data) => data.label)
-      // const values = apiData.map((data) => data.value)
-      // document.addEventListener('DOMContentLoaded', function () {
-      // -> onMounted에 의해 컴포넌트가 마운트 된 후에 실행된다. 중복되는 의미라서 주석처리
-
-      // console.log('차트 그리기 시작')
-      // console.log('drawChart에서 timeArr.value')
-      // console.log(timeArr.value)
       const canvas = document.getElementById(
         'rainChartCanvas'
       ) as HTMLCanvasElement
@@ -107,7 +108,28 @@ export default defineComponent({
           // 차트 옵션 설정 (생략 가능)
           scales: {
             y: {
+              grid: {
+                display: true
+              },
+              title: {
+                display: true,
+                text: '시간당 강수량(mm)'
+              },
               beginAtZero: true
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // 범례 제거
             }
           }
         }
@@ -121,12 +143,7 @@ export default defineComponent({
         makeData(apiData.apiData)
       }
       await nextTick()
-      // 차트 그리기
-      // console.log('chartRef.value')
-      // console.log(chartRef.value)
       drawChart(chartRef.value)
-      // console.log('chartRef.value')
-      // console.log(chartRef.value)
     })
 
     return { chartRef, timeArr, amountArr }
