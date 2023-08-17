@@ -118,7 +118,7 @@
             4
           </text>
         </svg>
-        <label for="deactivation">기준치 설정</label>
+        <label for="deactivation">기준치 설정 (cm)</label>
       </div>
       <div class="criteriaBox">
         <div>

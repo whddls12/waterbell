@@ -14,7 +14,8 @@
         ></canvas>
         <div class="dust-value">
           <div class="value-box">
-            {{ current_dust }}
+            <div style="font-size: 20px">{{ current_dust }}</div>
+            <div style="font-size: 12px">㎍/㎥</div>
           </div>
         </div>
       </div>
@@ -178,6 +179,7 @@ export default defineComponent({
 .value-box {
   width: 80px;
   height: 40px;
+  gap: 5px;
 
   display: flex;
   justify-content: center;

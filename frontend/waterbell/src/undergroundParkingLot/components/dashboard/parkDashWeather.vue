@@ -160,6 +160,9 @@ export default defineComponent({
             lat: lat //여기 변경됨
           }
         })
+        console.log('시간: ', day, hour, minute)
+        console.log(lon, lat, '좌표의 데이터')
+        console.log(response.data)
         status_sky.value = response.data.SKY.fcstValue
         type_rainfall.value = response.data.PTY.fcstValue
       } catch (error) {
