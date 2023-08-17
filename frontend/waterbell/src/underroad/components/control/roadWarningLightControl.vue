@@ -35,6 +35,7 @@ export default defineComponent({
     const currentState = ref('')
     const currentHeight = ref('')
     const UactionTriggered = computed(() => store.state.UactionTriggered)
+    const showWaterModal = computed(() => store.getters['showWaterModal']).value
 
     const messageClass = computed(() => {
       if (status.value == 'DEFAULT') {
@@ -77,6 +78,16 @@ export default defineComponent({
 
     watch(
       () => UactionTriggered.value,
+      async (newValue: any) => {
+        await fetchStatusData()
+        setTimeout(async () => {
+          await fetchHeightData()
+        }, 1000) // 1초 (1000밀리초) 후에 fetchHeightData() 실행
+      }
+    )
+
+    watch(
+      () => showWaterModal.value,
       async (newValue: any) => {
         await fetchStatusData()
         setTimeout(async () => {
