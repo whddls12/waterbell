@@ -1,4 +1,5 @@
 FROM node:16.20.1
+ENV TZ=Asia/Seoul
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
