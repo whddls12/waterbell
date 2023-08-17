@@ -78,14 +78,14 @@ export default defineComponent({
     watch(
       () => UactionTriggered.value,
       (newValue: any) => {
-        fetchHeightData()
         fetchStatusData()
+        fetchHeightData()
       }
     )
 
     onMounted(async () => {
-      await fetchHeightData()
       await fetchStatusData()
+      await fetchHeightData()
     })
 
     return {
