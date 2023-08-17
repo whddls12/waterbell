@@ -59,7 +59,11 @@
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
-              <div v-for="(image, index) in imageList" :key="index">
+              <div
+                v-for="(image, index) in imageList"
+                :key="index"
+                :class="{ 'deleted-file': image?.id in removeFilesList }"
+              >
                 {{ image?.imageName }}
                 <i @click="deleteFile(image?.id)" class="fas fa-backspace"></i>
               </div>
@@ -145,6 +149,7 @@ export default defineComponent({
         .get(`/reports/undergroundRoad/detail/${report_id}`)
         .then((res) => {
           imageList.value = res.data.imageList
+          console.log('기존 첨부파일 리스트: ', imageList.value)
           report.value.name = res.data.board.name
           report.value.phone = res.data.board.phone
           report.value.boardPassword = res.data.board.boardPassword
@@ -493,5 +498,9 @@ textarea {
 
 .report-create-container {
   width: 90%;
+}
+
+.deleted-file {
+  display: none;
 }
 </style>

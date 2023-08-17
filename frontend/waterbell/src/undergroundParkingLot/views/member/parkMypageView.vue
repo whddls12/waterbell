@@ -110,6 +110,7 @@ export default defineComponent({
         .then((res) => {
           memberInfo.value = res.data.memberInfo
           console.log(memberInfo.value)
+          console.log(memberInfo.value.loginId)
         })
         .catch((error) => console.log(error))
     }
