@@ -21,7 +21,7 @@ public class ControlController {
     private final MqttPubSubService mqttPubSubService;
     private final FacilityService facilityService;
 
-    @PostMapping("/manager/{facility_id}/{command}")
+    @PostMapping("/{facility_id}/{command}")
     public ResponseEntity<Integer> command(@PathVariable("facility_id") int facilityId, @PathVariable String command) {
 
         Facility facility = facilityService.findById(facilityId);
