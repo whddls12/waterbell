@@ -183,6 +183,7 @@ export default defineComponent({
       if (waterNotification.value.facilityId) {
         await changeFacility(waterNotification.value.facilityId)
       }
+      await closeWaterModal()
       //park인지 아파트인지 구분 ......
       if (role.value == 'PUBLIC_MANAGER') {
         window.location.href = '/road/control'
@@ -195,6 +196,7 @@ export default defineComponent({
       if (boardNotification.value && boardNotification.value.facilityId) {
         await changeFacility(waterNotification.value.facilityId)
       }
+      await closeBoardModal()
 
       if (role.value == 'APART_MANAGER') {
         window.location.href = `/park/report/${boardNotification.value.boardId}/detail`

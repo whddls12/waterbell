@@ -73,8 +73,7 @@ export default defineComponent({
           }
         })
         const apiData = response.data
-        // console.log('apiData')
-        // console.log(apiData)
+        console.log(apiData)
         return { apiData }
         // 차트 생성을 위한 데이터 가공
         //apiData를 인자로 넘겨줍니다
