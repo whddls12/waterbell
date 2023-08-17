@@ -194,7 +194,7 @@ public class SystemService {
         LocalDateTime time = LocalDateTime.now();
         List<SensorLog> sensorLogList = sensorLogRepository.getHeightPerhour(facility,SensorType.HEIGHT,time);
         for(SensorLog log : sensorLogList) {
-            resultMap.put(log.getSensorTime().toString().substring(11,16), log.getSensorData());
+            resultMap.put(log.getSensorTime().toString().substring(11,19), log.getSensorData());
         }
         return resultMap;
     }
