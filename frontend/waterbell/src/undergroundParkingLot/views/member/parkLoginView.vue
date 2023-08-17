@@ -56,14 +56,6 @@
                   />
                 </button>
               </div>
-              <!-- <div>
-                <button class="imgBtn" type="button" @click="kakaoLogin">
-                  <img
-                    src="@/assets/Login&Signup/kakao_login.png"
-                    class="socialLoginBtn"
-                  />
-                </button>
-              </div> -->
             </div>
           </form>
         </div>
