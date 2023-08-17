@@ -1,6 +1,6 @@
 <template>
   <div class="report-create-container" style="width: 90%">
-    <div class="report-page-title title">
+    <div class="report-page-title">
       <h1>신고접수 글쓰기</h1>
       <div class="report-empty-box"></div>
     </div>
@@ -24,11 +24,19 @@
         </div>
       </div>
       <div class="report-box attachment">
-        <div class="report-subtitle"><h5 style="margin: 0px">파일첨부</h5></div>
+        <div class="report-subtitle">
+          <h5 style="margin: 0px">파일첨부</h5>
+        </div>
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
-              {{ getSelectedFileNames }}
+              <div v-for="(file, index) in selectedFiles" :key="index">
+                {{ file.name }}
+                <i
+                  @click="unselectFile(file.name)"
+                  class="fas fa-backspace"
+                ></i>
+              </div>
             </div>
           </div>
           <div class="report-file-attach">
@@ -100,7 +108,6 @@ export default defineComponent({
       if (files && files.length > 0) {
         for (const file of files) {
           selectedFiles.value.push(file)
-          formData.append('uploadedfiles', file)
         }
       }
     }
@@ -114,6 +121,17 @@ export default defineComponent({
       return selectedFileNames
     })
 
+    // 첨부파일 등록했다가 뺄 때
+    function unselectFile(file_name: any) {
+      for (let file of selectedFiles.value) {
+        if (file.name === file_name) {
+          selectedFiles.value.splice(selectedFiles.value.indexOf(file), 1)
+          break
+        }
+      }
+      console.log(selectedFiles.value)
+    }
+
     // 신고접수 취소 시 목록으로 이동
     function goToList() {
       router.push({ path: '/park/report' })
@@ -126,6 +144,11 @@ export default defineComponent({
       formData.append('phone', report.value.phone)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
+
+      // formData에 첨부파일 담기
+      for (let file of selectedFiles.value) {
+        formData.append('uploadedfiles', file)
+      }
 
       // formData 의 밸류값을 확인하는 방법
       for (let values of formData.entries()) {
@@ -156,7 +179,8 @@ export default defineComponent({
       upload,
       getSelectedFileNames,
       goToList,
-      writeReport
+      writeReport,
+      unselectFile
     }
   }
 })
@@ -177,6 +201,7 @@ export default defineComponent({
   line-height: 16px; /* 53.333% */
   letter-spacing: 3px;
   border-bottom: 2px solid black;
+  margin-top: 40px;
 }
 
 .report-page-title h1 {
