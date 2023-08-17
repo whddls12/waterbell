@@ -96,7 +96,7 @@ export default defineComponent({
               },
               title: {
                 display: true,
-                text: '시각(시:분)'
+                text: '시각(시:분:초)'
               }
             },
             y: {
