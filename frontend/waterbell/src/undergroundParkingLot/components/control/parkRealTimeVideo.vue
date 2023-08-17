@@ -1,7 +1,7 @@
 <template lang="">
   <div class="cctv">
     <div>
-      <p class="cctvLabel">지하주차장 입구</p>
+      <p class="cctvLabel">지하주차장 내부</p>
       <div class="cctvBox">
         <div>
           <img id="cctv1" />
@@ -9,7 +9,7 @@
       </div>
     </div>
     <div>
-      <p class="cctvLabel">지하주차장 내부</p>
+      <p class="cctvLabel">지하주차장 외부</p>
       <div class="cctvBox">
         <div>
           <img id="cctv2" />
