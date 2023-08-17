@@ -71,7 +71,13 @@
         <div class="report-filebox">
           <div class="report-file-list">
             <div class="report-file-list-name">
-              {{ getSelectedFileNames }}
+              <div v-for="(file, index) in selectedFiles" :key="index">
+                {{ file.name }}
+                <i
+                  @click="unselectFile(file.name)"
+                  class="fas fa-backspace"
+                ></i>
+              </div>
             </div>
           </div>
           <div class="report-file-attach">
@@ -176,7 +182,6 @@ export default defineComponent({
       if (files && files.length > 0) {
         for (const file of files) {
           selectedFiles.value.push(file)
-          formData.append('uploadedfiles', file)
         }
       }
     }
@@ -192,6 +197,17 @@ export default defineComponent({
     function goToList() {
       router.push({ path: `/road/report` })
     }
+
+    function unselectFile(file_name: any) {
+      for (let file of selectedFiles.value) {
+        if (file.name === file_name) {
+          selectedFiles.value.splice(selectedFiles.value.indexOf(file), 1)
+          break
+        }
+      }
+      console.log(selectedFiles.value)
+    }
+
     // 신고접수 등록
     async function writeReport() {
       // FormData에 양식에 채워진 값들 넣기
@@ -200,6 +216,11 @@ export default defineComponent({
       formData.append('boardPassword', report.value.boardPassword)
       formData.append('title', report.value.title)
       formData.append('content', report.value.content)
+
+      // formData에 첨부파일 담기
+      for (let file of selectedFiles.value) {
+        formData.append('uploadedfiles', file)
+      }
 
       // formData 의 밸류값을 확인하는 방법
       for (let values of formData.entries()) {
@@ -268,6 +289,7 @@ export default defineComponent({
       getSelectedFileNames,
       goToList,
       writeReport,
+      unselectFile,
       getMemberData,
       validateConfirmPass
     }

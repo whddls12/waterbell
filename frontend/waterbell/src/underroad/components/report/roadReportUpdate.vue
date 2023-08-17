@@ -118,7 +118,7 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const report_id = route.params.report_id
-    const imageList = ref(null)
+    const imageList = ref<[]>([])
     const removeFilesList = ref<string[]>([])
 
     const facility_id = computed(() => store.getters['auth/facilityId'])
@@ -153,6 +153,7 @@ export default defineComponent({
           report.value.name = res.data.board.name
           report.value.phone = res.data.board.phone
           report.value.boardPassword = res.data.board.boardPassword
+          report.value.boardPasswordConfirm = res.data.board.boardPassword
           report.value.title = res.data.board.title
           report.value.content = res.data.board.content
         })
@@ -166,7 +167,6 @@ export default defineComponent({
       if (files && files.length > 0) {
         for (const file of files) {
           selectedFiles.value.push(file)
-          formData.append('addUploadedfiles', file)
         }
         console.log(selectedFiles.value)
 
@@ -187,8 +187,22 @@ export default defineComponent({
     })
     // 기존에 있던 첨부파일에서 파일 제거
     function deleteFile(image_id: any) {
+      // 제거할 리스트에 이미 들어있다면 중단
+      for (let imageId of removeFilesList.value) {
+        if (image_id === imageId) {
+          return
+        }
+      }
+      // 제거할 파일 리스트에 이미지id를 넣고, 수정 전 파일리스트인 imageList에서 찾아 없애준다.
       removeFilesList.value.push(image_id)
-      console.log(removeFilesList.value)
+      for (let image of imageList.value) {
+        if (image['id'] === image_id) {
+          imageList.value.splice(imageList.value.indexOf(image), 1)
+          break
+        }
+      }
+      console.log('첨부파일 리스트: ', imageList.value)
+      console.log('삭제할 이미지 id 리스트: ', removeFilesList.value)
     }
 
     function unselectFile(file_name: any) {
@@ -217,6 +231,11 @@ export default defineComponent({
       for (let value of removeFilesList.value) {
         console.log(value)
         formData.append('removefiles', value)
+      }
+
+      // formData에 첨부파일 넣기
+      for (let file of selectedFiles.value) {
+        formData.append('addUploadedfiles', file)
       }
 
       // formData 의 밸류값을 확인하는 방법
