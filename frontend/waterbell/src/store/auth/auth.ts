@@ -88,11 +88,14 @@ const auth: Module<any, any> = {
       localStorage.removeItem('auth')
       // localStorage.removeItem('loginUser')
       // localStorage.removeItem('isLogin')
-      console.log('되냐')
+      // console.log('되냐')
     },
 
     setAccessToken(state, accessToken) {
       state.accessToken = accessToken
+    },
+    setRefreshToken(state, refreshToken) {
+      state.refreshToken = refreshToken
     },
 
     //--------------------------------------------------------------지하차도
@@ -125,11 +128,10 @@ const auth: Module<any, any> = {
   },
   actions: {
     socialLogin({ commit }, payload) {
-      commit('setTokens', {
-        accessToken: payload.member.accessToken,
-        refreshToken: payload.member.refreshToken
-      })
+      commit('setAccessToken', payload.member.accessToken)
       commit('setFacilityId', payload.member.facilityId)
+      commit('setIsLogin', true)
+      commit('setRole', payload.member.role)
     },
 
     setCctvImg1({ commit }, payload) {

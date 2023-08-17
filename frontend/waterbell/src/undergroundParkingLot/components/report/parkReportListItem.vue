@@ -22,7 +22,6 @@
             <div class="into-status">{{ reportInfo?.apartMember.name }}</div>
             <div>|</div>
             <div>{{ formattedTime(reportInfo?.createDate) }}</div>
-            <div>{{ reportInfo?.createDate }}</div>
           </div>
           <div class="report-info info-box">
             <select
@@ -95,7 +94,11 @@
         <button class="btn-delete" @click="deleteReportManager">삭제</button>
       </div>
       <!-- 작성자 -->
-      <div v-if="role == 'APART_MEMBER'">
+      <div
+        v-if="
+          role == 'APART_MEMBER' && reportInfo?.apartMember.id == userInfo?.id
+        "
+      >
         <button class="btn-modify" @click="goToUpdate(reportInfo?.id)">
           수정
         </button>
@@ -127,6 +130,19 @@ export default defineComponent({
     const apiClient = axios.apiClient(store)
     const api = axios.api
 
+    const userInfo = ref(null)
+
+    function getUserInfo() {
+      apiClient
+        .get(`/member/findMember/token`)
+        .then((res) => {
+          userInfo.value = res.data.member
+          console.log(userInfo.value)
+        })
+        .catch((err) => console.log(err))
+    }
+
+    // const isAuthor = ref(false) // 접속한 유저가 이 글의 작성자인지
     const reportStatus = ref<string | null>()
     // 신고접수 글 처리상태 리스트
     const statusList = [
@@ -210,7 +226,7 @@ export default defineComponent({
     function deleteReport(report_id: any) {
       api
         .get(`/reports/apart/deleteBoard/${report_id}`)
-        .then((res) => {
+        .then(() => {
           router.push({ path: `/park/report` })
         })
         .catch((error) => {
@@ -248,6 +264,7 @@ export default defineComponent({
 
     onMounted(() => {
       getReportData()
+      getUserInfo()
     })
 
     return {
@@ -258,6 +275,7 @@ export default defineComponent({
       reportInfo,
       reportStatus,
       imageList,
+      userInfo,
       getReportData,
       goReportList,
       goToUpdate,
@@ -266,7 +284,8 @@ export default defineComponent({
       statusEngToKr,
       formattedTime,
       deleteReport,
-      deleteReportManager
+      deleteReportManager,
+      getUserInfo
     }
   }
 })

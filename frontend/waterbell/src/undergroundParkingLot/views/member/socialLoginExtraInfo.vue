@@ -105,6 +105,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watch } from 'vue'
 import apiModules from '@/types/apiClient'
+// import { useRouter } from 'vue-router'
 // import store from '@/store/index'
 import { useRoute, useRouter } from 'vue-router'
 export default defineComponent({
@@ -290,8 +291,7 @@ export default defineComponent({
             })
             .then((res) => {
               if ((res.data.message = 'success')) {
-                alert('회원가입이 완료되었습니다.')
-
+                router.push('/social-join/end')
                 //--------------------------------------------------------------------------------------
                 //code 다시 끌어와서 로그인 시킬 것.
                 //   store.dispatch('auth/socialLogin', {
