@@ -75,7 +75,16 @@
       </div>
       <!-- 버튼 -->
       <div class="myPage-btn">
-        <button id="update" @click="passwordCheck">회원정보 수정하기</button>
+        <button
+          v-if="memberInfo?.loginId.includes('@')"
+          id="update"
+          @click="goToUpdate"
+        >
+          회원정보 수정하기
+        </button>
+        <button v-else id="update" @click="passwordCheck">
+          회원정보 수정하기
+        </button>
         <div
           v-if="role == 'APART_MEMBER'"
           class="withdrawal"
@@ -128,10 +137,21 @@ export default defineComponent({
         .catch((err) => console.log(err))
     }
 
+    function goToUpdate() {
+      router.push({ path: '/mypage/update' })
+    }
+
     onMounted(() => {
       getMemberData()
     })
-    return { role, memberInfo, getMemberData, passwordCheck, goWithdrawal }
+    return {
+      role,
+      memberInfo,
+      getMemberData,
+      passwordCheck,
+      goWithdrawal,
+      goToUpdate
+    }
   }
 })
 </script>
