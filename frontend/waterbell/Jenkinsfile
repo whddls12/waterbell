@@ -3,6 +3,13 @@ pipeline {
     agent any
 
      tools {nodejs "node"}
+     environment {
+        DOCKER = 'sudo docker'
+        TIME_ZONE = 'Asia/Seoul'
+        PROFILE = 'local'
+        REGION = 'ap-northeast-2'
+    }
+
 
 stages {
     stage('prepare') {
