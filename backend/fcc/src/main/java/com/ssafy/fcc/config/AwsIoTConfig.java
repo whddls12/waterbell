@@ -17,7 +17,7 @@ public class AwsIoTConfig {
 
 
     String clientEndpoint = "a3kqjba8huf6r2-ats.iot.us-east-2.amazonaws.com";
-    String clientId = "rasp2";
+    String clientId = "rasssp2";
     String awsAccessKeyId = "AKIARGSGEM3WCHCNAJBF";
     String awsSecretAccessKey = "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";
 
