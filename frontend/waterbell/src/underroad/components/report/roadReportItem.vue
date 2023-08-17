@@ -60,7 +60,8 @@
               {{ statusEngToKr(reportInfo?.status) }}
             </div>
             <div class="viewCount">
-              <i class="fas fa-eye"></i> {{ reportInfo?.viewCount }}
+              <div><i class="fas fa-eye"></i></div>
+              <div>{{ reportInfo?.viewCount }}</div>
             </div>
           </div>
         </div>
@@ -358,6 +359,12 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+.viewCount {
+  display: flex;
+  width: 40px;
+  gap: 5px;
+}
+
 .each-report {
   width: 100%;
   padding: 20px;
@@ -404,12 +411,17 @@ export default defineComponent({
   text-align: start;
 }
 
+.report-title-box > div {
+  margin: 5px 0px;
+}
+
 .report-info {
   display: flex;
   justify-content: space-between;
   color: var(--unnamed, #939393);
   text-align: center;
 
+  margin-top: 5px;
   font-size: 15px;
   font-style: normal;
   font-weight: 500;
@@ -426,7 +438,6 @@ export default defineComponent({
 
 .info-box {
   gap: 10px;
-  margin: 10px 0px;
 }
 
 .report-image {
