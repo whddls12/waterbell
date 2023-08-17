@@ -298,6 +298,7 @@ export default defineComponent({
   line-height: 16px; /* 53.333% */
   letter-spacing: 3px;
   border-bottom: 2px solid black;
+  margin-top: 40px;
 }
 
 .report-page-title h1 {

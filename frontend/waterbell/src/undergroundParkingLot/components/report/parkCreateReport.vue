@@ -1,6 +1,6 @@
 <template>
   <div class="report-create-container" style="width: 90%">
-    <div class="report-page-title title">
+    <div class="report-page-title">
       <h1>신고접수 글쓰기</h1>
       <div class="report-empty-box"></div>
     </div>
@@ -177,6 +177,7 @@ export default defineComponent({
   line-height: 16px; /* 53.333% */
   letter-spacing: 3px;
   border-bottom: 2px solid black;
+  margin-top: 40px;
 }
 
 .report-page-title h1 {

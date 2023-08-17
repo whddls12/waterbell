@@ -107,7 +107,28 @@ export default defineComponent({
           // 차트 옵션 설정 (생략 가능)
           scales: {
             y: {
+              grid: {
+                display: true
+              },
+              title: {
+                display: true,
+                text: '시간당 강수량(mm)'
+              },
               beginAtZero: true
+            },
+            x: {
+              grid: {
+                display: false
+              },
+              title: {
+                display: true,
+                text: '시각(시)'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false // 범례 제거
             }
           }
         }

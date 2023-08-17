@@ -55,6 +55,7 @@ export default defineComponent({
 
     // API 데이터 가져오기 (예시를 위해 랜덤 데이터 사용)
     async function getData() {
+      console.log('좌표: ', lon, lat)
       try {
         const response = await api.get('/dash/map/rain', {
           params: {
