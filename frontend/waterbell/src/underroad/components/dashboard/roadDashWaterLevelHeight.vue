@@ -50,6 +50,7 @@ export default defineComponent({
         )
 
         const apiData = response.data
+        console.log(apiData)
 
         return { apiData }
       } catch (error) {

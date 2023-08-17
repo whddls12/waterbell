@@ -9,7 +9,7 @@ import auth from './auth/auth'
 // const api = axios.api
 export default createStore({
   state: {
-    location: { lon: '127', lat: '55' }, //현재 위치(gps)
+    location: { lon: '127', lat: '36' }, //현재 위치(gps)
     tmpUnderroad: {} as { id: string }, //임시 선택 지하차도
     isMainpage: true,
     isPark: true,
