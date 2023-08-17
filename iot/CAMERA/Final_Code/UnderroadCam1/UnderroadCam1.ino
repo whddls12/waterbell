@@ -4,10 +4,10 @@
 #include <ArduinoJson.h> //ArduinoJSON6
 DynamicJsonDocument CONFIG(2048);
 
-const char* ssid = ""; // wifi 이름
-const char* password = ""; // wifi 비번
-const char* mqtt_server = "";//mqtt주소
-const char* HostName = "Underroad1 CAM1"; // 이름
+const char* ssid = "Galaxy A313285"; // wifi 이름
+const char* password = "12345678"; // wifi 비번
+const char* mqtt_server = "192.168.43.41";//mqtt주소
+const char* HostName = "Underroad CAM1"; // 이름
 const char* topic_SUB = "Server/1/CAM"; // sub topic
 const char* topic_PUB = "Arduino/1/CAM"; // pub topic
 
@@ -88,17 +88,20 @@ void camera_init() {
 void take_picture() {
   camera_fb_t * fb = NULL;
   fb = esp_camera_fb_get();
+  
   if (!fb) {
     Serial.println("Camera capture failed");
     return;
   }
+
+  
   if (MQTT_MAX_PACKET_SIZE == 128) {
     //SLOW MODE (increase MQTT_MAX_PACKET_SIZE)
-    client.publish_P(topic_UP, fb->buf, fb->len, false);
+    client.publish_P(topic_PUB, fb->buf, fb->len, false);
   }
   else {
     //FAST MODE (increase MQTT_MAX_PACKET_SIZE)
-    client.publish(topic_UP, fb->buf, fb->len, false);
+    client.publish(topic_PUB, fb->buf, fb->len, false);
     Serial.println(fb->len);
   }
 

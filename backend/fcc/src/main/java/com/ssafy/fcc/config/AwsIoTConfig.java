@@ -15,8 +15,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AwsIoTConfig {
 
+
     String clientEndpoint = "a3kqjba8huf6r2-ats.iot.us-east-2.amazonaws.com";
-    String clientId = "rasp";
+    String clientId = "rasp2";
     String awsAccessKeyId = "AKIARGSGEM3WCHCNAJBF";
     String awsSecretAccessKey = "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";
 
@@ -81,13 +82,14 @@ public class AwsIoTConfig {
         systemService.checkControl(message);
     }
     private void handleSensorMessage(String message) throws Exception {
-        WaterStatus status = systemService.fromSensor(message);
 
-        String topic = String.format("Server/%d/status", message.split("/")[0]);
-        client.publish(topic, status.toString());
+        WaterStatus status = systemService.fromSensor(message);
+        String topic = String.format("Server/%s/STATUS", message.split("/")[0]);
+        publish(topic,status.toString());
     }
 
     public void publish(String topic, String message) throws AWSIotException {
+
         AWSIotQos qos = AWSIotQos.QOS0;
         long timeout = 3000;
 
