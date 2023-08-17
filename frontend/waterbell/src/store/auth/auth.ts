@@ -130,8 +130,8 @@ const auth: Module<any, any> = {
     socialLogin({ commit }, payload) {
       commit('setAccessToken', payload.member.accessToken)
       commit('setFacilityId', payload.member.facilityId)
-      commit('auth/setIsLogin', true)
-      commit('auth/setRole', payload.member.role)
+      commit('setIsLogin', true)
+      commit('setRole', payload.member.role)
     },
 
     setCctvImg1({ commit }, payload) {
