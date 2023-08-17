@@ -149,8 +149,6 @@ export default defineComponent({
     }
     async function getWeatherData() {
       try {
-        // console.log(lon)
-        // console.log(lat)
         const response = await api.get(`/dash/weather`, {
           params: {
             year: year,
@@ -162,11 +160,8 @@ export default defineComponent({
             lat: lat //여기 변경됨
           }
         })
-        // console.log(response)
         status_sky.value = response.data.SKY.fcstValue
         type_rainfall.value = response.data.PTY.fcstValue
-        // console.log(status_sky.value)
-        // console.log(type_rainfall.value)
       } catch (error) {
         console.log('기상상태 데이터 가져오기 실패:', error)
       }
