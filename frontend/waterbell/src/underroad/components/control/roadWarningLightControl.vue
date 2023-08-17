@@ -77,9 +77,11 @@ export default defineComponent({
 
     watch(
       () => UactionTriggered.value,
-      (newValue: any) => {
-        fetchStatusData()
-        fetchHeightData()
+      async (newValue: any) => {
+        await fetchStatusData()
+        setTimeout(async () => {
+          await fetchHeightData()
+        }, 1000) // 1초 (1000밀리초) 후에 fetchHeightData() 실행
       }
     )
 

@@ -89,16 +89,17 @@ export default defineComponent({
 
     watch(
       () => actionTriggered.value,
-      (newValue: any) => {
-        console.log('변경감지')
-        fetchHeightData()
-        fetchStatusData()
+      async (newValue: any) => {
+        await fetchStatusData()
+        setTimeout(async () => {
+          await fetchHeightData()
+        }, 1000) // 1초 (1000밀리초) 후에 fetchHeightData() 실행
       }
     )
 
     onMounted(async () => {
-      await fetchHeightData()
       await fetchStatusData()
+      await fetchHeightData()
     })
 
     return {
