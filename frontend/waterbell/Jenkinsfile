@@ -3,6 +3,13 @@ pipeline {
     agent any
 
      tools {nodejs "node"}
+     environment {
+        DOCKER = 'sudo docker'
+        TIME_ZONE = 'Asia/Seoul'
+        PROFILE = 'local'
+        REGION = 'ap-northeast-2'
+    }
+
 
 stages {
     stage('prepare') {
@@ -32,7 +39,7 @@ stages {
                 echo 'Deploy'
                 docker stop WaterBellFront
                 docker rm WaterBellFront
-                docker run -d -p 3000:3000 --name WaterBellFront docker-vue:0.0.1
+                docker run -d -p 3000:3000 -v /etc/localtime:/etc/localtime:ro -e TZ=Asia/Seoul --name WaterBellFront docker-vue:0.0.1
                 '''
             }
         }
