@@ -11,7 +11,9 @@ git clone https://github.com/jjunehee/Capstone_EveryKid.git
 ## 목차
 1. 프로젝트 계획 동기
 2. 프로젝트 계획 목표
-3. EveryKid 기능 설명
+3. 프로젝트 소개
+4. 기술 스택
+5. EveryKid 기능 설명
     1. [라즈베리파이 얼굴인식, 알림서비스 기능] 
     2. [회원가입, 유치원 API, 선생님 부모 로그인/로그아웃 기능]
     3. [채팅 기능]
@@ -20,6 +22,8 @@ git clone https://github.com/jjunehee/Capstone_EveryKid.git
     6. [메인화면 기능]
     7. [게시판 기능]
     8. [프로필 기능]
+6. 아키텍쳐
+
 ------------
 ## 프로젝트 계획 동기
 > * 최근 들어 직장인 부부가 많아짐으로서 어린아이들이 혼자 다니는 일이 많아졌으며 그로 인해 위험
@@ -32,6 +36,10 @@ git clone https://github.com/jjunehee/Capstone_EveryKid.git
 
 > * AIoT를 활용한 서비스 제공  
 라즈베리파이와 카메라모듈을 어린이집 출입구에 설치하여 등하원하는 아이들에대해서 AI를 통한 안면 학습 및 식별을 가능하도록 하고, 이러한 데이터를 어플리케이션에 송신하고 개인별 실시간 등하원 알림 서비스를 구현한다.
+
+## 프로젝트 소개
+
+## 기술 스택
 
 ## EveryKid 기능 설명
 
@@ -114,6 +122,10 @@ git clone https://github.com/jjunehee/Capstone_EveryKid.git
 3. 어린이집 정보 조회
     * 등록된 아이의 어린이집 정보를 조회할 수 있는 
 ------------
+
+## 아키텍쳐
+
+
 ### 개발일지
 <details>
  <summary> Frontend </summary>
