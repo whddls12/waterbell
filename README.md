@@ -5,7 +5,7 @@
 ## Clone repository
   
 ```
-git clone https://github.com/jjunehee/Capstone_EveryKid.git
+git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 ```
 
 ## 목차
@@ -13,7 +13,7 @@ git clone https://github.com/jjunehee/Capstone_EveryKid.git
 2. 프로젝트 계획 목표
 3. 프로젝트 소개
 4. 기술 스택
-5. EveryKid 기능 설명
+5. WaterBell 기능 설명
     1. [라즈베리파이 얼굴인식, 알림서비스 기능] 
     2. [회원가입, 유치원 API, 선생님 부모 로그인/로그아웃 기능]
     3. [채팅 기능]
