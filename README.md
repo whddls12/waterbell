@@ -23,6 +23,7 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
     7. []
     8. []
 6. 아키텍쳐
+7. 화면 구성/API 주소
 
 ------------
 ## 프로젝트 계획 동기
@@ -33,7 +34,7 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 - 
 ## 기술 스택
 - 
-## EveryKid 기능 설명
+## WaterBell 기능 설명
 
 
 ### [기능1]
@@ -61,6 +62,9 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 - 
 
 ## 아키텍쳐
+- 
+## 화면 구성/API 주소
+- 
 
 
 
