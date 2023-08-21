@@ -1,6 +1,6 @@
-# EveryKid : 어린이집 통합 관리 서비스
+# WaterBell : 지하차도, 지하주차장 침수관리 통합 시스템
 
-경기대학교 컴퓨터공학부 캡스톤디자인 ' 어린이집 통합 관리서비스 - EveryKid '의 repository입니다.
+삼성 청년 SW 아카데미 대전 1반 1팀(원티어)의 repository입니다.
 
 ## Clone repository
   
