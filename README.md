@@ -29,8 +29,14 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 ## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 서비스 소개
 <div align=center>
 <h2> "세상의 모든 침수에 대응한다." <br><br>침수를 IoT 장비를 통해 감지하고 침수 피해를 <br>예방 및 방지하는 서비스</h2>
-
 </div>
+
+### 페르소나
+- 
+### 서비스 시퀀스
+- 
+### 기대효과
+- 
 
 <br>
 
@@ -62,7 +68,7 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 
 
 -
-## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 화면 구성/API 주소
+## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 프로젝트 일정 및 기타 산출물
 -
 
 
