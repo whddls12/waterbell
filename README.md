@@ -32,11 +32,11 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 </div>
 
 ### 페르소나
-- 
+-
 ### 서비스 시퀀스
-- 
+-
 ### 기대효과
-- 
+-
 
 <br>
 
@@ -64,7 +64,7 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 -
 
 ## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 기술 스택 및 아키텍쳐
-![기술스택](/uploads/68208b7bcf64fbde671cbfc118adfa8c/기술스택.PNG)
+![기술스택](/img/기술스택.png)
 
 
 -
