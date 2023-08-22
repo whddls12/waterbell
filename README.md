@@ -65,7 +65,7 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 
 ## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 기술 스택 및 아키텍쳐
 ![기술스택](/uploads/bf519b33320d569e62c4279dba1be5b3/기술스택.png)
-
+![iotconnect](./img/Sensorstructure.png)
 
 ## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 프로젝트 일정 및 기타 산출물
 -
