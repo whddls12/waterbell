@@ -57,11 +57,10 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 #### [실시간 수위센서 그래프 조회 기능]
 -
 
-## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 기술 스택
+## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 기술 스택 및 아키텍쳐
 ![기술스택](/uploads/68208b7bcf64fbde671cbfc118adfa8c/기술스택.PNG)
 
 
-## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 아키텍쳐
 -
 ## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 화면 구성/API 주소
 -
