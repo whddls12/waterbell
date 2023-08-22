@@ -65,7 +65,7 @@ git clone https://lab.ssafy.com/s09-webmobile3-sub2/S09P12B101.git
 ## 프로젝트 소개
 -
 ## 기술 스택
-<img src="/img/기술스택.PNG" width="600" height="400"/>
+![기술스택](/uploads/68208b7bcf64fbde671cbfc118adfa8c/기술스택.PNG)
 
 ## WaterBell 기능 설명
 
