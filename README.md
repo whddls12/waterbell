@@ -10,7 +10,7 @@
 
 | [김동현](https://github.com/DongHyun-Klm) | [김예진]() | [황종인]() | [황윤영]() | [이효경]() | [조준희](https://github.com/jjunehee) |
 | :------------------------------------------: | :------------------------------------------: | :-------------------------------------: | :------------------------------------: | :-----------------------------------: | :-----------------------------------: |
-|       <img src="https://avatars.githubusercontent.com/u/120110806?v=4" width="100" height="100">       |       ![조준희](./img/조준희.png)         |      ![조준희](./img/조준희.png)       |      ![조준희](./img/조준희.png)      |         ![조준희](./img/조준희.png)            |         ![조준희](./img/조준희.png)          |
+|       <img src="https://avatars.githubusercontent.com/u/120110806?v=4">       |       ![조준희](./img/조준희.png)         |      ![조준희](./img/조준희.png)       |      ![조준희](./img/조준희.png)      |         ![조준희](./img/조준희.png)            |         ![조준희](./img/조준희.png)          |
 |                BackEnd<br>FrontEnd                |                IoT<br>BackEnd                |            FrontEnd            |          FrontEnd<br>BackEnd           |           BackEnd<br>Infra            |           IoT<br>BackEnd            |
 
 
