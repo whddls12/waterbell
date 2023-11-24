@@ -2,14 +2,6 @@
 
 # 지하차도, 지하주차장 침수관리 통합 시스템
 
-## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 목차
-#### 1. 기획 배경
-#### 2. 서비스 소개
-#### 3. WaterBell 기능 소개 및 시연
-#### 4 기술 스택
-#### 5. 아키텍쳐
-#### 6. 프로젝트 일정 및 기타 산출물
-
 <br>
 
 # 소개
@@ -21,14 +13,15 @@
 |      ![김동현](./img/김동우.jpg)       |       ![김예진](./img/이대건.png)       |      ![황종인](./img/임규돈.png)       |      ![황윤영](./img/조준희.png)      |         ![이효경](./img/강수민.png)          |         ![조준희](./img/강수민.png)          |
 |                BackEnd                |                IoT                |            FrontEnd            |          FrontEnd<br>BackEnd           |           BackEnd<br>Infra            |           IoT<br>BackEnd            |
 
+
 ## :balloon: 개요
 
 **_🖐 SSAFY 9기 2학기 공통 프로젝트 🖐_**  
 <h3>"세상의 모든 침수에 대응한다." 침수를 IoT 장비를 통해 감지하고 침수 피해를 예방 및 방지하는 서비스 </h3>
 
-
 > 2023.07.10 ~ 2023.08.18 (6주)
 
+<br>
 
 ## :sparkles: 프로젝트 기획 배경
 
@@ -65,10 +58,10 @@
 ### [Web] 마이페이지
 - 관리자는 마이페이지에서 시설의 1,2차 침수 기준치와 알림 메세지를 설정합니다.
 
+<br><br>
 
-# 구현
 
-## :rocket: 기능 시연
+# :rocket: 기능 시연
 
 ### IoT
 
@@ -115,13 +108,14 @@
 | ![소셜 로그인3](/README.assets/소셜로그인3.png)    | ![소셜 로그인4](/README.assets/소셜로그인4.png)    |
 
 
-## ![favicon](/uploads/705173937f456c26db414efc8ad6dfa9/favicon.ico) 기술 스택 및 아키텍쳐
+## :eyes: 아키텍쳐, 산출물
+
 ![기술스택](/uploads/bf519b33320d569e62c4279dba1be5b3/기술스택.png)
+
 ![cctv](img/CCTVstructure.png)
 ![sensor](img/SensorStructure.png)
 
-## :eyes: 산출물
--
-
+### ERD
+![ERD](/uploads/cbdb821af5066702a4d628eb18c756cc/ERD.PNG)
 
 
