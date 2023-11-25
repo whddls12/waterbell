@@ -115,15 +115,37 @@
 
 # :eyes: 산출물
 
+### 기능 명세
+![기능명세1](./img/기능명세1.PNG)
+![기능명세2](./img/기능명세2.PNG)
+![기능명세3](./img/기능명세3.PNG)
+![기능명세4](./img/기능명세4.PNG)
+
+<br>
+
 ### 아키텍처, 기술스택
 ![기술스택](/uploads/bf519b33320d569e62c4279dba1be5b3/기술스택.png)
+
+<br>
+
+### API 명세
+![API명세1](./img/API명세1.PNG)
+![API명세2](./img/API명세2.PNG)
+![API명세3](./img/API명세3.PNG)
+![API명세4](./img/API명세4.PNG)
+
+<br>
 
 ### ERD
 ![ERD](/uploads/cbdb821af5066702a4d628eb18c756cc/ERD.PNG)
 
+<br>
+
 ### IoT 통신 흐름도
 ![cctv](img/CCTVstructure.png)
 ![sensor](img/SensorStructure.png)
+
+<br>
 
 ### 번다운 차트
 
