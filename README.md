@@ -144,7 +144,7 @@
 <br>
 
 ### ERD
-![ERD](/uploads/cbdb821af5066702a4d628eb18c756cc/ERD.PNG)
+![ERD](img/ERD.PNG)
 
 <br>
 
